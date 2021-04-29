@@ -72,9 +72,12 @@
 
 #if (MCU_CORE_B85)
 #define BQB_TX_POWER			RF_POWER_P7p02dBm
-#else
-#define BQB_TX_POWER			RF_POWER_P6p91dBm
+#elif(MCU_CORE_B87)
+#define BQB_TX_POWER			RF_POWER_P7p37dBm
+#elif(MCU_CORE_B89)
+#define BQB_TX_POWER			RF_POWER_P4p98dBm
 #endif
+
 #define AUTO 0
 
 #define USER_REDEFINE_PA	0

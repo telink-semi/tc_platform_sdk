@@ -58,7 +58,7 @@ unsigned int gpio_width =0;
  * @param[in] 	none
  * @return 		none
  */
-_attribute_ram_code_ void irq_handler(void)
+_attribute_ram_code_sec_noinline_ void irq_handler(void)
 {
 #if(TIMER_MODE == TIMER_GPIO_TRIGGER_MODE)
 
@@ -96,7 +96,7 @@ int main (void)
 	 cpu_wakeup_init();
    #endif
 
-	gpio_init(1);
+	gpio_init(0);
 
 	clock_init(SYS_CLK);
 

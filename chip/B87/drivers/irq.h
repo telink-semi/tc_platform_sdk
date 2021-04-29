@@ -184,6 +184,6 @@ static inline unsigned short rf_irq_src_get(void)
  */
 static inline void rf_irq_clr_src(unsigned short msk)
 {
-    reg_rf_irq_status |= msk;
+    reg_rf_irq_status = msk;
 }
 

@@ -66,8 +66,8 @@
 #define TEST_CHN   				1		// 37/38/39 adv channel
 #if (MCU_CORE_B85)
 #define RF_POWER			RF_POWER_P10p46dBm
-#else
-#define RF_POWER			RF_POWER_INDEX_P11p26dBm
+#elif (MCU_CORE_B87)
+#define RF_POWER			RF_POWER_P11p26dBm
 #endif
 #define ACCESS_CODE				0Xfcaab2c1
 
@@ -136,23 +136,18 @@ void init_test_gpio(void)
 
 void user_init()
 {
-
-#if(MCU_CORE_B89)
-	rf_mode_init();
-	rf_set_ble_1M_NO_PN_mode();
-#else
-	gpio_init(1);
+	gpio_init(0);
 	init_test_gpio();
 	rf_drv_init(RF_MODE_BLE_1M_NO_PN);
-#endif
-#if (MCU_CORE_B87||MCU_CORE_B89)
+
+#if (MCU_CORE_B87)
 	supp_ant_lut(antenna_switch_seq,SWITCH_SEQ_MODE0);
 	rx_dly_dis();
 #endif
 
 	WRITE_REG8(0x43b,0x29);// forward 0.5us.  default:0x2d , add 1 means sample point delay 0.125us.
 
-#if (MCU_CORE_B87||MCU_CORE_B89)
+#if (MCU_CORE_B87)
 	triangle_all_open();
 	set_antenna_num(7);
 #else

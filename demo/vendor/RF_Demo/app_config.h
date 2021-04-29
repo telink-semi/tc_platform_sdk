@@ -55,6 +55,13 @@ extern "C" {
 #define LED2     				GPIO_PD3
 #define LED3     				GPIO_PD4
 
+#if (MCU_CORE_B85)
+#define RF_POWER			RF_POWER_P10p46dBm
+#elif(MCU_CORE_B87)
+#define RF_POWER			RF_POWER_P11p26dBm
+#elif(MCU_CORE_B89)
+#define RF_POWER			RF_POWER_P4p98dBm
+#endif
 
 #define RF_BLE_2M				1
 #define RF_BLE_1M				2
@@ -79,7 +86,7 @@ extern "C" {
 
 
 
-#define RF_MODE					RF_BLE_1M_STX2RX
+#define RF_MODE					RF_LR_S8_125K
 
 
 

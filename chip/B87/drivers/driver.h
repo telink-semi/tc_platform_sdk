@@ -55,6 +55,7 @@
 #include "gpio.h"
 #include "gpio_default.h"
 #include "pwm.h"
+#include "ir_learn.h"
 #include "irq.h"
 #include "clock.h"
 #include "random.h"
@@ -83,5 +84,6 @@
 #include "lpc.h"
 #include "mdec.h"
 #include "usbhw.h"
+#include "flash/flash_type.h"
 
 

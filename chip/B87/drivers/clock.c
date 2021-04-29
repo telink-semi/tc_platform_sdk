@@ -86,7 +86,7 @@ void clock_rc_set(SYS_CLK_TypeDef SYS_CLK)
  * @return      none
  */
 #if (BLC_PM_DEEP_RETENTION_MODE_EN)
-_attribute_ram_code_
+_attribute_ram_code_sec_noinline_
 #endif
 void clock_init(SYS_CLK_TypeDef SYS_CLK)
 {

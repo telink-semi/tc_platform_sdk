@@ -53,7 +53,7 @@ extern void main_loop (void);
  * @param[in] 	none
  * @return 		none
  */
-_attribute_ram_code_ void irq_handler(void)
+_attribute_ram_code_sec_noinline_ void irq_handler(void)
 {
 
 
@@ -76,7 +76,7 @@ int main (void)
 
 	clock_init(SYS_CLK);
 
-	gpio_init(1);
+	gpio_init(0);
 
 	user_init();
 

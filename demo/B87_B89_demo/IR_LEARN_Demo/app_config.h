@@ -1,7 +1,7 @@
 /********************************************************************************************************
- * @file	flash_mid001460c8.c
+ * @file	app_config.h
  *
- * @brief	This is the source file for b85m
+ * @brief	This is the header file for b85m
  *
  * @author	Driver Group
  * @date	2020
@@ -43,47 +43,52 @@
  *          SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *******************************************************************************************************/
-#include "flash_type.h"
+#pragma once
+#include "driver.h"
+/* Enable C linkage for C++ compilers: */
+#if defined(__cplusplus)
+extern "C"{
+#endif
 
 
-/**
- * @brief 		This function reads the status of flash.
- * @return 		the value of status.
- */
-_attribute_ram_code_ unsigned char flash_read_status_mid001460c8(void)
-{
-	return flash_read_status(FLASH_READ_STATUS_CMD_LOWBYTE);
+
+#if (MCU_CORE_B87)
+#define LED1		GPIO_PD2
+#define LED2		GPIO_PD3
+#define LED3		GPIO_PD4
+#define LED4		GPIO_PD5
+#elif (MCU_CORE_B89)
+#define LED1		GPIO_PD3
+#define LED2		GPIO_PD2
+#define LED3		GPIO_PD1
+#define LED4		GPIO_PD4
+#endif
+
+
+/* Define system clock */
+#define CLOCK_SYS_CLOCK_HZ  	24000000
+
+#if(CLOCK_SYS_CLOCK_HZ==12000000)
+	#define SYS_CLK  	SYS_CLK_12M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ==16000000)
+	#define SYS_CLK  	SYS_CLK_16M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ==24000000)
+	#define SYS_CLK  	SYS_CLK_24M_Crystal
+#elif ((CLOCK_SYS_CLOCK_HZ==32000000) && (MCU_CORE_B85 || MCU_CORE_B87))
+	#define SYS_CLK  	SYS_CLK_32M_Crystal
+#elif ((CLOCK_SYS_CLOCK_HZ==48000000) && (MCU_CORE_B85 || MCU_CORE_B87))
+	#define SYS_CLK  	SYS_CLK_48M_Crystal
+#endif
+
+/* List tick per second/millisecond/microsecond */
+enum{
+	CLOCK_SYS_CLOCK_1S = CLOCK_SYS_CLOCK_HZ,				///< system tick per 1 second
+	CLOCK_SYS_CLOCK_1MS = (CLOCK_SYS_CLOCK_1S / 1000),		///< system tick per 1 millisecond
+	CLOCK_SYS_CLOCK_1US = (CLOCK_SYS_CLOCK_1S / 1000000),   ///< system tick per 1 microsecond
+};
+
+
+/* Disable C linkage for C++ Compilers: */
+#if defined(__cplusplus)
 }
-
-/**
- * @brief 		This function write the status of flash.
- * @param[in]  	data	- the value of status.
- * @param[in]  	bit		- the range of bits to be modified when writing status.
- * @return 		none.
- */
-_attribute_ram_code_ void flash_write_status_mid001460c8(unsigned char data, mid001460c8_write_status_bit_e bit)
-{
-	unsigned char status = flash_read_status(FLASH_READ_STATUS_CMD_LOWBYTE);
-	data |= (status & ~(bit));
-	flash_write_status(FLASH_TYPE_8BIT_STATUS, data);
-}
-
-/**
- * @brief 		This function serves to set the protection area of the flash.
- * @param[in]   data	- refer to the protection area definition in the .h file.
- * @return 		none.
- */
-_attribute_ram_code_ void flash_lock_mid001460c8(mid001460c8_lock_block_e data)
-{
-	flash_write_status_mid001460c8(data, FLASH_WRITE_STATUS_BP_MID001460C8);
-}
-
-/**
- * @brief 		This function serves to flash release protection.
- * @return 		none.
- */
-_attribute_ram_code_ void flash_unlock_mid001460c8(void)
-{
-	flash_write_status_mid001460c8(FLASH_LOCK_NONE_MID001460C8, FLASH_WRITE_STATUS_BP_MID001460C8);
-}
-
+#endif

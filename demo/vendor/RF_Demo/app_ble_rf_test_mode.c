@@ -48,11 +48,15 @@
 
 #if (RF_MODE == RF_BLE_SDK_TEST)
 #define TEST_CHN   				1		// 37/38/39 adv channel
+
 #if (MCU_CORE_B85)
 #define RF_POWER			RF_POWER_P10p46dBm
-#else
-#define RF_POWER			RF_POWER_INDEX_P11p26dBm
+#elif(MCU_CORE_B87)
+#define RF_POWER			RF_POWER_P11p26dBm
+#elif(MCU_CORE_B89)
+#define RF_POWER			RF_POWER_P4p98dBm
 #endif
+
 #define BLE_ACCESS_CODE			0x9A3CC36A//0xA5CC336A//0xd6be898e//
 
 
@@ -385,7 +389,7 @@ unsigned char	blt_tx_empty_packet[6] = {2, 0, 0, 0, 1, 0};
 
 
 
-_attribute_ram_code_ void irq_rf_handler(void)
+_attribute_ram_code_sec_noinline_ void irq_rf_handler(void)
 {
 
 	 if(reg_rf_irq_status & FLD_RF_IRQ_RX)
@@ -450,7 +454,7 @@ _attribute_ram_code_ void irq_rf_handler(void)
 static int debug_led_value = 0;
 static int debug_deley_cnt = 0;
 
-_attribute_ram_code_ void ble_manual_rx_test(void)
+_attribute_ram_code_sec_noinline_ void ble_manual_rx_test(void)
 {
 
 	reg_dma_rf_rx_addr = (unsigned int)(unsigned long) (blt_rxbuffer);

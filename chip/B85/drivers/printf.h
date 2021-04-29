@@ -45,48 +45,35 @@
  *******************************************************************************************************/
 #include "gpio.h"
 #pragma once
-#define DEBUG_MODE  0
+
+#define DEBUG_MODE 1
+
 #if(DEBUG_MODE==1)
 
 #define  DEBUG_IO		1
 #define  DEBUG_USB		2
 
-#define  DEBUG_BUS  	DEBUG_IO
+#define  DEBUG_BUS  	1
 
-#if (DEBUG_BUS==DEBUG_USB)
-/**
- * @brief      This function serves to printf string by USB.
- * @param[in]  *format  -  format string need to print
- * @param[in]  ...   	-  variable number of data
- * @return     none.
- */
-void usb_printf(const char *format, ...);
-#define  printf		usb_printf
-#elif (DEBUG_BUS==DEBUG_IO)
-#define PRINT_BAUD_RATE             		115200  	//1M baud rate,should Not bigger than 1Mb/s
-#define DEBUG_INFO_TX_PIN           		GPIO_PC5
+#if(DEBUG_BUS==DEBUG_IO)
+#define PRINT_BAUD_RATE             		115200   	//1M baud rate,should Not bigger than 1Mb/s
+#define DEBUG_INFO_TX_PIN           		GPIO_PA2
 #define TX_PIN_GPIO_EN()					gpio_set_func(DEBUG_INFO_TX_PIN , AS_GPIO);
 #define TX_PIN_PULLUP_1M()					gpio_setup_up_down_resistor(DEBUG_INFO_TX_PIN, PM_PIN_PULLUP_1M);
 #define TX_PIN_OUTPUT_EN()					gpio_set_output_en(DEBUG_INFO_TX_PIN,1)
 #define TX_PIN_OUTPUT_REG					(0x583+((DEBUG_INFO_TX_PIN>>8)<<3))
-
-/**
- * @brief      This function serves to printf string by IO.
- * @param[in]  *format  -  format string need to print
- * @param[in]  ...   	-  variable number of data
- * @return     none.
- */
-void io_printf(const char *format, ...);
-
-#define  printf		io_printf
 #endif
+
+extern void tl_printf(const char *format, ...);
+#define printf		tl_printf
+
 #else
 
-static inline void no_printf(const char *format, ...)
-{
-    return;
-}
-#define  printf     no_printf
+static inline void no_printf(const char *format, ...){    return;}
+#define printf		no_printf
 
 #endif
+
+extern void tl_sprintf(char *buff, const char *format, ...);
+#define sprintf		tl_sprintf
 

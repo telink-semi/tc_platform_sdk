@@ -124,11 +124,13 @@ void user_init()
 	//analog_write(0x2e, 0x06);                 //set the debounce filter 32k clock cycle
 	if(0 == (analog_read(0x2c) & BIT(6)))
 	{
-		unsigned char dat = analog_read(0x48);
-
-		unsigned char overflow = dat & BIT(6);
-		dat = dat & 0x1f;
+		unsigned char dat = 0;
+		unsigned char overflow = 0;
 		do{
+			dat = analog_read(0x48);
+			overflow = dat & BIT(6);
+			dat = dat & 0x1f;
+
 			for(unsigned char j=0; j < dat; j++)
 			{
 				read_dat_lowbyte = analog_read(0x45);
@@ -173,11 +175,13 @@ void user_init()
 	//analog_write(0x2e, 0x06);                 //set the debounce filter 32k clock cycle
 	if(0 == (analog_read(0x2c) & BIT(6)))
 	{
-		unsigned char dat = analog_read(0x48);
-
-		unsigned char overflow = dat & BIT(6);
-		dat = dat & 0x1f;
+		unsigned char dat = 0;
+		unsigned char overflow = 0;
 		do{
+			dat = analog_read(0x48);
+			overflow = dat & BIT(6);
+			dat = dat & 0x1f;
+
 			for(unsigned char j=0; j < dat; j++)
 			{
 				read_dat_lowbyte = analog_read(0x45);
@@ -238,11 +242,13 @@ void main_loop (void)
 	//analog_write(0x2e, 0x06);                 //set the debounce filter 32k clock cycle
 	if(0 == (analog_read(0x2c) & BIT(6)))
 	{
-		unsigned char dat = analog_read(0x48);
-
-		unsigned char overflow = dat & BIT(6);
-		dat = dat & 0x1f;
+		unsigned char dat = 0;
+		unsigned char overflow = 0;
 		do{
+			dat = analog_read(0x48);
+			overflow = dat & BIT(6);
+			dat = dat & 0x1f;
+
 			for(unsigned char j=0; j < dat; j++)
 			{
 				read_dat_lowbyte = analog_read(0x45);

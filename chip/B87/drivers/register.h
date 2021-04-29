@@ -369,6 +369,51 @@ enum{
 	FLD_UART_RSTATE_I	     =  BIT_RNG(4,7),
 };
 
+/*******************************  (il) ir learn registers: 0xa0      ****************************/
+
+#define reg_il_run           	REG_ADDR8(0xa0)
+
+#define reg_il_cfg0          	REG_ADDR8(0xa1)
+enum{
+	FLD_IL_INPUT_SEL            = BIT_RNG(0,4),
+	FLD_IL_MODE			  	    = BIT_RNG(5,6),
+};
+
+#define reg_il_cfg1          	REG_ADDR8(0xa2)
+enum{
+	FLD_IL_SFT                  = BIT_RNG(0,3),
+	FLD_IL_TIMEOUT              = BIT_RNG(4,7),
+};
+
+#define reg_il_carry_stat    	REG_ADDR8(0xa3)
+enum{
+	FLD_IL_NOT_CARRY_STAT		= BIT(0),
+};
+
+#define reg_il_mask_0        	REG_ADDR8(0xa4)
+enum{
+	FLD_IL_INT_HIGH_MASK        = BIT(0),
+	FLD_IL_INT_CYC_MASK         = BIT(1),
+	FLD_IL_INT_TIMEOUT_MASK     = BIT(2),
+};
+
+#define reg_il_mask_1        	REG_ADDR8(0xa5)
+enum{
+	FLD_IL_INT_HIGH       		= BIT(0),
+	FLD_IL_INT_CYC       		= BIT(1),
+	FLD_IL_INT_TIMEOUT			= BIT(2),
+};
+
+#define reg_il_cnt_low			REG_ADDR8(0xa6)
+#define reg_il_cnt_high			REG_ADDR8(0xa7)
+
+#define reg_il_high_0			REG_ADDR32(0xa8)
+#define reg_il_high_1			REG_ADDR32(0xa9)
+#define reg_il_high_2			REG_ADDR32(0xaa)
+
+#define reg_il_cycle_0			REG_ADDR32(0xac)
+#define reg_il_cycle_1			REG_ADDR32(0xad)
+#define reg_il_cycle_2			REG_ADDR32(0xae)
 
 /*******************************      swire registers: 0xb0      ******************************/
 
@@ -803,7 +848,7 @@ enum{
 	FLD_IRQ_DMA_EN =			BIT(4),
 	FLD_IRQ_DAM_FIFO_EN =		BIT(5),
 	FLD_IRQ_UART_EN 	=		BIT(6),
-	FLD_IRQ_MIX_CMD_EN =		BIT(7), FLD_IRQ_HOST_CMD_EN  =	BIT(7),//< MIX = I2C/QDEC/SPI
+	FLD_IRQ_MIX_CMD_EN =		BIT(7), FLD_IRQ_HOST_CMD_EN  =	BIT(7),FLD_IRQ_IR_LEARN_EN = BIT(7),//< MIX = I2C/QDEC/SPI/IR_LEARN
 
 	FLD_IRQ_EP0_SETUP_EN =		BIT(8),
 	FLD_IRQ_EP0_DAT_EN =		BIT(9),
@@ -1252,7 +1297,39 @@ enum{
 	FLD_RF_IRQ_STX_TIMEOUT =    BIT(12),
 	FLD_RF_IRQ_ALL =            0X1FFF,
 };
+/*******************************      aura registers: 0x1200      ******************************/
+#define REG_AURA_BASE            0x1200
+#define reg_rf_tx_flex_mi_0      REG_ADDR8(REG_AURA_BASE+0x1c)
+enum
+{
+	FLD_RF_TX_MI_FRACTION     = BIT_RNG(0,5),
+	FLD_RF_TX_MI_INTEGER_1    = BIT_RNG(6,7),
+};
+#define reg_rf_tx_flex_mi_1     REG_ADDR8(REG_AURA_BASE+0x1d)
+enum
+{
+	FLD_RF_TX_MI_INTEGER_2   = BIT(0),
+};
 
+#define reg_rf_rx_flex_mi_0      REG_ADDR8(REG_AURA_BASE+0x1e)
+enum
+{
+	FLD_RF_RX_MI_FRACTION     = BIT_RNG(0,5),
+	FLD_RF_RX_MI_INTEGER_1    = BIT_RNG(6,7),
+};
+#define reg_rf_rx_flex_mi_1     REG_ADDR8(REG_AURA_BASE+0x1f)
+enum
+{
+	FLD_RF_RX_MI_INTEGER_2   = BIT(0),
+};
+
+#define		reg_rf_mode_cfg_tx1_0		REG_ADDR8(REG_AURA_BASE+0x22)
+enum
+{
+	FLD_RF_BLE_MODE_TX			      =	BIT(0),
+	FLD_RF_VCO_TRIM_KVM			      = BIT_RNG(1,3),
+	FLD_RF_HPMC_EXP_DIFF_COUNT_L	  = BIT_RNG(4,7),
+};
 /*******************************      pke registers: 0x2000      ******************************/
 #define reg_pke_ctrl             REG_ADDR32(0x2000)
 enum{

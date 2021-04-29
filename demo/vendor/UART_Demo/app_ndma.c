@@ -62,7 +62,12 @@ void user_init()
 {
 	sleep_ms(2000);  //leave enough time for SWS_reset when power on
 
+#if( UART_WIRE_MODE == UART_1WIRE_MODE)
+	uart_set_rtx_pin(UART_RTX_PIN);// the status of rtx line will be rx by default,if there is a send-action,the status of rtx-line will changed to tx,and changed to rx immediately if send over.
+	uart_rtx_en();
+#elif(( UART_WIRE_MODE == UART_2WIRE_MODE))
 	uart_gpio_set(UART_TX_PIN, UART_RX_PIN);// uart tx/rx pin set
+#endif
 
 	uart_reset();  //uart module power-on again.
 	//baud rate: 115200
@@ -95,6 +100,7 @@ void user_init()
 void main_loop (void)
 {
 	sleep_ms(1000);
+	gpio_toggle(LED1);
 #if( FLOW_CTR == NONE)
 
 	for(unsigned char i=0;i<trans_buff_Len;i++){
@@ -105,6 +111,9 @@ void main_loop (void)
 		uart_rx_flag=0;
 		for(unsigned char i=0;i<rec_buff_Len;i++){
 			uart_ndma_send_byte(rec_buff[i]);
+#if( UART_WIRE_MODE == UART_1WIRE_MODE)
+			uart_rtx_pin_tx_trig();
+#endif
 		}
 	}
 #elif( FLOW_CTR ==  USE_CTS )

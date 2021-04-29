@@ -59,11 +59,7 @@
 #define RX_PAYLOAD_LEN		32
 
 #define RF_FREQ				35
-#if (MCU_CORE_B85)
-#define RF_POWER			RF_POWER_P10p46dBm
-#else
-#define RF_POWER			RF_POWER_INDEX_P11p26dBm
-#endif
+
 #define ACCESS_CODE			0x29417671
 
 volatile unsigned int rx_cnt=0;

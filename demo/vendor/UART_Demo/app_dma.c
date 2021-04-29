@@ -69,7 +69,12 @@ void user_init()
 	//note: dma addr must be set first before any other uart initialization! (confirmed by sihui)
 	uart_recbuff_init( (unsigned char *)rec_buff, sizeof(rec_buff));
 
+#if( UART_WIRE_MODE == UART_1WIRE_MODE)
+	uart_set_rtx_pin(UART_RTX_PIN);// the status of rtx line will be rx by default,if there is a send-action,the status of rtx-line will changed to tx,and changed to rx immediately if send over.
+	uart_rtx_en();
+#elif(( UART_WIRE_MODE == UART_2WIRE_MODE))
 	uart_gpio_set(UART_TX_PIN, UART_RX_PIN);// uart tx/rx pin set
+#endif
 
 	uart_reset();  //uart module power-on again.
 
@@ -104,7 +109,7 @@ void main_loop (void)
 	sleep_ms(100);
 	if(uart_dma_send_flag == 1)
 	{
-		uart_dma_send((unsigned char *)trans_buff);
+		uart_send_dma((unsigned char *)trans_buff);
 		trans_buff[4] ++;
 		uart_dma_send_flag = 0;
 	}

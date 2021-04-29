@@ -63,6 +63,7 @@ extern "C" {
 #define   UART_RX_PIN    UART_RX_PA0
 #define   UART_CTS_PIN   UART_CTS_PA3
 #define   UART_RTS_PIN   UART_RTS_PA2
+#define   UART_RTX_PIN   UART_RTX_PD3  //The RTX can be used as UART-RX,but only some of the UART-RX can be used as RTX.
 
 #elif (MCU_CORE_B87)
 #define LED1     		        GPIO_PD2
@@ -77,6 +78,7 @@ extern "C" {
 #define   UART_RX_PIN    UART_RX_PA0
 #define   UART_CTS_PIN   UART_CTS_PA3
 #define   UART_RTS_PIN   UART_RTS_PA4
+#define   UART_RTX_PIN   UART_RTX_PD3//The RTX can be used as UART-TX,but only some of the UART-TX can be used as RTX.
 
 #elif (MCU_CORE_B85)
 #define LED1     		        GPIO_PD2
@@ -91,8 +93,11 @@ extern "C" {
 #define   UART_RX_PIN    UART_RX_PA0
 #define   UART_CTS_PIN   UART_CTS_PA3
 #define   UART_RTS_PIN   UART_RTS_PB3
+#define   UART_RTX_PIN   UART_RTX_PD3//The RTX can be used as UART-TX,but only some of the UART-TX can be used as RTX.
 
 #endif
+
+
 /******************set mode**********************/
 #define UART_DMA  		1     //uart use dma
 #define UART_NDMA  		2     //uart not use dma
@@ -104,6 +109,9 @@ extern "C" {
 
 #define FLOW_CTR  		NONE
 
+#define UART_1WIRE_MODE       0  //tx and rx is a same line
+#define UART_2WIRE_MODE       1  //tx and rx are two lines
+#define UART_WIRE_MODE        UART_2WIRE_MODE
 #if( FLOW_CTR==USE_CTS)
 	#define STOP_VOLT   	1			//0 :Low level stops TX.  1 :High level stops TX.
 #elif (FLOW_CTR==USE_RTS)

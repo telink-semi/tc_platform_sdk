@@ -56,7 +56,7 @@ extern void main_loop (void);
  * @return 		none
  */
 
-_attribute_ram_code_ void irq_handler(void)
+_attribute_ram_code_sec_noinline_ void irq_handler(void)
 {
 
 }

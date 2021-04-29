@@ -43,196 +43,25 @@
  *          SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *******************************************************************************************************/
+
 #include "register.h"
 #include "printf.h"
 #include "usbhw.h"
 #include "timer.h"
 
-#if(DEBUG_MODE==1)
 
-#define VA_START(list, param) (list = (char*)((int)&param + sizeof(param)))
+
+typedef char* VA_LIST;
+#define VA_START(list, param) (list = (VA_LIST)((int)&param + sizeof(param)))
 #define VA_ARG(list, type) ((type *)(list += sizeof(type)))[-1]
-
+#define VA_END(list) (list = (VA_LIST)0)
 
 #ifndef   NULL
 #define   NULL				0
 #endif
 
-#if (DEBUG_BUS==DEBUG_USB)
-#define   FIFOTHRESHOLD  	4
-#define   BLOCK_MODE   		1
-
-/**
- * @brief      This function serves to foramt string.
- * @param[in]  c  -  a character need to print 
- * @return     none.
- */
-void usb_putchar (char c)
-{
-#if(BLOCK_MODE)
-	while (reg_usb_ep8_fifo_mode & BIT(1));
-#endif
-  reg_usb_ep8_dat = c;
-}
-
-/**
- * @brief      This function serves to foramt string.
- * @param[in]  c  -  a number need to print 
- * @return     none.
- */
-void usb_putnum(unsigned char c) {
-	unsigned char nib = c >> 4;
-	if (nib > 9)	nib = nib + 87;
-	else		nib = nib + 48;
-	usb_putchar (nib);
-
-	nib = c & 15;
-	if (nib > 9)	nib = nib + 87;
-	else		nib = nib + 48;
-	usb_putchar (nib);
-}
-
-
-/**
- * @brief      This function serves to foramt string.
- * @param[in]  w  -  a integer need to print 
- * @return     none.
- */
-void usb_putnumber(unsigned int w,int len) {
-	int i;
-	int c = w;
-
-	for(i=len-1;i>=0;i--)
-	{
-		c = w >>(i*8);
-		usb_putnum(c);
-	}
-}
-
-/**
- * @brief      This function serves to foramt string.
- * @param[in]  w  -  a integer need to print 
- * @return     none.
- */
-void usb_putint(unsigned int w)
-{
-	unsigned char buf[12],tmp,*p;
-	int u;
-	p = buf + 11;
-	*p = '\0';
-	u = w;
-	do{ // at least one time..
-        tmp = u % 10;
-		*--p = tmp + '0';
-		u /= 10;
-	}while(u);
-	while(*p){
-        usb_putchar(*p);
-        p++;
-    }
-
-}
-
-/**
- * @brief      This function serves to foramt string.
- * @param[in]  *str  -  string need to print 
- * @return     none.
- */
-void  usb_putstring(char * str)
-{
-    char *s;
-	s = str;
-	if(s == NULL){
-        s = "(null)";
-    }
-	while(*s){
-           usb_putchar(*s);
-           s++;
-	}
-}
-
-/**
- * @brief      This function serves to foramt string.
- * @param[in]  *f -  string need to format
- * @param[in]  a  -  string need to print 
- * @return     none.
- */
-static char *usb_format_msg(char *f, int a)
-{		
-	char c;
-	int fieldwidth = 0;
-	int flag = 0;
-	//when the character is not NUL(ASCAII value =0x00)
-	while ((c = *f++) != 0)
-	{
-		if (c >= '0' && c <= '9')
-		{
-			//number in character is changed to number in real
-			fieldwidth = (fieldwidth * 10) + (c - '0');
-		}
-		else
-		{
-			switch (c)
-			{
-				case 'x':
-					flag = 16;
-					break;
-				case 'd':
-					flag = 10;
-					break;
-				case 's':
-					flag = 99;
-					break;
-				default:
-					usb_putchar('*');
-					flag = -1;
-					break;
-			}
-		}
-		if(flag!=0)
-		{
-			if(fieldwidth==0)  fieldwidth=8;
-			break;
-		}
-	}
-	if(flag == 16)
-	usb_putnumber(a,fieldwidth);
-	else if(flag == 10)
-	usb_putint(a);
-	else if(flag==99)
-	usb_putstring((char *)a);
-	return f;
-
-}
-
-/**
- * @brief      This function serves to printf string by USB.
- * @param[in]  *format  -  format string need to print
- * @param[in]  ...   	-  variable number of data
- * @return     none.
- */
-void usb_printf(const char *format, ...) {
-	//va_list args;
-	char *  args;
-	char *  pcStr = (char*)format;
-	static int  first_time = 1;
-	if(first_time==1)
-	{
-      reg_usb_ep8_send_thre = FIFOTHRESHOLD;
-	}
-
-	VA_START( args, format);
-
-	while (*pcStr)
-	{                       /* this works because args are all ints */
-    	if (*pcStr == '%')
-        	pcStr = usb_format_msg(pcStr + 1, VA_ARG(args, int));
-    	else
-        	usb_putchar(*pcStr++);
-	}
-}
-
-#elif (DEBUG_BUS==DEBUG_IO)
+#if(DEBUG_MODE==1)
+#if (DEBUG_BUS==DEBUG_IO)
 
 #ifndef		BIT_INTERVAL
 #define		BIT_INTERVAL	(sys_tick_per_us*1000*1000/PRINT_BAUD_RATE)
@@ -243,7 +72,7 @@ void usb_printf(const char *format, ...) {
  * @param[in]  byte  -  a byte need to print
  * @return     none.
  */
-_attribute_ram_code_  void io_putchar(unsigned char byte){
+_attribute_ram_code_sec_noinline_  void io_putchar(unsigned char byte){
 	unsigned char j = 0;
 	unsigned int t1 = 0,t2 = 0;
 	static unsigned char init_flag = 1;
@@ -282,66 +111,106 @@ _attribute_ram_code_  void io_putchar(unsigned char byte){
 	}
 }
 
+#elif(DEBUG_BUS==DEBUG_USB)
+#define   FIFOTHRESHOLD  	4
+#define   BLOCK_MODE   		1
 /**
  * @brief      This function serves to foramt string.
- * @param[in]  c  -  a number need to print
+ * @param[in]  byte  -  a byte need to print
  * @return     none.
  */
-void io_putnum(unsigned char c) {
+void usb_putchar (char c)
+{
+#if(BLOCK_MODE)
+	while (reg_usb_ep8_fifo_mode & BIT(1));
+#endif
+  reg_usb_ep8_dat = c;
+}
+
+#endif
+#endif
+
+/**
+ * @brief      This function serves to foramt string.
+ * @param[in]  *out -  buffer to output
+ * @param[in]  byte  -  a byte need to print
+ * @return     none.
+ */
+void tl_putchar(char **out, char c)
+{
+	if(out)
+	{
+		**out = c;
+		(*out)++;
+	}
+	else
+	{
+#if(DEBUG_MODE==1)
+#if(DEBUG_BUS == DEBUG_USB)
+		usb_putchar(c);
+#elif(DEBUG_BUS == DEBUG_IO)
+		io_putchar(c);
+#endif
+#endif
+	}
+}
+
+/**
+ * @brief      This function serves to foramt string.
+ * @param[in]  *out -  buffer to output
+ * @param[in]  c  -  a number need to print 
+ * @return     none.
+ */
+void tl_putnum(char **out, unsigned char c) {
 	unsigned char nib = c >> 4;
 	if (nib > 9)	nib = nib + 87;
 	else		nib = nib + 48;
-	io_putchar (nib);
+	tl_putchar(out, nib);
 
 	nib = c & 15;
 	if (nib > 9)	nib = nib + 87;
 	else		nib = nib + 48;
-	io_putchar (nib);
+	tl_putchar(out, nib);
 }
 
 
 /**
  * @brief      This function serves to foramt string.
- * @param[in]  w  -  a integer need to print
+ * @param[in]  *out -  buffer to output
+ * @param[in]  w  -  a integer need to print 
  * @return     none.
  */
-void io_putnumber(unsigned int w,int len) {
+void tl_putnumber(char **out, unsigned int w,int len) {
 	int i;
 	int c = w;
 
 	for(i=len-1;i>=0;i--)
 	{
 		c = w >>(i*8);
-		io_putnum(c);
+		tl_putnum(out, c);
 	}
 }
 
 /**
  * @brief      This function serves to foramt string.
- * @param[in]  w  -  a integer need to print
+ * @param[in]  *out -  buffer to output
+ * @param[in]  w  -  a integer need to print 
  * @return     none.
  */
-void io_putint(signed int w)
+void tl_putint(char **out, unsigned int w)
 {
 	unsigned char buf[12],tmp,*p;
 	int u;
 	p = buf + 11;
 	*p = '\0';
-	if(w<0){
-		u = -w;
-	}else{
-		u = w;
-	}
+	u = w;
 	do{ // at least one time..
         tmp = u % 10;
 		*--p = tmp + '0';
 		u /= 10;
 	}while(u);
-    if (w < 0){
-    	*--p = '-';
-    }
 	while(*p){
-        io_putchar(*p);
+        tl_putchar(out, *p);
         p++;
     }
 
@@ -349,10 +218,11 @@ void io_putint(signed int w)
 
 /**
  * @brief      This function serves to foramt string.
- * @param[in]  *str  -  string need to print
+ * @param[in]  *out -  buffer to output
+ * @param[in]  *str  -  string need to print 
  * @return     none.
  */
-void  io_putstring(char * str)
+void  tl_putstring(char **out, char * str)
 {
     char *s;
 	s = str;
@@ -360,18 +230,19 @@ void  io_putstring(char * str)
         s = "(null)";
     }
 	while(*s){
-           io_putchar(*s);
+           tl_putchar(out, *s);
            s++;
 	}
 }
 
 /**
  * @brief      This function serves to foramt string.
+ * @param[in]  *out -  buffer to output
  * @param[in]  *f -  string need to format
  * @param[in]  a  -  string need to print
  * @return     none.
  */
-static char *io_format_msg(char *f, int a)
+const char *tl_format_msg(char **out, const char *f, int a)
 {
 	char c;
 	int fieldwidth = 0;
@@ -398,7 +269,7 @@ static char *io_format_msg(char *f, int a)
 					flag = 99;
 					break;
 				default:
-					io_putchar('*');
+					tl_putchar(out, '*');
 					flag = -1;
 					break;
 			}
@@ -410,42 +281,89 @@ static char *io_format_msg(char *f, int a)
 		}
 	}
 	if(flag == 16)
-	io_putnumber(a,fieldwidth);
+	tl_putnumber(out, a,fieldwidth);
 	else if(flag == 10)
-	io_putint(a);
+	tl_putint(out, a);
 	else if(flag==99)
-	io_putstring((char *)a);
+	tl_putstring(out, (char *)a);
+
 	return f;
 
 }
 
 /**
- * @brief      This function serves to printf string by IO.
+ * @brief      This function serves to print string
+ * @param[in]  *out     -  buffer to output
+ * @param[in]  *format  -  format string need to print
+ * @param[in]  list   	-  variable list
+ * @return     none.
+ */
+void tl_print(char** out, const char *format, VA_LIST list)
+{
+	const char *pcStr = format;
+
+	while (*pcStr)
+	{                       /* this works because args are all ints */
+    	if (*pcStr == '%')
+        	pcStr = tl_format_msg(out, pcStr + 1, VA_ARG(list, int));
+    	else
+        	tl_putchar(out, *pcStr++);
+	}
+
+	if(out) **out = '\0';
+}
+
+#if(DEBUG_MODE==1)
+
+/**
+ * @brief      This function serves to print string
  * @param[in]  *format  -  format string need to print
  * @param[in]  ...   	-  variable number of data
  * @return     none.
  */
-void io_printf(const char *format, ...) {
-	//va_list args;
-	char *  args;
-	char *  pcStr = format;
-	static unsigned char re_enter_flag = 0;
-	if(!re_enter_flag){
-		re_enter_flag = 1;
-		VA_START( args, format);
+void tl_printf(const char *format, ...)
+{
+	VA_LIST list;
+	VA_START(list, format);
 
-		while (*pcStr)
-		{                       /* this works because args are all ints */
-			if (*pcStr == '%')
-				pcStr = io_format_msg(pcStr + 1, VA_ARG(args, int));
-			else
-				io_putchar(*pcStr++);
-		}
+#if (DEBUG_BUS==DEBUG_USB)
+	static int  first_time = 1;
+	if(first_time==1)
+	{
+		reg_usb_ep8_send_thre = FIFOTHRESHOLD;
+		first_time = 0;
 	}
+#elif(DEBUG_BUS==DEBUG_IO)
+	static unsigned char re_enter_flag = 0;
+	if(re_enter_flag) return;
+	re_enter_flag = 1;
+#endif
+
+	tl_print(0, format, list);
+	VA_END(list);
+
+#if(DEBUG_BUS==DEBUG_IO)
 	re_enter_flag = 0;
+#endif
+}
+#endif
+
+
+/**
+ * @brief      This function serves to print string to buffer
+ * @param[in]  *buff    -  buffer to print
+ * @param[in]  *format  -  format string need to print
+ * @param[in]  ...   	-  variable number of data
+ * @return     none.
+ */
+void tl_sprintf(char* buff, const char *format, ...)
+{
+	VA_LIST list;
+
+	VA_START(list, format);
+	tl_print(&buff, format, list);
+	VA_END(list);
 }
 
-#endif
-#endif
 
 

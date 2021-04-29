@@ -114,7 +114,7 @@ static void gpio_analog_resistance_init(void)
  * application because it may have the risk of electric leakage .
  */
 #if (BLC_PM_DEEP_RETENTION_MODE_EN)
-_attribute_ram_code_
+_attribute_ram_code_sec_noinline_
 #endif
 void gpio_init(int anaRes_init_en)
 {

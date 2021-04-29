@@ -385,12 +385,20 @@ static inline unsigned short pwm_config_dma_fifo_waveform(int carrier_en, Pwm0Pu
  * @brief     This fuction servers to set the pwm's dma address.
  * @param[in] pdat - variable of pointer to indicate the address.
  * @return	  none.
+ * @note	  The maximum length that the PWM can send is 511bytes
  */
 static inline void pwm_set_dma_address(void * pdat)
 {
 	reg_dma_pwm_addr = (unsigned short)((unsigned int)pdat);
 	reg_dma7_addrHi = 0x04;
 	reg_dma_pwm_mode  &= ~FLD_DMA_WR_MEM;
+	//In the PWM ir_dma_fifo model, the reg_dma7_size default is 0x14(20*16 = 320 bytes) (160 group configuration),
+	//when the pwm_dma send byte length is greater than 320 bytes, can appear abnormal,
+    //abnormal phenomenon: when after sending the first 160 group configuration waveform,
+	//waveform will send 160th group configuration, and not interrupt,
+	//so set reg_dma7_size to the maximum, it has been guaranteed that the maximum length supported by the hardware (511bytes) can be sent.
+	//The maximum length that dma hardware can send is limited to the setting range of the first four bytes in ram (the actual length of dma sent)
+	reg_dma7_size = 0xff;    
 }
 
 /**
@@ -434,5 +442,7 @@ static inline unsigned char pwm_get_interrupt_status(PWM_IRQ status){
 	}
 
 }
+
+
 #endif
  /* PWM_H_ */

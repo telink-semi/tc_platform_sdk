@@ -96,7 +96,11 @@ SECTIONS
 	    PROVIDE(_retention_data_end_ = . );     
 	    } 
         PROVIDE(_dstored_ = _rstored_ + _retention_data_end_ - _retention_data_start_); 
-	    
+	
+	    .my_code(NOLOAD) :
+        {
+        *(.spi_slave_buff)
+        }
 	    .data :
 	      AT ( _dstored_ )
 	     {

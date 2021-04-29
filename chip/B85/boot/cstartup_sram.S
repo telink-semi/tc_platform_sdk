@@ -114,7 +114,7 @@ __start:					@ MUST,  referenced by boot.link
 
 	.org 0x0
 	tj	__reset
-	.word	(0x000b)
+	.word	(0x000c)
 	.org 0x8
 	.word	(0x544c4e4b)
 #if MOVE_BIN_CODE_EN

@@ -58,7 +58,7 @@ extern unsigned int timeout_state;
  * @return 		none
  */
 
-_attribute_ram_code_ void irq_handler(void)
+_attribute_ram_code_sec_noinline_ void irq_handler(void)
 {
 #if(RF_MODE==RF_BLE_1M_STX2RX)//1
 	unsigned short rf_irq_src = rf_irq_src_get();
@@ -181,7 +181,7 @@ int main (void) {
 #endif
 #endif
 
-	gpio_init(1);
+	gpio_init(0);
 #endif
 
 	clock_init(SYS_CLK);

@@ -56,11 +56,11 @@ extern void main_loop (void);
 #define rec_buff_Len    	32
 #define trans_buff_Len    	16
 volatile unsigned char rts_count=1;
-extern volatile unsigned char uart_dma_send_flag;
 
 #if (UART_MODE==UART_DMA)
 extern volatile unsigned char uart_dmairq_tx_cnt;
 extern volatile unsigned char uart_dmairq_rx_cnt;
+extern volatile unsigned char uart_dma_send_flag;
 #elif(UART_MODE==UART_NDMA)
 extern volatile unsigned char uart_rx_flag;
 extern volatile unsigned int  uart_ndmairq_cnt;
@@ -75,7 +75,7 @@ extern unsigned char trans_buff[trans_buff_Len];
  * @param[in] 	none
  * @return 		none
  */
-_attribute_ram_code_ void irq_handler(void)
+_attribute_ram_code_sec_noinline_ void irq_handler(void)
 {
 
 #if (UART_MODE==UART_DMA)
@@ -90,7 +90,7 @@ _attribute_ram_code_ void irq_handler(void)
 
 	if(uart_dma_irqsrc & FLD_DMA_CHN_UART_RX)
 	{
-		uart_dma_send((unsigned char *)rec_buff);
+		uart_send_dma((unsigned char *)rec_buff);
 		dma_chn_irq_status_clr(FLD_DMA_CHN_UART_RX);
 		uart_dmairq_rx_cnt++;
 	}

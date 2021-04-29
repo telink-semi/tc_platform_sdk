@@ -225,6 +225,16 @@ typedef enum {
 	 RF_POWER_INDEX_N25p18dBm,
 } RF_PowerIndexTypeDef;
 
+/**
+ *  @brief  set the modulation index.
+ */
+typedef enum {
+	RF_MI_P0p32 = 32,		 	/**< MI = 0.32 */
+	RF_MI_P0p50 = 50,		  	/**< MI = 0.5 */
+}RF_MIVauleTypeDef;
+
+
+
 #ifdef		RF_MODE_250K
 #define		RF_FAST_MODE_2M		0
 #define		RF_FAST_MODE_1M		0
@@ -1000,4 +1010,22 @@ void rf_set_preamble_len(unsigned char len);
  * @return  none.
  */
 void rf_set_rx_timeout(unsigned short timeout_us);
+
+/**
+ * @brief	  	This function is used to  set the modulation index of the receiver.
+ *              This function is common to all modes,both sides need to be consistent otherwise performance will suffer,
+ *              default is 0.5 in drive,if don't specifically request,don't need to call this function.
+ * @param[in]	mi_value- the value of modulation_index*100,there are only two values:0.32 and 0.50.
+ * @return	 	none.
+ */
+void rf_set_rx_modulation_index(RF_MIVauleTypeDef mi_value);
+
+/**
+ * @brief	  	This function is used to  set the modulation index of the sender.
+ *              This function is common to all modes,both sides need to be consistent otherwise performance will suffer,
+ *              default is 0.5 in drive,if don't specifically request,don't need to call this function.
+ * @param[in]	mi_value- the value of modulation_index*100,there are only two values:0.32 and 0.50.
+ * @return	 	none.
+ */
+void rf_set_tx_modulation_index(RF_MIVauleTypeDef mi_value);
 #endif

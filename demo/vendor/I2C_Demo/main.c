@@ -67,7 +67,7 @@ int main (void)   //must on ramcode
 
 	clock_init(SYS_CLK);
 
-    gpio_init(1);
+    gpio_init(0);
 
 	user_init();
 

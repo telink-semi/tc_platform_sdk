@@ -374,6 +374,15 @@ void soft_reboot_dly13ms_use24mRC(void);
 
 void check_32k_clk_stable(void);
 
+/**
+ * @brief      This function servers to wake up the cpu from sleep mode.
+ * @param[in]  sleep_mode - sleep mode type select.
+ * @param[in]  wakeup_src - wake up source select.
+ * @param[in]  wakeup_tick - the 32k tick which you want to sleep.(32*1000 -> 1s)
+ * @return     indicate whether the cpu is wake up successful.
+ */
+int cpu_long_sleep_wakeup(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, unsigned int  wakeup_tick);
+
 #if PM_LONG_SLEEP_WAKEUP_EN
 /**
  * @brief      This function servers to wake up the cpu from sleep mode.
@@ -384,5 +393,5 @@ void check_32k_clk_stable(void);
  */
 int pm_long_sleep_wakeup (SleepMode_TypeDef sleep_mode, SleepWakeupSrc_TypeDef wakeup_src, unsigned int  SleepDurationUs);
 
-int cpu_long_sleep_wakeup(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, unsigned int  wakeup_tick);
+
 #endif

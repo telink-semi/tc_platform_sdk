@@ -71,23 +71,24 @@ unsigned short IR_DMA_Buff[64]={0};
 unsigned short IRQ_IR_DMA_Buff[64]={0};
 volatile unsigned char irq_index=2;
 volatile unsigned char cnt=0;
-_attribute_ram_code_ void irq_handler(void)
+_attribute_ram_code_sec_noinline_ void irq_handler(void)
 {
 	if(pwm_get_interrupt_status(PWM_IRQ_PWM0_IR_DMA_FIFO_DONE)){
 		pwm_clear_interrupt_status(PWM_IRQ_PWM0_IR_DMA_FIFO_DONE);
 		cnt++;
-		IRQ_IR_DMA_Buff[irq_index]= pwm_config_dma_fifo_waveform(1, PWM0_PULSE_NORMAL, 560 * CLOCK_SYS_CLOCK_1US/IR_DMA_MAX_TICK);
-		IRQ_IR_DMA_Buff[++irq_index]= pwm_config_dma_fifo_waveform(0, PWM0_PULSE_SHADOW, 1690 * CLOCK_SYS_CLOCK_1US/IR_DMA_SHADOW_MAX_TICK);
+		IRQ_IR_DMA_Buff[irq_index++]= pwm_config_dma_fifo_waveform(1, PWM0_PULSE_NORMAL, 560 * CLOCK_SYS_CLOCK_1US/IR_DMA_MAX_TICK);
+		IRQ_IR_DMA_Buff[irq_index++]= pwm_config_dma_fifo_waveform(0, PWM0_PULSE_SHADOW, 1690 * CLOCK_SYS_CLOCK_1US/IR_DMA_SHADOW_MAX_TICK);
 		unsigned int irq_length = irq_index*2 - 4;//The first four bytes are data length bytes, not included in the actual length to be sent
 		unsigned char* irq_buff = &IRQ_IR_DMA_Buff[0];
+		//The maximum length that the PWM can send is 511bytes
 		irq_buff[0]= irq_length&0xff;
 		irq_buff[1]= (irq_length>>8)&0xff;
 		irq_buff[2]= (irq_length>>16)&0xff;
 		irq_buff[3]= (irq_length>>24)&0xff;
 		pwm_set_dma_address(&IRQ_IR_DMA_Buff);
 		pwm_start_dma_ir_sending();
-
-	}
+		irq_index=2;
+    }
 
 }
 

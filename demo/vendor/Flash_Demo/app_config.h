@@ -79,13 +79,6 @@ extern "C" {
 
 #endif
 
-#define FLASH_PAGE_READ		   			1
-#define FLASH_PAGE_WRITE				2
-#define FLASH_SECTOR_ERASE   			3
-
-
-#define FLASH_MODE			    		2
-
 
 #define CLOCK_SYS_CLOCK_HZ  	16000000
 

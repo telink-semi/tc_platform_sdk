@@ -57,7 +57,7 @@ extern unsigned short half_buff_length;
  * @param[in] 	none
  * @return 		none
  */
-_attribute_ram_code_ void irq_handler(void)
+_attribute_ram_code_sec_noinline_ void irq_handler(void)
 {
 	/**
 	 * @brief  This function servers to  write data to fifo by timer  interrupt.
@@ -101,7 +101,7 @@ int main (void) {
 
 	rf_drv_init(RF_MODE_BLE_1M);
 
-	gpio_init(1);
+	gpio_init(0);
 
 	clock_init(SYS_CLK);
 

@@ -1,5 +1,5 @@
 /********************************************************************************************************
- * @file	flash_mid001460c8.h
+ * @file	flash_type.h
  *
  * @brief	This is the header file for b85m
  *
@@ -43,64 +43,50 @@
  *          SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *******************************************************************************************************/
-#ifndef __MID001460C8_H__
-#define __MID001460C8_H__
+#ifndef __FLASH_COMPATIBLE_H__
+#define __FLASH_COMPATIBLE_H__
 
-/*
- * @brief     MID = 0x1460c8 Flash include GD25LD80C.
- */
-
-#include "compiler.h"
-
-
-/**
- * @brief     define the section of the protected memory area which is read-only and unalterable.
- */
-typedef enum{
-	FLASH_LOCK_NONE_MID001460C8			=	0x00,
-	FLASH_LOCK_LOW_1016K_MID001460C8	=	0x04,	//000000h-0FDFFFh
-	FLASH_LOCK_LOW_1008K_MID001460C8	=	0x08,	//000000h-0FBFFFh
-	FLASH_LOCK_LOW_992K_MID001460C8		=	0x0c,	//000000h-0F7FFFh
-	FLASH_LOCK_LOW_960K_MID001460C8		=	0x10,	//000000h-0EFFFFh
-	FLASH_LOCK_LOW_896K_MID001460C8		=	0x14,	//000000h-0DFFFFh
-	FLASH_LOCK_LOW_768K_MID001460C8		=	0x18,	//000000h-0BFFFFh
-	FLASH_LOCK_ALL_1M_MID001460C8		=	0x1c,	//000000h-0FFFFFh
-}mid001460c8_lock_block_e;
-
-/**
- * @brief     the range of bits to be modified when writing status.
- */
-typedef enum{
-	FLASH_WRITE_STATUS_BP_MID001460C8	=	0x1c,
-}mid001460c8_write_status_bit_e;
+#include "flash.h"
+#include "flash_mid1160c8.h"	// GD25LD10C
+#include "flash_mid1360c8.h"	// GD25LD40C
+#include "flash_mid1460c8.h"	// GD25LD80C
+#include "flash_mid11325e.h"	// ZB25WD10A
+#include "flash_mid13325e.h"	// ZB25WD40B
+#include "flash_mid14325e.h"	// ZB25WD80B
 
 
 /**
- * @brief 		This function reads the status of flash.
+ * @brief		This function reads the status of flash.
+ * @param[in] 	cmd	- the cmd of read status.
  * @return 		the value of status.
+ * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
+ *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
+ *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
+ *              to the specific application and hardware circuit.
+ *
+ *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
+ *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
+ *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
  */
-_attribute_ram_code_ unsigned char flash_read_status_mid001460c8(void);
+unsigned char flash_read_status(unsigned char cmd);
 
 /**
  * @brief 		This function write the status of flash.
+ * @param[in]  	type	- the type of status.8 bit or 16 bit.
  * @param[in]  	data	- the value of status.
- * @param[in]  	bit		- the range of bits to be modified when writing status.
  * @return 		none.
+ * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
+ *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
+ *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
+ *              to the specific application and hardware circuit.
+ *
+ *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
+ *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
+ *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
  */
-_attribute_ram_code_ void flash_write_status_mid001460c8(unsigned char data, mid001460c8_write_status_bit_e bit);
-
-/**
- * @brief 		This function serves to set the protection area of the flash.
- * @param[in]   data	- refer to the protection area definition in the .h file.
- * @return 		none.
- */
-_attribute_ram_code_ void flash_lock_mid001460c8(mid001460c8_lock_block_e data);
-
-/**
- * @brief 		This function serves to flash release protection.
- * @return 		none.
- */
-_attribute_ram_code_ void flash_unlock_mid001460c8(void);
+void flash_write_status(flash_status_typedef_e type , unsigned short data);
 
 
 #endif

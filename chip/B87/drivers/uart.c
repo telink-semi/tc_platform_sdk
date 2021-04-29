@@ -358,13 +358,16 @@ volatile unsigned char uart_ndma_read_byte(void)
 	return rx_data;
 }
 /**
- * @brief     uart send data function, this  function tell the DMA to get data from the RAM and start
- *            the DMA transmission
+ * @brief     uart send data function, this  function tell the DMA to get data from the RAM and start the DMA transmission
  * @param[in] Addr - pointer to the buffer containing data need to send
- * @return    1: send success ;
- *
+ * @return    none
+ * @note      If you want to use uart DMA mode to send data, it is recommended to use this function.
+ *            This function just triggers the sending action, you can use interrupt or polling with the FLD_UART_TX_DONE flag to judge whether the sending is complete. 
+ *            After the current packet has been sent, this FLD_UART_TX_DONE will be set to 1, and FLD_UART_TX_DONE interrupt can be generated. 
+ *			  If you use interrupt mode, you need to call uart_clr_tx_done() in the interrupt processing function, uart_clr_tx_done() will set FLD_UART_TX_DONE to 0.
+ *            DMA can only send 2047-bytes one time at most.
  */
-volatile unsigned char uart_dma_send(unsigned char* Addr)
+void uart_send_dma(unsigned char* Addr)
 {
 	/*when the state of tx is not busy, tx_done status (0x9e bit[0])=1(default),
 	 * if tx_done irq is enable,first we must clear tx_done status to 0 - "uart_clr_tx_done()",otherwise it always be stuck in the interrupt,
@@ -372,8 +375,34 @@ volatile unsigned char uart_dma_send(unsigned char* Addr)
 	 */
 	uart_clr_tx_done();
     reg_dma1_addr = (unsigned short)((unsigned int)Addr); //packet data, start address is sendBuff+1
+    reg_dma1_size = 0xff; 	
     reg_dma_tx_rdy0	 |= FLD_DMA_CHN_UART_TX;
-    return 1;
+}
+
+/**
+ * @brief     This function is saved for compatibility with other SDK and isn't be used in driver sdk.Because it has the following problems:
+ *			  You can't use this function if you open FLD_UART_TX_DONE irq,This function can only be used in polling method.
+ *	          There may be a risk of data loss under certain usage conditions.
+ *			  It will first check whether the last packet has been sent, if it is checked that the last packet has been sent, 
+ *			  it will trigger the sending, otherwise it will not send.
+ *		
+ * @param[in] Addr - pointer to the buffer containing data need to send
+ * @return    1: DMA triggered successfully
+ *            0: UART busy : last packet not send over,you can't start to send the current packet data
+ *
+ * @note      DMA can only send 2047-bytes one time at most.
+ *			  
+ */
+volatile unsigned char uart_dma_send(unsigned char* Addr)
+{
+	if(reg_uart_status1 & FLD_UART_TX_DONE)
+	{
+		reg_dma1_addr = (unsigned short)((unsigned int)Addr); //packet data, start address is sendBuff+1
+		reg_dma1_size = 0xff;
+		reg_dma_tx_rdy0	 |= FLD_DMA_CHN_UART_TX;
+		return 1;
+	}
+	return 0;
 }
 
 /**
@@ -580,6 +609,18 @@ void uart_mask_error_irq_enable(void)
 	reg_uart_rx_timeout1|= FLD_UART_MASK_ERR_IRQ;
 	reg_irq_mask |= FLD_IRQ_UART_EN;
 
+}
+
+/**
+* @brief      This function serves to set rtx pin for UART module.
+* @param[in]  rtx_pin  - the rtx pin need to set.
+* @return     none
+*/
+void uart_set_rtx_pin(UART_RTxPinDef rtx_pin)
+{
+ 	gpio_setup_up_down_resistor(rtx_pin, PM_PIN_PULLUP_10K);
+ 	gpio_set_func(rtx_pin,AS_UART);
+	gpio_set_input_en(rtx_pin,1);
 }
 
 

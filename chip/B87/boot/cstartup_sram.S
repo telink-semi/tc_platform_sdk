@@ -110,7 +110,7 @@ __start:					@ MUST,  referenced by boot.link
 	.org 0x0
 	tj	__reset
 #ifdef DUT_TEST
-	.word	(0x0001)
+	.word	(0x0002)
 #endif
 @	.word	(firmwareVersion)
 	.org 0x8

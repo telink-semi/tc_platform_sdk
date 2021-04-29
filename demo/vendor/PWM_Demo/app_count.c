@@ -61,7 +61,7 @@ volatile unsigned char cnt=0;
 #define PWM_ID			PWM0_ID
 #define PWM_PULSE_NUM	12
 
-_attribute_ram_code_ void irq_handler(void)
+_attribute_ram_code_sec_noinline_ void irq_handler(void)
 {
 	if(pwm_get_interrupt_status(PWM_IRQ_PWM0_PNUM)){
 		pwm_clear_interrupt_status(PWM_IRQ_PWM0_PNUM);

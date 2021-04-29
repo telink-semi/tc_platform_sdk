@@ -55,7 +55,7 @@ extern void main_loop (void);
  * @param[in] 	none
  * @return 		none
  */
-_attribute_ram_code_ void irq_handler(void)
+_attribute_ram_code_sec_noinline_ void irq_handler(void)
 {
 
 
@@ -83,6 +83,8 @@ int main (void)   //must on ramcode
 	cpu_wakeup_init();
 #endif
 	clock_init(SYS_CLK);
+
+	gpio_init(0);
 
 	user_init();
 

@@ -1289,6 +1289,21 @@ enum{
 	FLD_RF_IRQ_STX_TIMEOUT =    BIT(12),
 	FLD_RF_IRQ_ALL =            0X1FFF,
 };
+/*******************************      aura registers: 0x1200      ******************************/
+
+#define REG_AURA_BASE            0x1200
+
+#define reg_mode_cfg_txrx_1        REG_ADDR8(REG_AURA_BASE+0x27)
+
+enum
+{
+	FLD_TX_PA_PWR_H     = BIT_RNG(0,4),
+	FLD_TX_MI_SEL       = BIT(5),
+	FLD_RX_MI_SEL       = BIT(6),
+};
+
+
+
 
 
 /********************************************************************************************

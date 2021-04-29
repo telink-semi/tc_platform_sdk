@@ -196,14 +196,14 @@ void delate_average(int* ptr);
  * @param[in]  ptr_packet  -  Pointer variable of the Rx packages.
  * @return     The angle.
  */
-_attribute_ram_code_ unsigned int raw_data_to_angle_no_z(unsigned char *ptr_packet);
+_attribute_ram_code_sec_noinline_ unsigned int raw_data_to_angle_no_z(unsigned char *ptr_packet);
 
 /**
  * @brief      This function servers to get a angle for Rx mode.
  * @param[in]  ptr_packet  -  Pointer variable of the Rx packages.
  * @return     The angle.
  */
-_attribute_ram_code_ unsigned int raw_data_to_angle_with_z(unsigned char *ptr_packet);
+_attribute_ram_code_sec_noinline_ unsigned int raw_data_to_angle_with_z(unsigned char *ptr_packet);
 
 /**
  * @brief      This function servers to store data to a specific place .

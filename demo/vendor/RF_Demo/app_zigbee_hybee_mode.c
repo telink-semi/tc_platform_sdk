@@ -52,14 +52,10 @@
 
 #define AUTO  				1
 #define MANUAL				2
-#define RF_AUTO_MODE 		MANUAL
+#define RF_AUTO_MODE 		AUTO
 
 #define RF_FREQ				71
-#if (MCU_CORE_B85)
-#define RF_POWER			RF_POWER_P10p46dBm
-#else
-#define RF_POWER			RF_POWER_INDEX_P11p26dBm
-#endif
+
 #define ACCESS_CODE			0x29417671
 volatile unsigned int rx_cnt=0;
 volatile unsigned int tx_cnt=0;
@@ -97,7 +93,7 @@ void main_loop (void)
 	}
 
 
-#elif(RF_TX_RX_MODE==RX)
+#elif(RF_TX_RX_MODE==RX && !MCU_CORE_B89)
 	rf_rx_buffer_set(rx_packet,64, 0);
 	rf_start_srx(clock_time() + 100*16);
 
@@ -149,7 +145,7 @@ void main_loop (void)
 	}
 
 
-#elif(RF_TX_RX_MODE==RX)
+#elif(RF_TX_RX_MODE==RX && !MCU_CORE_B89)
 	rf_rx_buffer_set(rx_packet,64, 0);
 	rf_set_rxmode ();
 

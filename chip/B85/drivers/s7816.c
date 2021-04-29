@@ -47,6 +47,7 @@
 #include "uart.h"
 #include "irq.h"
 #include "dma.h"
+#include "timer.h"
 
 volatile unsigned int  s7816_rst_pin;
 volatile unsigned int  s7816_vcc_pin;

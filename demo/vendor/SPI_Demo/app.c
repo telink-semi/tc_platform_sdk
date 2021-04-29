@@ -47,11 +47,13 @@
 
 unsigned long firmwareVersion;
 
+//To make sure the communication between master and slave device is normal,the slave device should power on first.
 #define SPI_MASTER_DEVICE		1
 #define SPI_SLAVE_DEVICE		2
 #define SPI_DEVICE				SPI_MASTER_DEVICE
 
-#define SHARE_MODE				1
+//3line mode
+#define SHARE_MODE				0
 
 #if (SPI_DEVICE==SPI_MASTER_DEVICE)
 
@@ -60,11 +62,16 @@ unsigned long firmwareVersion;
 
 #define SPI_READ_CMD			0x80
 #define SPI_WRITE_CMD			0x00
-#define SLAVE_ADDR				0x44000
+
+#define MCU_CORE_B89_SLAVE_ADDR				0x4102c
+#define MCU_CORE_B87_SLAVE_ADDR				0x41938
+#define MCU_CORE_B85_SLAVE_ADDR				0x41020
+#define SLAVE_ADDR   MCU_CORE_B89_SLAVE_ADDR
+
 #define CMD_BUF_LEN				4
 unsigned char cmd_buf[4];
 
-volatile unsigned char spi_tx_buff[BUFF_DATA_LEN]={0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff};
+volatile unsigned char spi_tx_buff[BUFF_DATA_LEN]={0xAA,0x10,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xBB};
 volatile unsigned char spi_rx_buff[BUFF_DATA_LEN]={0x00};
 
 void user_init()
@@ -94,7 +101,7 @@ void user_init()
 void main_loop (void)
 {
 	sleep_ms(500);
-	spi_tx_buff[0] ++;
+	spi_tx_buff[2] ++;
 	gpio_toggle(LED1);
 	cmd_buf[0]= (SLAVE_ADDR>>16)&0xff;
 	cmd_buf[1]= (SLAVE_ADDR>>8)&0xff;
@@ -140,6 +147,7 @@ void user_init()
 }
 void main_loop (void)
 {
+	gpio_toggle(LED1);
 	sleep_ms(50);
 }
 

@@ -51,7 +51,7 @@
  * @return    none
  */
 
-_attribute_ram_code_ void sleep_us(unsigned long us)
+_attribute_ram_code_sec_noinline_ void sleep_us(unsigned long us)
 {
 	unsigned long t = clock_time();
 	while(!clock_time_exceed(t, us)){

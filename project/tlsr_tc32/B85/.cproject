@@ -48,7 +48,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.945821041" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.1344051536" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.1737364439" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.1255367234" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
@@ -1202,7 +1202,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.1247050905" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.1253555995" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.514501663" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.571229210" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
@@ -2356,7 +2356,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.1528770590" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.1487653309" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.1319267499" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.106988243" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
@@ -3510,7 +3510,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.683477318" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.467281397" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.2724138" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.1496980308" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
@@ -4664,7 +4664,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.446870665" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.528670704" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.1089083657" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.4300618" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
@@ -5841,7 +5841,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.1259678342" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.18927012" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.687801839" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.1620734194" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
@@ -6995,7 +6995,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.1751400744" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.2091007714" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.776057726" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.997516232" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
@@ -8149,7 +8149,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.1436116882" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.2092575266" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.1640289646" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.2146693482" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
@@ -9303,7 +9303,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.2068329009" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.1334798328" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.418028626" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.885415240" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
@@ -10457,7 +10457,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.2578610" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.2077472504" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.2097390540" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.498909883" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
@@ -11611,7 +11611,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.1398729952" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.1792120517" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.1275073744" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.958269760" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
@@ -12765,7 +12765,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.1216812666" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.488885094" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.1892519251" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.131247316" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
@@ -13919,7 +13919,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.2109841326" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.141304624" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.671377422" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.856268309" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
@@ -15073,7 +15073,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.1058259729" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.438259543" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.1168544718" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.302893851" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
@@ -16227,7 +16227,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.1688936857" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.449989640" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.2141284746" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.237452163" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
@@ -17381,7 +17381,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.1235179258" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.1929846287" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.1984474151" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.1442616737" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
@@ -18535,7 +18535,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.1230403853" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.931081303" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.1962498221" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.1553610445" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
@@ -19689,7 +19689,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.522495033" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.1696419864" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.846674998" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.1060595818" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
@@ -20843,7 +20843,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/drivers}&quot;"/>
 								</option>
 								<option id="com.telink.tc32eclipse.linker.option.otherobjs.647582571" name="Other Objects (*.o)" superClass="com.telink.tc32eclipse.linker.option.otherobjs"/>
-								<option id="com.telink.tc32eclipse.linker.option.libs.819287558" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
+								<option id="com.telink.tc32eclipse.linker.option.libs.721242219" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="B85"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.1423072455" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">

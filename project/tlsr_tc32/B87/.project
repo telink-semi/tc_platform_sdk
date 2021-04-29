@@ -107,6 +107,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/demo/B85_B87_demo/AUDIO_Demo</locationURI>
 		</link>
 		<link>
+			<name>vendor/IR_LEARN_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/B87_B89_demo/IR_LEARN_Demo</locationURI>
+		</link>
+		<link>
 			<name>vendor/LPC_Demo</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/demo/B85_B87_demo/LPC_Demo</locationURI>
