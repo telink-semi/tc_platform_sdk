@@ -85,6 +85,5 @@
 #include "mdec.h"
 #include "usbhw.h"
 #include "flash/flash_type.h"
-#include "swire.h"
 
 
