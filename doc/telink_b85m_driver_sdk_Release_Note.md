@@ -1,3 +1,77 @@
+## V1.2.0
+
+### Version
+
+* SDK version : telink_b85m_driver_sdk v1.2.0.
+* This version sdk support B85,B87.
+
+### Bug Fixes
+
+* **PM(B87)**
+  * In random.c,fix the wrong setting of dma length.
+	* fix the issue that the program will crash in the case that:
+    * run one of these case first
+        * deep retention with 16K sram,timer wakeup only and the time < 2.5s.
+        * deep retention with 32k sram,timer wakeup only and the time < 6s.
+        * deep retention pad wakeup.
+    * then run one of these case
+        * deep retention with 16K sram,timer wakeup only and the time > 2.5s
+        * deep retention with 32K sram,timer wakeup only and the time > 6s
+
+
+### Features
+
+* N/A
+
+### Known issues
+
+* N/A
+
+### BREAKING CHANGES
+
+* N/A
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+
+### 版本
+
+* SDK版本: telink_b85m_driver_sdk v1.2.0。
+* 此版本SDK支持B85、B87芯片。
+
+### Bug Fixes
+
+* **PM(B87)**
+    * 解决在如下case中会死机的问题：
+    * 先运行如下case之一
+        * 跑一次deep_retention with 16k sram的纯timer唤醒且时间小于2.5s
+        * 跑一次deep_retention with 32k sram的纯timer唤醒且时间小于6s
+        * 跑一次deep_retention的pad唤醒
+    * 再运行如下case之一
+        * 跑一次deep_retention with 16k sram的纯timer唤醒且时间大于2.5s
+        * 跑一次deep_retention with 32k sram的纯timer唤醒且时间大于6s
+
+### Features
+
+* N/A
+
+### Known issues
+
+* N/A
+
+### BREAKING CHANGES
+
+* N/A
+
+### Refactoring
+
+* N/A
+
+### Note
+
+* N/A
+
+---
 
 ## V1.1.0
 
@@ -129,6 +203,8 @@
   * 风险描述：当芯片供电电压比较低时，由于电源不稳定，flash的操作可能会有出错的风险（特别是写和擦操作，如果出现异常，可能会造成固件和用户数据被改写，从而导致最终产品失效）。
 
 ---
+
+## V1.0.0
 
 ### Version
 * SDK version : telink_b85m_driver_sdk v1.0.0.

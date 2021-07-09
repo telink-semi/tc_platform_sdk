@@ -51,15 +51,37 @@ extern "C" {
 #endif
 
 
-#define LED1     				GPIO_PD2
-#define LED2     				GPIO_PD3
-#define LED3     				GPIO_PD4
+#if (MCU_CORE_B89)
+#define LED1     		        GPIO_PD0
+#define LED2     		        GPIO_PD1
+#define LED3     		        GPIO_PD2
+#define LED4     		        GPIO_PD3
+#elif (MCU_CORE_B87)
+#define LED1     		        GPIO_PD2
+#define LED2     		        GPIO_PD3
+#define LED3     		        GPIO_PD4
+#define LED4     		        GPIO_PD5
+#elif (MCU_CORE_B85)
+#define LED1     		        GPIO_PD2
+#define LED2     		        GPIO_PD3
+#define LED3     		        GPIO_PD4
+#define LED4     		        GPIO_PD5
+#elif (MCU_CORE_B80)
+#define LED1     		        GPIO_PD0
+#define LED2     		        GPIO_PD1
+#define LED3     		        GPIO_PD2
+#define LED4     		        GPIO_PD3
+#define LED5     		        GPIO_PD4
+#define LED6     		        GPIO_PD5
+#endif
 
 #if (MCU_CORE_B85)
 #define RF_POWER			RF_POWER_P10p46dBm
 #elif(MCU_CORE_B87)
 #define RF_POWER			RF_POWER_P11p26dBm
 #elif(MCU_CORE_B89)
+#define RF_POWER			RF_POWER_P4p98dBm
+#elif(MCU_CORE_B80)
 #define RF_POWER			RF_POWER_P4p98dBm
 #endif
 
@@ -101,9 +123,9 @@ extern "C" {
 	#define SYS_CLK  	SYS_CLK_16M_Crystal
 #elif (CLOCK_SYS_CLOCK_HZ==24000000)
 	#define SYS_CLK  	SYS_CLK_24M_Crystal
-#elif (CLOCK_SYS_CLOCK_HZ==32000000)
+#elif ((CLOCK_SYS_CLOCK_HZ==32000000) && (MCU_CORE_B85 || MCU_CORE_B87))
 	#define SYS_CLK  	SYS_CLK_32M_Crystal
-#elif (CLOCK_SYS_CLOCK_HZ==48000000)
+#elif ((CLOCK_SYS_CLOCK_HZ==48000000) && (MCU_CORE_B85 || MCU_CORE_B87))
 	#define SYS_CLK  	SYS_CLK_48M_Crystal
 #endif
 

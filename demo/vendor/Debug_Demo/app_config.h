@@ -52,7 +52,7 @@ extern "C" {
 
 
 
-#if (MCU_CORE_B89)
+#if (MCU_CORE_B89||MCU_CORE_B80)
 #define LED1     		        GPIO_PD0
 #define LED2     		        GPIO_PD1
 #define LED3     		        GPIO_PD2

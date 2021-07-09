@@ -802,6 +802,37 @@ void user_init()
 
 
 #else
+
+void flash_mid1360c8_test(void)
+{
+	int i;
+
+	status1 = flash_read_status_mid1360c8();
+	flash_lock_mid1360c8(FLASH_LOCK_LOW_256K_MID1360C8);
+	status2 = flash_read_status_mid1360c8();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.lock_err = 1;
+			while(1);
+		}
+	}
+	check_status.lock_check = 1;
+
+	flash_unlock_mid1360c8();
+	status3 = flash_read_status_mid1360c8();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != 0xff){
+			err_status.unlock_err = 1;
+			while(1);
+		}
+	}
+	check_status.unlock_check = 1;
+}
+
 void user_init()
 {
 	int i;
@@ -829,6 +860,15 @@ void user_init()
 		}
 	}
 	check_status.write_check = 1;
+
+	switch(mid)
+	{
+	case 0x1360c8:
+		flash_mid1360c8_test();
+		break;
+	default:
+		break;
+	}
 
 	check_status.umid_check = flash_read_mid_uid_with_check((unsigned int *)&mid, uid);
 }

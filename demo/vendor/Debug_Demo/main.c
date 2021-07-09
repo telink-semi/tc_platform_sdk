@@ -73,6 +73,8 @@ int main (void)   //must on ramcode
 	cpu_wakeup_init(LDO_MODE, EXTERNAL_XTAL_24M);
 #elif (MCU_CORE_B85)
 	cpu_wakeup_init();
+#elif (MCU_CORE_B80)
+	cpu_wakeup_init(EXTERNAL_XTAL_24M);
 #endif
 
 	gpio_init(0);

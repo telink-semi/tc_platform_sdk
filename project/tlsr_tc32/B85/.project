@@ -99,22 +99,122 @@
 		<link>
 			<name>vendor</name>
 			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor</locationURI>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>vendor/ADC_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/ADC_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/AES_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/AES_Demo</locationURI>
 		</link>
 		<link>
 			<name>vendor/AUDIO_Demo</name>
 			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/B85_B87_demo/AUDIO_Demo</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/AUDIO_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/BQB_EMI_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/BQB_EMI_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/DUT_Test</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/DUT_Test</locationURI>
+		</link>
+		<link>
+			<name>vendor/Debug_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/Debug_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/Flash_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/Flash_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/GPIO_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/GPIO_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/I2C_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/I2C_Demo</locationURI>
 		</link>
 		<link>
 			<name>vendor/LPC_Demo</name>
 			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/B85_B87_demo/LPC_Demo</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/LPC_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/PM_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/PM_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/PWM_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/PWM_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/QDEC_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/QDEC_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/RF_AOA_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/RF_AOA_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/RF_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/RF_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/SPI_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/SPI_Demo/SPI_V1.0/SPI_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/SRAM_Test</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/SRAM_Test</locationURI>
+		</link>
+		<link>
+			<name>vendor/SWIRE_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/Swire_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/TIMER_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/TIMER_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/Test_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/Test_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/UART_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/UART_Demo</locationURI>
 		</link>
 		<link>
 			<name>vendor/USB_Demo</name>
 			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/B85_B87_demo/USB_Demo</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/USB_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/s7816_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/s7816_Demo</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

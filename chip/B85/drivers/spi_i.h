@@ -51,8 +51,7 @@
   * @return    none
   */
 _attribute_ram_code_sec_ static inline void mspi_wait(void){
-	while(reg_mspi_ctrl & FLD_MSPI_BUSY)
-		;
+	while(reg_mspi_ctrl & FLD_MSPI_BUSY);
 }
 
 /**

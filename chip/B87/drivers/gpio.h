@@ -81,7 +81,9 @@ typedef enum{
 		GPIO_PB7 = GPIO_GROUPB | BIT(7),
 
 		GPIO_PC0 = GPIO_GROUPC | BIT(0),
-		GPIO_PC1 = GPIO_GROUPC | BIT(1),
+		GPIO_PC1 = GPIO_GROUPC | BIT(1),//Because when PC1 is connected to a pull-up resistor, audio in will pull up the 1.8V power supply of the codec, the current is small during sleep,
+										//and the pulled-up voltage cannot be pulled down again, so the sleep function and PC1 with a pull-up resistor cannot be used at the same time.
+										//add by Weihua Zhang, confirmed by Yu Ling, 20210604
 		GPIO_PC2 = GPIO_GROUPC | BIT(2),
 		GPIO_PC3 = GPIO_GROUPC | BIT(3),
 		GPIO_PC4 = GPIO_GROUPC | BIT(4),

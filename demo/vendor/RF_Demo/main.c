@@ -111,10 +111,12 @@ int main (void) {
 	cpu_wakeup_init(LDO_MODE, EXTERNAL_XTAL_24M);
 #elif (MCU_CORE_B85)
 	cpu_wakeup_init();
+#elif (MCU_CORE_B80)
+	cpu_wakeup_init(EXTERNAL_XTAL_24M);
 #endif
 
 
-#if (MCU_CORE_B89)
+#if (MCU_CORE_B89 || MCU_CORE_B80)
 #if(RF_MODE==RF_BLE_1M)//1
 	 rf_set_ble_1M_mode();
 #elif(RF_MODE==RF_BLE_1M_NO_PN)//2

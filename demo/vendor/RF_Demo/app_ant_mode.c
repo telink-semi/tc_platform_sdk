@@ -100,8 +100,6 @@ void main_loop (void)
 		rf_tx_finish_clear_flag();
 		gpio_toggle(LED1);
 		tx_cnt++;
-//		if(tx_cnt>=10000)
-//			while(1);
 	}
 #elif(RF_TX_RX_MODE==RX)
 	rf_rx_buffer_set(rx_packet,64, 0);

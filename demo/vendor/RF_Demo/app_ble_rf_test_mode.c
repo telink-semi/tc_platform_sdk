@@ -49,14 +49,6 @@
 #if (RF_MODE == RF_BLE_SDK_TEST)
 #define TEST_CHN   				1		// 37/38/39 adv channel
 
-#if (MCU_CORE_B85)
-#define RF_POWER			RF_POWER_P10p46dBm
-#elif(MCU_CORE_B87)
-#define RF_POWER			RF_POWER_P11p26dBm
-#elif(MCU_CORE_B89)
-#define RF_POWER			RF_POWER_P4p98dBm
-#endif
-
 #define BLE_ACCESS_CODE			0x9A3CC36A//0xA5CC336A//0xd6be898e//
 
 
@@ -257,7 +249,7 @@ void ble_stx_test(void)
 
 		tx_begin_tick = clock_time();
 
-		REG_ADDR8(0xf00) = 0x80; // stop SM
+		rf_set_tx_rx_off_auto_mode();
 		rf_set_ble_channel (TEST_CHN);  //2402
 
 		debug_pkt_adv.data[0] ++;
@@ -266,9 +258,8 @@ void ble_stx_test(void)
 		rf_start_stx ((void *)&debug_pkt_adv, clock_time() + 100);
 
 		sleep_us(2000);  //2mS is enough for packet sending
-
-		if(reg_rf_irq_status & FLD_RF_IRQ_TX){
-			reg_rf_irq_status = FLD_RF_IRQ_TX;
+		if(rf_irq_src_get() & FLD_RF_IRQ_TX){
+			rf_irq_clr_src(FLD_RF_IRQ_TX);
 			DBG_CHN0_TOGGLE;
 		}
 
@@ -289,7 +280,7 @@ void ble_manual_tx_test(){
 
 	rf_set_txmode();
 
-	reg_rf_irq_status = 0xffff;
+	rf_irq_clr_src(FLD_RF_IRQ_ALL);
 
 	unsigned long tx_begin_tick;
 
@@ -304,8 +295,8 @@ void ble_manual_tx_test(){
 
 		sleep_us(2000);  //2mS is enough for packet sending
 
-		if(reg_rf_irq_status & FLD_RF_IRQ_TX){
-			reg_rf_irq_status = FLD_RF_IRQ_TX;
+		if(rf_irq_src_get() & FLD_RF_IRQ_TX){
+			rf_irq_clr_src(FLD_RF_IRQ_TX);
 			DBG_CHN0_TOGGLE;
 		}
 
@@ -313,7 +304,6 @@ void ble_manual_tx_test(){
 	}
 
 }
-
 
 void ble_btx_tx_test(){
 	rf_set_power_level_index (RF_POWER);
@@ -329,7 +319,7 @@ void ble_btx_tx_test(){
 
 		tx_begin_tick = clock_time();
 
-		REG_ADDR8(0xf00) = 0x80; // stop SM
+		rf_set_tx_rx_off_auto_mode(); // stop SM
 		rf_set_ble_channel (TEST_CHN);  //2402
 
 		debug_pkt_adv.data[0] ++;
@@ -338,11 +328,10 @@ void ble_btx_tx_test(){
 		rf_start_btx ((void *)&debug_pkt_adv, clock_time() + 100);
 
 		sleep_us(2000);  //2mS is enough for packet sending
+		rf_set_tx_rx_off_auto_mode(); // stop SM
 
-		REG_ADDR8(0xf00) = 0x80; // stop SM
-
-		if(reg_rf_irq_status & FLD_RF_IRQ_TX){
-			reg_rf_irq_status = FLD_RF_IRQ_TX;
+		if(rf_irq_src_get() & FLD_RF_IRQ_TX){
+			rf_irq_clr_src(FLD_RF_IRQ_TX);
 			DBG_CHN0_TOGGLE;
 		}
 
@@ -392,7 +381,7 @@ unsigned char	blt_tx_empty_packet[6] = {2, 0, 0, 0, 1, 0};
 _attribute_ram_code_sec_noinline_ void irq_rf_handler(void)
 {
 
-	 if(reg_rf_irq_status & FLD_RF_IRQ_RX)
+	if(rf_irq_src_get() & FLD_RF_IRQ_RX)
 	 {
 
 		blt_tick_now = clock_time();
@@ -401,8 +390,10 @@ _attribute_ram_code_sec_noinline_ void irq_rf_handler(void)
 
 		unsigned char * raw_pkt = (unsigned char *) (blt_rxbuffer + blt_rx_wptr * BLE_LL_BUFF_SIZE);
 		blt_rx_wptr = (blt_rx_wptr + 1) & 3;
-		reg_dma_rf_rx_addr = (unsigned int)(unsigned long) (blt_rxbuffer + blt_rx_wptr * BLE_LL_BUFF_SIZE); //set next buffer
-		reg_rf_irq_status = FLD_RF_IRQ_RX;
+		unsigned short next_pkt_addr;
+		next_pkt_addr = (unsigned short)(unsigned long) (blt_rxbuffer + blt_rx_wptr * BLE_LL_BUFF_SIZE); //set next buffer
+		rf_rx_buffer_reconfig(next_pkt_addr);
+		rf_irq_clr_src(FLD_RF_IRQ_RX);
 
 		AA_rx_irq_cnt ++;
 
@@ -440,10 +431,10 @@ _attribute_ram_code_sec_noinline_ void irq_rf_handler(void)
 
 
 
-	 if(reg_rf_irq_status & FLD_RF_IRQ_TX)
-	 {
-		 reg_rf_irq_status = FLD_RF_IRQ_TX;
-	 }
+	if(rf_irq_src_get() & FLD_RF_IRQ_TX)
+	{
+		rf_irq_clr_src(FLD_RF_IRQ_TX);
+	}
 
 }
 
@@ -451,16 +442,11 @@ _attribute_ram_code_sec_noinline_ void irq_rf_handler(void)
 
 
 
-static int debug_led_value = 0;
-static int debug_deley_cnt = 0;
 
 _attribute_ram_code_sec_noinline_ void ble_manual_rx_test(void)
 {
 
-	reg_dma_rf_rx_addr = (unsigned int)(unsigned long) (blt_rxbuffer);
-	reg_dma_rf_rx_mode = FLD_DMA_WR_MEM;   // rf rx buffer enable & size
-	reg_dma_rf_rx_size = (BLE_LL_BUFF_SIZE>>4);
-
+	rf_rx_buffer_set(blt_rxbuffer,BLE_LL_BUFF_SIZE,0);
 
 	rf_set_power_level_index (RF_POWER);
 	rf_set_ble_crc_adv ();
@@ -471,12 +457,13 @@ _attribute_ram_code_sec_noinline_ void ble_manual_rx_test(void)
 
 	rf_set_ble_channel (TEST_CHN);  //37:2402;   8:2420
 
-	reg_rf_irq_status = FLD_RF_IRQ_RX; //clear rx status
+	rf_irq_clr_src(FLD_RF_IRQ_RX);
 
 	rf_set_rxmode ();
 
-	reg_irq_mask |= FLD_IRQ_ZB_RT_EN;
-	reg_rf_irq_mask = FLD_RF_IRQ_RX;
+	irq_enable_type(FLD_IRQ_ZB_RT_EN); //enable RF irq
+	rf_irq_disable(FLD_RF_IRQ_ALL);
+	rf_irq_enable(FLD_RF_IRQ_RX);
 	irq_enable();
 
 
@@ -506,11 +493,10 @@ void ble_brx_rx_test(void)
 
 	rf_set_ble_access_code_value(BLE_ACCESS_CODE);
 
-
-	reg_rf_irq_status = FLD_RF_IRQ_RX | FLD_RF_IRQ_TX;
-	reg_irq_mask |= FLD_IRQ_ZB_RT_EN;
-	reg_rf_irq_mask = FLD_RF_IRQ_RX | FLD_RF_IRQ_TX;
-
+	rf_irq_clr_src(FLD_RF_IRQ_RX | FLD_RF_IRQ_TX);
+	irq_enable_type(FLD_IRQ_ZB_RT_EN); //enable RF irq
+	rf_irq_disable(FLD_RF_IRQ_ALL);
+	rf_irq_enable(FLD_RF_IRQ_RX | FLD_RF_IRQ_TX);
 	brx_mode_flag = 0;
 
 	irq_enable();
@@ -561,9 +547,9 @@ void ble_brx_rx_test(void)
 
 		//stop CRX
 		irq_disable();
-		REG_ADDR8(0xf00) = 0x80;   //stop FSM
+		rf_set_tx_rx_off_auto_mode();   //stop FSM
 		sleep_us(100);
-		reg_rf_irq_status = FLD_RF_IRQ_RX | FLD_RF_IRQ_TX;
+		rf_irq_clr_src(FLD_RF_IRQ_RX | FLD_RF_IRQ_TX);
 		irq_enable();
 
 

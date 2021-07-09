@@ -49,6 +49,15 @@
 //#define ATE_SW_TEST		//for ate test when it use single wire to send cmd;then close this define for normal EMI
 
 /*
+ * @brief 	This macro definition is mainly used to fix the problem of RX_LEAKAGE exceeding the standard during the
+ * 			certification test.Since this setting will cause the package not to be received in the rx state, it is
+ * 			only used for authentication.This setting is suitable for rx_leakage certification test for B85 series
+ * 			chips.This problem does not exist in the certification of the own development board, so it can be given
+ * 			to customers as a special version.Confirmed by wenfeng,modified by zhiwei.20210615.
+ * */
+#define FIX_RX_LEAKAGE			0
+
+/*
  * @brief 	this macro definition serve to open the setting to deal with problem of zigbee mode 2480Mhz
  * 			band edge can't pass the spec.only use it at the time of certification.
  * */
@@ -487,6 +496,11 @@ void emirx(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 	rf_emi_rx(rf_mode,rf_chn);
 	write_reg8(0x40004,0);
 	write_reg32(0x4000c,0);
+//Solve the problem that the customer's development board cannot pass rx_leakage authentication.Confirmed by wenfeng,modified by zhiwei.20210615
+#if(FIX_RX_LEAKAGE)
+	write_reg8(0x1360,(read_reg8(0x1360)|BIT(4)));//LDO_VCO_PUP auto to manual
+	write_reg8(0x1362,(read_reg8(0x1362)&0xef));//LDO_VCO_PUP close.
+#endif
 
 	cmd_now = 0;//Those two sentences for dealing with the problem that click RxTest again the value of emi_rx_cnt not be cleared in emi rx test
 	write_reg8(0x40007, cmd_now); //add by zhiwei,confirmed by kaixin
@@ -766,13 +780,12 @@ void read_flash_para(void)
    flash_read_page(CAP_VALUE,1,&cap);
    if(cap!=0xff)
    {
-	   cap&=0x3f;
-	   analog_write(0x8a,(analog_read(0x8a)&0xc0)|cap);//bit<7>:1 close internal cap;bit<0:5> adjust internal cap value(0x100000).
+	   rf_update_internal_cap(cap);
    }
    flash_read_page(CAP_CLOSE_EN,1,&cap_close_en);
    if(cap_close_en != 0xff)
    {
-	   analog_write(0x8a,(analog_read(0x8a)|0x80)); // close internal cap
+	   rf_turn_off_internal_cap();
    }
 
    flash_read_page(EMI_TEST_CD_MODE_HOPPING_CHN,1,&temp);

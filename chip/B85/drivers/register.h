@@ -378,16 +378,18 @@ enum{
 /*******************************      swire registers: 0xb0      ******************************/
 
 #define reg_swire_data			REG_ADDR8(0xb0)
-#define reg_swire_ctrl1			REG_ADDR8(0xb1)
+#define reg_swire_ctl			REG_ADDR8(0xb1)
 enum{
 	FLD_SWIRE_WR  = 			BIT(0),
 	FLD_SWIRE_RD  = 			BIT(1),
 	FLD_SWIRE_CMD =				BIT(2),
+	FLD_SWIRE_ERR_FLAG			= BIT(3),
+	FLD_SWIRE_EOP     			= BIT(4),
 	FLD_SWIRE_USB_DET =			BIT(6),
 	FLD_SWIRE_USB_EN =			BIT(7),
 };
 
-#define reg_swire_clk_div		REG_ADDR8(0xb2)
+#define reg_swire_ctl2		REG_ADDR8(0xb2)
 
 enum
 {
@@ -398,10 +400,9 @@ enum
 
 enum
 {
-	FLD_SWIRE_ID_SLAVE_ID      = BIT_RNG(0,6),
-	FLD_SWIRE_ID_SLAVE_FIFO_EN = BIT(7),
+	FLD_SWIRE_ID_VALID	      = BIT_RNG(0,6),
+	FLD_SWIRE_FIFO_MODE	 = BIT(7),
 };
-
 /*******************************      analog control registers: 0xb8      ******************************/
 
 #define reg_ana_ctrl32			REG_ADDR32(0xb8)
