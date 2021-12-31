@@ -6,7 +6,7 @@
  * @author	Driver Group
  * @date	2019
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,7 @@
  *******************************************************************************************************/
 #ifdef MCU_STARTUP_SRAM
 
-#define SRAM_SIZE_32K_EN		    	    0/*defaut sram size=64k*/
+#define SRAM_SIZE_32K_EN		    	    1/*defaut sram size=64k*/
 
 #define  FLL_STK_EN           			0
 #define  ZERO_IC_TAG_EN		  			0

@@ -139,8 +139,7 @@ void spi_master_init(unsigned char DivClock, SPI_ModeTypeDef Mode)
 	reg_spi_sp|= DivClock;     //0x0a: bit0~bit6 set spi clock ; spi clock=system clock/((DivClock+1)*2)
 	reg_spi_sp|=FLD_SPI_ENABLE;//0x0a: bit7 enables spi function mode
 	reg_spi_ctrl|= FLD_SPI_MASTER_MODE_EN; //0x09: bit1 enables master mode
-	reg_spi_inv_clk	&= (~FLD_SPI_MODE_WORK_MODE); // clear spi working mode
-	reg_spi_inv_clk |= Mode;// select SPI mode,surpport four modes
+	reg_spi_inv_clk = ((reg_spi_inv_clk & (~FLD_SPI_MODE_WORK_MODE)) | Mode);// select SPI mode,surpport four modes
 }
 
 
@@ -241,8 +240,7 @@ void spi_slave_init(unsigned char DivClock, SPI_ModeTypeDef Mode)
 	reg_spi_sp|= DivClock;     //0x0a: bit0~bit6 set spi clock ; spi clock=system clock/((DivClock+1)*2)
 	reg_spi_sp|=FLD_SPI_ENABLE;//0x0a: bit7 enables spi function mode
 	reg_spi_ctrl&= (~FLD_SPI_MASTER_MODE_EN ); //disable master mode
-	reg_spi_inv_clk &= (~FLD_SPI_MODE_WORK_MODE);
-	reg_spi_inv_clk|= Mode; //select SPI mode,surpport four modes
+	reg_spi_inv_clk = ((reg_spi_inv_clk & (~FLD_SPI_MODE_WORK_MODE)) | Mode); //select SPI mode,surpport four modes
 }
 /**
  * @brief     This function selects a pin port for the SPI interface (slave mode)

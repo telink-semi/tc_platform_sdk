@@ -161,6 +161,54 @@ start_suspend:						@ instruction cache address + 0x58: 0x3c16 * 4 = 0xf058
     tmov	r8, r8
     tmov	r8, r8
     tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
+    tmov	r8, r8
 
     tpop	{r2-r3}
     tjex	lr

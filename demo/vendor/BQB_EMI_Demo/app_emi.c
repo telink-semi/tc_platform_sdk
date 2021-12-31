@@ -4,7 +4,7 @@
  * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -63,14 +63,17 @@
  * */
 #define FIX_ZIGBEE_BANDEAGE_EN	0
 
-
-
 /*
  * @brief 	This macro definition is used to open the CE test code.
  * After opening the macro definition, prbs9,0x55,0x0f will stop sending
  * packages when the noise of the surrounding environment is greater than -70dbm.
  * */
-#define CE_ANTI_NOISE_TEST						1
+#define CE_ANTI_NOISE_TEST						0
+
+/*
+ * @brief 	This macro definition is used to select whether to shutdown internal cap.
+ * */
+#define CLOSE_INTERNAL_CAP						0
 
 #if CHN_DEFUALT_VALUE_SET_FLASH
 #define CHN_SET_FLASH_ADDR				0x770e0
@@ -126,29 +129,22 @@ signed char get_noise_value()
 
 #endif
 
-#define FLASH_128K         0
+#define EMI_TEST_FLASH_128K_BASE		 0x1c000
+#define EMI_TEST_FLASH_512K_BASE		 0x7c000
 
-#if FLASH_128K
-#define EMI_TEST_TX_MODE  			     0x1c000
-#define EMI_TEST_CMD  				     0x1c001
-#define EMI_TEST_POWER_LEVEL  		     0x1c002
-#define EMI_TEST_CHANNEL  			     0x1c003
-#define EMI_TEST_MODE  				     0x1c004
-#define EMI_TEST_CD_MODE_HOPPING_CHN     0x1c005
-#define CAP_CLOSE_EN                     0x1c006
-#define CAP_VALUE					     0x1e000
-#else   // 512K
-
-#define EMI_TEST_TX_MODE  			     0x7c000
-#define EMI_TEST_CMD  				     0x7c001
-#define EMI_TEST_POWER_LEVEL  		     0x7c002
-#define EMI_TEST_CHANNEL  			     0x7c003
-#define EMI_TEST_MODE  				     0x7c004
-#define EMI_TEST_CD_MODE_HOPPING_CHN     0x7c005
-#define CAP_CLOSE_EN                     0x7c006
-#define CAP_VALUE					     0x77000
+#define EMI_TEST_TX_MODE  			     0x00
+#define EMI_TEST_CMD  				     0x01
+#define EMI_TEST_POWER_LEVEL  		     0x02
+#define EMI_TEST_CHANNEL  			     0x03
+#define EMI_TEST_MODE  				     0x04
+#define EMI_TEST_CD_MODE_HOPPING_CHN     0x05
+#define CAP_CLOSE_EN                     0x06
+#if MCU_CORE_B80
+#define CAP_VALUE_FLASH				 	 0x07
+#define CAP_VALUE_OTP					 0x3fc8 //0x3fc8-0x3fcb,32bit
 #endif
 
+#define RSSI_ADDR                        0x40004
 #define TX_PACKET_MODE_ADDR 		     0x40005
 #define RUN_STATUE_ADDR 			     0x40006
 #define TEST_COMMAND_ADDR			     0x40007
@@ -156,6 +152,66 @@ signed char get_noise_value()
 #define CHANNEL_ADDR				     0x40009
 #define RF_MODE_ADDR				     0x4000a
 #define CD_MODE_HOPPING_CHN			     0x4000b
+#define RX_PACKET_NUM_ADDR               0x4000c
+#define PA_TX_RX_SETTING				 0x40014 //2bytes
+
+/*PA setting*/
+#define get_pin(value) (((unsigned short)((value) >> 3) << 8) | BIT((value) & 0x07))
+#define gpio_function_en(pin)			gpio_set_func((pin), AS_GPIO)
+#define gpio_output_en(pin)				gpio_set_output_en((pin), 1)
+#define gpio_output_dis(pin)			gpio_set_output_en((pin), 0)
+#define gpio_input_en(pin)				gpio_set_input_en((pin), 1)
+#define gpio_input_dis(pin)				gpio_set_input_en((pin), 0)
+#define gpio_set_low_level(pin)			gpio_write((pin), 0)
+#define gpio_set_high_level(pin)		gpio_write((pin), 1)
+
+unsigned char pa_hw_flag = 0;
+void pa_init(unsigned short v)
+{
+	unsigned short tx_pin = get_pin(v&0xff);
+	unsigned short rx_pin = get_pin((v&0xff00) >> 8);
+	if(tx_pin == rx_pin)
+	{
+		pa_hw_flag = 2;
+		return;
+	}
+
+	pa_hw_flag = 0;
+	gpio_function_en(tx_pin);
+	gpio_input_dis(tx_pin);
+	gpio_output_en(tx_pin);
+	gpio_set_low_level(tx_pin);
+	gpio_function_en(rx_pin);
+	gpio_input_dis(rx_pin);
+	gpio_output_en(rx_pin);
+	gpio_set_low_level(rx_pin);
+}
+
+void pa_operation(unsigned short v, unsigned char s)
+{
+	if(pa_hw_flag == 0)
+	{
+		unsigned short tx_pin = get_pin(v&0xff);
+		unsigned short rx_pin = get_pin((v&0xff00) >> 8);
+		if(s == 0) //close
+		{
+			gpio_set_low_level(tx_pin);
+			gpio_set_low_level(rx_pin);
+		}
+		else if(s == 1) //tx
+		{
+			gpio_set_high_level(tx_pin);
+			gpio_set_low_level(rx_pin);
+		}
+		else //rx
+		{
+			gpio_set_low_level(tx_pin);
+			gpio_set_high_level(rx_pin);
+		}
+	}
+}
+/*PA setting*/
+
 
 #define   GPIO_SYS 0xffffffff
 const GPIO_PinTypeDef gpio_map[48] = {
@@ -301,6 +357,7 @@ unsigned char  cmd_now=1;//1
 unsigned char  run=1;
 unsigned char  tx_cnt=0;
 unsigned char  hop=0;
+unsigned short pa_setting=0;
 
 
 
@@ -354,19 +411,19 @@ struct  test_list_s  ate_list[] = {
 void emi_init(void)
 {
 	rf_access_code_comm(0x29417671 );//access code  0xf8118ac9
-	if(read_reg8(0x840004)&0x01)
-	{
-		rf_turn_off_internal_cap();
-	}
-	write_reg8(0x40005,tx_cnt);//tx_cnt
-	write_reg8(0x40006,run);//run
-	write_reg8(0x40007,cmd_now);//cmd
-	write_reg8(0x40008,power_level);//power
-	write_reg8(0x40009,chn);//chn
-	write_reg8(0x4000a,mode);//mode
-	write_reg8(0x4000b,hop);//hop
-	write_reg8(0x40004,0);
-	write_reg32(0x4000c,0);
+#if CLOSE_INTERNAL_CAP
+	rf_turn_off_internal_cap();
+#endif
+	write_reg8(TX_PACKET_MODE_ADDR,tx_cnt);//tx_cnt
+	write_reg8(RUN_STATUE_ADDR,run);//run
+	write_reg8(TEST_COMMAND_ADDR,cmd_now);//cmd
+	write_reg8(POWER_ADDR,power_level);//power
+	write_reg8(CHANNEL_ADDR,chn);//chn
+	write_reg8(RF_MODE_ADDR,mode);//mode
+	write_reg8(CD_MODE_HOPPING_CHN,hop);//hop
+	write_reg8(RSSI_ADDR,0);
+	write_reg16(PA_TX_RX_SETTING, pa_setting);
+	write_reg32(RX_PACKET_NUM_ADDR, 0);
 	gpio_shutdown(GPIO_ALL);//for pm
 	analog_write(0x33,0xff);
 }
@@ -378,14 +435,16 @@ void emi_serviceloop(void)
 	unsigned char i=0;
 	while(1)
 	{
-	   run = read_reg8(0x40006);  // get the run state!
+	   run = read_reg8(RUN_STATUE_ADDR);  // get the run state!
 	   if(run!=0)
 	   {
-		   power_level = read_reg8(0x40008);
-		   chn = read_reg8(0x40009);
-		   mode=read_reg8(0x4000a);
-		   cmd_now = read_reg8(0x40007);  // get the command!
-		   tx_cnt = read_reg8(0x40005);
+			power_level = read_reg8(POWER_ADDR);
+			chn = read_reg8(CHANNEL_ADDR);
+			mode=read_reg8(RF_MODE_ADDR);
+			cmd_now = read_reg8(TEST_COMMAND_ADDR);  // get the command!
+			tx_cnt = read_reg8(TX_PACKET_MODE_ADDR);
+			pa_setting = read_reg16(PA_TX_RX_SETTING);
+			pa_init(pa_setting);
 			for (i=0; i<sizeof (ate_list)/sizeof (struct test_list_s); i++)
 			{
 				if(cmd_now == ate_list[i].cmd_id)
@@ -410,11 +469,20 @@ void emi_serviceloop(void)
 					{
 						ate_list[i].func(RF_MODE_LR_S2_500K,power_level,chn);
 					}
+					else if(mode==5)
+					{
+						ate_list[i].func(RF_MODE_PRIVATE_2M,power_level,chn);
+					}
+					else if(mode==6)
+					{
+						ate_list[i].func(RF_MODE_PRIVATE_1M,power_level,chn);
+					}
 					break;
 				}
 			}
+			pa_operation(pa_setting, 0);
 			run = 0;
-			write_reg8(0x40006, run);
+			write_reg8(RUN_STATUE_ADDR, run);
 	   }
 	}
 
@@ -424,36 +492,45 @@ void emi_serviceloop(void)
 
 void emicarrieronly(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 {
-
+	pa_operation(pa_setting, 1);
 #ifdef ATE_SW_TEST
 	RF_PowerTypeDef power = rf_power_Level_list_ate[pwr];
 #else
+#if(!MCU_CORE_B89)
 	RF_PowerTypeDef power = rf_power_Level_list[pwr];
+#else
+	RF_PowerTypeDef power = pwr;
+#endif
 #endif
 	rf_emi_single_tone(power,rf_chn);
-	while( ((read_reg8(0x40006)) == run ) &&  ((read_reg8(0x40007)) == cmd_now )\
-			&& ((read_reg8(0x40008)) == power_level ) &&  ((read_reg8(0x40009)) == chn )\
-			&& ((read_reg8(0x4000a)) == mode ));
+	while( ((read_reg8(RUN_STATUE_ADDR)) == run ) &&  ((read_reg8(TEST_COMMAND_ADDR)) == cmd_now )\
+			&& ((read_reg8(POWER_ADDR)) == power_level ) &&  ((read_reg8(CHANNEL_ADDR)) == chn )\
+			&& ((read_reg8(RF_MODE_ADDR)) == mode ) && ((read_reg16(PA_TX_RX_SETTING)) == pa_setting ));
 	rf_emi_stop();
 }
 
 void emi_con_prbs9(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 {
 	unsigned int t0 = reg_system_tick,chnidx=1;
+	pa_operation(pa_setting, 1);
 #ifdef ATE_SW_TEST
 	RF_PowerTypeDef power = rf_power_Level_list_ate[pwr];
 #else
+#if(!MCU_CORE_B89)
 	RF_PowerTypeDef power = rf_power_Level_list[pwr];
+#else
+	RF_PowerTypeDef power = pwr;
 #endif
-	hop = read_reg8(0x4000b);
+#endif
+	hop = read_reg8(CD_MODE_HOPPING_CHN);
 
 	rf_set_tx_rx_off_auto_mode();
 	rf_emi_tx_continue_setup(rf_mode,power,rf_chn,0);
 
 
-	while( ((read_reg8(0x40006)) == run ) &&  ((read_reg8(0x40007)) == cmd_now )\
-			&& ((read_reg8(0x40008)) == power_level ) &&  ((read_reg8(0x40009)) == chn )\
-			&& ((read_reg8(0x4000a)) == mode ))
+	while( ((read_reg8(RUN_STATUE_ADDR)) == run ) &&  ((read_reg8(TEST_COMMAND_ADDR)) == cmd_now )\
+			&& ((read_reg8(POWER_ADDR)) == power_level ) &&  ((read_reg8(CHANNEL_ADDR)) == chn )\
+			&& ((read_reg8(RF_MODE_ADDR)) == mode ) && ((read_reg16(PA_TX_RX_SETTING)) == pa_setting ))
 	{
 
 #if FIX_ZIGBEE_BANDEAGE_EN
@@ -493,9 +570,10 @@ void emi_con_prbs9(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 
 void emirx(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 {
+	pa_operation(pa_setting, 2);
 	rf_emi_rx(rf_mode,rf_chn);
-	write_reg8(0x40004,0);
-	write_reg32(0x4000c,0);
+	write_reg8(RSSI_ADDR,0);
+	write_reg32(RX_PACKET_NUM_ADDR,0);
 //Solve the problem that the customer's development board cannot pass rx_leakage authentication.Confirmed by wenfeng,modified by zhiwei.20210615
 #if(FIX_RX_LEAKAGE)
 	write_reg8(0x1360,(read_reg8(0x1360)|BIT(4)));//LDO_VCO_PUP auto to manual
@@ -503,16 +581,16 @@ void emirx(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 #endif
 
 	cmd_now = 0;//Those two sentences for dealing with the problem that click RxTest again the value of emi_rx_cnt not be cleared in emi rx test
-	write_reg8(0x40007, cmd_now); //add by zhiwei,confirmed by kaixin
-	while( ((read_reg8(0x40006)) == run ) &&  ((read_reg8(0x40007)) == cmd_now )\
-			&& ((read_reg8(0x40008)) == power_level ) &&  ((read_reg8(0x40009)) == chn )\
-			&& ((read_reg8(0x4000a)) == mode ))
+	write_reg8(TEST_COMMAND_ADDR, cmd_now); //add by zhiwei,confirmed by kaixin
+	while( ((read_reg8(RUN_STATUE_ADDR)) == run ) &&  ((read_reg8(TEST_COMMAND_ADDR)) == cmd_now )\
+			&& ((read_reg8(POWER_ADDR)) == power_level ) &&  ((read_reg8(CHANNEL_ADDR)) == chn )\
+			&& ((read_reg8(RF_MODE_ADDR)) == mode ) && ((read_reg16(PA_TX_RX_SETTING)) == pa_setting ))
 	{
 		rf_emi_rx_loop();
-		if(rf_emi_get_rxpkt_cnt()!=read_reg32(0x4000c))
+		if(rf_emi_get_rxpkt_cnt()!=read_reg32(RX_PACKET_NUM_ADDR))
 		{
-		write_reg8(0x40004,rf_emi_get_rssi_avg());
-		write_reg32(0x4000c,rf_emi_get_rxpkt_cnt());
+		write_reg8(RSSI_ADDR,rf_emi_get_rssi_avg());
+		write_reg32(RX_PACKET_NUM_ADDR,rf_emi_get_rxpkt_cnt());
 		}
 	}
 	rf_emi_stop();
@@ -521,10 +599,15 @@ void emirx(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 void emitxprbs9(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 {
 	unsigned int tx_num=0;
+	pa_operation(pa_setting, 1);
 #ifdef ATE_SW_TEST
 	RF_PowerTypeDef power = rf_power_Level_list_ate[pwr];
 #else
+#if(!MCU_CORE_B89)
 	RF_PowerTypeDef power = rf_power_Level_list[pwr];
+#else
+	RF_PowerTypeDef power = pwr;
+#endif
 #endif
 
 #if CE_ANTI_NOISE_TEST
@@ -532,9 +615,10 @@ void emitxprbs9(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 #else
 	rf_emi_tx_burst_setup(rf_mode,power,rf_chn,0);
 #endif
-	while( ((read_reg8(0x40006)) == run ) &&  ((read_reg8(0x40007)) == cmd_now )\
-			&& ((read_reg8(0x40008)) == power_level ) &&  ((read_reg8(0x40009)) == chn )\
-			&& ((read_reg8(0x4000a)) == mode  && ((read_reg8(0x40005)) == tx_cnt ) ))
+	while( ((read_reg8(RUN_STATUE_ADDR)) == run ) &&  ((read_reg8(TEST_COMMAND_ADDR)) == cmd_now )\
+			&& ((read_reg8(POWER_ADDR)) == power_level ) &&  ((read_reg8(CHANNEL_ADDR)) == chn )\
+			&& ((read_reg8(RF_MODE_ADDR)) == mode)  && ((read_reg8(TX_PACKET_MODE_ADDR)) == tx_cnt )\
+			&& ((read_reg16(PA_TX_RX_SETTING)) == pa_setting ))
 	{
 #if CE_ANTI_NOISE_TEST
 		if(get_noise_value() < MAX_NOISE_VALUE)
@@ -562,10 +646,15 @@ void emitxprbs9(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 void emitx55(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 {
 	unsigned int tx_num=0;
+	pa_operation(pa_setting, 1);
 #ifdef ATE_SW_TEST
 	RF_PowerTypeDef power = rf_power_Level_list_ate[pwr];
 #else
+#if(!MCU_CORE_B89)
 	RF_PowerTypeDef power = rf_power_Level_list[pwr];
+#else
+	RF_PowerTypeDef power = pwr;
+#endif
 #endif
 
 #if CE_ANTI_NOISE_TEST
@@ -573,9 +662,10 @@ void emitx55(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 #else
 	rf_emi_tx_burst_setup(rf_mode,power,rf_chn,2);
 #endif
-	while( ((read_reg8(0x40006)) == run ) &&  ((read_reg8(0x40007)) == cmd_now )\
-			&& ((read_reg8(0x40008)) == power_level ) &&  ((read_reg8(0x40009)) == chn )\
-			&& ((read_reg8(0x4000a)) == mode && ((read_reg8(0x40005)) == tx_cnt ) ))
+	while( ((read_reg8(RUN_STATUE_ADDR)) == run ) &&  ((read_reg8(TEST_COMMAND_ADDR)) == cmd_now )\
+			&& ((read_reg8(POWER_ADDR)) == power_level ) &&  ((read_reg8(CHANNEL_ADDR)) == chn )\
+			&& ((read_reg8(RF_MODE_ADDR)) == mode) && ((read_reg8(TX_PACKET_MODE_ADDR)) == tx_cnt )\
+			&& ((read_reg16(PA_TX_RX_SETTING)) == pa_setting ))
 	{
 #if CE_ANTI_NOISE_TEST
 		if(get_noise_value() < MAX_NOISE_VALUE)
@@ -603,10 +693,15 @@ void emitx55(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 void emitx0f(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 {
 	unsigned int tx_num=0;
+	pa_operation(pa_setting, 1);
 #ifdef ATE_SW_TEST
 	RF_PowerTypeDef power = rf_power_Level_list_ate[pwr];
 #else
+#if(!MCU_CORE_B89)
 	RF_PowerTypeDef power = rf_power_Level_list[pwr];
+#else
+	RF_PowerTypeDef power = pwr;
+#endif
 #endif
 
 #if CE_ANTI_NOISE_TEST
@@ -614,9 +709,10 @@ void emitx0f(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 #else
 	rf_emi_tx_burst_setup(rf_mode,power,rf_chn,1);
 #endif
-	while( ((read_reg8(0x40006)) == run ) &&  ((read_reg8(0x40007)) == cmd_now )\
-			&& ((read_reg8(0x40008)) == power_level ) &&  ((read_reg8(0x40009)) == chn )\
-			&& ((read_reg8(0x4000a)) == mode && ((read_reg8(0x40005)) == tx_cnt ) ))
+	while( ((read_reg8(RUN_STATUE_ADDR)) == run ) &&  ((read_reg8(TEST_COMMAND_ADDR)) == cmd_now )\
+			&& ((read_reg8(POWER_ADDR)) == power_level ) &&  ((read_reg8(CHANNEL_ADDR)) == chn )\
+			&& ((read_reg8(RF_MODE_ADDR)) == mode) && ((read_reg8(TX_PACKET_MODE_ADDR)) == tx_cnt )\
+			&& ((read_reg16(PA_TX_RX_SETTING)) == pa_setting ))
 	{
 #if CE_ANTI_NOISE_TEST
 		if(get_noise_value() < MAX_NOISE_VALUE)
@@ -642,15 +738,20 @@ void emitx0f(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 
 void emi_con_tx55(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 {
+	pa_operation(pa_setting, 1);
 #ifdef ATE_SW_TEST
 	RF_PowerTypeDef power = rf_power_Level_list_ate[pwr];
 #else
+#if(!MCU_CORE_B89)
 	RF_PowerTypeDef power = rf_power_Level_list[pwr];
+#else
+	RF_PowerTypeDef power = pwr;
+#endif
 #endif
 	rf_emi_tx_continue_setup(rf_mode,power,rf_chn,2);
-	while( ((read_reg8(0x40006)) == run ) &&  ((read_reg8(0x40007)) == cmd_now )\
-			&& ((read_reg8(0x40008)) == power_level ) &&  ((read_reg8(0x40009)) == chn )\
-			&& ((read_reg8(0x4000a)) == mode ))
+	while( ((read_reg8(RUN_STATUE_ADDR)) == run ) &&  ((read_reg8(TEST_COMMAND_ADDR)) == cmd_now )\
+			&& ((read_reg8(POWER_ADDR)) == power_level ) &&  ((read_reg8(CHANNEL_ADDR)) == chn )\
+			&& ((read_reg8(RF_MODE_ADDR)) == mode ) && ((read_reg16(PA_TX_RX_SETTING)) == pa_setting ))
 	rf_continue_mode_run();
 	rf_emi_stop();
 }
@@ -659,15 +760,20 @@ void emi_con_tx55(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 
 void emi_con_tx0f(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 {
+	pa_operation(pa_setting, 1);
 #ifdef ATE_SW_TEST
 	RF_PowerTypeDef power = rf_power_Level_list_ate[pwr];
 #else
+#if(!MCU_CORE_B89)
 	RF_PowerTypeDef power = rf_power_Level_list[pwr];
+#else
+	RF_PowerTypeDef power = pwr;
+#endif
 #endif
 	rf_emi_tx_continue_setup(rf_mode,power,rf_chn,1);
-	while( ((read_reg8(0x40006)) == run ) &&  ((read_reg8(0x40007)) == cmd_now )\
-			&& ((read_reg8(0x40008)) == power_level ) &&  ((read_reg8(0x40009)) == chn )\
-			&& ((read_reg8(0x4000a)) == mode ))
+	while( ((read_reg8(RUN_STATUE_ADDR)) == run ) &&  ((read_reg8(TEST_COMMAND_ADDR)) == cmd_now )\
+			&& ((read_reg8(POWER_ADDR)) == power_level ) &&  ((read_reg8(CHANNEL_ADDR)) == chn )\
+			&& ((read_reg8(RF_MODE_ADDR)) == mode ) && ((read_reg16(PA_TX_RX_SETTING)) == pa_setting ))
 	rf_continue_mode_run();
 	rf_emi_stop();
 }
@@ -743,65 +849,98 @@ void emi_suspendtimer_noren(RF_ModeTypeDef rf_mode,unsigned char Sec,signed char
 
 void read_flash_para(void)
 {
-   unsigned char cap = 0;
-   unsigned char cap_close_en = 0;
-   unsigned char temp = 0;
+	unsigned char cap_close_en = 0;
+	unsigned char temp = 0;
+	unsigned long calib_flash_base_addr = EMI_TEST_FLASH_128K_BASE;
+	unsigned char flash_size = (flash_read_mid() >> 16) & 0x7f;
 
-   flash_read_page(EMI_TEST_POWER_LEVEL,1,&temp);
-   if( temp != 0xff )
-   {
+	switch (flash_size)
+	{
+		case FLASH_SIZE_128K:
+			calib_flash_base_addr = EMI_TEST_FLASH_128K_BASE;
+			break;
+		case FLASH_SIZE_512K:
+			calib_flash_base_addr = EMI_TEST_FLASH_512K_BASE;
+			break;
+		default:
+			break;
+	}
+	flash_read_page(calib_flash_base_addr+EMI_TEST_POWER_LEVEL,1,&temp);
+	if( temp != 0xff )
+	{
 	   power_level = temp;
 	   write_reg8(POWER_ADDR,power_level);
-   }
-   flash_read_page(EMI_TEST_CHANNEL,1,&temp);
-   if( temp != 0xff )
-   {
+	}
+	flash_read_page(calib_flash_base_addr+EMI_TEST_CHANNEL,1,&temp);
+	if( temp != 0xff )
+	{
 	   chn = temp;
 	   write_reg8(CHANNEL_ADDR,chn);
-   }
-   flash_read_page(EMI_TEST_MODE,1,&temp);
-   if( temp != 0xff )
-   {
+	}
+	flash_read_page(calib_flash_base_addr+EMI_TEST_MODE,1,&temp);
+	if( temp != 0xff )
+	{
 	   mode = temp;
 	   write_reg8(RF_MODE_ADDR,mode);
-   }
-   flash_read_page(EMI_TEST_CMD,1,&temp);
-   if( temp != 0xff )
-   {
+	}
+	flash_read_page(calib_flash_base_addr+EMI_TEST_CMD,1,&temp);
+	if( temp != 0xff )
+	{
 	   cmd_now = temp;
 	   write_reg8(TEST_COMMAND_ADDR,temp);
-   }
-   flash_read_page(EMI_TEST_TX_MODE,1,&temp);
-   if( temp != 0xff )
-   {
+	}
+	flash_read_page(calib_flash_base_addr+EMI_TEST_TX_MODE,1,&temp);
+	if( temp != 0xff )
+	{
 	   tx_cnt = temp;
 	   write_reg8(TX_PACKET_MODE_ADDR,temp);
-   }
-   flash_read_page(CAP_VALUE,1,&cap);
-   if(cap!=0xff)
-   {
-	   rf_update_internal_cap(cap);
-   }
-   flash_read_page(CAP_CLOSE_EN,1,&cap_close_en);
-   if(cap_close_en != 0xff)
-   {
+	}
+	flash_read_page(calib_flash_base_addr+CAP_CLOSE_EN,1,&cap_close_en);
+	if(cap_close_en != 0xff)
+	{
 	   rf_turn_off_internal_cap();
-   }
+	}
 
-   flash_read_page(EMI_TEST_CD_MODE_HOPPING_CHN,1,&temp);
-   if( temp!= 0xff )
-   {
+	flash_read_page(calib_flash_base_addr+EMI_TEST_CD_MODE_HOPPING_CHN,1,&temp);
+	if( temp!= 0xff )
+	{
 	   hop = temp;
 	   write_reg8(CD_MODE_HOPPING_CHN,hop);
-   }
+	}
+#if MCU_CORE_B80
+	flash_read_page(calib_flash_base_addr+CAP_VALUE_FLASH,1,&temp);
+	if( temp!= 0xff )
+	{
+		rf_update_internal_cap(temp);
+	}
+#endif
 }
+
+#if MCU_CORE_B80
+/**
+ * @brief		This function serves to read otp EMI Parameter
+ * @param[in] 	none
+ * @return 		none
+ */
+
+void read_otp_para(void)
+{
+	unsigned int temp;
+	otp_read(CAP_VALUE_OTP, 1, &temp);
+	if((temp&0xff) != 0xff)
+	{
+		rf_update_internal_cap(temp&0xff);
+	}
+}
+#endif
 
 void user_init(void)
 {
 	emi_init();
     read_flash_para();   //  Power on read flash EMI parameter
-
-
+#if MCU_CORE_B80
+    read_otp_para();
+#endif
 }
 
 void main_loop(void)

@@ -4,7 +4,7 @@
  * @brief	This is the header file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -50,7 +50,12 @@
 extern "C" {
 #endif
 
-#if (MCU_CORE_B89)
+#if (MCU_CORE_B80)
+#define LED1     		        GPIO_PB3
+#define LED2     		        GPIO_PB4
+#define LED3     		        GPIO_PB5
+#define LED4     		        GPIO_PB6
+#elif (MCU_CORE_B89)
 #define LED1     		        GPIO_PD0
 #define LED2     		        GPIO_PD1
 #define LED3     		        GPIO_PD2
@@ -83,9 +88,7 @@ extern "C" {
 #define SUSPEND_PAD_WAKEUP   			2
 #define SUSPEND_32K_RC_WAKEUP   		3
 #define SUSPEND_32K_XTAL_WAKEUP			4
-#if(MCU_CORE_B89)
-#define SUSPEND_DEBOUNCE_WAKEUP			5
-#elif(MCU_CORE_87)
+#if(MCU_CORE_B87)
 #define SUSPEND_MDEC_WAKEUP				5
 #define SUSPEND_CORE_WAKEUP				6
 #endif
@@ -96,7 +99,7 @@ extern "C" {
 #define DEEP_32K_XTAL_WAKEUP      		9
 #if(MCU_CORE_B89)
 #define DEEP_DEBOUNCE_WAKEUP      		10
-#elif(MCU_CORE_87)
+#elif(MCU_CORE_B87)
 #define DEEP_MDEC_WAKEUP      			10
 #endif
 
@@ -106,7 +109,7 @@ extern "C" {
 #define DEEP_RET_32K_XTAL_WAKEUP     	13
 #if(MCU_CORE_B89)
 #define DEEP_RET_DEBOUNCE_WAKEUP      	14
-#elif(MCU_CORE_87)
+#elif(MCU_CORE_B87)
 #define DEEP_RET_MDEC_WAKEUP      		14
 #endif
 
@@ -121,16 +124,26 @@ extern "C" {
 /* Define system clock */
 #define CLOCK_SYS_CLOCK_HZ  	24000000
 
+#if(MCU_CORE_B89)
 #if(CLOCK_SYS_CLOCK_HZ==12000000)
 	#define SYS_CLK  	SYS_CLK_12M_Crystal
 #elif (CLOCK_SYS_CLOCK_HZ==16000000)
 	#define SYS_CLK  	SYS_CLK_16M_Crystal
 #elif (CLOCK_SYS_CLOCK_HZ==24000000)
 	#define SYS_CLK  	SYS_CLK_24M_Crystal
-#elif ((CLOCK_SYS_CLOCK_HZ==32000000) && (MCU_CORE_B85 || MCU_CORE_B87))
+#endif
+#else
+#if(CLOCK_SYS_CLOCK_HZ==12000000)
+	#define SYS_CLK  	SYS_CLK_12M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ==16000000)
+	#define SYS_CLK  	SYS_CLK_16M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ==24000000)
+	#define SYS_CLK  	SYS_CLK_24M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ==32000000)
 	#define SYS_CLK  	SYS_CLK_32M_Crystal
-#elif ((CLOCK_SYS_CLOCK_HZ==48000000) && (MCU_CORE_B85 || MCU_CORE_B87))
+#elif (CLOCK_SYS_CLOCK_HZ==48000000)
 	#define SYS_CLK  	SYS_CLK_48M_Crystal
+#endif
 #endif
 
 /* List tick per second/millisecond/microsecond */

@@ -6,7 +6,7 @@
  * @author	Driver Group
  * @date	2019
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without
@@ -85,8 +85,8 @@ typedef enum {
  * @param[in]  	div	- set the divider of clock of 7816 module.
  * @return     	none.
  * @note        the clk-source of s7816 is 24M,the clk of clk-pin can be divided as follow.
- * 				div:        0x60-4Mhz     0x40-6Mhz   0x20-12Mhz
- * 				baudrate:   0x60-10752    0x40-16194  0x20-32388
+ * 				div:        0x06-4Mhz     0x04-6Mhz   0x02-12Mhz
+ * 				baudrate:   0x06-10752    0x04-16194  0x02-32388
  */
 void s7816_set_clk(unsigned char Div);
 

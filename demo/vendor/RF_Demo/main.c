@@ -4,7 +4,7 @@
  * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -44,6 +44,7 @@
  *
  *******************************************************************************************************/
 #include "app_config.h"
+#include "calibration.h"
 
 extern void user_init();
 extern void main_loop (void);
@@ -104,17 +105,27 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
  */
 int main (void) {
 
-#if (MCU_CORE_B89)
-	cpu_wakeup_init(EXTERNAL_XTAL_24M);
-	rf_mode_init();
+#if (MCU_CORE_B85)
+	cpu_wakeup_init();
 #elif (MCU_CORE_B87)
 	cpu_wakeup_init(LDO_MODE, EXTERNAL_XTAL_24M);
-#elif (MCU_CORE_B85)
-	cpu_wakeup_init();
-#elif (MCU_CORE_B80)
+#elif (MCU_CORE_B89 || MCU_CORE_B80)
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
 #endif
 
+#if (MCU_CORE_B85) || (MCU_CORE_B87)
+	//Note: This function must be called, otherwise an abnormal situation may occur.
+	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
+	user_read_flash_value_calib();
+#elif (MCU_CORE_B89)
+	//Note: This function must be called, otherwise an abnormal situation may occur.
+	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
+	user_read_otp_value_calib();
+#endif
+
+#if (MCU_CORE_B89 || MCU_CORE_B80)
+	rf_mode_init();
+#endif
 
 #if (MCU_CORE_B89 || MCU_CORE_B80)
 #if(RF_MODE==RF_BLE_1M)//1
@@ -129,7 +140,7 @@ int main (void) {
 	rf_set_ble_500K_mode();
 #elif(RF_MODE==RF_LR_S8_125K)//6
 	rf_set_ble_125K_mode();
-#elif(RF_MODE==RF_ZIGBEE_250K)//7
+#elif((RF_MODE==RF_ZIGBEE_250K))//7
 	rf_set_zigbee_250K_mode();
 #elif(RF_MODE==RF_PRIVATE_250K)//8
 	rf_set_pri_250K_mode();

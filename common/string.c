@@ -4,7 +4,7 @@
  * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -123,14 +123,16 @@ void * memcpy(void * des_ptr, const void * src_ptr, unsigned int length) {
 	return des_ptr;
 }
 
-// for performance, assume lenght % 4 == 0,  and no memory overlapped
+// for performance, assume length % 4 == 0,  and no memory overlapped
 void memcpy4(void * d, const void * s, unsigned int length){
 	int* dst = (int*)d;
 	int* src = (int*)s;
-	assert((((int)dst) >> 2) << 2 == ((int)dst));			// address must alighn to 4
-	assert((((int)src) >> 2) << 2 == ((int)src));			// address must alighn to 4
-	assert((length >> 2) << 2 == length);					// lenght % 4 == 0
+/*
+	assert((((int)dst) >> 2) << 2 == ((int)dst));			// address must align to 4
+	assert((((int)src) >> 2) << 2 == ((int)src));			// address must align to 4
+	assert((length >> 2) << 2 == length);					// length % 4 == 0
 	assert(( ((char*)dst) + length <= (const char*)src) || (((const char*)src) + length <= (char*)dst));	//  no overlapped
+*/
 	unsigned int len = length >> 2;
 	while(len --){
 		*dst++ = *src++;
@@ -221,6 +223,21 @@ void * memset4(void * dest, int val, unsigned int len) {
 
 void zeromem4(void *data, unsigned int len){
 	memset4(data, 0, len);
+}
+
+unsigned long int __muldi3(unsigned long int a, unsigned long int b)
+{
+	unsigned long int res = 0;
+	unsigned long int cnt = a;
+
+	while (cnt)
+	{
+	  if (cnt & 1)
+		res += b;
+	  b <<= 1;
+	  cnt >>= 1;
+	}
+	return res;
 }
 
 

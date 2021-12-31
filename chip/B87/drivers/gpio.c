@@ -6,7 +6,7 @@
  * @author	Driver Group
  * @date	2019
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without
@@ -381,6 +381,9 @@ static void gpio_set_mux(GPIO_PinTypeDef pin, GPIO_FuncTypeDef func)
 //			else if(func == AS_CYC){
 //				val = BIT(5);
 //			}
+			else if(func == AS_RX_CYC2LNA){
+				val = BIT(6);
+			}
 		}
 		break;
 
@@ -397,9 +400,12 @@ static void gpio_set_mux(GPIO_PinTypeDef pin, GPIO_FuncTypeDef func)
 			}else if(func == AS_UART){
 				val = BIT(6);
 			}
-//			else if(func == AS_CYC){
-//				val = BIT(7);
-//			}
+			else if(func == AS_TX_CYC2PA){
+				val = BIT(7);
+			}
+			else if(func == AS_BLE_ACTIVE){
+				val = BIT(6)|BIT(7);
+			}
 		}
 		break;
 
@@ -419,6 +425,8 @@ static void gpio_set_mux(GPIO_PinTypeDef pin, GPIO_FuncTypeDef func)
 			else if(func == AS_CMP){
 				val = BIT(1);
 			}
+			else if(func ==AS_BLE_STATUS )
+				val=BIT(0)|BIT(1);
 		}
 		break;
 
@@ -609,6 +617,9 @@ static void gpio_set_mux(GPIO_PinTypeDef pin, GPIO_FuncTypeDef func)
 			else if(func == AS_PWM4_N){
 				val = BIT(5);
 			}
+			else if(func == AS_RX_CYC2LNA){
+				val=0;
+			}
 
 		}
 		break;
@@ -628,6 +639,9 @@ static void gpio_set_mux(GPIO_PinTypeDef pin, GPIO_FuncTypeDef func)
 			else if(func == AS_PWM5_N){
 				val = BIT(7);
 			}
+			else if(func == AS_TX_CYC2PA){
+				val = 0;
+			}
 		}
 		break;
 
@@ -646,6 +660,9 @@ static void gpio_set_mux(GPIO_PinTypeDef pin, GPIO_FuncTypeDef func)
 			else if(func == AS_UART){
 				val = BIT(1);
 			}
+			else if(func == AS_RX_CYC2LNA){
+				val=0;
+			}
 		}
 		break;
 
@@ -663,6 +680,9 @@ static void gpio_set_mux(GPIO_PinTypeDef pin, GPIO_FuncTypeDef func)
 			}
 			else if(func == AS_UART){
 				val = BIT(3);
+			}
+			else if(func == AS_TX_CYC2PA){
+				val = 0;
 			}
 		}
 		break;
@@ -927,7 +947,7 @@ void gpio_set_data_strength(GPIO_PinTypeDef pin, unsigned int value)
 
 /**
  * @brief      This function servers to set the specified GPIO as high resistor.
- * @param[in]  pin  - select the specified GPIO
+ * @param[in]  pin  - select the specified GPIO, GPIOE group is not included in GPIO_ALL
  * @return     none.
  */
 void gpio_shutdown(GPIO_PinTypeDef pin)
@@ -937,27 +957,43 @@ void gpio_shutdown(GPIO_PinTypeDef pin)
 	switch(group)
 	{
 		case GPIO_GROUPA:
+			reg_gpio_pa_out = 0x00;
 			reg_gpio_pa_oen |= bit;
-			reg_gpio_pa_out &= (!bit);
-			reg_gpio_pa_ie &= (!bit);
+			reg_gpio_pa_gpio |= (bit&0x7f);
+			reg_gpio_pa_ie &= ((~bit)|0x80);
 			break;
 		case GPIO_GROUPB:
+			reg_gpio_pb_out = 0x00;
 			reg_gpio_pb_oen |= bit;
-			reg_gpio_pb_out &= (!bit);
-			reg_gpio_pb_ie &= (!bit);
+			reg_gpio_pb_gpio |= bit;
+			reg_gpio_pb_ie &= (~bit);
 			break;
 		case GPIO_GROUPC:
+			reg_gpio_pc_out = 0x00;
 			reg_gpio_pc_oen |= bit;
-			reg_gpio_pc_out &= (!bit);
-			analog_write(areg_gpio_pc_ie, analog_read(areg_gpio_pc_ie) & (!bit));	
+			reg_gpio_pc_gpio |= bit;
+			analog_write(areg_gpio_pc_ie, analog_read(areg_gpio_pc_ie) & (~bit));
 			break;
 		case GPIO_GROUPD:
+			reg_gpio_pd_out = 0x00;
 			reg_gpio_pd_oen |= bit;
-			reg_gpio_pd_out &= (!bit);
-			reg_gpio_pd_ie &= (!bit);		
+			reg_gpio_pd_gpio |= bit;
+			reg_gpio_pd_ie &= (~bit);
+			break;
+		case GPIO_GROUPE:
+			reg_gpio_pe_out = 0x00;
+			reg_gpio_pe_oen |= bit;
+			reg_gpio_pe_gpio |= bit;
+			reg_gpio_pe_ie &= (~bit);
 			break;
 		case GPIO_ALL:
 		{
+			//set low level
+			reg_gpio_pa_out = 0x00;
+			reg_gpio_pb_out = 0x00;
+			reg_gpio_pc_out = 0x00;
+			reg_gpio_pd_out = 0x00;
+
 			//output disable
 			reg_gpio_pa_oen = 0xff;
 			reg_gpio_pb_oen = 0xff;
@@ -965,10 +1001,10 @@ void gpio_shutdown(GPIO_PinTypeDef pin)
 			reg_gpio_pd_oen = 0xff;
 
 			//dataO = 0
-			reg_gpio_pa_out = 0x00;
-			reg_gpio_pb_out = 0x00;
-			reg_gpio_pc_out = 0x00;
-			reg_gpio_pd_out = 0x00;
+			reg_gpio_pa_gpio = 0x7f;
+			reg_gpio_pb_gpio = 0xff;
+			reg_gpio_pc_gpio = 0xff;
+			reg_gpio_pd_gpio = 0xff;
 
 			//ie = 0
 			reg_gpio_pa_ie = 0x80;					//SWS   581<7>

@@ -4,7 +4,7 @@
  * @brief	This is the header file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -65,13 +65,18 @@ extern "C" {
 #endif
 #define AUDIO_MODE							AUDIO_AMIC_TO_CODEC
 
-
-
-
-
-/////////////////// Clock  /////////////////////////////////
+/* Define system clock */
 #define CLOCK_SYS_CLOCK_HZ  	24000000
 
+#if(MCU_CORE_B89)
+#if(CLOCK_SYS_CLOCK_HZ==12000000)
+	#define SYS_CLK  	SYS_CLK_12M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ==16000000)
+	#define SYS_CLK  	SYS_CLK_16M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ==24000000)
+	#define SYS_CLK  	SYS_CLK_24M_Crystal
+#endif
+#else
 #if(CLOCK_SYS_CLOCK_HZ==12000000)
 	#define SYS_CLK  	SYS_CLK_12M_Crystal
 #elif (CLOCK_SYS_CLOCK_HZ==16000000)
@@ -83,7 +88,7 @@ extern "C" {
 #elif (CLOCK_SYS_CLOCK_HZ==48000000)
 	#define SYS_CLK  	SYS_CLK_48M_Crystal
 #endif
-
+#endif
 enum{
 	CLOCK_SYS_CLOCK_1S = CLOCK_SYS_CLOCK_HZ,
 	CLOCK_SYS_CLOCK_1MS = (CLOCK_SYS_CLOCK_1S / 1000),

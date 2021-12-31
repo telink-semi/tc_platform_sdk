@@ -4,7 +4,7 @@
  * @brief	This is the header file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -81,6 +81,16 @@ extern "C" {
 #define ADC_RNG_MODE			    3	//Random number Gernerator,to use this Random mode need set TRNG_MODE_ENABLE=0 in random.h file.(By lirui)
 
 #define ADC_MODE				    ADC_VBAT_MODE
+#elif (MCU_CORE_B80)
+#define ADC_BASE_MODE			    1	//GPIO voltage
+#define ADC_VBAT_CHANNEL_MODE		2	//Vbat channel Battery Voltage
+#define ADC_TEMP_MODE_EE			3	//Temp test
+#define ADC_RNG_MODE			    4	//Random number Gernerator
+
+#define ADC_MODE				    ADC_BASE_MODE
+
+#define ADC_INTER_TEST				0
+#define MANNUAL_MODE_GET_ADC_SAMPLE_RESULT		0	//Vbat channel Battery Voltage mannual mode
 #endif
 
 
@@ -94,21 +104,30 @@ extern "C" {
 
 
 
-/////////////////// Clock  /////////////////////////////////
+/* Define system clock */
 #define CLOCK_SYS_CLOCK_HZ  	24000000
 
+#if(MCU_CORE_B89)
 #if(CLOCK_SYS_CLOCK_HZ==12000000)
 	#define SYS_CLK  	SYS_CLK_12M_Crystal
 #elif (CLOCK_SYS_CLOCK_HZ==16000000)
 	#define SYS_CLK  	SYS_CLK_16M_Crystal
 #elif (CLOCK_SYS_CLOCK_HZ==24000000)
 	#define SYS_CLK  	SYS_CLK_24M_Crystal
-#elif ((CLOCK_SYS_CLOCK_HZ==32000000) && (MCU_CORE_B85 || MCU_CORE_B87))
+#endif
+#else
+#if(CLOCK_SYS_CLOCK_HZ==12000000)
+	#define SYS_CLK  	SYS_CLK_12M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ==16000000)
+	#define SYS_CLK  	SYS_CLK_16M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ==24000000)
+	#define SYS_CLK  	SYS_CLK_24M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ==32000000)
 	#define SYS_CLK  	SYS_CLK_32M_Crystal
-#elif ((CLOCK_SYS_CLOCK_HZ==48000000) && (MCU_CORE_B85 || MCU_CORE_B87))
+#elif (CLOCK_SYS_CLOCK_HZ==48000000)
 	#define SYS_CLK  	SYS_CLK_48M_Crystal
 #endif
-
+#endif
 enum{
 	CLOCK_SYS_CLOCK_1S = CLOCK_SYS_CLOCK_HZ,
 	CLOCK_SYS_CLOCK_1MS = (CLOCK_SYS_CLOCK_1S / 1000),

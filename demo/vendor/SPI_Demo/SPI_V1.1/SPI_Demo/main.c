@@ -4,7 +4,7 @@
  * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -58,12 +58,12 @@ int main (void)   //must on ramcode
 {
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
 
-#if (0)
 
-	gpio_init(1);
 
 	clock_init(SYS_CLK);
-#endif
+
+	gpio_init(0);
+
 	user_init();
 
 	while (1) {

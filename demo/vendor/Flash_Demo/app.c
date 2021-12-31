@@ -4,7 +4,7 @@
  * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -121,8 +121,8 @@ volatile unsigned short status5=0;
 volatile unsigned int  mid=0;
 unsigned char uid[16]={0};
 
-#if (MCU_CORE_B85)
 
+#if (MCU_CORE_B85)
 void flash_mid1060c8_test(void)
 {
 	int i;
@@ -152,132 +152,41 @@ void flash_mid1060c8_test(void)
 	}
 	check_status.unlock_check = 1;
 }
-
-void flash_mid13325e_test(void)
-{
-	int i;
-
-	status1 = flash_read_status_mid13325e();
-	flash_lock_mid13325e(FLASH_LOCK_LOW_256K_MID13325E);
-	status2 = flash_read_status_mid13325e();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
-			err_status.lock_err = 1;
-			while(1);
-		}
-	}
-	check_status.lock_check = 1;
-
-	flash_unlock_mid13325e();
-	status3 = flash_read_status_mid13325e();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != 0xff){
-			err_status.unlock_err = 1;
-			while(1);
-		}
-	}
-	check_status.unlock_check = 1;
-}
-
-void flash_mid134051_test(void)
-{
-	int i;
-
-	status1 = flash_read_status_mid134051();
-	flash_lock_mid134051(FLASH_LOCK_LOW_256K_MID134051);
-	status2 = flash_read_status_mid134051();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
-			err_status.lock_err = 1;
-			while(1);
-		}
-	}
-	check_status.lock_check = 1;
-
-	flash_unlock_mid134051();
-	status3 = flash_read_status_mid134051();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != 0xff){
-			err_status.unlock_err = 1;
-			while(1);
-		}
-	}
-	check_status.unlock_check = 1;
-}
-
-void flash_mid136085_test(void)
-{
-	int i;
-
-	status1 = flash_read_status_mid136085();
-	flash_lock_mid136085(FLASH_LOCK_LOW_64K_MID136085);
-	status2 = flash_read_status_mid136085();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
-			err_status.lock_err = 1;
-			while(1);
-		}
-	}
-	check_status.lock_check = 1;
-
-	flash_unlock_mid136085();
-	status3 = flash_read_status_mid136085();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != 0xff){
-			err_status.unlock_err = 1;
-			while(1);
-		}
-	}
-	check_status.unlock_check = 1;
-
-	flash_erase_otp_mid136085(FLASH_SECURITY_ADDR);
-	flash_read_otp_mid136085(FLASH_SECURITY_ADDR,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != 0xff){
-			err_status.otp_erase_err = 1;
-			while(1);
-		}
-	}
-	check_status.otp_erase_check = 1;
-
-	flash_write_otp_mid136085(FLASH_SECURITY_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Write_Buff);
-	flash_read_otp_mid136085(FLASH_SECURITY_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
-			err_status.otp_write_err = 1;
-			while(1);
-		}
-	}
-	check_status.otp_write_check = 1;
-
-#if FLASH_OTP_LOCK
-	status4 = flash_read_status_mid136085();
-	flash_lock_otp_mid136085(FLASH_LOCK_OTP_0x001000_512K_MID136085);
-	status5 = flash_read_status_mid136085();
-	flash_erase_otp_mid136085(FLASH_SECURITY_ADDR);
-	flash_read_otp_mid136085(FLASH_SECURITY_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
-			err_status.otp_lock_err = 1;
-			while(1);
-		}
-	}
-	check_status.otp_lock_check = 1;
 #endif
-}
 
+#if (MCU_CORE_B87)
+void flash_mid1160c8_test(void)
+{
+	int i;
+
+	status1 = flash_read_status_mid1160c8();
+	flash_lock_mid1160c8(FLASH_LOCK_LOW_64K_MID1160C8);
+	status2 = flash_read_status_mid1160c8();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.lock_err = 1;
+			while(1);
+		}
+	}
+	check_status.lock_check = 1;
+
+	flash_unlock_mid1160c8();
+	status3 = flash_read_status_mid1160c8();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != 0xff){
+			err_status.unlock_err = 1;
+			while(1);
+		}
+	}
+	check_status.unlock_check = 1;
+}
+#endif
+
+#if (MCU_CORE_B85) || (MCU_CORE_B87) || (MCU_CORE_B89)
 void flash_mid1360c8_test(void)
 {
 	int i;
@@ -307,102 +216,9 @@ void flash_mid1360c8_test(void)
 	}
 	check_status.unlock_check = 1;
 }
-
-void flash_mid1360eb_test(void)
-{
-	int i;
-
-	status1 = flash_read_status_mid1360eb();
-	flash_lock_mid1360eb(FLASH_LOCK_LOW_64K_MID1360EB);
-	status2 = flash_read_status_mid1360eb();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
-			err_status.lock_err = 1;
-			while(1);
-		}
-	}
-	check_status.lock_check = 1;
-
-	flash_unlock_mid1360eb();
-	status3 = flash_read_status_mid1360eb();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != 0xff){
-			err_status.unlock_err = 1;
-			while(1);
-		}
-	}
-	check_status.unlock_check = 1;
-
-	flash_erase_otp_mid1360eb(FLASH_SECURITY_ADDR);
-	flash_read_otp_mid1360eb(FLASH_SECURITY_ADDR,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != 0xff){
-			err_status.otp_erase_err = 1;
-			while(1);
-		}
-	}
-	check_status.otp_erase_check = 1;
-
-	flash_write_otp_mid1360eb(FLASH_SECURITY_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Write_Buff);
-	flash_read_otp_mid1360eb(FLASH_SECURITY_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
-			err_status.otp_write_err = 1;
-			while(1);
-		}
-	}
-	check_status.otp_write_check = 1;
-
-#if FLASH_OTP_LOCK
-	status4 = flash_read_status_mid1360eb();
-	flash_lock_otp_mid1360eb(FLASH_LOCK_OTP_0x001000_512K_MID1360EB);
-	status5 = flash_read_status_mid1360eb();
-	flash_erase_otp_mid1360eb(FLASH_SECURITY_ADDR);
-	flash_read_otp_mid1360eb(FLASH_SECURITY_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
-			err_status.otp_lock_err = 1;
-			while(1);
-		}
-	}
-	check_status.otp_lock_check = 1;
 #endif
-}
 
-void flash_mid14325e_test(void)
-{
-	int i;
-
-	status1 = flash_read_status_mid14325e();
-	flash_lock_mid14325e(FLASH_LOCK_LOW_768K_MID14325E);
-	status2 = flash_read_status_mid14325e();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
-			err_status.lock_err = 1;
-			while(1);
-		}
-	}
-	check_status.lock_check = 1;
-
-	flash_unlock_mid14325e();
-	status3 = flash_read_status_mid14325e();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != 0xff){
-			err_status.unlock_err = 1;
-			while(1);
-		}
-	}
-	check_status.unlock_check = 1;
-}
-
+#if (MCU_CORE_B85) || (MCU_CORE_B87)
 void flash_mid1460c8_test(void)
 {
 	int i;
@@ -432,7 +248,9 @@ void flash_mid1460c8_test(void)
 	}
 	check_status.unlock_check = 1;
 }
+#endif
 
+#if (MCU_CORE_B85)
 void flash_mid011460c8_test(void)
 {
 	int i;
@@ -497,6 +315,269 @@ void flash_mid011460c8_test(void)
 	check_status.otp_lock_check = 1;
 #endif
 }
+#endif
+
+#if (MCU_CORE_B87)
+void flash_mid11325e_test(void)
+{
+	int i;
+
+	status1 = flash_read_status_mid11325e();
+	flash_lock_mid11325e(FLASH_LOCK_LOW_64K_MID11325E);
+	status2 = flash_read_status_mid11325e();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.lock_err = 1;
+			while(1);
+		}
+	}
+	check_status.lock_check = 1;
+
+	flash_unlock_mid11325e();
+	status3 = flash_read_status_mid11325e();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != 0xff){
+			err_status.unlock_err = 1;
+			while(1);
+		}
+	}
+	check_status.unlock_check = 1;
+}
+#endif
+
+#if (MCU_CORE_B85) || (MCU_CORE_B87)
+void flash_mid13325e_test(void)
+{
+	int i;
+
+	status1 = flash_read_status_mid13325e();
+	flash_lock_mid13325e(FLASH_LOCK_LOW_256K_MID13325E);
+	status2 = flash_read_status_mid13325e();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.lock_err = 1;
+			while(1);
+		}
+	}
+	check_status.lock_check = 1;
+
+	flash_unlock_mid13325e();
+	status3 = flash_read_status_mid13325e();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != 0xff){
+			err_status.unlock_err = 1;
+			while(1);
+		}
+	}
+	check_status.unlock_check = 1;
+}
+#endif
+
+#if (MCU_CORE_B85) || (MCU_CORE_B87)
+void flash_mid14325e_test(void)
+{
+	int i;
+
+	status1 = flash_read_status_mid14325e();
+	flash_lock_mid14325e(FLASH_LOCK_LOW_768K_MID14325E);
+	status2 = flash_read_status_mid14325e();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.lock_err = 1;
+			while(1);
+		}
+	}
+	check_status.lock_check = 1;
+
+	flash_unlock_mid14325e();
+	status3 = flash_read_status_mid14325e();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != 0xff){
+			err_status.unlock_err = 1;
+			while(1);
+		}
+	}
+	check_status.unlock_check = 1;
+}
+#endif
+
+#if (MCU_CORE_B85)
+void flash_mid134051_test(void)
+{
+	int i;
+
+	status1 = flash_read_status_mid134051();
+	flash_lock_mid134051(FLASH_LOCK_LOW_256K_MID134051);
+	status2 = flash_read_status_mid134051();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.lock_err = 1;
+			while(1);
+		}
+	}
+	check_status.lock_check = 1;
+
+	flash_unlock_mid134051();
+	status3 = flash_read_status_mid134051();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != 0xff){
+			err_status.unlock_err = 1;
+			while(1);
+		}
+	}
+	check_status.unlock_check = 1;
+}
+#endif
+
+#if (MCU_CORE_B85) ||(MCU_CORE_B80)
+void flash_mid136085_test(void)
+{
+	int i;
+
+	status1 = flash_read_status_mid136085();
+	flash_lock_mid136085(FLASH_LOCK_LOW_64K_MID136085);
+	status2 = flash_read_status_mid136085();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.lock_err = 1;
+			while(1);
+		}
+	}
+	check_status.lock_check = 1;
+
+	flash_unlock_mid136085();
+	status3 = flash_read_status_mid136085();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != 0xff){
+			err_status.unlock_err = 1;
+			while(1);
+		}
+	}
+	check_status.unlock_check = 1;
+
+	flash_erase_otp_mid136085(FLASH_SECURITY_ADDR);
+	flash_read_otp_mid136085(FLASH_SECURITY_ADDR,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != 0xff){
+			err_status.otp_erase_err = 1;
+			while(1);
+		}
+	}
+	check_status.otp_erase_check = 1;
+
+	flash_write_otp_mid136085(FLASH_SECURITY_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Write_Buff);
+	flash_read_otp_mid136085(FLASH_SECURITY_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.otp_write_err = 1;
+			while(1);
+		}
+	}
+	check_status.otp_write_check = 1;
+
+#if FLASH_OTP_LOCK
+	status4 = flash_read_status_mid136085();
+	flash_lock_otp_mid136085(FLASH_LOCK_OTP_0x001000_512K_MID136085);
+	status5 = flash_read_status_mid136085();
+	flash_erase_otp_mid136085(FLASH_SECURITY_ADDR);
+	flash_read_otp_mid136085(FLASH_SECURITY_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.otp_lock_err = 1;
+			while(1);
+		}
+	}
+	check_status.otp_lock_check = 1;
+#endif
+}
+#endif
+
+#if (MCU_CORE_B85)
+void flash_mid1360eb_test(void)
+{
+	int i;
+
+	status1 = flash_read_status_mid1360eb();
+	flash_lock_mid1360eb(FLASH_LOCK_LOW_64K_MID1360EB);
+	status2 = flash_read_status_mid1360eb();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.lock_err = 1;
+			while(1);
+		}
+	}
+	check_status.lock_check = 1;
+
+	flash_unlock_mid1360eb();
+	status3 = flash_read_status_mid1360eb();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != 0xff){
+			err_status.unlock_err = 1;
+			while(1);
+		}
+	}
+	check_status.unlock_check = 1;
+
+	flash_erase_otp_mid1360eb(FLASH_SECURITY_ADDR);
+	flash_read_otp_mid1360eb(FLASH_SECURITY_ADDR,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != 0xff){
+			err_status.otp_erase_err = 1;
+			while(1);
+		}
+	}
+	check_status.otp_erase_check = 1;
+
+	flash_write_otp_mid1360eb(FLASH_SECURITY_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Write_Buff);
+	flash_read_otp_mid1360eb(FLASH_SECURITY_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.otp_write_err = 1;
+			while(1);
+		}
+	}
+	check_status.otp_write_check = 1;
+
+#if FLASH_OTP_LOCK
+	status4 = flash_read_status_mid1360eb();
+	flash_lock_otp_mid1360eb(FLASH_LOCK_OTP_0x001000_512K_MID1360EB);
+	status5 = flash_read_status_mid1360eb();
+	flash_erase_otp_mid1360eb(FLASH_SECURITY_ADDR);
+	flash_read_otp_mid1360eb(FLASH_SECURITY_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.otp_lock_err = 1;
+			while(1);
+		}
+	}
+	check_status.otp_lock_check = 1;
+#endif
+}
+#endif
 
 void user_init()
 {
@@ -526,6 +607,7 @@ void user_init()
 	}
 	check_status.write_check = 1;
 
+#if (MCU_CORE_B85)
 	switch(mid)
 	{
 	case 0x1060c8:
@@ -559,220 +641,7 @@ void user_init()
 		break;
 	}
 
-	check_status.umid_check = flash_read_mid_uid_with_check((unsigned int *)&mid, uid);
-}
-
-
 #elif (MCU_CORE_B87)
-
-void flash_mid1160c8_test(void)
-{
-	int i;
-
-	status1 = flash_read_status_mid1160c8();
-	flash_lock_mid1160c8(FLASH_LOCK_LOW_64K_MID1160C8);
-	status2 = flash_read_status_mid1160c8();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
-			err_status.lock_err = 1;
-			while(1);
-		}
-	}
-	check_status.lock_check = 1;
-
-	flash_unlock_mid1160c8();
-	status3 = flash_read_status_mid1160c8();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != 0xff){
-			err_status.unlock_err = 1;
-			while(1);
-		}
-	}
-	check_status.unlock_check = 1;
-}
-
-void flash_mid1360c8_test(void)
-{
-	int i;
-
-	status1 = flash_read_status_mid1360c8();
-	flash_lock_mid1360c8(FLASH_LOCK_LOW_256K_MID1360C8);
-	status2 = flash_read_status_mid1360c8();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
-			err_status.lock_err = 1;
-			while(1);
-		}
-	}
-	check_status.lock_check = 1;
-
-	flash_unlock_mid1360c8();
-	status3 = flash_read_status_mid1360c8();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != 0xff){
-			err_status.unlock_err = 1;
-			while(1);
-		}
-	}
-	check_status.unlock_check = 1;
-}
-
-void flash_mid1460c8_test(void)
-{
-	int i;
-
-	status1 = flash_read_status_mid1460c8();
-	flash_lock_mid1460c8(FLASH_LOCK_LOW_768K_MID1460C8);
-	status2 = flash_read_status_mid1460c8();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
-			err_status.lock_err = 1;
-			while(1);
-		}
-	}
-	check_status.lock_check = 1;
-
-	flash_unlock_mid1460c8();
-	status3 = flash_read_status_mid1460c8();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != 0xff){
-			err_status.unlock_err = 1;
-			while(1);
-		}
-	}
-	check_status.unlock_check = 1;
-}
-
-void flash_mid11325e_test(void)
-{
-	int i;
-
-	status1 = flash_read_status_mid11325e();
-	flash_lock_mid11325e(FLASH_LOCK_LOW_64K_MID11325E);
-	status2 = flash_read_status_mid11325e();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
-			err_status.lock_err = 1;
-			while(1);
-		}
-	}
-	check_status.lock_check = 1;
-
-	flash_unlock_mid11325e();
-	status3 = flash_read_status_mid11325e();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != 0xff){
-			err_status.unlock_err = 1;
-			while(1);
-		}
-	}
-	check_status.unlock_check = 1;
-}
-
-void flash_mid13325e_test(void)
-{
-	int i;
-
-	status1 = flash_read_status_mid13325e();
-	flash_lock_mid13325e(FLASH_LOCK_LOW_256K_MID13325E);
-	status2 = flash_read_status_mid13325e();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
-			err_status.lock_err = 1;
-			while(1);
-		}
-	}
-	check_status.lock_check = 1;
-
-	flash_unlock_mid13325e();
-	status3 = flash_read_status_mid13325e();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != 0xff){
-			err_status.unlock_err = 1;
-			while(1);
-		}
-	}
-	check_status.unlock_check = 1;
-}
-
-void flash_mid14325e_test(void)
-{
-	int i;
-
-	status1 = flash_read_status_mid14325e();
-	flash_lock_mid14325e(FLASH_LOCK_LOW_768K_MID14325E);
-	status2 = flash_read_status_mid14325e();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
-			err_status.lock_err = 1;
-			while(1);
-		}
-	}
-	check_status.lock_check = 1;
-
-	flash_unlock_mid14325e();
-	status3 = flash_read_status_mid14325e();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != 0xff){
-			err_status.unlock_err = 1;
-			while(1);
-		}
-	}
-	check_status.unlock_check = 1;
-}
-
-void user_init()
-{
-	int i;
-
-	sleep_ms(1000);
-
-	mid = flash_read_mid();
-
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != 0xff){
-			err_status.erase_err = 1;
-			while(1);
-		}
-	}
-	check_status.erase_check = 1;
-
-	flash_write_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Write_Buff);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
-			err_status.write_err = 1;
-			while(1);
-		}
-	}
-	check_status.write_check = 1;
-
 	switch(mid)
 	{
 	case 0x1160c8:
@@ -797,70 +666,7 @@ void user_init()
 		break;
 	}
 
-	check_status.umid_check = flash_read_mid_uid_with_check((unsigned int *)&mid, uid);
-}
-
-
-#else
-
-void flash_mid1360c8_test(void)
-{
-	int i;
-
-	status1 = flash_read_status_mid1360c8();
-	flash_lock_mid1360c8(FLASH_LOCK_LOW_256K_MID1360C8);
-	status2 = flash_read_status_mid1360c8();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
-			err_status.lock_err = 1;
-			while(1);
-		}
-	}
-	check_status.lock_check = 1;
-
-	flash_unlock_mid1360c8();
-	status3 = flash_read_status_mid1360c8();
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != 0xff){
-			err_status.unlock_err = 1;
-			while(1);
-		}
-	}
-	check_status.unlock_check = 1;
-}
-
-void user_init()
-{
-	int i;
-
-	sleep_ms(1000);
-
-	mid = flash_read_mid();
-
-	flash_erase_sector(FLASH_ADDR);
-	flash_read_page(FLASH_ADDR,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != 0xff){
-			err_status.erase_err = 1;
-			while(1);
-		}
-	}
-	check_status.erase_check = 1;
-
-	flash_write_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Write_Buff);
-	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
-	for(i=0; i<FLASH_BUFF_LEN; i++){
-		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
-			err_status.write_err = 1;
-			while(1);
-		}
-	}
-	check_status.write_check = 1;
-
+#elif (MCU_CORE_B89)
 	switch(mid)
 	{
 	case 0x1360c8:
@@ -869,15 +675,22 @@ void user_init()
 	default:
 		break;
 	}
+#elif (MCU_CORE_B80)
+	switch(mid)
+	{
+	case 0x136085:
+		flash_mid136085_test();
+		break;
+	default:
+		break;
+	}
+#endif
 
 	check_status.umid_check = flash_read_mid_uid_with_check((unsigned int *)&mid, uid);
 }
-#endif
-
 
 void main_loop (void)
 {
 	sleep_ms(1000);
 }
-
 

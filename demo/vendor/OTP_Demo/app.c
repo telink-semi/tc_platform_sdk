@@ -4,7 +4,7 @@
  * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -51,6 +51,7 @@ unsigned char read_buff[16] = {0};
 unsigned char read_init_margain_buff[16] ={0};
 unsigned char read_pgm_margain_buff[16]={0};
 unsigned char loop=0;
+extern unsigned char	otp_program_flag;
 volatile unsigned int flag = 0;
 
 #define OTP_TEST        1 //using the otp test area,only for internal testing.
@@ -63,26 +64,34 @@ void user_init()
 	gpio_set_output_en(LED1 | LED2 | LED3 | LED4, 1); 		//enable output
 	gpio_set_input_en(LED1 | LED2 | LED3 | LED4 ,0);		//disable input
 	gpio_write(LED1 | LED2 | LED3 | LED4, 0);              	//LED On
-
+if(otp_program_flag==0){
 	otp_set_active_mode();
+}
 
-    otp_read(0x08, 1, (unsigned int *)&flag);
-
-	if(0x544c4e4b == flag)
-	{
-		return;
-	}
 #if(OTP_TEST_MODE == OTP_TEST )
 	otp_test_mode_en();
-#endif
-    otp_write(0x0,4,(unsigned int *)write_buff);
-	otp_read(0x0, 4, (unsigned int *)read_buff);
+    otp_write(0x00,4,(unsigned int *)write_buff);
+	otp_read(0x00, 4, (unsigned int *)read_buff);
+#if(MCU_CORE_B89)
 	pm_set_dcdc_output(DCDC_3P0V);
-	otp_initial_margin_read(0x0, 4, (unsigned int *)read_init_margain_buff);
-	otp_pgm_margin_read(0x0, 4, (unsigned int *)read_pgm_margain_buff);
+#endif
+	otp_initial_margin_read(0x00, 4, (unsigned int *)read_init_margain_buff);
+	otp_pgm_margin_read(0x00, 4, (unsigned int *)read_pgm_margain_buff);
+#if(MCU_CORE_B89)
 	pm_set_dcdc_output(DCDC_2P5V);
-#if(OTP_TEST_MODE == OTP_TEST )
+#endif
 	otp_test_mode_dis();
+#elif(OTP_TEST_MODE == OTP_COMMON )
+	otp_write(0x6000,4,(unsigned int *)write_buff);
+	otp_read(0x6000, 4, (unsigned int *)read_buff);
+#if(MCU_CORE_B89)
+	pm_set_dcdc_output(DCDC_3P0V);
+#endif
+	otp_initial_margin_read(0x6000, 4, (unsigned int *)read_init_margain_buff);
+	otp_pgm_margin_read(0x6000, 4, (unsigned int *)read_pgm_margain_buff);
+#if(MCU_CORE_B89)
+	pm_set_dcdc_output(DCDC_2P5V);
+#endif
 #endif
 
 	unsigned char flag_debug = 0;

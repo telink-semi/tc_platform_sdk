@@ -4,7 +4,7 @@
  * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -61,7 +61,11 @@ void user_init()
 	adc_init();
 
 	#if(ADC_MODE==ADC_BASE_MODE)
+#if (MCU_CORE_B80)
+		adc_base_init(ADC_GPIO_PB0);
+#else
 		adc_base_init(GPIO_PB0);
+#endif
 	 adc_set_ain_pre_scaler(ADC_PRESCALER_1F8);//ADC pre_scaling default value is ADC_PRESCALER_1F8, it can change after adc_base_init().
 	#elif (ADC_MODE==ADC_VBAT_MODE)
 		adc_vbat_init(GPIO_PB0);

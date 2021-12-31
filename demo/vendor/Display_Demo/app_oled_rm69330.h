@@ -1,12 +1,12 @@
 /********************************************************************************************************
- * @file	oled_rm69330.h
+ * @file	app_oled_rm69330.h
  *
- * @brief	This is the header file for B91
+ * @brief	This is the header file for b85m
  *
  * @author	Driver Group
- * @date	2019
+ * @date	2018
  *
- * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without

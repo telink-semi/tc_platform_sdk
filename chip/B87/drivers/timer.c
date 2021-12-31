@@ -6,7 +6,7 @@
  * @author	Driver Group
  * @date	2019
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without
@@ -66,18 +66,27 @@ _attribute_ram_code_sec_noinline_ void sleep_us(unsigned long us)
  */
 void timer0_gpio_init(GPIO_PinTypeDef pin, GPIO_PolTypeDef pol)
 {
-	gpio_set_func(pin ,AS_GPIO);
+	/*
+		initiate gpio trigger and gpio width mode of timer0,it is not necessary to turn on the gpio risc0 mask,
+		otherwise, gpio interrupt will be generated, resulting in continuous in-out interrupt,changed by shuaixing,confirmed by jianzhi 20210902.
+	 */
 	gpio_set_output_en(pin, 0); //disable output
+	unsigned char	bit = pin & 0xff;
+	BM_SET(reg_gpio_irq_risc0_en(pin), bit);
 	gpio_set_input_en(pin ,1);//enable input
 	if(pol==POL_FALLING)
 	{
 		gpio_setup_up_down_resistor(pin,PM_PIN_PULLUP_10K);
+		BM_SET(reg_gpio_pol(pin), bit);
 	}
 	else if(pol==POL_RISING)
 	{
 		gpio_setup_up_down_resistor(pin,PM_PIN_PULLDOWN_100K);
+		BM_CLR(reg_gpio_pol(pin), bit);
 	}
-	gpio_set_interrupt_risc0(pin, pol);
+	gpio_set_func(pin ,AS_GPIO);
+	/*clear gpio interrupt sorce (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
+	reg_irq_src |= FLD_IRQ_GPIO_RISC0_EN;
 }
 /**
  * @brief     initiate GPIO for gpio trigger and gpio width mode of timer1.
@@ -87,18 +96,28 @@ void timer0_gpio_init(GPIO_PinTypeDef pin, GPIO_PolTypeDef pol)
  */
 void timer1_gpio_init(GPIO_PinTypeDef pin,GPIO_PolTypeDef pol)
 {
-	gpio_set_func(pin ,AS_GPIO);
+	/*
+		initiate gpio trigger and gpio width mode of timer1,it is not necessary to turn on the gpio risc1 mask,
+		otherwise, gpio interrupt will be generated, resulting in continuous in-out interrupt,changed by shuaixing,confirmed by jianzhi 20210902.
+	 */
 	gpio_set_output_en(pin, 0); //disable output
+	unsigned char	bit = pin & 0xff;
+	BM_SET(reg_gpio_irq_risc1_en(pin), bit);
 	gpio_set_input_en(pin ,1);//enable input
 	if(pol==POL_FALLING)
 	{
 		gpio_setup_up_down_resistor(pin,PM_PIN_PULLUP_10K);
+		BM_SET(reg_gpio_pol(pin), bit);
 	}
 	else if(pol==POL_RISING)
 	{
 		gpio_setup_up_down_resistor(pin,PM_PIN_PULLDOWN_100K);
+		BM_CLR(reg_gpio_pol(pin), bit);
 	}
-	gpio_set_interrupt_risc1(pin, pol);
+	gpio_set_func(pin ,AS_GPIO);
+	/*clear gpio interrupt sorce (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
+	reg_irq_src |= FLD_IRQ_GPIO_RISC1_EN;
+
 }
 /**
  * @brief     initiate GPIO for gpio trigger and gpio width mode of timer2.
@@ -108,30 +127,21 @@ void timer1_gpio_init(GPIO_PinTypeDef pin,GPIO_PolTypeDef pol)
  */
 void timer2_gpio_init(GPIO_PinTypeDef pin,GPIO_PolTypeDef pol)
 {
-	gpio_set_func(pin ,AS_GPIO);
 	gpio_set_output_en(pin, 0); //disable output
+	unsigned char bit = pin & 0xff;
+	BM_SET(reg_gpio_irq_risc2_en(pin), bit);
 	gpio_set_input_en(pin ,1);//enable input
 	if(pol==POL_FALLING)
 	{
 		gpio_setup_up_down_resistor(pin,PM_PIN_PULLUP_10K);
-	}
-	else if(pol==POL_RISING)
-	{
-		gpio_setup_up_down_resistor(pin,PM_PIN_PULLDOWN_100K);
-	}
-
-	unsigned char bit = pin & 0xff;
-
-	BM_SET(reg_gpio_irq_risc2_en(pin), bit);
-
-	if(pol==POL_FALLING)
-	{
 		BM_SET(reg_gpio_pol(pin), bit);
 	}
 	else if(pol==POL_RISING)
 	{
+		gpio_setup_up_down_resistor(pin,PM_PIN_PULLDOWN_100K);
 		BM_CLR(reg_gpio_pol(pin), bit);
 	}
+	gpio_set_func(pin ,AS_GPIO);
 }
 /**
  * @brief     set mode, initial tick and capture of timer0.

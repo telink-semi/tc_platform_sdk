@@ -4,7 +4,7 @@
  * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -51,10 +51,12 @@
 #define trans_buff_Len  16
 
 volatile unsigned char uart_rx_flag;
+volatile unsigned char uart_rx_done_flag;
 volatile unsigned int  uart_ndmairq_cnt;
 volatile unsigned char uart_ndmairq_index;
 volatile unsigned char uart_cts_count=0;
 extern volatile unsigned char rts_count;
+volatile  unsigned char uart_rx_trig_level=1;//B85/B87/B89 can only be 1,B80 can be 1 or 4.
 __attribute__((aligned(4))) unsigned char rec_buff[rec_buff_Len]={0};
 __attribute__((aligned(4))) unsigned char trans_buff[trans_buff_Len] = {0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff};
 
@@ -79,10 +81,12 @@ void user_init()
 
 	dma_chn_irq_enable(FLD_DMA_CHN_UART_RX | FLD_DMA_CHN_UART_TX, 0);
 
-	uart_irq_enable(1,0);   //uart RX irq enable
+	uart_irq_enable(1,0);   //uart rx_buff irq enable
 
-	uart_ndma_irq_triglevel(1,0);	//set the trig level. 1 indicate one byte will occur interrupt
-
+	uart_ndma_irq_triglevel(uart_rx_trig_level,0);	//set the trig level. 1 indicate one byte will occur interrupt
+#if(MCU_CORE_B80)
+	uart_rxdone_irq_en();  //mask rx_done irq
+#endif
 	uart_mask_error_irq_enable();// open uart_error_mask,when stop bit error or parity error,it will enter error_interrupt.
 
 	irq_enable();
@@ -101,15 +105,18 @@ void main_loop (void)
 {
 	sleep_ms(1000);
 	gpio_toggle(LED1);
-#if( FLOW_CTR == NONE)
-
-	for(unsigned char i=0;i<trans_buff_Len;i++){
-		uart_ndma_send_byte(trans_buff[i]);
-	}
-	if(uart_rx_flag>0){
+#if(FLOW_CTR == NONE)
+#if(MCU_CORE_B80)
+	if(uart_rx_done_flag>0)
+#else
+	if(uart_rx_flag>0)
+#endif
+	{
 		uart_ndmairq_cnt=0; //Clear uart_ndmairq_cnt
 		uart_rx_flag=0;
-		for(unsigned char i=0;i<rec_buff_Len;i++){
+		uart_rx_done_flag=0;
+		for(unsigned char i=0;i<rec_buff_Len;i++)
+		{
 			uart_ndma_send_byte(rec_buff[i]);
 #if( UART_WIRE_MODE == UART_1WIRE_MODE)
 			uart_rtx_pin_tx_trig();
@@ -127,11 +134,17 @@ void main_loop (void)
 #elif( FLOW_CTR ==  USE_RTS )
 	while(rts_count==1)//to make the rts obvious,design the program to trigger rts one time.
 	{
-		uart_irq_enable(0,0);//dis rhe rx,then the data will store in the rx buff until the amount of data trigger rts pin.
+		uart_irq_enable(0,0);//dis irq rx,then the data will store in the rx buff until the amount of data trigger rts pin.
+#if(MCU_CORE_B80)
+		uart_rxdone_irq_dis();
+#endif
 		if((reg_uart_buf_cnt&FLD_UART_RX_BUF_CNT)>(RTS_THRESH-1))//trigger rts pin
 		{
 			sleep_ms(1000);
 			uart_irq_enable(1,0);//enable rx,then the data sending and receiving will proceed normally,
+#if(MCU_CORE_B80)
+			uart_rxdone_irq_en();
+#endif
 			rts_count=0;//trigger only once.
 			break;
 		}

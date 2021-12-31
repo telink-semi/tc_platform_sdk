@@ -1,12 +1,12 @@
 /********************************************************************************************************
  * @file	app_dma.c
  *
- * @brief	This is the source file for B91
+ * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2019
+ * @date	2018
  *
- * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,7 @@
 #define B91M_B80_SLAVE_MODE_PROTOCOL		   	2 // B91m/B80 spi slave mode as slave
 #define B91M_SLAVE_PROTOCOL		       	        3 // B91m spi slave as slave
 
-#define SPI_PROTOCOL			       B85_B87_B89_SLAVE_PROTOCOL
+#define SPI_PROTOCOL			       B91M_B80_SLAVE_MODE_PROTOCOL
 
 /**********************************************************************************************************************
  *                                         3line SPI slave enable                                              	 	  *
@@ -95,7 +95,7 @@
  #define SPI_SLAVE_NUM	    				 ONE_SLAVE
 
  #if (SPI_SLAVE_NUM == MULTI_SLAVE)
- #define SLAVE_X_CSN_PIN  GPIO_PB5
+ #define SLAVE_X_CSN_PIN(x)  ((x)==1 ? GPIO_PA5 : GPIO_PA4)
  #endif
 #define 	DATA_BYTE_LEN     16
 
@@ -183,9 +183,9 @@
 
 void user_init()
 {
-	gpio_set_func(LED1|LED2|LED3|LED4 ,AS_GPIO);
-	gpio_set_output_en(LED1|LED2|LED3|LED4, 1); 		//enable output
-	gpio_set_input_en(LED1|LED2|LED3|LED4,0);			//disable input
+	gpio_set_func(LED1|LED2,AS_GPIO);
+	gpio_set_output_en(LED1|LED2, 1); 		//enable output
+	gpio_set_input_en(LED1|LED2,0);			//disable input
 	/*if you not use spi pin default,should disable it.*/
 	gpio_set_func(GPIO_SPI_MOSI,AS_GPIO);
 	gpio_set_func( GPIO_SPI_MISO,AS_GPIO);
@@ -208,6 +208,7 @@ unsigned int mian_loop_cnt=1;
 volatile  unsigned char end_irq_flag = 0;
 void main_loop (void)
 {
+	mian_loop_cnt++;
 	sleep_ms(100);
 	gpio_toggle(LED1);
 #if (SPI_PROTOCOL == B85_B87_B89_SLAVE_PROTOCOL)
@@ -268,13 +269,13 @@ void main_loop (void)
 #if (SPI_SLAVE_NUM == MULTI_SLAVE)
 	if(mian_loop_cnt&1)
 	{
-		spi_pin_config.spi_csn_pin=spi_change_csn_pin(spi_pin_config.spi_csn_pin,SLAVE_X_CSN_PIN);
+		spi_change_csn_pin(SLAVE_X_CSN_PIN(0),SLAVE_X_CSN_PIN(1));
 	}
 	else
 	{
-		spi_pin_config.spi_csn_pin=spi_change_csn_pin(spi_pin_config.spi_csn_pin,GPIO_PA4);
+		spi_change_csn_pin(SLAVE_X_CSN_PIN(1),SLAVE_X_CSN_PIN(0));
 	}
-	cnt++;
+	mian_loop_cnt++;
 #endif
 }
 
@@ -306,9 +307,9 @@ unsigned char spi_rx_buff[SPI_RX_BUFF_LEN] __attribute__((aligned(4))) = {0x00};
 void user_init()
 {
 	//1.init the LED pin,for indication
-	gpio_set_func(LED1|LED2|LED3|LED4 ,AS_GPIO);
-	gpio_set_output_en(LED1|LED2|LED3|LED4, 1); //enable output
-	gpio_set_input_en(LED1|LED2|LED3|LED4,0);	//disable input
+	gpio_set_func(LED1|LED2 ,AS_GPIO);
+	gpio_set_output_en(LED1|LED2, 1); //enable output
+	gpio_set_input_en(LED1|LED2,0);	//disable input
 
 	gpio_set_func(GPIO_SPI_MOSI,AS_GPIO);
 	gpio_set_func( GPIO_SPI_MISO,AS_GPIO);

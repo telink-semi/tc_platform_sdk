@@ -4,7 +4,7 @@
  * @brief	This is the header file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -50,37 +50,102 @@
 
 #if(TEST_DEMO==BQB_DEMO)
 
-#define SUPPORT_CONFIGURATION	0
+/*Set to 1, open the code related to BQB tool configuration (uart port, CAP value, TX Power, PA port, calibration position, etc.).*/
+#define SUPPORT_CONFIGURATION			0
 
-#if SUPPORT_CONFIGURATION
-#define ADDR_USR_DEFINITION 		0x04
+/* set power of Tx */
+#if MCU_CORE_B85
+#define BQB_TX_POWER					RF_POWER_P7p02dBm
+#elif MCU_CORE_B87
+#define BQB_TX_POWER					RF_POWER_P6p91dBm
+#elif MCU_CORE_B89
+#define BQB_TX_POWER					RF_POWER_P4p98dBm
+#elif(MCU_CORE_B80)
+#define BQB_TX_POWER					RF_POWER_P6p97dBm
 #endif
 
-#define RETURN_TX_LEN_EN    0          			//1: return tx length, 0:not return tx length
+#define ACCESS_CODE        	0x29417671
+
+/* set configuration flash address */
+#if SUPPORT_CONFIGURATION
+#define CONFIGURATION_ADDR_UART_TX		0x12
+#define	CONFIGURATION_ADDR_UART_RX		0x13
+#define CONFIGURATION_ADDR_PA_TX		0x14
+#define	CONFIGURATION_ADDR_PA_RX		0x15
+#define CONFIGURATION_ADDR_CAP			0x16
+#define	CONFIGURATION_ADDR_POWER		0x17
+#endif
+
+/* set flash address to set internal cap value and switch internal/external cap */
+#define CAP_SET_FLASH_ADDR_2M 			0x1fe000
+#define CAP_SET_FLASH_ADDR_1M 			0xfe000
+#define CAP_SET_FLASH_ADDR_512K 		0x77000 //B85m:0x77000 B91m:0x7e000
+#define CAP_SET_FLASH_ADDR_128K 		0x1e000
+#define CAP_SET_FLASH_ADDR_64K			0xe000
+
+#if MCU_CORE_B80
+#define CAP_SET_OTP_16K					0x3fc8 //0x3fc8-0x3fcb,32bit
+#endif
+
+//#define TP0_CALIBRATION_SRAM		0x04
+//#define TP1_CALIBRATION_SRAM		0x05
+#define CAP_CALIBRATION_SRAM		0x06
+
+#if !SUPPORT_CONFIGURATION
+#define SWITCH_INTERNAL_CAP 			1		// 0: external cap, 1: internal cap
+#define CAP_SET_FLASH_ADDR 				CAP_SET_FLASH_ADDR_128K
+#endif
+
 /* set uart port */
 #if (MCU_CORE_B85 || MCU_CORE_B87)
-#define BQB_UART_TX_PORT   	UART_TX_PA2
-#define BQB_UART_RX_PORT   	UART_RX_PB0
+#define BQB_UART_TX_PORT   				UART_TX_PA2
+#define BQB_UART_RX_PORT   				UART_RX_PB0
 #elif(MCU_CORE_B89)
-#define BQB_UART_TX_PORT   	UART_TX_PB4
-#define BQB_UART_RX_PORT   	UART_RX_PB3
+#define BQB_UART_TX_PORT   				UART_TX_PB4
+#define BQB_UART_RX_PORT   				UART_RX_PB3
+#elif(MCU_CORE_B80)
+#define BQB_UART_TX_PORT   				GPIO_PA7
+#define BQB_UART_RX_PORT   				GPIO_PA6
+#endif
+#define BQB_UART_BUAD	   	115200
+
+/* set pa port */
+#if !SUPPORT_CONFIGURATION
+#define BQB_PA_TX_PORT   	GPIO_PA0
+#define BQB_PA_RX_PORT   	GPIO_PA0
 #endif
 
 /* set the length of preamble */
-#define BQB_PREAMBLE_LEN   	6
-/* set power of Tx */
+#define BQB_PREAMBLE_LEN   		6
+/* set TX return result */
+#define RETURN_TX_LEN_EN    0          			//1: return tx length, 0:not return tx length
 
-#if (MCU_CORE_B85)
-#define BQB_TX_POWER			RF_POWER_P7p02dBm
-#elif(MCU_CORE_B87)
-#define BQB_TX_POWER			RF_POWER_P7p37dBm
-#elif(MCU_CORE_B89)
-#define BQB_TX_POWER			RF_POWER_P4p98dBm
+/*set calibration position*/
+#define SWITCH_CALIBRATION_POSITION		1		//1:FLASH, 2:SRAM
+
+#if SUPPORT_CONFIGURATION
+/**
+ *  @brief  union structure for configuration
+ */
+typedef struct
+{
+	unsigned char uart_tx;
+	unsigned char uart_rx;
+	unsigned char pa_tx;
+	unsigned char pa_rx;
+	unsigned char flash:7;
+	unsigned char cap:1;
+	unsigned char cal_pos:2;
+	unsigned char power_mode:2;
+	unsigned char power;
+}usr_def_t;
+
+/* global value for configuration */
+extern usr_def_t usr_config;
+#define get_pin(value) (((unsigned short)((value) >> 3) << 8) | BIT((value) & 0x07))
 #endif
 
-#define AUTO 0
 
-#define USER_REDEFINE_PA	0
 /**
  *  @brief  command type for BQB Test
  */
@@ -95,26 +160,9 @@
 #define STATUS_EVENT_MASK	(0)
 #define REPORT_EVENT_MASK	(BIT(15))
 
+#define DEBUG_FLAG			0
 #define LED1     			GPIO_PB2
 
-#if SUPPORT_CONFIGURATION
-/**
- *  @brief  union structure for configuration
- */
-typedef union
-{
-	unsigned char usr_def;
-	struct
-	{
-		unsigned char uart :5;
-		unsigned char cap  :1;
-		unsigned char f_size:2;
-	}usr_def_t;
-}usr_def_u;
-
-/* global value for configuration */
-extern usr_def_u usr_def_byte;
-#endif
 
 /**
  *  @brief  command status for BQB Test
@@ -144,14 +192,10 @@ void  bqbtest_init(void);
 void bqb_serviceloop (void);
 
 
-/**
- * @brief     uart send data function with not DMA method.
- *            variable uart_TxIndex,it must cycle the four registers 0x90 0x91 0x92 0x93 for the design of SOC.
- *            so we need variable to remember the index.
- * @param[in] uartData - the data to be send.
- * @return    none
- */
-void bqb_uart_ndma_send_byte(unsigned char uartData);
+extern void bqb_pa_init();
+
+extern void bqb_pa_set_mode(unsigned char rtx); //0:rx, 1:tx, other:off
+
 #endif
 
 #endif /* BQB_H_ */

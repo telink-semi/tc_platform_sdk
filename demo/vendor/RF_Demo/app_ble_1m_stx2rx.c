@@ -4,7 +4,7 @@
  * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -48,7 +48,7 @@
 #if(RF_MODE==RF_BLE_1M_STX2RX)
 #define TX_FIRST				1
 #define RX_FIRST				2
-#define RF_STRX_MODE			RX_FIRST
+#define RF_STRX_MODE			TX_FIRST
 
 #define STX_WAITTIME_US         4000
 #define SRX_WAITTIME_US         100000
@@ -58,9 +58,28 @@
 
 #define ACCESS_CODE				0x29417671
 
+#define PTA_NONE				0
+#define PTA_2WIRE				1
+#define PTA_3WIRE				2
+#define PTA_MODE				PTA_NONE
+#define WLAN_ACTIVE_PIN			GPIO_PB5
 
-
-
+#if(MCU_CORE_B87)
+#define BLE_PRIORITY_PIN		PTA_BLE_PRIORITY_PB3
+#define BLE_ACTIVE_PIN			PTA_BLE_ACTIVE_PB3
+#define BLE_STATUS_PIN			PTA_BLE_STATUS_PB4
+#define WLAN_DENY_PIN			PTA_WLAN_DENY_PB5
+#elif(MCU_CORE_B89)
+#define BLE_PRIORITY_PIN		PTA_BLE_PRIORITY_PA3
+#define BLE_ACTIVE_PIN			PTA_BLE_ACTIVE_PA3
+#define BLE_STATUS_PIN			PTA_BLE_STATUS_PA4
+#define WLAN_DENY_PIN			PTA_WLAN_DENY_PA6
+#elif(MCU_CORE_B80)
+#define	BLE_PRIORITY_PIN		GPIO_PA3
+#define BLE_ACTIVE_PIN			GPIO_PA3
+#define BLE_STATUS_PIN			GPIO_PA4
+#define WLAN_DENY_PIN			GPIO_PA6
+#endif
 volatile unsigned int rx_cnt=0;
 volatile unsigned int tx_cnt=0;
 volatile unsigned int timeout_cnt=0;
@@ -83,6 +102,14 @@ void user_init()
 	rf_set_power_level_index (RF_POWER);
 	rf_trx_state_set(RF_MODE_AUTO,RF_FREQ);
 	rf_rx_buffer_set(rx_packet,64, 0);
+
+#if(!MCU_CORE_B85)
+#if (PTA_MODE == PTA_2WIRE)
+	rf_2wire_pta_init(BLE_PRIORITY_PIN,WLAN_ACTIVE_PIN,PTA_BLE_PRIORITY_TRX);
+#elif(PTA_MODE == PTA_3WIRE)
+	rf_3wire_pta_init(BLE_ACTIVE_PIN,BLE_STATUS_PIN,WLAN_DENY_PIN,PTA_BLE_STATUS_RX);
+#endif
+#endif
 
 #if(RF_STRX_MODE==TX_FIRST)
     irq_disable();
@@ -109,6 +136,9 @@ void main_loop (void)
 	rf_set_rx_timeout(SRX_WAITTIME_US);
 	while(1)
 	{
+#if ((PTA_MODE == PTA_2WIRE)&&(!MCU_CORE_B85))
+		while(gpio_read(WLAN_ACTIVE_PIN));
+#endif
 		tx_state=0;
 		rx_state=0;
 		timeout_state=0;
@@ -133,6 +163,13 @@ void main_loop (void)
 				timeout_cnt++;
 				break;
 			}
+#if ((PTA_MODE == PTA_3WIRE)&&(!MCU_CORE_B85))
+			else if(rf_irq_src_get() & FLD_RF_IRQ_WIFI_DENY)
+			{
+				rf_irq_clr_src(FLD_RF_IRQ_WIFI_DENY);
+				break;
+			}
+#endif
 		}
 	}
 
@@ -141,6 +178,9 @@ void main_loop (void)
 
 	while(1)
 	{
+#if ((PTA_MODE == PTA_2WIRE)&&(!MCU_CORE_B85))
+		while(gpio_read(WLAN_ACTIVE_PIN));
+#endif
 		tx_state=0;
 		rx_state=0;
 		timeout_state=0;
@@ -165,6 +205,13 @@ void main_loop (void)
 				timeout_cnt++;
 				break;
 			}
+#if ((PTA_MODE == PTA_3WIRE)&&(!MCU_CORE_B85))
+			else if(rf_irq_src_get() & FLD_RF_IRQ_WIFI_DENY)
+			{
+				rf_irq_clr_src(FLD_RF_IRQ_WIFI_DENY);
+				break;
+			}
+#endif
 		}
 	}
 #endif

@@ -138,6 +138,8 @@ typedef enum{
 	AS_PWM3_N	= 29,
 	AS_PWM4_N	= 30,
 	AS_PWM5_N	= 31,
+	AS_TX_CYC2PA  = 32,
+	AS_RX_CYC2LNA  = 33,
 }GPIO_FuncTypeDef;
 
 
@@ -166,6 +168,24 @@ typedef enum {
 	PM_PIN_PULLUP_10K 		= 3,
 }GPIO_PullTypeDef;
 
+/*
+ *  @brief define gpio irq status types
+ */
+typedef enum{
+	GPIO_IRQ_GPIO_STATUS           =   	BIT(18),
+	GPIO_IRQ_GPIO2RISC0_STATUS     =    BIT(21),
+	GPIO_IRQ_GPIO2RISC1_STATUS     =    BIT(22),
+}gpio_irq_status_e;
+
+/*
+ *  @brief define gpio irq mask types
+ */
+typedef enum{
+	GPIO_IRQ_MASK_GPIO       = 			BIT(18),
+	GPIO_IRQ_MASK_GPIO2RISC0 = 			BIT(21),
+	GPIO_IRQ_MASK_GPIO2RISC1 = 			BIT(22),
+
+}gpio_irq_mask_e;
 
 /**
  * @brief      This function servers to initialization all gpio.
@@ -260,8 +280,9 @@ static inline void gpio_write(GPIO_PinTypeDef pin, unsigned int value)
  * @param[in] pin - the pin needs to read its level
  * @return    the pin's level(1: high 0: low)
  */
-static inline unsigned int gpio_read(GPIO_PinTypeDef pin)
+static inline _Bool gpio_read(GPIO_PinTypeDef pin)
 {
+	//the return value is the bit of the pin, not 0 or 1, and is strongly converted to bool.
 	return BM_IS_SET(reg_gpio_in(pin), pin & 0xff);
 }
 /**
@@ -287,6 +308,47 @@ static inline void gpio_read_all(unsigned char *p)
 	p[2] = REG_ADDR8(0x590);
 	p[3] = REG_ADDR8(0x598);
 }
+/**
+ * @brief      This function serves to get gpio irq status.
+ * @param[in]  status  - the pin needs to disable its IRQ.
+ * @return     1:the interrupt status type is 1, 0: the interrupt status type is 0..
+ */
+static inline char gpio_get_irq_status(gpio_irq_status_e status)
+{
+	return (reg_irq_src & status);
+}
+
+
+/**
+ * @brief      This function serves to clr gpio irq status.
+ * @param[in]  status  - the pin needs to disable its IRQ.
+ * @return     none.
+ */
+static inline void gpio_clr_irq_status(gpio_irq_status_e status)
+{
+	reg_irq_src=status;
+}
+
+/**
+ * @brief      This function serves to enable gpio irq mask function.
+ * @param[in]  mask  - to select interrupt type.
+ * @return     none.
+ */
+static inline void gpio_set_irq_mask(gpio_irq_mask_e mask)
+{
+	BM_SET(reg_irq_mask, mask);
+}
+
+/**
+ * @brief      This function serves to disable gpio irq mask function.
+ *             if disable gpio interrupt,choose disable gpio mask , use interface gpio_clr_irq_mask.
+ * @return     none.
+ */
+static inline void gpio_clr_irq_mask(gpio_irq_mask_e mask)
+{
+	BM_CLR(reg_irq_mask, mask);
+}
+
 
 /**
  * @brief     This function set the pin toggle.
@@ -317,7 +379,7 @@ void gpio_setup_up_down_resistor(GPIO_PinTypeDef gpio, GPIO_PullTypeDef up_down)
 
 /**
  * @brief      This function servers to set the specified GPIO as high resistor.
- * @param[in]  pin  - select the specified GPIO
+ * @param[in]  pin  - select the specified GPIO, GPIOE group is not included in GPIO_ALL
  * @return     none.
  */
 void gpio_shutdown(GPIO_PinTypeDef pin);
@@ -339,7 +401,7 @@ static inline void gpio_set_interrupt_pol(GPIO_PinTypeDef pin, GPIO_PolTypeDef f
 }
 
 /**
- * @brief     This function set a pin's IRQ.
+ * @brief     This function set a pin's gpio irq interrupt,if need disable gpio interrupt,choose disable gpio mask,use interface gpio_clr_irq_mask.
  * @param[in] pin - the pin needs to enable its IRQ
  * @param[in] falling - value of the edge polarity(1: falling edge 0: rising edge)
  * @return    none
@@ -355,7 +417,7 @@ static inline void gpio_set_interrupt(GPIO_PinTypeDef pin, GPIO_PolTypeDef falli
 		BM_CLR(reg_gpio_pol(pin), bit);
 	}
 /*clear gpio interrupt sorce (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
-	reg_irq_src |= FLD_IRQ_GPIO_EN|FLD_IRQ_GPIO_RISC0_EN|FLD_IRQ_GPIO_RISC1_EN;
+	reg_irq_src |= FLD_IRQ_GPIO_EN;
 	reg_irq_mask |= FLD_IRQ_GPIO_EN;
 
 
@@ -379,7 +441,7 @@ static inline void gpio_en_interrupt(GPIO_PinTypeDef pin, int en)   // reg_irq_m
 }
 
 /**
- * @brief     This function set a pin's IRQ.
+ * @brief     This function set a pin's gpio gpio2risc0 interrupt,if need disable gpio interrupt,choose disable gpio mask,use interface gpio_clr_irq_mask.
  * @param[in] pin - the pin needs to enable its IRQ
  * @param[in] falling - value of the edge polarity(1: falling edge 0: rising edge)
  * @return    none
@@ -395,7 +457,7 @@ static inline void gpio_set_interrupt_risc0(GPIO_PinTypeDef pin, GPIO_PolTypeDef
 
 /*clear gpio interrupt sorce (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
 
-	reg_irq_src |= FLD_IRQ_GPIO_EN|FLD_IRQ_GPIO_RISC0_EN|FLD_IRQ_GPIO_RISC1_EN;
+	reg_irq_src |= FLD_IRQ_GPIO_RISC0_EN;
 	reg_irq_mask |= FLD_IRQ_GPIO_RISC0_EN;
 
 }
@@ -420,7 +482,7 @@ static inline void gpio_en_interrupt_risc0(GPIO_PinTypeDef pin, int en)  // reg_
 
 
 /**
- * @brief     This function set a pin's IRQ.
+ * @brief     This function set a pin's gpio gpio2risc1 interrupt,if need disable gpio interrupt,choose disable gpio mask,use interface gpio_clr_irq_mask.
  * @param[in] pin - the pin needs to enable its IRQ
  * @param[in] falling - value of the edge polarity(1: falling edge 0: rising edge)
  * @return    none
@@ -435,7 +497,7 @@ static inline void gpio_set_interrupt_risc1(GPIO_PinTypeDef pin, GPIO_PolTypeDef
 		BM_CLR(reg_gpio_pol(pin), bit);
 	}
 /*clear gpio interrupt sorce (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
-	reg_irq_src |= FLD_IRQ_GPIO_EN|FLD_IRQ_GPIO_RISC0_EN|FLD_IRQ_GPIO_RISC1_EN;
+	reg_irq_src |= FLD_IRQ_GPIO_RISC1_EN;
 	reg_irq_mask |= FLD_IRQ_GPIO_RISC1_EN;
 
 }

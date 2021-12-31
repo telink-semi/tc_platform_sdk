@@ -6,7 +6,7 @@
  * @author	Driver Group
  * @date	2019
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without
@@ -49,16 +49,18 @@
 #include "dfifo.h"
 #include "timer.h"
 #include "flash.h"
-#include "pm.h"
+#include "lib/include/pm.h"
 _attribute_data_retention_
-adc_vref_ctr_t adc_vref_cfg = {
-	.adc_vref 		= 1175, //default ADC ref voltage (unit:mV)
-	.adc_calib_en	= 1, 	//default disable
-};
+volatile unsigned short adc_vref = 1175;//ADC calibration value voltage (unit:mV).
+_attribute_data_retention_
+volatile signed char adc_vref_offset = 0;//ADC calibration value voltage offset (unit:mV).
 _attribute_data_retention_
 unsigned short adc_gpio_calib_vref = 1175;//ADC gpio calibration value voltage (unit:mV)(used for gpio voltage sample).
 _attribute_data_retention_
+signed char adc_gpio_calib_vref_offset = 0;//ADC gpio calibration value voltage offset (unit:mV)(used for gpio voltage sample).
+_attribute_data_retention_
 unsigned short adc_vbat_calib_vref = 1175;//ADC vbat calibration value voltage (unit:mV)(used for internal voltage sample).
+
 volatile unsigned short	adc_code;
 unsigned char   adc_pre_scale;
 unsigned char   adc_vbat_divider;
@@ -119,7 +121,7 @@ void adc_set_ref_voltage(ADC_RefVolTypeDef v_ref)
 		//Vref buffer bias current trimming: 		100%
 		//Comparator preamp bias current trimming:  100%
 		analog_write( areg_ain_scale  , (analog_read( areg_ain_scale  )&(0xC0)) | 0x15 );
-		adc_vref_cfg.adc_vref=900;// v_ref=ADC_VREF_0P9V,
+		adc_vref=900;// v_ref=ADC_VREF_0P9V,
 	}
 }
 
@@ -216,103 +218,31 @@ void adc_init(void){
 
 }
 /**
- * @brief This function is used to calib ADC 1.2V vref.
- * @param[in] none
+ * @brief This function is used to calib ADC 1.2V vref for GPIO.
+ * @param[in] data - GPIO sampling calibration value.
  * @return none
  */
-/********************************************************************************************
-	There have two kind of calibration value of ADC 1.2V vref in flash,and one calibration value in Efuse.
-	Two kind of ADC calibration value in flash are adc_vbat_calib_vref(used for internal voltage sample)
-	and adc_gpio_calib_vref(used for gpio voltage sample).The ADC calibration value in Efuse is
-	adc_vbat_calib_vref(used for internal voltage sample).
-	The priority of adc_gpio_calib_vref is: Flash > Default(1175mV).
-	The priority of adc_vbat_calib_vref is: Flash > Efuse >Default(1175mV).
-	The limit error scope of Flash adc_vbat_calib_vref is 10mV, Flash adc_gpio_calib_vref is 30mV.
-********************************************************************************************/
-void adc_update_1p2_vref_calib_value(void)
+void adc_set_gpio_calib_vref(unsigned short data)
 {
-	unsigned char flash_mid[3];
-	unsigned char flash_uid[16];
-	unsigned char flash_mid_sure = 0;
-	unsigned int adc_vref_calib_flash_addr = 0;
-	unsigned char adc_vref_calib_value_rd[4] = {0};
-	unsigned char calib_vref_ok = 1;
-
-	if (adc_vref_cfg.adc_calib_en == 1)
-	{
-		/******check for flash mid********/
-		flash_mid_sure = flash_read_mid_uid_with_check((unsigned int *)flash_mid, flash_uid);
-		/******find the address of adc calibration value in flash********/
-		if ((flash_mid_sure == 1))
-		{
-			switch (flash_mid[2])
-			{
-				case 0x10:
-					adc_vref_calib_flash_addr = 0xe0c0;
-					break;
-				case 0x11:
-					adc_vref_calib_flash_addr = 0x1e0c0;
-					break;
-				case 0x13:
-					adc_vref_calib_flash_addr = 0x770c0;
-					break;
-				case 0x14:
-					adc_vref_calib_flash_addr = 0xfe0c0;
-					break;
-			}
-			if (adc_vref_calib_flash_addr != 0)
-			{
-				/******read 4 byte calibration value from flash********/
-				flash_read_page(adc_vref_calib_flash_addr, 4, adc_vref_calib_value_rd);
-				if ((adc_vref_calib_value_rd[0] != 0xff) || (adc_vref_calib_value_rd[1] != 0xff ))//if there has calibration value.
-				{
-					/******Method of calculating calibration Flash_gpio_Vref value: ********/
-					/******Vref = [1175 +First_Byte-255+Second_Byte] mV =  [920 + First_Byte + Second_Byte] mV  ********/
-					adc_gpio_calib_vref = 920 + adc_vref_calib_value_rd[0] + adc_vref_calib_value_rd[1];
-				}
-				else
-				{
-					calib_vref_ok = 0;
-				}
-
-				if ((adc_vref_calib_value_rd[2] != 0xff) || (adc_vref_calib_value_rd[3]  != 0xff ))//if there has calibration value.
-				{
-					/******Method of calculating calibration Flash_vbat_Vref value: ********/
-					/******Vref = [1175 +First_Byte-255+Second_Byte] mV =  [920 + First_Byte + Second_Byte] mV  ********/
-					adc_vbat_calib_vref = 920 + adc_vref_calib_value_rd[2] + adc_vref_calib_value_rd[3];
-				}
-				else
-				{
-					calib_vref_ok = 0;
-				}
-				/******Check the calibration value whether is correct********/
-				if ((adc_vbat_calib_vref < 1047) || (adc_vbat_calib_vref > 1302) || (adc_gpio_calib_vref < 1047) || (adc_gpio_calib_vref > 1302))
-				{
-					calib_vref_ok = 0;
-				}
-			}
-			else
-			{
-				calib_vref_ok = 0;
-			}
-		}
-		else
-		{
-			calib_vref_ok = 0;
-		}
-		/******if flash do not exist the calibration value or the value is incorrect or check mid fail,use the Efuse calibration value********/
-		if (calib_vref_ok == 0)
-		{
-			adc_gpio_calib_vref = 1175;
-			//////////////////// get Efuse bit32~63 info ////////////////////
-			unsigned int  efuse_32to63bit_info = pm_get_info1();
-			if((efuse_32to63bit_info&0xff))//if there has calibration value.
-			{
-				unsigned short adc_vref_calib_idx = efuse_32to63bit_info & 0xff; //ADC Ref: efuse bit32~bit39 8bits.
-				adc_vbat_calib_vref = 1047 + adc_vref_calib_idx ; //ADC ref voltage: g_adc_vref (unit: mV)
-			}
-		}
-	}
+	adc_gpio_calib_vref = data;
+}
+/**
+ * @brief This function is used to calib ADC 1.2V vref offset for GPIO two-point.
+ * @param[in] offset - GPIO sampling two-point calibration value offset.
+ * @return none
+ */
+void adc_set_gpio_two_point_calib_offset(signed char offset)
+{
+	adc_gpio_calib_vref_offset = offset;
+}
+/**
+ * @brief This function is used to calib ADC 1.2V vref for VBAT.
+ * @param[in] data - VBAT sampling calibration value
+ * @return none
+ */
+void adc_set_vbat_calib_vref(unsigned short data)
+{
+	adc_vbat_calib_vref = data;
 }
 
 /**
@@ -330,7 +260,8 @@ void adc_base_init(GPIO_PinTypeDef pin)
 		 * Add Vref calibrate operation.
 		 * add by chaofan.20201029.
 	*/
-	adc_vref_cfg.adc_vref = adc_gpio_calib_vref;//set adc_vref as adc_gpio_calib_vref
+	adc_vref = adc_gpio_calib_vref;//set adc_vref as adc_gpio_calib_vref
+	adc_vref_offset = adc_gpio_calib_vref_offset;//set adc_vref_offset as adc_gpio_calib_vref_offset
 	adc_set_ref_voltage(ADC_VREF_1P2V);//set channel Vref,
 	adc_set_vref_vbat_divider(ADC_VBAT_DIVIDER_OFF);//set Vbat divider select,
 
@@ -367,7 +298,8 @@ void adc_old_temp_init(void)
 		 * Add Vref calibrate operation.
 		 * add by chaofan.20201029.
 	*/
-	adc_vref_cfg.adc_vref = adc_vbat_calib_vref;//set adc_vref as adc_vbat_calib_vref
+	adc_vref = adc_vbat_calib_vref;//set adc_vref as adc_vbat_calib_vref
+	adc_vref_offset = 0;//Vbat has no two-point calibration, offset must be set to 0.
 	adc_set_ref_voltage(ADC_VREF_1P2V);//set channel Vref,
 	adc_set_vref_vbat_divider(ADC_VBAT_DIVIDER_OFF);//set Vbat divider select,
 
@@ -398,7 +330,8 @@ void adc_temp_init(void)
 		 * Add Vref calibrate operation.
 		 * add by chaofan.20201029.
 	*/
-	adc_vref_cfg.adc_vref = adc_vbat_calib_vref;//set adc_vref as adc_vbat_calib_vref
+	adc_vref = adc_vbat_calib_vref;//set adc_vref as adc_vbat_calib_vref
+	adc_vref_offset = 0;//Vbat has no two-point calibration, offset must be set to 0.
 	adc_set_ref_voltage(ADC_VREF_1P2V);//set channel Vref,
 	adc_set_vref_vbat_divider(ADC_VBAT_DIVIDER_OFF);//set Vbat divider select,
 
@@ -427,7 +360,8 @@ void adc_vbat_init(GPIO_PinTypeDef pin)
 		 * Add Vref calibrate operation.
 		 * add by chaofan.20201029.
 	*/
-	adc_vref_cfg.adc_vref = adc_gpio_calib_vref;//set adc_vref as adc_gpio_calib_vref
+	adc_vref = adc_gpio_calib_vref;//set adc_vref as adc_gpio_calib_vref
+	adc_vref_offset = adc_gpio_calib_vref_offset;//set adc_vref_offset as adc_gpio_calib_vref_offset
 	//set Vbat divider select,
 	adc_set_vref_vbat_divider(ADC_VBAT_DIVIDER_OFF);
 	//set channel mode and channel
@@ -464,7 +398,8 @@ void adc_vbat_channel_init(void)
 		 * Add Vref calibrate operation.
 		 * add by chaofan. 20201029.
 	 */
-	adc_vref_cfg.adc_vref = adc_vbat_calib_vref;//set adc_vref as adc_vbat_calib_vref
+	adc_vref = adc_vbat_calib_vref;//set adc_vref as adc_vbat_calib_vref
+	adc_vref_offset = 0;//Vbat has no two-point calibration, offset must be set to 0.
 	//set Vbat divider select,
 	/**
 		 * Change the ADC_VBAT_DIVIDER as 1F3 and ADC_PRESCALER as 1.
@@ -554,11 +489,17 @@ unsigned int adc_sample_and_get_result(void)
 #endif
 	adc_code=adc_result = adc_average;
 
-	 //////////////// adc sample data convert to voltage(mv) ////////////////
-	//                          (Vref, adc_pre_scale)   (BIT<12~0> valid data)
-	//			 =  adc_result * Vref * adc_pre_scale / 0x2000
-	//           =  adc_result * Vref*adc_pre_scale >>13
-	adc_vol_mv  = (adc_vbat_divider*adc_result*adc_pre_scale*adc_vref_cfg.adc_vref)>>13;
+	//When the code value is 0, the returned voltage value should be 0.
+	if(adc_result == 0){
+		return 0;
+	}
+	else{
+		//////////////// adc sample data convert to voltage(mv) ////////////////
+		//                          (Vref, adc_pre_scale)   (BIT<12~0> valid data)
+		//			 =  adc_result * Vref * adc_pre_scale / 0x2000 + offset
+		//           =  adc_result * Vref*adc_pre_scale >>13 + offset
+		adc_vol_mv  = ((adc_vbat_divider*adc_result*adc_pre_scale*adc_vref)>>13) + adc_vref_offset;
+	}
 
 	return adc_vol_mv;
 }

@@ -4,7 +4,7 @@
  * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -44,6 +44,7 @@
  *
  *******************************************************************************************************/
 #include "app_config.h"
+#include "calibration.h"
 
 
 extern void user_init();
@@ -68,12 +69,23 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
  */
 int main (void)   //must on ramcode
 {
-#if (MCU_CORE_B89)
-	cpu_wakeup_init(EXTERNAL_XTAL_24M);
+
+#if (MCU_CORE_B85)
+	cpu_wakeup_init();
 #elif (MCU_CORE_B87)
 	cpu_wakeup_init(LDO_MODE, EXTERNAL_XTAL_24M);
-#elif (MCU_CORE_B85)
-	cpu_wakeup_init();
+#elif (MCU_CORE_B89||MCU_CORE_B80)
+	cpu_wakeup_init(EXTERNAL_XTAL_24M);
+#endif
+
+#if (MCU_CORE_B85) || (MCU_CORE_B87)
+	//Note: This function must be called, otherwise an abnormal situation may occur.
+	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
+	user_read_flash_value_calib();
+#elif (MCU_CORE_B89)
+	//Note: This function must be called, otherwise an abnormal situation may occur.
+	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
+	user_read_otp_value_calib();
 #endif
 
 	gpio_init(0);

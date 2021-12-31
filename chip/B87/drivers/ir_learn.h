@@ -6,7 +6,7 @@
  * @author	Driver Group
  * @date	2019
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without
@@ -140,8 +140,7 @@ static inline void ir_learn_dis(void)
  */
 static inline void ir_learn_set_timeout(il_timeout_tick_e timeout_value)
 {
-	reg_il_cfg1 &= ~FLD_IL_TIMEOUT;
-	reg_il_cfg1 |= (FLD_IL_TIMEOUT & (timeout_value << 4));
+	reg_il_cfg1 = ((reg_il_cfg1 & (~FLD_IL_TIMEOUT)) | (FLD_IL_TIMEOUT & (timeout_value << 4)));
 }
 
 /**

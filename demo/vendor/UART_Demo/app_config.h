@@ -4,7 +4,7 @@
  * @brief	This is the header file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -94,14 +94,34 @@ extern "C" {
 #define   UART_CTS_PIN   UART_CTS_PA3
 #define   UART_RTS_PIN   UART_RTS_PB3
 #define   UART_RTX_PIN   UART_RTX_PD3//The RTX can be used as UART-TX,but only some of the UART-TX can be used as RTX.
-
+#elif (MCU_CORE_B80)
+#define LED1     		        GPIO_PB3
+#define LED2     		        GPIO_PB4
+#define LED3     		        GPIO_PB5
+#define LED4     		        GPIO_PB6
+#define   UART_TX_PIN    GPIO_PA4
+#define   UART_RX_PIN    GPIO_PA5
+#define   UART_CTS_PIN   GPIO_PA6
+#define   UART_RTS_PIN   GPIO_PA7
+#define   UART_RTX_PIN   GPIO_PA4
 #endif
 
 
 /******************set mode**********************/
-#define UART_DMA  		1     //uart use dma
-#define UART_NDMA  		2     //uart not use dma
+#define UART_DMA  		 1     //uart use dma
+#define UART_NDMA  		 2     //uart not use dma
 #define UART_MODE	 	UART_DMA
+
+
+/***********set uart_dma interrupt type*************/
+#define UART_RXDMA_IRQ   1
+#if(MCU_CORE_B80)
+#define UART_RXDONE_IRQ  2
+#endif
+#define UART_DMA_INT_TYPE UART_RXDMA_IRQ
+
+
+
 
 #define NONE            0
 #define USE_CTS    		1
@@ -121,19 +141,29 @@ extern "C" {
 	#define RTS_POLARITY	0			//UART_RTS_MODE_MANUAL need. It indicates RTS_POLARITY .
 #endif
 
-/////////////////// Clock  /////////////////////////////////
+/* Define system clock */
 #define CLOCK_SYS_CLOCK_HZ  	24000000
 
+#if(MCU_CORE_B89)
 #if(CLOCK_SYS_CLOCK_HZ==12000000)
 	#define SYS_CLK  	SYS_CLK_12M_Crystal
 #elif (CLOCK_SYS_CLOCK_HZ==16000000)
 	#define SYS_CLK  	SYS_CLK_16M_Crystal
 #elif (CLOCK_SYS_CLOCK_HZ==24000000)
 	#define SYS_CLK  	SYS_CLK_24M_Crystal
-#elif ((CLOCK_SYS_CLOCK_HZ==32000000) && (MCU_CORE_B85 || MCU_CORE_B87))
+#endif
+#else
+#if(CLOCK_SYS_CLOCK_HZ==12000000)
+	#define SYS_CLK  	SYS_CLK_12M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ==16000000)
+	#define SYS_CLK  	SYS_CLK_16M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ==24000000)
+	#define SYS_CLK  	SYS_CLK_24M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ==32000000)
 	#define SYS_CLK  	SYS_CLK_32M_Crystal
-#elif ((CLOCK_SYS_CLOCK_HZ==48000000) && (MCU_CORE_B85 || MCU_CORE_B87))
+#elif (CLOCK_SYS_CLOCK_HZ==48000000)
 	#define SYS_CLK  	SYS_CLK_48M_Crystal
+#endif
 #endif
 
 enum{

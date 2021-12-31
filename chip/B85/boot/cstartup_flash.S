@@ -210,6 +210,16 @@ __suspend_data:
 
 __reset:
 
+#if 0
+	@ add debug, PD3 output 1
+	tloadr     	r1, DEBUG_GPIO		@0x80059a  PD3 oen
+	tmov		r0, #247			@0b 11110111
+	tstorerb	r0, [r1, #0]
+
+	tmov		r0, #8				@0b 00001000
+	tstorerb	r0, [r1, #1]		@0x80059b  PD3 output
+#endif
+
 @********************************************************************************************************
 @                              		 FILL .DATA AND .BSS WITH 0xFF
 @********************************************************************************************************
@@ -461,6 +471,10 @@ DATA_I:
     .word	(0x00800000)                @40
 	.word	(0x0080000c)                @44
 	.word	(0x000000c4)                @48
+
+DEBUG_GPIO:
+	.word	(0x80059a)                  @  PDx oen
+
 FLL_D:
 	.word	0xffffffff                	@0
 	.word	(_start_data_)    			@4

@@ -52,9 +52,9 @@
  * @param[in]  i2c_pin_group - the pin port selected as I2C interface pin port.
  * @return     none
  * 	A3:5b7[0] set 1 as spi input,set 0 not as spi input ;5b7[4] set 1 as i2c input ,set 0 not as i2c input
- *	A4:5b7[1] set 1 as spi input,set 0 not as spi input ;5b7[5] set 1 as i2c input ,set 0 not as i3c input
- *	B6:5b7[2] set 1 as spi input,set 0 not as spi input ;5b7[6] set 1 as i2c input ,set 0 not as i4c input
- *	D7:5b7[3] set 1 as spi input,set 0 not as spi input ;5b7[7] set 1 as i2c input ,set 0 not as i5c input
+ *	A4:5b7[1] set 1 as spi input,set 0 not as spi input ;5b7[5] set 1 as i2c input ,set 0 not as i2c input
+ *	B6:5b7[2] set 1 as spi input,set 0 not as spi input ;5b7[6] set 1 as i2c input ,set 0 not as i2c input
+ *	D7:5b7[3] set 1 as spi input,set 0 not as spi input ;5b7[7] set 1 as i2c input ,set 0 not as i2c input
  */
 void i2c_gpio_set(I2C_GPIO_GroupTypeDef i2c_pin_group)
 {
@@ -84,12 +84,15 @@ void i2c_gpio_set(I2C_GPIO_GroupTypeDef i2c_pin_group)
 		sda = 0;
 		scl = 0;
 	}
+	 //When the pad is configured with mux input and a pull-up resistor is required, gpio_input_en needs to be placed before gpio_function_dis,
+	//otherwise first set gpio_input_disable and then call the mux function interface,the mux pad will may misread the short low-level timing.confirmed by minghai.20210709.
+	gpio_set_input_en(sda, 1);//enable sda input
+	gpio_set_input_en(scl, 1);//enable scl input
 	gpio_setup_up_down_resistor(sda, PM_PIN_PULLUP_10K);
 	gpio_setup_up_down_resistor(scl, PM_PIN_PULLUP_10K);
 	gpio_set_func(sda, AS_I2C);
 	gpio_set_func(scl, AS_I2C);
-	gpio_set_input_en(sda, 1);//enable sda input
-	gpio_set_input_en(scl, 1);//enable scl input
+
 
 }
 

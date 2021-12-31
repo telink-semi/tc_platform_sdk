@@ -6,7 +6,7 @@
  * @author	Driver Group
  * @date	2019
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without
@@ -102,6 +102,9 @@ typedef enum{
  * @brief system clock type.
  */
 typedef enum{
+	SYS_CLK_4M_Crystal  = 0x4C,
+	SYS_CLK_6M_Crystal  = 0x48,
+	SYS_CLK_8M_Crystal  = 0x46,
 	SYS_CLK_12M_Crystal = 0x44,
 	SYS_CLK_16M_Crystal = 0x43,
 	SYS_CLK_24M_Crystal = 0x42,

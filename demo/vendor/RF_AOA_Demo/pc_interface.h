@@ -4,7 +4,7 @@
  * @brief	This is the header file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -145,10 +145,5 @@ extern void Result_Buff_Clear(void);
 extern unsigned int ResuBuf_Write(unsigned char *pSrcBuf, unsigned char len);
 
 extern unsigned int Get_Next_Packet(void);
-void init_test_gpio(void);
-void triangle_rf1357(void);
-void triangle_rf2468(void);
-void triangle_all_open(void);
-void rectangle_1234(void);
 
 #endif

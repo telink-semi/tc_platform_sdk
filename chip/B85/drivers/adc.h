@@ -62,13 +62,7 @@ typedef enum{
 
 
 
-//ADC reference voltage cfg
-typedef struct {
-	unsigned short adc_vref; //default: 1175 mV
-	unsigned short adc_calib_en;
-}adc_vref_ctr_t;
 
-extern adc_vref_ctr_t adc_vref_cfg;
 
 extern GPIO_PinTypeDef ADC_GPIO_tab[10];
 
@@ -241,15 +235,6 @@ typedef enum {
 	CLOCLK_UPDATA      = BIT(4),
 }RNG_UpdataTypeDef;
 
-/**
- * @brief       This function enable adc reference voltage calibration
- * @param[in] en - 1 enable  0 disable
- * @return     none.
- */
-static inline void	adc_calib_vref_enable(unsigned char en)
-{
-	adc_vref_cfg.adc_calib_en = en;
-}
 
 
 /**
@@ -1069,7 +1054,7 @@ static inline void pga_right_chn_power_on(unsigned char on_off)
 	analog_write (areg_adc_pga_ctrl, (analog_read(areg_adc_pga_ctrl)&(~FLD_POWER_DOWN_PGA_CHN_R)) | (!on_off)<<7 );
 }
 
-#define areg_fe	 0xfe//0xfe default value is 0xe5,for output audio, mast claer 0xfe<7:5>
+#define areg_fe	 0xfe//0xfe default value is 0xe5,for output audio, mast clear 0xfe<7:5>
 
 /**
  * @brief      This function sets  ADC RNS channel source and random updata type.
@@ -1149,6 +1134,18 @@ void adc_set_ain_pre_scaler(ADC_PreScalingTypeDef v_scl);
  * @return none
  */
 void adc_init(void );
+/**
+ * @brief This function is used to calib ADC 1.2V vref for GPIO.
+ * @param[in] data - GPIO sampling calibration value.
+ * @return none
+ */
+void adc_set_gpio_calib_vref(unsigned short data);
+/**
+ * @brief This function is used to calib ADC 1.2V vref offset for GPIO two-point.
+ * @param[in] offset - GPIO sampling two-point calibration value offset.
+ * @return none
+ */
+void adc_set_gpio_two_point_calib_offset(signed char offset);
 
 /**
  * @brief This function is used for IO port configuration of ADC IO port voltage sampling.

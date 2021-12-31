@@ -6,7 +6,7 @@
  * @author	Driver Group
  * @date	2019
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without
@@ -48,6 +48,30 @@
 #include "irq.h"
 #include "timer.h"
 #include "string.h"
+
+/*
+ *	If add flash type, need pay attention to the read uid command and the bit number of status register
+ *	Note: If add Flash type,need to check the other api which need to change.especially the ZB flash.
+ *	If add ZB flash type,need to change the API zb_cam_modify(),and need to confirm the time sequence
+ *	with ZB.
+	Flash Type	uid CMD			MID		Company		Sector Erase Time(MAX)
+	GD25LD10C	0x4b(AN)	0x1160C8	GD			500ms
+	GD25LD40C	0x4b		0x1360C8	GD			500ms
+	GD25LD80C	0x4b(AN)	0x1460C8	GD			500ms
+	ZB25WD10A	0x4b		0x11325E	ZB			500ms
+	ZB25WD40B	0x4b		0x13325E	ZB			500ms
+	ZB25WD80B	0x4b		0x14325E	ZB			500ms
+	ZB25WD20A	0x4b		0x12325E	ZB			500ms	The actual capacity is 256K, but the nominal value is 128KB.
+											The software cannot do capacity adaptation and requires special customer special processing.
+
+	The uid of the early ZB25WD40B (mid is 0x13325E) is 8 bytes. If you read 16 bytes of uid,
+	the next 8 bytes will be read as 0xff. Later, the uid of ZB25WD40B has been switched to 16 bytes.
+ */
+unsigned int flash_support_mid[] = {0x1160C8, 0x1360C8, 0x1460C8, 0x11325E, 0x12325E, 0x13325E, 0x14325E};
+const unsigned int FLASH_CNT = sizeof(flash_support_mid)/sizeof(*flash_support_mid);
+
+flash_hander_t flash_read_page = flash_read_data;
+flash_hander_t flash_write_page = flash_page_program;
 
 /*******************************************************************************************************************
  *												Primary interface
@@ -150,7 +174,7 @@ _attribute_ram_code_sec_noinline_ void flash_mspi_read_ram(unsigned char cmd, un
  * @param[in]   addr		- starting address.
  * @param[in]   addr_en		- whether need to send an address.
  * @param[out]  data		- the start address of the data buffer.
- * @param[in]   data_len	- the length(in byte) of content needs to read out.
+ * @param[in]   data_len	- the length(in byte) of content needs to be written.
  * @return 		none.
  * @note		important:  "data" must not reside at flash, such as constant string.If that case, pls copy to memory first before write.
  */
@@ -179,7 +203,10 @@ _attribute_ram_code_sec_noinline_ void flash_mspi_write_ram(unsigned char cmd, u
  * @brief 		This function serves to erase a sector.
  * @param[in]   addr	- the start address of the sector needs to erase.
  * @return 		none.
- * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ * @note        Attention: The block erase takes a long time, please pay attention to feeding the dog in advance.
+ * 				The maximum block erase time is listed at the beginning of this document and is available for viewing.
+ *
+ * 				Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
  *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
@@ -210,7 +237,7 @@ void flash_erase_sector(unsigned long addr)
  *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
  *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
  */
-void flash_read_page(unsigned long addr, unsigned long len, unsigned char *buf)
+void flash_read_data(unsigned long addr, unsigned long len, unsigned char *buf)
 {
 	flash_mspi_read_ram(FLASH_READ_CMD, addr, 1, 0, buf, len);
 }
@@ -233,7 +260,7 @@ void flash_read_page(unsigned long addr, unsigned long len, unsigned char *buf)
  *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
  *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
  */
-void flash_write_page(unsigned long addr, unsigned long len, unsigned char *buf)
+void flash_page_program(unsigned long addr, unsigned long len, unsigned char *buf)
 {
 	unsigned int ns = PAGE_SIZE - (addr&(PAGE_SIZE - 1));
 	int nw = 0;
@@ -298,6 +325,78 @@ void flash_write_status(flash_status_typedef_e type , unsigned short data)
 }
 
 /**
+ * @brief 		This function serves to read data from the Security Registers of the flash.
+ * @param[in]   addr	- the start address of the Security Registers.
+ * @param[in]   len		- the length of the content to be read.
+ * @param[out]  buf		- the starting address of the content to be read.
+ * @return 		none.
+ * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
+ *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
+ *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
+ *              to the specific application and hardware circuit.
+ *
+ *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
+ *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
+ *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
+ */
+void flash_read_otp(unsigned long addr, unsigned long len, unsigned char* buf)
+{
+	flash_mspi_read_ram(FLASH_READ_SECURITY_REGISTERS_CMD, addr, 1, 1, buf, len);
+}
+
+/**
+ * @brief 		This function serves to write data to the Security Registers of the flash you choose.
+ * @param[in]   addr	- the start address of the Security Registers.
+ * @param[in]   len		- the length of content to be written.
+ * @param[in]   buf		- the starting address of the content to be written.
+ * @return 		none.
+ * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
+ *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
+ *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
+ *              to the specific application and hardware circuit.
+ *
+ *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
+ *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
+ *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
+ */
+void flash_write_otp(unsigned long addr, unsigned long len, unsigned char *buf)
+{
+	unsigned int ns = PAGE_SIZE_OTP - (addr & (PAGE_SIZE_OTP - 1));
+	int nw = 0;
+
+	do{
+		nw = len > ns ? ns :len;
+		flash_mspi_write_ram(FLASH_WRITE_SECURITY_REGISTERS_CMD, addr, 1, buf, nw);
+		ns = PAGE_SIZE_OTP;
+		addr += nw;
+		buf += nw;
+		len -= nw;
+	}while(len > 0);
+}
+
+/**
+ * @brief 		This function serves to erase the data of the Security Registers that you choose.
+ * @param[in]   addr	- the address that you want to erase.
+ * @return 		none.
+ * @Attention	Even you choose the middle area of the Security Registers,it will erase the whole area.
+ * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
+ *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
+ *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
+ *              to the specific application and hardware circuit.
+ *
+ *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
+ *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
+ *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
+ */
+void flash_erase_otp(unsigned long addr)
+{
+	flash_mspi_write_ram(FLASH_ERASE_SECURITY_REGISTERS_CMD, addr, 1, NULL, 0);
+}
+
+/**
  * @brief	  	This function serves to read MID of flash(MAC id). Before reading UID of flash,
  * 				you must read MID of flash. and then you can look up the related table to select
  * 				the idcmd and read UID of flash.
@@ -337,13 +436,9 @@ unsigned int flash_read_mid(void)
  */
 void flash_read_uid(unsigned char idcmd, unsigned char *buf)
 {
-	if(idcmd == FLASH_READ_UID_CMD_GD_PUYA_ZB_UT)	//< GD/PUYA/ZB/UT
+	if(idcmd == FLASH_READ_UID_CMD_GD_PUYA_ZB_TH)	//< GD/PUYA/ZB/TH
 	{
 		flash_mspi_read_ram(idcmd, 0x00, 1, 1, buf, 16);
-	}
-	else if (idcmd == FLASH_XTX_READ_UID_CMD)		//< XTX
-	{
-		flash_mspi_read_ram(idcmd, 0x80, 1, 1, buf, 16);
 	}
 }
 
@@ -370,30 +465,19 @@ int flash_read_mid_uid_with_check(unsigned int *flash_mid, unsigned char *flash_
 {
 	unsigned char no_uid[16]={0x51,0x01,0x51,0x01,0x51,0x01,0x51,0x01,0x51,0x01,0x51,0x01,0x51,0x01,0x51,0x01};
 	int i,f_cnt=0;
-	*flash_mid  = flash_read_mid();
+	*flash_mid = flash_read_mid();
 
-	/*
-	 * If add flash type, need pay attention to the read uid cmd and the bir number of status register
-	   Flash Type	CMD			MID		Company
-	   GD25LD10C	0x4b(AN)0x1160C8	GD
-	   GD25LD40C	0x4b	0x1360C8	GD
-	   GD25LD80C	0x4b(AN)0x1460C8	GD
-	   ZB25WD10A	0x4b	0x11325E	ZB
-	   ZB25WD40B	0x4b	0x13325E	ZB
-	   ZB25WD80B	0x4b	0x14325E	ZB
-	   ZB25WD20A	0x4b	0x12325E	ZB	The actual capacity is 256K, but the nominal value is 128KB.
-											The software cannot do capacity adaptation and requires special customer special processing.
-
-	   The uid of the early ZB25WD40B (mid is 0x13325E) is 8 bytes. If you read 16 bytes of uid,
-	   the next 8 bytes will be read as 0xff. Later, the uid of ZB25WD40B has been switched to 16 bytes.
-	 */
-	if((*flash_mid == 0x1160C8)||(*flash_mid == 0x1360C8)||(*flash_mid == 0x1460C8)||(*flash_mid == 0x11325E)||(*flash_mid == 0x12325E)||(*flash_mid == 0x13325E)||(*flash_mid == 0x14325E)){
-		flash_read_uid(FLASH_READ_UID_CMD_GD_PUYA_ZB_UT, (unsigned char *)flash_uid);
-	}else{
+	for(i=0; i<FLASH_CNT; i++){
+		if(flash_support_mid[i] == *flash_mid){
+			flash_read_uid(FLASH_READ_UID_CMD_GD_PUYA_ZB_TH, (unsigned char *)flash_uid);
+			break;
+		}
+	}
+	if(i == FLASH_CNT){
 		return 0;
 	}
 
-	for(i=0;i<16;i++){
+	for(i=0; i<16; i++){
 		if(flash_uid[i] == no_uid[i]){
 			f_cnt++;
 		}
@@ -407,41 +491,27 @@ int flash_read_mid_uid_with_check(unsigned int *flash_mid, unsigned char *flash_
 }
 
 /**
- * @brief		This function serves to find whether it is zb flash.
+ * @brief		This function serves to get flash vendor.
  * @param[in]	none.
- * @return		1 - is zb flash;   0 - is not zb flash.
+ * @return		0 - err, other - flash vendor.
  */
-unsigned char flash_is_zb(void)
+unsigned int flash_get_vendor(unsigned int flash_mid)
 {
-	unsigned int flash_mid  = flash_read_mid();
-	if((flash_mid == 0x13325E)||(flash_mid == 0x14325E)||(flash_mid == 0x11325E)||(flash_mid == 0x12325E))
+	switch(flash_mid&0x0000ffff)
 	{
-		return 1;
-	}
-	return 0;
-}
-
-/**
- * @brief		This function serves to calibration the flash voltage(VDD_F),if the flash has the calib_value,we will use it,either will
- * 				trim vdd_f to 1.95V(2b'111 the max) if the flash is zb.
- * @param[in]	vol - the voltage which you want to set.
- * @return		none.
- */
-void flash_vdd_f_calib(void)
-{
-	unsigned short calib_value = flash_get_vdd_f_calib_value();
-	if((0xffff == calib_value) || (0 != (calib_value & 0xf8f8)))
-	{
-		if(flash_is_zb())
-		{
-			analog_write(0x09, ((analog_read(0x09) & 0x8f) | (FLASH_VOLTAGE_1V95 << 4)));    		//ldo mode flash ldo trim 1.95V
-			analog_write(0x0c, ((analog_read(0x0c) & 0xf8) | FLASH_VOLTAGE_1V9));					//dcdc mode flash ldo trim 1.90V
-		}
-	}
-	else
-	{
-		analog_write(0x09, ((analog_read(0x09) & 0x8f)  | ((calib_value & 0xff00) >> 4) ));
-		analog_write(0x0c, ((analog_read(0x0c) & 0xf8)  | (calib_value & 0xff)));
+	case 0x0000325E:
+		return FLASH_ETOX_ZB;
+	case 0x000060C8:
+		return FLASH_ETOX_GD;
+	case 0x00004051:
+		return FLASH_ETOX_GD;
+	case 0x00006085:
+		return FLASH_SONOS_PUYA;
+	case 0x000060EB:
+		return FLASH_SONOS_TH;
+	case 0x000060CD:
+		return FLASH_SST_TH;
+	default:
+		return 0;
 	}
 }
-

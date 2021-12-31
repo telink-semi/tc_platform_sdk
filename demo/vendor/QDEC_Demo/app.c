@@ -4,7 +4,7 @@
  * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -48,8 +48,9 @@
 #define QDEC_CHA 	GPIO_PB6
 #define QDEC_CHB 	GPIO_PB7
 
-extern volatile signed int total_count;
+volatile signed int total_count;
 volatile signed char qdec_count = 0;
+volatile unsigned int pol = 0x100;
 
 void user_init()
 {
@@ -71,6 +72,10 @@ void user_init()
 void main_loop (void)
 {
 	qdec_count = qdec_get_count_value();
+	if((qdec_count >> 7) == 0x01)
+	   total_count -= (pol-qdec_count);
+	else
+	   total_count += qdec_count;
 	printf(" total_count: %d \t", total_count);
 	printf(" qdec_count: %d \r\n", qdec_count);
 	sleep_ms(1000);

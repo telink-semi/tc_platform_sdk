@@ -4,7 +4,7 @@
  * @brief	This is the header file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -51,13 +51,11 @@ extern "C" {
 #endif
 
 
-
 #if (MCU_CORE_B89)
 #define LED1     		        GPIO_PD0
 #define LED2     		        GPIO_PD1
 #define LED3     		        GPIO_PD2
 #define LED4     		        GPIO_PD3
-
 #define SW1      		        GPIO_PD4
 #define SW2      		        GPIO_PD5
 
@@ -66,7 +64,6 @@ extern "C" {
 #define LED2     		        GPIO_PD3
 #define LED3     		        GPIO_PD4
 #define LED4     		        GPIO_PD5
-
 #define SW1      		        GPIO_PD0
 #define SW2      		        GPIO_PD1
 
@@ -75,25 +72,43 @@ extern "C" {
 #define LED2     		        GPIO_PD3
 #define LED3     		        GPIO_PD4
 #define LED4     		        GPIO_PD5
-
 #define SW1      		        GPIO_PD0
 #define SW2      		        GPIO_PD1
 
+#elif (MCU_CORE_B80)
+#define LED1     		        GPIO_PB3
+#define LED2     		        GPIO_PB4
+#define LED3     		        GPIO_PB5
+#define LED4     		        GPIO_PB6
+#define SW1      		        GPIO_PF0
+#define SW2      		        GPIO_PF1
 #endif
-
 
 #define GPIO_IRQ				1
 #define GPIO_IRQ_RSIC0			2
 #define GPIO_IRQ_RSIC1			3
-#define GPIO_TOGGLE				4	
+#define GPIO_TOGGLE				4
 #define GPIO_HIGH_RESISTOR		5
-	
-#define GPIO_MODE 				1
+#if(MCU_CORE_B80)
+#define GPIO_SEL_IRQ_SRC        6
+#define SET_GROUP        		GPIO_GROUP_B
+#define SET_GROUP_GPIO    		GPIO_PB6
+#endif
+#define GPIO_MODE 				GPIO_IRQ
 
 
-/////////////////// Clock  /////////////////////////////////
+/* Define system clock */
 #define CLOCK_SYS_CLOCK_HZ  	24000000
 
+#if(MCU_CORE_B89)
+#if(CLOCK_SYS_CLOCK_HZ==12000000)
+	#define SYS_CLK  	SYS_CLK_12M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ==16000000)
+	#define SYS_CLK  	SYS_CLK_16M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ==24000000)
+	#define SYS_CLK  	SYS_CLK_24M_Crystal
+#endif
+#else
 #if(CLOCK_SYS_CLOCK_HZ==12000000)
 	#define SYS_CLK  	SYS_CLK_12M_Crystal
 #elif (CLOCK_SYS_CLOCK_HZ==16000000)
@@ -105,13 +120,13 @@ extern "C" {
 #elif (CLOCK_SYS_CLOCK_HZ==48000000)
 	#define SYS_CLK  	SYS_CLK_48M_Crystal
 #endif
-
+#endif
+/* List tick per second/millisecond/microsecond */
 enum{
-	CLOCK_SYS_CLOCK_1S = CLOCK_SYS_CLOCK_HZ,
-	CLOCK_SYS_CLOCK_1MS = (CLOCK_SYS_CLOCK_1S / 1000),
-	CLOCK_SYS_CLOCK_1US = (CLOCK_SYS_CLOCK_1S / 1000000),
+	CLOCK_SYS_CLOCK_1S = CLOCK_SYS_CLOCK_HZ,				///< system tick per 1 second
+	CLOCK_SYS_CLOCK_1MS = (CLOCK_SYS_CLOCK_1S / 1000),		///< system tick per 1 millisecond
+	CLOCK_SYS_CLOCK_1US = (CLOCK_SYS_CLOCK_1S / 1000000),   ///< system tick per 1 microsecond
 };
-
 
 
 

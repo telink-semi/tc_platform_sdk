@@ -182,24 +182,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/SPI_Demo/SPI_V1.0/SPI_Demo</locationURI>
 		</link>
 		<link>
-			<name>vendor/SRAM_Test</name>
-			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/SRAM_Test</locationURI>
-		</link>
-		<link>
-			<name>vendor/SWIRE_Demo</name>
-			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/Swire_Demo</locationURI>
-		</link>
-		<link>
 			<name>vendor/TIMER_Demo</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/TIMER_Demo</locationURI>
-		</link>
-		<link>
-			<name>vendor/Test_Demo</name>
-			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/Test_Demo</locationURI>
 		</link>
 		<link>
 			<name>vendor/UART_Demo</name>
@@ -210,6 +195,11 @@
 			<name>vendor/USB_Demo</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/USB_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/common</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/common/B85</locationURI>
 		</link>
 		<link>
 			<name>vendor/s7816_Demo</name>

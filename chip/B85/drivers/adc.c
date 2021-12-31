@@ -50,11 +50,13 @@
 #include "timer.h"
 
 _attribute_data_retention_
-adc_vref_ctr_t adc_vref_cfg = {
-	.adc_vref 		= 1175, //default ADC ref voltage (unit:mV)
-	.adc_calib_en	= 1, 	//default enable
-};
-
+unsigned short adc_vref = 1175;//ADC gpio calibration value voltage (unit:mV)(used for gpio voltage sample).
+_attribute_data_retention_
+volatile signed char adc_vref_offset = 0;//ADC calibration value voltage offset (unit:mV).
+_attribute_data_retention_
+unsigned short adc_gpio_calib_vref = 1175;//ADC gpio calibration value voltage (unit:mV)(used for gpio voltage sample).
+_attribute_data_retention_
+signed char adc_gpio_calib_vref_offset = 0;//ADC gpio calibration value voltage offset (unit:mV)(used for gpio voltage sample).
 volatile unsigned short	adc_code;
 unsigned char   adc_pre_scale;
 unsigned short adc_ref_vol[2] 	= {600,900};
@@ -114,7 +116,7 @@ void adc_set_ref_voltage(ADC_ChTypeDef ch_n, ADC_RefVolTypeDef v_ref)
 		//Vref buffer bias current trimming: 		100%
 		//Comparator preamp bias current trimming:  100%
 		analog_write( areg_ain_scale  , (analog_read( areg_ain_scale  )&(0xC0)) | 0x15 );
-		adc_vref_cfg.adc_vref=adc_ref_vol[v_ref];
+		adc_gpio_calib_vref=adc_ref_vol[v_ref];
 	}
 
 
@@ -296,7 +298,24 @@ void adc_init(void){
 	adc_set_right_gain_bias(GAIN_STAGE_BIAS_PER100);
 	dfifo_disable_dfifo2();//disable misc channel data dfifo
 }
-
+/**
+ * @brief This function is used to calib ADC 1.2V vref for GPIO.
+ * @param[in] data - GPIO sampling calibration value.
+ * @return none
+ */
+void adc_set_gpio_calib_vref(unsigned short data)
+{
+	adc_gpio_calib_vref = data;
+}
+/**
+ * @brief This function is used to calib ADC 1.2V vref offset for GPIO two-point.
+ * @param[in] offset - GPIO sampling two-point calibration value offset.
+ * @return none
+ */
+void adc_set_gpio_two_point_calib_offset(signed char offset)
+{
+	adc_gpio_calib_vref_offset = offset;
+}
 /**
  * @brief This function is used for ADC configuration of ADC IO voltage sampling.
  * @param[in]   pin - GPIO_PinTypeDef
@@ -319,6 +338,12 @@ else if(ADC_SAMPLE_RATE_SELECT==ADC_SAMPLE_RATE_96K)
 {
 	adc_set_state_length(240, 0, 10);  	//set R_max_mc=240,R_max_s=10
 }
+	/**
+	 * Add Vref calibrate operation.
+	 * add by jiarong.ji at 20201029.
+	*/
+	adc_vref = adc_gpio_calib_vref;//set adc_vref as adc_gpio_calib_vref
+	adc_vref_offset = adc_gpio_calib_vref_offset;//set adc_vref_offset as adc_gpio_calib_vref_offset
 
 	adc_set_ref_voltage(ADC_MISC_CHN, ADC_VREF_1P2V);//set channel Vref,
    // ADC_Vref = (unsigned char)ADC_VREF_1P2V;
@@ -371,6 +396,13 @@ void adc_vbat_init(GPIO_PinTypeDef pin)
 	}
 	adc_set_input_mode(ADC_MISC_CHN, DIFFERENTIAL_MODE);
 	adc_set_ain_channel_differential_mode(ADC_MISC_CHN, gpio_no, GND);
+	/**
+	 * Add Vref calibrate operation.
+	 * add by jiarong.ji at 20201029.
+	*/
+	adc_vref = adc_gpio_calib_vref;//set adc_vref as adc_gpio_calib_vref
+	adc_vref_offset = adc_gpio_calib_vref_offset;//set adc_vref_offset as adc_gpio_calib_vref_offset
+
 	adc_set_ref_voltage(ADC_MISC_CHN, ADC_VREF_1P2V);//set channel Vref ,must be ADC_VREF_1P2V
 	//ADC_Vref = (unsigned char)ADC_VREF_1P2V;
 	adc_set_resolution(ADC_MISC_CHN, RES14);//set resolution
@@ -468,12 +500,17 @@ unsigned int adc_sample_and_get_result(void)
 	adc_code=adc_result = adc_average;
 
 
-	 //////////////// adc sample data convert to voltage(mv) ////////////////
-	//                          (Vref, adc_pre_scale)   (BIT<12~0> valid data)
-	//			 =  adc_result * Vref * adc_pre_scale / 0x2000
-	//           =  adc_result * adc_pre_scale*Vref >>13
-
-	adc_vol_mv  = (adc_result * adc_pre_scale*adc_vref_cfg.adc_vref)>>13;
+	//When the code value is 0, the returned voltage value should be 0.
+	if(adc_result == 0){
+		return 0;
+	}
+	else{
+		//////////////// adc sample data convert to voltage(mv) ////////////////
+		//                          (Vref, adc_pre_scale)   (BIT<12~0> valid data)
+		//			 =  adc_result * Vref * adc_pre_scale / 0x2000 + offset
+		//           =  adc_result * Vref*adc_pre_scale >>13 + offset
+		adc_vol_mv  = ((adc_result*adc_pre_scale*adc_vref)>>13) + adc_vref_offset;
+	}
 
 
 

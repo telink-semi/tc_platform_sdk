@@ -6,7 +6,7 @@
  * @author	Driver Group
  * @date	2019
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without
@@ -47,6 +47,16 @@
 
 
 
+#include "lib/include/aoa.h"
+#include "lib/include/emi.h"
+#include "lib/include/pm.h"
+#include "lib/include/random.h"
+#include "lib/include/rf_drv.h"
+#include "lib/include/swire.h"
+
+#include "lib/include/pke/pke.h"
+#include "lib/include/pke/pke_algorithm.h"
+
 #include "bsp.h"
 #include "aes.h"
 #include "analog.h"
@@ -58,12 +68,7 @@
 #include "ir_learn.h"
 #include "irq.h"
 #include "clock.h"
-#include "random.h"
 #include "flash.h"
-#include "rf_drv.h"
-#include "aoa.h"
-#include "pm.h"
-#include "pke.h"
 #include "audio.h"
 #include "adc.h"
 #include "i2c.h"
@@ -74,7 +79,6 @@
 #include "register.h"
 #include "dfifo.h"
 #include "dma.h"
-#include "emi.h"
 #include "timer.h"
 
 #include "s7816.h"

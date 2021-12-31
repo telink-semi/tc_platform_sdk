@@ -6,7 +6,7 @@
  * @author	Driver Group
  * @date	2019
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without
@@ -138,11 +138,9 @@ static inline void dma_chn_irq_enable(unsigned char chn, unsigned int en)
 	reg_dma_irq_status = chn;
 
 	if(en){
-		reg_dma_chn_en |= chn;
 		reg_dma_chn_irq_msk |= chn;
 	}
 	else{
-		reg_dma_chn_en &= ~chn;
 		reg_dma_chn_irq_msk &= ~chn;
 	}
 }

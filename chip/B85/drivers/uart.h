@@ -207,7 +207,6 @@ static inline void uart_rtx_en()
  * @return    none
  */
 static inline void uart_mask_tx_done_irq_enable(void){
-	reg_dma_chn_en |= FLD_DMA_CHN_UART_TX;
 	reg_uart_rx_timeout1 |= FLD_UART_MASK_TXDONE_IRQ;
 	uart_clr_tx_done();//In order to use the tx_done irq, change its status from 1 to 0,otherwise it will make an interrupt after initialization.
 }

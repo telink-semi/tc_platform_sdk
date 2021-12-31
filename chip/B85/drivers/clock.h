@@ -79,6 +79,9 @@ extern unsigned char system_clk_type;
  * @brief system clock type.
  */
 typedef enum{
+	SYS_CLK_4M_Crystal  = 0x4C,
+	SYS_CLK_6M_Crystal  = 0x48,
+	SYS_CLK_8M_Crystal  = 0x46,
 	SYS_CLK_12M_Crystal = 0x44,
 	SYS_CLK_16M_Crystal = 0x43,
 	SYS_CLK_24M_Crystal = 0x42,

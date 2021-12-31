@@ -60,15 +60,14 @@ volatile int s7816_rst_time;//us
  * @param[in]  	div	- set the divider of clock of 7816 module.
  * @return     	none.
  * @note        the clk-source of s7816 is 24M,the clk of clk-pin can be divided as follow.
- * 				div:        0x60-4Mhz     0x40-6Mhz   0x20-12Mhz
- * 				baudrate:   0x60-10752    0x40-16194  0x20-32388
+ * 				div:        0x06-4Mhz     0x04-6Mhz   0x02-12Mhz
+ * 				baudrate:   0x06-10752    0x04-16194  0x02-32388
  */
 void s7816_set_clk(unsigned char Div)
 {
 	//---Set 7816 CLK divider
     //caution:7816 clk module only controlled by the highest bit of 7816 clk mode
-	reg_7816_clk_div&=0x0f;
-	reg_7816_clk_div|=(unsigned char)Div;
+	reg_7816_clk_div = ((reg_7816_clk_div & 0x0f)|(Div<<4));
 }
 
 /**
@@ -89,9 +88,9 @@ void s7816_set_time(int rst_time_us)
 void s7816_set_rst_pin(GPIO_PinTypeDef pin_7816_rst)
 {
 	s7816_rst_pin=pin_7816_rst;
-	gpio_set_func(pin_7816_rst,AS_GPIO);
 	gpio_set_output_en(pin_7816_rst,1);
 	gpio_set_input_en(pin_7816_rst,0);
+	gpio_set_func(pin_7816_rst,AS_GPIO);
 	gpio_write(pin_7816_rst,0);
 }
 
@@ -103,9 +102,9 @@ void s7816_set_rst_pin(GPIO_PinTypeDef pin_7816_rst)
 void s7816_set_vcc_pin(GPIO_PinTypeDef pin_7816_vcc)
 {
 	s7816_vcc_pin=pin_7816_vcc;
-	gpio_set_func(pin_7816_vcc,AS_GPIO);
 	gpio_set_output_en(pin_7816_vcc,1);
 	gpio_set_input_en(pin_7816_vcc,0);
+	gpio_set_func(pin_7816_vcc,AS_GPIO);
 	gpio_write(pin_7816_vcc,0);
 }
 
@@ -129,25 +128,27 @@ void s7816_set_trx_pin(S7816_TRx_PinDef Pin_7816_TRX)
 	//---enable UART 7816 TRX(Optional)
 	switch(Pin_7816_TRX)
 	{
-		case S7816_TRX_C2://take care the details of every pin when using this pin
+	//When the pad is configured with mux input and a pull-up resistor is required, gpio_input_en needs to be placed before gpio_function_dis,
+	//otherwise first set gpio_input_disable and then call the mux function interface,the mux pad will may misread the short low-level timing.confirmed by minghai.20210709.
+	case S7816_TRX_C2://take care the details of every pin when using this pin
+			gpio_set_input_en(GPIO_PC2, 1);
 			gpio_setup_up_down_resistor(GPIO_PC2, PM_PIN_PULLUP_10K);
 			gpio_set_func(GPIO_PC2,AS_UART);
-			gpio_set_input_en(GPIO_PC2, 1);
 			break;
 		case S7816_TRX_D0:
+			gpio_set_input_en(GPIO_PD0, 1);
 			gpio_setup_up_down_resistor(GPIO_PD0, PM_PIN_PULLUP_10K);
 			gpio_set_func(GPIO_PD0,AS_UART);
-			gpio_set_input_en(GPIO_PD0, 1);
 			break;
 		case S7816_TRX_D3:
+			gpio_set_input_en(GPIO_PD3, 1);
 			gpio_setup_up_down_resistor(GPIO_PD3, PM_PIN_PULLUP_10K);
 			gpio_set_func(GPIO_PD3,AS_UART);
-			gpio_set_input_en(GPIO_PD3, 1);
 			break;
 		case S7816_TRX_D7:
+			gpio_set_input_en(GPIO_PD7, 1);
 			gpio_setup_up_down_resistor(GPIO_PD7, PM_PIN_PULLUP_10K);
 			gpio_set_func(GPIO_PD7,AS_UART);
-			gpio_set_input_en(GPIO_PD7, 1);
 			break;
 		default:
 			break;
@@ -190,15 +191,15 @@ void s7816_init(S7816_ClkTpyeDef clock,int f,int d)
 	int baud=clock*1000000*d/f;
 	if(clock==S7816_4MHZ)
 	{
-		s7816_set_clk(0x60);
+		s7816_set_clk(0x06);
 	}
 	else if(clock==S7816_6MHZ)
 	{
-		s7816_set_clk(0x40);
+		s7816_set_clk(0x04);
 	}
 	else if(clock==S7816_12MHZ)
 	{
-		s7816_set_clk(0x20);
+		s7816_set_clk(0x02);
 	}
 	uart_reset();
 	uart_init_baudrate(baud,24000000,PARITY_EVEN, STOP_BIT_ONE);

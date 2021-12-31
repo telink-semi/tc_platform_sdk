@@ -6,7 +6,7 @@
  * @author	Driver Group
  * @date	2019
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,6 @@
  *          SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *******************************************************************************************************/
-
 #include "register.h"
 #include "printf.h"
 #include "usbhw.h"
@@ -197,18 +196,29 @@ void tl_putnumber(char **out, unsigned int w,int len) {
  * @param[in]  w  -  a integer need to print 
  * @return     none.
  */
-void tl_putint(char **out, unsigned int w)
+void tl_putint(char **out, int w)
 {
 	unsigned char buf[12],tmp,*p;
 	int u;
 	p = buf + 11;
 	*p = '\0';
-	u = w;
+	if(w < 0)
+	{
+		u = -w;
+	}
+	else
+	{
+		u = w;
+	}
 	do{ // at least one time..
         tmp = u % 10;
 		*--p = tmp + '0';
 		u /= 10;
 	}while(u);
+	if (w < 0)
+	{
+		*--p = '-';
+	}
 	while(*p){
         tl_putchar(out, *p);
         p++;

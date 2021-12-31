@@ -6,7 +6,7 @@
  * @author	Driver Group
  * @date	2019
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without
@@ -48,7 +48,7 @@
 #include "irq.h"
 #include "analog.h"
 #include "timer.h"
-#include "pm.h"
+#include "lib/include/pm.h"
 
 extern _attribute_data_retention_ unsigned char tl_24mrc_cal;
 

@@ -4,7 +4,7 @@
  * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -47,15 +47,22 @@
 
 #if(PWM_MODE==PWM_IR_DMA_FIFO)
 /*********************************************************************************
+    B85_B87:
     PWM0   :  PA2.  PC1.  PC2.	PD5
     PWM0_N :  PA0.  PB3.  PC4	PD5
+    B89_B80:
+    reference gpio.h
  *********************************************************************************/
 
-#define PWM_PIN					GPIO_PC2
 #if (MCU_CORE_B89)
+#define PWM_PIN		GPIO_PC2
 #define AS_PWMx         PC2_PWM0 
 #elif (MCU_CORE_B87||MCU_CORE_B85)
+#define PWM_PIN		GPIO_PC1
 #define AS_PWMx			AS_PWM0	
+#elif (MCU_CORE_B80)
+#define PWM_PIN		GPIO_PC1
+#define AS_PWMx         PWM0
 #endif
 #define PWM_ID					PWM0_ID
 
@@ -95,7 +102,6 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 void user_init()
 {
 	sleep_ms(2000);
-
 	pwm_set_clk(CLOCK_SYS_CLOCK_HZ, CLOCK_SYS_CLOCK_HZ);
 
 	gpio_set_func(PWM_PIN, AS_PWMx);

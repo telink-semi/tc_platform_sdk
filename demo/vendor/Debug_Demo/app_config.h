@@ -4,7 +4,7 @@
  * @brief	This is the header file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -52,7 +52,12 @@ extern "C" {
 
 
 
-#if (MCU_CORE_B89||MCU_CORE_B80)
+#if (MCU_CORE_B80)
+#define LED1     		        GPIO_PB3
+#define LED2     		        GPIO_PB4
+#define LED3     		        GPIO_PB5
+#define LED4     		        GPIO_PB6
+#elif (MCU_CORE_B89)
 #define LED1     		        GPIO_PD0
 #define LED2     		        GPIO_PD1
 #define LED3     		        GPIO_PD2
@@ -70,19 +75,29 @@ extern "C" {
 #endif
 
 
-/////////////////// Clock  /////////////////////////////////
+/* Define system clock */
 #define CLOCK_SYS_CLOCK_HZ  	24000000
 
+#if(MCU_CORE_B89)
 #if(CLOCK_SYS_CLOCK_HZ==12000000)
 	#define SYS_CLK  	SYS_CLK_12M_Crystal
 #elif (CLOCK_SYS_CLOCK_HZ==16000000)
 	#define SYS_CLK  	SYS_CLK_16M_Crystal
 #elif (CLOCK_SYS_CLOCK_HZ==24000000)
 	#define SYS_CLK  	SYS_CLK_24M_Crystal
-#elif ((CLOCK_SYS_CLOCK_HZ==32000000) && (MCU_CORE_B85 || MCU_CORE_B87))
+#endif
+#else
+#if(CLOCK_SYS_CLOCK_HZ==12000000)
+	#define SYS_CLK  	SYS_CLK_12M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ==16000000)
+	#define SYS_CLK  	SYS_CLK_16M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ==24000000)
+	#define SYS_CLK  	SYS_CLK_24M_Crystal
+#elif (CLOCK_SYS_CLOCK_HZ==32000000)
 	#define SYS_CLK  	SYS_CLK_32M_Crystal
-#elif ((CLOCK_SYS_CLOCK_HZ==48000000) && (MCU_CORE_B85 || MCU_CORE_B87))
+#elif (CLOCK_SYS_CLOCK_HZ==48000000)
 	#define SYS_CLK  	SYS_CLK_48M_Crystal
+#endif
 #endif
 
 enum{

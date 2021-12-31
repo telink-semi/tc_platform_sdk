@@ -4,7 +4,7 @@
  * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -49,7 +49,7 @@
 //To make sure the communication between master and slave device is normal,the slave device should power on first.
 #define SPI_MASTER_DEVICE		1
 #define SPI_SLAVE_DEVICE		2
-#define SPI_DEVICE				SPI_SLAVE_DEVICE
+#define SPI_DEVICE				SPI_MASTER_DEVICE
 
 #define B85_B87_B89_SLAVE_PROTOCOL		   	    1 // B85/B97/B89 as slave
 #define B91M_B80_SLAVE_MODE_PROTOCOL		   	2 // B91m/B80 spi slave mode as slave
@@ -66,6 +66,9 @@
 
 #define SPI_SLAVE_NUM	    				 ONE_SLAVE
 
+#if (SPI_SLAVE_NUM == MULTI_SLAVE)
+ #define SLAVE_X_CSN_PIN(x)  ((x)==1 ? GPIO_PA5 : GPIO_PA4)
+#endif
 /**********************************************************************************************************************
  *                                         3line SPI slave enable                                              	 	  *
  *********************************************************************************************************************/
@@ -82,7 +85,7 @@
 		.spi_clk_pin	   = GPIO_PA0,// GPIO_SPI_CK =GPIO_PB1  (default),if you not use default,should disable it.
 		.spi_csn_pin 	   = GPIO_PA4,// GPIO_SPI_CN =GPIO_PB0  (default),if you not use default,should disable it.
 		.spi_mosi_io0_pin  = GPIO_PB2,// GPIO_SPI_MOSI=GPIO_PF0(default),if you not use default,should disable it.
-		.spi_miso_io1_pin  = GPIO_PB4,// GPIO_SPI_MISO=GPIO_PF1(default),if you not use default,should disable it.                                        3line mode set none
+		.spi_miso_io1_pin  = GPIO_PB4,// GPIO_SPI_MISO=GPIO_PF1(default),if you not use default,should disable it; 3line mode set none
 		.spi_wp_io2_pin    = GPIO_PB3,//set quad mode otherwise set none, only PB3 support
 		.spi_hold_io3_pin  = GPIO_PD4,//set quad mode otherwise set none, only PD4 support
  };
@@ -152,9 +155,9 @@ spi_b91m_spi_slave_protocol_t spi_tx_buff = {
 
 void user_init()
 {
-	gpio_set_func(LED1|LED2|LED3|LED4 ,AS_GPIO);
-	gpio_set_output_en(LED1|LED2|LED3|LED4, 1); 		//enable output
-	gpio_set_input_en(LED1|LED2|LED3|LED4,0);			//disable input
+	gpio_set_func(LED1|LED2,AS_GPIO);
+	gpio_set_output_en(LED1|LED2, 1); 		//enable output
+	gpio_set_input_en(LED1|LED2,0);			//disable input
 	/*if you not use spi pin default,should disable it.*/
 	gpio_set_func(GPIO_SPI_MOSI,AS_GPIO);
 	gpio_set_func( GPIO_SPI_MISO,AS_GPIO);
@@ -221,13 +224,13 @@ void main_loop (void)
 #if (SPI_SLAVE_NUM == MULTI_SLAVE)
 	if(mian_loop_cnt&1)
 	{
-		spi_pin_config.spi_csn_pin=spi_change_csn_pin(spi_pin_config.spi_csn_pin,SLAVE_X_CSN_PIN);
+		spi_change_csn_pin(SLAVE_X_CSN_PIN(0),SLAVE_X_CSN_PIN(1));
 	}
 	else
 	{
-		spi_pin_config.spi_csn_pin=spi_change_csn_pin(spi_pin_config.spi_csn_pin,GPIO_PA4);
+		spi_change_csn_pin(SLAVE_X_CSN_PIN(1),SLAVE_X_CSN_PIN(0));
 	}
-	cnt++;
+	mian_loop_cnt++;
 #endif
 }
 _attribute_ram_code_sec_ void irq_handler(void)
@@ -236,7 +239,7 @@ _attribute_ram_code_sec_ void irq_handler(void)
 #elif(SPI_DEVICE== SPI_SLAVE_DEVICE&&(B91M_B80_SLAVE_MODE_PROTOCOL==SPI_PROTOCOL))
 /**********************************************************************************************************************
 *                                         SPI clock set
-* * When cclk = 24MHz, the SPI_CLK range are as follows£¬
+* * When cclk = 24MHz, the SPI_CLK range are as follows
 *                                                   spi_set_slave_dummy_cnt(16/8);
 *                                                      16 dummy cycle    8 dummy cycle
 *	                                         single      max:1M             max:800K
@@ -245,9 +248,9 @@ _attribute_ram_code_sec_ void irq_handler(void)
 *********************************************************************************************************************/
 void user_init()
 {
-	gpio_set_func(LED1|LED2|LED3|LED4|LED5|LED6 ,AS_GPIO);
-	gpio_set_output_en(LED1|LED2|LED3|LED4|LED5|LED6, 1); 		//enable output
-	gpio_set_input_en(LED1|LED2|LED3|LED4|LED5|LED6,0);			//disable input
+	gpio_set_func(LED1|LED2 ,AS_GPIO);
+	gpio_set_output_en(LED1|LED2, 1); 		//enable output
+	gpio_set_input_en(LED1|LED2,0);			//disable input
 
 	/*if you not use spi pin default,should disable it.*/
 	gpio_set_func(GPIO_SPI_MOSI,AS_GPIO);
@@ -355,16 +358,15 @@ _attribute_ram_code_sec_ void spi_irq_end_process(void)
 _attribute_ram_code_sec_ void irq_handler(void)
 {
 
-	 gpio_toggle(GPIO_PB6);
 		if (spi_get_irq_status(SPI_SLV_CMD_INT))
-		{ gpio_toggle(GPIO_PB0);
+		{
 			spi_irq_slv_cmd_process();
 			spi_clr_irq_status(SPI_SLV_CMD_INT);//clr
 		}
 
 		if (spi_get_irq_status(SPI_TXF_INT))
 		{
-			gpio_toggle(GPIO_PB1);
+
 			spi_irq_tx_fifo_process();
 			spi_clr_irq_status(SPI_TXF_INT);//clr
 		}

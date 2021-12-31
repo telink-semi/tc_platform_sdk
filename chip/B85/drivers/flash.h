@@ -64,7 +64,7 @@ enum{
 	FLASH_SECT_ERASE_CMD				=	0x20,
 	FLASH_ERASE_SECURITY_REGISTERS_CMD	=	0x44,
 
-	FLASH_READ_UID_CMD_GD_PUYA_ZB_UT	=	0x4B,	//Flash Type = GD/PUYA/ZB/UT
+	FLASH_READ_UID_CMD_GD_PUYA_ZB_TH	=	0x4B,	//Flash Type = GD/PUYA/ZB/TH
 	FLASH_READ_UID_CMD_XTX				=	0x5A,	//Flash Type = XTX
 
 	FLASH_GET_JEDEC_ID					=	0x9F,
@@ -91,12 +91,15 @@ typedef enum{
 }flash_status_typedef_e;
 
 /**
- * @brief     flash uid cmd definition
+ * @brief     flash vendor and technology definition
  */
 typedef enum{
-	FLASH_UID_CMD_GD_PUYA   = 0x4b,
-	FLASH_XTX_READ_UID_CMD	= 0x5A,
-}flash_uid_cmddef_e;
+	FLASH_ETOX_ZB  		= 0x0100325E,	// 325E		bit[24]:ETOX: Byte Program Time != Page Programming Time
+	FLASH_ETOX_GD   	= 0x010060C8,	// 60C8/4051
+	FLASH_SONOS_PUYA  	= 0x02006085,	// 6085		bit[25]:SONOS:Byte Program Time == Page Programming Time
+	FLASH_SONOS_TH  	= 0x020060EB,	// 60EB
+	FLASH_SST_TH  		= 0x040060CD,	// 60CD		bit[26]:SST:  Byte Program Time != Page Programming Time
+}flash_vendor_e;
 
 /**
  * @brief	flash capacity definition
@@ -130,15 +133,34 @@ typedef enum {
     FLASH_VOLTAGE_1V6      = 0x00,
 } Flash_VoltageDef;
 
+typedef void (*flash_hander_t)(unsigned long, unsigned long, unsigned char*);
+extern _attribute_data_retention_ flash_hander_t flash_read_page;
+extern _attribute_data_retention_ flash_hander_t flash_write_page;
+
 /*******************************************************************************************************************
  *												Primary interface
  ******************************************************************************************************************/
 
 /**
+ * @brief 		This function serve to change the read function and write function.
+ * @param[in]   read	- the read function.
+ * @param[in]   write	- the write function.
+ * @none
+ */
+static inline void flash_change_rw_func(flash_hander_t read, flash_hander_t write)
+{
+	flash_read_page = read;
+	flash_write_page = write;
+}
+
+/**
  * @brief 		This function serves to erase a sector.
  * @param[in]   addr	- the start address of the sector needs to erase.
  * @return 		none.
- * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ * @note        Attention: The block erase takes a long time, please pay attention to feeding the dog in advance.
+ * 				The maximum block erase time is listed at the beginning of this document and is available for viewing.
+ *
+ * 				Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
  *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
  *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
@@ -166,7 +188,7 @@ void flash_erase_sector(unsigned long addr);
  *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
  *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
  */
-void flash_read_page(unsigned long addr, unsigned long len, unsigned char *buf);
+void flash_read_data(unsigned long addr, unsigned long len, unsigned char *buf);
 
 /**
  * @brief 		This function writes the buffer's content to the flash.
@@ -186,7 +208,7 @@ void flash_read_page(unsigned long addr, unsigned long len, unsigned char *buf);
  *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
  *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
  */
-void flash_write_page(unsigned long addr, unsigned long len, unsigned char *buf);
+void flash_page_program(unsigned long addr, unsigned long len, unsigned char *buf);
 
 /**
  * @brief	  	This function serves to read MID of flash(MAC id).
@@ -239,7 +261,7 @@ unsigned int flash_read_mid(void);
 void flash_read_uid(unsigned char idcmd, unsigned char *buf);
 
 /*******************************************************************************************************************
- *												Primary interface
+ *												Secondary interface
  ******************************************************************************************************************/
 
 /**
@@ -260,50 +282,8 @@ void flash_read_uid(unsigned char idcmd, unsigned char *buf);
 int flash_read_mid_uid_with_check( unsigned int *flash_mid, unsigned char *flash_uid);
 
 /**
- * @brief		This function serves to find whether it is zb flash.
+ * @brief		This function serves to get flash vendor.
  * @param[in]	none.
- * @return		1 - is zb flash;   0 - is not zb flash.
+ * @return		0 - err, other - flash vendor.
  */
-unsigned char flash_is_zb(void);
-
-/**
- * @brief		This function serves to calibration the flash voltage(VDD_F),if the flash has the calib_value,we will use it,either will
- * 				trim vdd_f to 1.95V(2b'111 the max) if the flash is zb.
- * @param[in]	vol - the voltage which you want to set.
- * @return		none.
- */
-void flash_vdd_f_calib(void);
-
-/**
- * @brief		This function serves to get the vdd_f calibration value.
- * @param[in]	none.
- * @return		none.
- */
-static inline unsigned char flash_get_vdd_f_calib_value(void)
-{
-	unsigned int mid = flash_read_mid();
-	unsigned char dcdc_flash_volatage = 0;
-	switch((mid & 0xff0000) >> 16)
-	{
-	case(FLASH_SIZE_64K):
-		flash_read_page(0xe1c0, 1, &dcdc_flash_volatage);
-		break;
-	case(FLASH_SIZE_128K):
-		flash_read_page(0x1e1c0, 1, &dcdc_flash_volatage);
-		break;
-	case(FLASH_SIZE_512K):
-		flash_read_page(0x771c0, 1, &dcdc_flash_volatage);
-		break;
-	case(FLASH_SIZE_1M):
-		flash_read_page(0xfe1c0, 1, &dcdc_flash_volatage);
-		break;
-	case(FLASH_SIZE_2M):
-		flash_read_page(0x1fe1c0, 1, &dcdc_flash_volatage);
-		break;
-	default:
-		dcdc_flash_volatage = 0xff;
-		break;
-	}
-	return dcdc_flash_volatage;
-}
-
+unsigned int flash_get_vendor(unsigned int flash_mid);

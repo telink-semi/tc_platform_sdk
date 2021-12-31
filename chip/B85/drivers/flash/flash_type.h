@@ -1,10 +1,10 @@
 /********************************************************************************************************
  * @file	flash_type.h
  *
- * @brief	This is the header file for b85m
+ * @brief	This is the header file for b85
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -43,8 +43,8 @@
  *          SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *******************************************************************************************************/
-#ifndef __FLASH_COMPATIBLE_H__
-#define __FLASH_COMPATIBLE_H__
+#ifndef __FLASH_TYPE_H__
+#define __FLASH_TYPE_H__
 
 #include "flash.h"
 #include "flash_mid13325e.h"	// ZB25WD40B

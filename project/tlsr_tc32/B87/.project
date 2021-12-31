@@ -122,11 +122,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/BQB_EMI_Demo</locationURI>
 		</link>
 		<link>
-			<name>vendor/DUT_Test</name>
-			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/DUT_Test</locationURI>
-		</link>
-		<link>
 			<name>vendor/Debug_Demo</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/Debug_Demo</locationURI>
@@ -164,7 +159,7 @@
 		<link>
 			<name>vendor/PKE_Demo</name>
 			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/PKE_Demo/PKE_V1.0/PKE_Demo</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/PKE_Demo</locationURI>
 		</link>
 		<link>
 			<name>vendor/PM_Demo</name>
@@ -197,16 +192,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/SPI_Demo/SPI_V1.0/SPI_Demo</locationURI>
 		</link>
 		<link>
-			<name>vendor/SRAM_Test</name>
-			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/SRAM_Test</locationURI>
-		</link>
-		<link>
-			<name>vendor/SWIRE_Demo</name>
-			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/Swire_Demo</locationURI>
-		</link>
-		<link>
 			<name>vendor/TIMER_Demo</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/TIMER_Demo</locationURI>
@@ -217,11 +202,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/TRNG_Demo</locationURI>
 		</link>
 		<link>
-			<name>vendor/Test_Demo</name>
-			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/Test_Demo</locationURI>
-		</link>
-		<link>
 			<name>vendor/UART_Demo</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/UART_Demo</locationURI>
@@ -230,6 +210,11 @@
 			<name>vendor/USB_Demo</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/USB_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/common</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/common/B87</locationURI>
 		</link>
 		<link>
 			<name>vendor/s7816_Demo</name>

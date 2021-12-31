@@ -6,7 +6,7 @@
  * @author	Driver Group
  * @date	2019
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,7 @@
 #pragma once
 
 #include "clock.h"
-#include "pm.h"
+#include "lib/include/pm.h"
 #include "analog.h"
 #include "register.h"
 
@@ -82,12 +82,6 @@ typedef enum
 }QDEC_InputBchTypeDef;
 
 
-#define reg_qdec_set       0xd1
-#define reg_qdec_channel_a 0xd2
-#define reg_qdec_channel_b 0xd3
-
-#define reg_qdec_mode 0xd7
-
 /**
  * qedc mode
  */
@@ -95,26 +89,40 @@ typedef enum
 {
 	COMMON_MODE,
 	DOUBLE_ACCURACY_MODE,
-}QDEC_ModeTypeDef;
+}qdec_mode_e;
 
-#define rge_qdec_load 	0xd8
-#define reg_qdec_count 	0xd0
-#define reg_qdec_reset 0xd6
+
+/**
+ *the hardware debouncing threshold
+ */
+typedef enum{
+	QDEC_THRSH_P187p5us =0,
+	QDEC_THRSH_P375p0us,
+    QDEC_THRSH_P750p0us,
+	QDEC_THRSH_P1500p0us,
+	QDEC_THRSH_P3000p0us,
+	QDEC_THRSH_P6000p0us,
+	QDEC_THRSH_P12000p0us,
+	QDEC_THRSH_P24000p0us,
+}qdec_thrsh_e;
 
 /**
  * @brief      This function servers to set input port.
- * @param[in]  QDEC_InputAchTypeDef - input types of A channel.
- * @param[in]  QDEC_InputBchTypeDef - input types of A channel.
+ * @param[in]  chn_a - input types of a channel.
+ * @param[in]  chn_b - input types of b channel.
  * @return     none.
  */
-void qdec_set_pin(QDEC_InputAchTypeDef channelA,QDEC_InputBchTypeDef channelB);
+void qdec_set_pin(QDEC_InputAchTypeDef chn_a,QDEC_InputBchTypeDef chn_b);
 
 /**
- * @brief      This function servers to set qdec's mode.
- * @param[in]  QDEC_ModeTypeDef - mode type to select.
+ * @brief      This function servers to set qdec mode,qdec mode:common mode and double accuracy mode.
+ *             common mode:the qdec counter value is increased/decreased by 1 only when the same rising/falling edges are detected from the two phase signals.
+ *             double accuracy mode:the qdec counter value is increased/decreased by 1 on each rising/falling edge of the two phase signals;
+ *             the counter value will be increased/decreased by 2 for one wheel rolling.
+ * @param[in]  mode - mode type to select.
  * @return     none.
  */
-void qdec_set_mode(QDEC_ModeTypeDef mode);
+void qdec_set_mode(qdec_mode_e mode);
 
 /**
  * @brief      This function servers to initials qedc source clock.
@@ -124,22 +132,25 @@ void qdec_set_mode(QDEC_ModeTypeDef mode);
 void qdec_clk_en(void);
 
 /**
- * @brief      This function servers to read hardware counting value.
+ * @brief      This function servers to read hardware counting value,
+ *             After reading the value, if there is no input to channels A and B, then reading the value is 0 through this function,
+ *             If the count is not read, the qdec read real time counting value increases or decreases with the direction of the wheel according to the qdec mode.
  * @param[in]  none.
  * @return     hardware counting value.
  */
 signed char qdec_get_count_value(void);
 
 /**
- * @brief      This function servers to reset the counter.
+ * @brief      This function servers to reset qdec and the qdec counter value is cleared zero.
  * @param[in]  none.
  * @return     none.
  */
-void qdec_clear_conuter(void);
+void qdec_reset(void);
 
 /**
  * @brief      This function servers to set hardware debouncing.
- * @param[in]  thrsh - lower the value of thrsh,will be regard as jitter.
+ * @param[in]  thrsh - any signal with width lower than the threshold will be regarded as jitter,
+ *             effective signals input from Channel A and B should contain high/low level with width more than the threshold.
  * @return     none.
  */
-void qdec_set_debouncing(char thrsh);
+void qdec_set_debouncing(qdec_thrsh_e thrsh);

@@ -6,7 +6,7 @@
  * @author	Driver Group
  * @date	2019
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ static unsigned char IsPrime(unsigned int n)
 {
 	unsigned int i = 5;
 	if(n <= 3){
-		return 1; //althought n is prime, but the bwpc must be larger than 2.
+		return 1; //although n is prime, but the bwpc must be larger than 2.
 	}
 	else if((n %2 == 0) || (n % 3 == 0)){
 		return 0;
@@ -181,12 +181,10 @@ static void GetBetterBwpc(unsigned int baut_rate,unsigned int  tmp_sysclk )
 void uart_init(unsigned short g_uart_div, unsigned char g_bwpc, UART_ParityTypeDef Parity, UART_StopBitTypeDef StopBit)
 {
     //GetBetterBwpc(BaudRate); //get the best bwpc and uart_div
-	reg_uart_ctrl0 &= (~FLD_UART_BPWC);
-    reg_uart_ctrl0 |= g_bwpc; //set bwpc
+	reg_uart_ctrl0 =((reg_uart_ctrl0 & (reg_uart_ctrl0)) | g_bwpc);//set bwpc
     reg_uart_clk_div = (g_uart_div | FLD_UART_CLK_DIV_EN); //set div_clock
     reg_uart_rx_timeout0 = (g_bwpc+1) * 12; //one byte includes 12 bits at most
-    reg_uart_rx_timeout1&=(~UART_BW_MUL2);
-    reg_uart_rx_timeout1 |= UART_BW_MUL2; //if over 2*(tmp_bwpc+1),one transaction end.
+    reg_uart_rx_timeout1 =((reg_uart_rx_timeout1 & (~FLD_UART_TIMEOUT_MUL)) | UART_BW_MUL2); //if over 2*(tmp_bwpc+1),one transaction end.
 
     //parity config
     if (Parity) {
@@ -203,8 +201,7 @@ void uart_init(unsigned short g_uart_div, unsigned char g_bwpc, UART_ParityTypeD
     }
 
     //stop bit config
-    reg_uart_ctrl1  &= (~FLD_UART_CTRL1_STOP_BIT);
-    reg_uart_ctrl1  |= StopBit;
+    reg_uart_ctrl1 = ((reg_uart_ctrl1 & (~FLD_UART_CTRL1_STOP_BIT)) | StopBit);
 }
 /**
  * @brief      This function initializes the UART module.
@@ -217,12 +214,10 @@ void uart_init(unsigned short g_uart_div, unsigned char g_bwpc, UART_ParityTypeD
 void uart_init_baudrate(unsigned int Baudrate,unsigned int System_clock , UART_ParityTypeDef Parity, UART_StopBitTypeDef StopBit)
 {
 	GetBetterBwpc(Baudrate,System_clock); //get the best bwpc and uart_div
-	reg_uart_ctrl0 &= (~FLD_UART_BPWC);
-	reg_uart_ctrl0 |= g_bwpc; //set bwpc
+	reg_uart_ctrl0 =((reg_uart_ctrl0 & (~FLD_UART_BPWC)) | g_bwpc);//set bwpc
 	reg_uart_clk_div = (g_uart_div | FLD_UART_CLK_DIV_EN); //set div_clock
 	reg_uart_rx_timeout0 = (g_bwpc+1) * 12; //one byte includes 12 bits at most
-	reg_uart_rx_timeout1&=(~UART_BW_MUL2);
-    reg_uart_rx_timeout1 |= UART_BW_MUL2; //if over 2*(tmp_bwpc+1),one transaction end.
+	reg_uart_rx_timeout1 = ((reg_uart_rx_timeout1 & (~UART_BW_MUL2)) | UART_BW_MUL2 );//if over 2*(tmp_bwpc+1),one transaction end.
 	//parity config
 	if (Parity) {
 		reg_uart_ctrl1  |= FLD_UART_CTRL1_PARITY_EN; //enable parity function
@@ -238,8 +233,7 @@ void uart_init_baudrate(unsigned int Baudrate,unsigned int System_clock , UART_P
 	}
 
 	//stop bit config
-	reg_uart_ctrl1  &= (~FLD_UART_CTRL1_STOP_BIT);
-	reg_uart_ctrl1  |= StopBit;
+	reg_uart_ctrl1 = ((reg_uart_ctrl1 & (~FLD_UART_CTRL1_STOP_BIT)) | StopBit);
 }
 
 /**
@@ -373,9 +367,14 @@ void uart_send_dma(unsigned char* Addr)
 	 * if tx_done irq is enable,first we must clear tx_done status to 0 - "uart_clr_tx_done()",otherwise it always be stuck in the interrupt,
 	 * when tx is truly complete , tx_done status is set to 1,then entry tx_done irq.
 	 */
+	/*
+	  In order to prevent the time between the last piece of data and the next piece of data is less than the set timeout time,
+	  causing the receiver to treat the next piece of data as the last piece of data.
+	*/
 	uart_clr_tx_done();
     reg_dma1_addr = (unsigned short)((unsigned int)Addr); //packet data, start address is sendBuff+1
-    reg_dma1_size = 0xff; 	
+    reg_dma1_size = 0xff;
+    reg_dma_chn_en |= FLD_DMA_CHN_UART_TX;
     reg_dma_tx_rdy0	 |= FLD_DMA_CHN_UART_TX;
 }
 
@@ -399,6 +398,7 @@ volatile unsigned char uart_dma_send(unsigned char* Addr)
 	{
 		reg_dma1_addr = (unsigned short)((unsigned int)Addr); //packet data, start address is sendBuff+1
 		reg_dma1_size = 0xff;
+		reg_dma_chn_en |= FLD_DMA_CHN_UART_TX;
 		reg_dma_tx_rdy0	 |= FLD_DMA_CHN_UART_TX;
 		return 1;
 	}
@@ -452,6 +452,7 @@ void uart_recbuff_init(unsigned char *RecvAddr, unsigned short RecvBufLen)
     reg_dma0_size = bufLen; //set receive buffer size
 
     reg_dma0_mode = FLD_DMA_WR_MEM;   //set DMA 0 mode to 0x01 for receive
+    reg_dma_chn_en |= FLD_DMA_CHN_UART_RX;
 }
 
 /**
@@ -498,8 +499,6 @@ void uart_set_rts(unsigned char Enable, UART_RTSModeTypeDef Mode, unsigned char 
     if (Enable)
     {
     	gpio_set_func(pin,AS_UART);//enable rts pin
-    	gpio_set_input_en(pin, 1);//enable input
-    	gpio_set_output_en(pin, 1);//enable output
         reg_uart_ctrl2 |= FLD_UART_CTRL2_RTS_EN; //enable RTS function
     }
     else
@@ -523,8 +522,7 @@ void uart_set_rts(unsigned char Enable, UART_RTSModeTypeDef Mode, unsigned char 
     }
 
     //set threshold
-    reg_uart_ctrl2 &= (~FLD_UART_CTRL2_RTS_TRIG_LVL);
-    reg_uart_ctrl2 |= (Thresh & FLD_UART_CTRL2_RTS_TRIG_LVL);
+    reg_uart_ctrl2 = ((reg_uart_ctrl2 & (~FLD_UART_CTRL2_RTS_TRIG_LVL)) |(Thresh & FLD_UART_CTRL2_RTS_TRIG_LVL));
 }
 
 /**
@@ -554,8 +552,10 @@ void uart_set_cts(unsigned char Enable, unsigned char Select,UART_CtsPinDef pin)
 {
     if (Enable)
     {
-    	gpio_set_func(pin,AS_UART);//enable cts pin
+    	//When the pad is configured with mux input and a pull-up resistor is required, gpio_input_en needs to be placed before gpio_function_dis,
+    	//otherwise first set gpio_input_disable and then call the mux function interface,the mux pad will may misread the short low-level timing.confirmed by minghai.20210709.
     	gpio_set_input_en(pin, 1);//enable input
+    	gpio_set_func(pin,AS_UART);//enable cts pin
     	reg_uart_ctrl1|= FLD_UART_CTRL1_CTS_EN; //enable CTS function
     }
     else
@@ -584,6 +584,11 @@ void uart_set_cts(unsigned char Enable, unsigned char Select,UART_CtsPinDef pin)
 */
 void uart_gpio_set(UART_TxPinDef tx_pin,UART_RxPinDef rx_pin)
 {
+	//When the pad is configured with mux input and a pull-up resistor is required, gpio_input_en needs to be placed before gpio_function_dis,
+	//otherwise first set gpio_input_disable and then call the mux function interface,the mux pad will may misread the short low-level timing.confirmed by minghai.20210709.
+	gpio_set_input_en(tx_pin, 1);
+	gpio_set_input_en(rx_pin, 1);
+
 	//note: pullup setting must before uart gpio config, cause it will lead to ERR data to uart RX buffer(confirmed by sihui&sunpeng)
 	//PM_PIN_PULLUP_1M   PM_PIN_PULLUP_10K
 	gpio_setup_up_down_resistor(tx_pin, PM_PIN_PULLUP_10K);  //must, for stability and prevent from current leakage
@@ -592,10 +597,6 @@ void uart_gpio_set(UART_TxPinDef tx_pin,UART_RxPinDef rx_pin)
 
 	gpio_set_func(tx_pin,AS_UART); // set tx pin
 	gpio_set_func(rx_pin,AS_UART); // set rx pin
-
-
-	gpio_set_input_en(tx_pin, 1);  //experiment shows that tx_pin should open input en(confirmed by qiuwei)
-	gpio_set_input_en(rx_pin, 1);  //
 
 }
 /**
@@ -608,7 +609,6 @@ void uart_mask_error_irq_enable(void)
 
 	reg_uart_rx_timeout1|= FLD_UART_MASK_ERR_IRQ;
 	reg_irq_mask |= FLD_IRQ_UART_EN;
-
 }
 
 /**
@@ -618,9 +618,11 @@ void uart_mask_error_irq_enable(void)
 */
 void uart_set_rtx_pin(UART_RTxPinDef rtx_pin)
 {
- 	gpio_setup_up_down_resistor(rtx_pin, PM_PIN_PULLUP_10K);
- 	gpio_set_func(rtx_pin,AS_UART);
+	//When the pad is configured with mux input and a pull-up resistor is required, gpio_input_en needs to be placed before gpio_function_dis,
+	//otherwise first set gpio_input_disable and then call the mux function interface,the mux pad will may misread the short low-level timing.confirmed by minghai.20210709.
 	gpio_set_input_en(rtx_pin,1);
+	gpio_setup_up_down_resistor(rtx_pin, PM_PIN_PULLUP_10K);
+ 	gpio_set_func(rtx_pin,AS_UART);
 }
 
 

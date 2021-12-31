@@ -1,10 +1,10 @@
 /********************************************************************************************************
  * @file	flash_mid011460c8.h
  *
- * @brief	This is the header file for b85m
+ * @brief	This is the header file for b85
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -112,7 +112,6 @@ typedef enum{
  */
 typedef enum{
 	FLASH_WRITE_STATUS_BP_MID011460C8	=	0x407c,
-	FLASH_WRITE_STATUS_QE_MID011460C8	=	0x0200,
 	FLASH_WRITE_STATUS_OTP_MID011460C8	=	0x3800,
 }mid011460c8_write_status_bit_e;
 

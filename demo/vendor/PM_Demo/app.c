@@ -4,7 +4,7 @@
  * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -51,8 +51,7 @@
 #define	MDEC_MATCH_VALUE				0x02
 unsigned char 	dat[5]={0};
 
-unsigned char read_dat_lowbyte = 0;
-unsigned char read_dat_highbyte = 0;
+unsigned short read_data_time_sustain[24] = {0};	//the size of the array can be set according to the actual situation.
 
 void user_init()
 {
@@ -85,15 +84,9 @@ void user_init()
 	cpu_set_mdec_value_wakeup(MDEC_MATCH_VALUE);
 	cpu_sleep_wakeup(SUSPEND_MODE , PM_WAKEUP_MDEC,0);
 
-#elif(PM_MODE==SUSPEND_DEBOUNCE_WAKEUP)
-
-	/* Caution: if wake-up source is only pad, 32K clock source MUST be 32K RC * */
-	cpu_set_gpio_wakeup(DEBOUNCE_WAKEUP_PA1, Level_High, 1);
-	gpio_setup_up_down_resistor(DEBOUNCE_WAKEUP_PA1, PM_PIN_PULLDOWN_100K);
-
 #elif(PM_MODE==SUSPEND_CORE_WAKEUP)
 	usb_set_pin_en();
-	deepsleep_dp_dm_gpio_low_wake_enable();
+	pm_set_suspend_power_cfg(PM_POWER_USB, 1);
 
 #elif(PM_MODE==DEEP_PAD_WAKEUP)
 	/* Caution: if wake-up source is only pad, 32K clock source MUST be 32K RC * */
@@ -121,31 +114,20 @@ void user_init()
 #elif(PM_MODE==DEEP_DEBOUNCE_WAKEUP)
 	/* Caution: if wake-up source is only pad, 32K clock source MUST be 32K RC * */
 
-	//analog_write(0x2e, 0x06);                 //set the debounce filter 32k clock cycle
-	if(0 == (analog_read(0x2c) & BIT(6)))
-	{
-		unsigned char dat = 0;
-		unsigned char overflow = 0;
+	pm_set_debounce_count(0x0f);
+	if(pm_get_wakeup_src() & WAKEUP_STATUS_DEBOUNCE){
+		unsigned int k = 0;
 		do{
-			dat = analog_read(0x48);
-			overflow = dat & BIT(6);
-			dat = dat & 0x1f;
-
-			for(unsigned char j=0; j < dat; j++)
-			{
-				read_dat_lowbyte = analog_read(0x45);
-				read_dat_highbyte = analog_read(0x46);
-
-				sleep_ms(1);
-				analog_write(0x46, read_dat_highbyte | BIT(7));
+			if(!pm_debounce_fifo_empty()){
+				read_data_time_sustain[k] = pm_debounce_read_data();
+				k++;
 			}
-		}while(overflow == 0);
+		}while(pm_debounce_data_overflow() == 0);
 	}
 
-	cpu_set_gpio_wakeup(DEBOUNCE_WAKEUP_PA1, Level_High, 1);
-	gpio_setup_up_down_resistor(DEBOUNCE_WAKEUP_PA1, PM_PIN_PULLDOWN_100K);
-
-	cpu_sleep_wakeup(DEEPSLEEP_MODE , PM_WAKEUP_DEBOUNCE, 0);
+	cpu_set_gpio_wakeup(DEBOUNCE_WAKEUP_PA1, Level_High, 1);	//Set the wake-up pin, wake-up polarity and whether to enable
+	gpio_setup_up_down_resistor(DEBOUNCE_WAKEUP_PA1, PM_PIN_PULLDOWN_100K);	//Set the pull-up and pull-up mode of the wake-up pin
+	cpu_sleep_wakeup(DEEPSLEEP_MODE , PM_WAKEUP_DEBOUNCE, 0);	//Put the chip into low power mode
 
 #elif(PM_MODE==DEEP_RET_PAD_WAKEUP)
 	/* Caution: if wake-up source is only pad, 32K clock source MUST be 32K RC * */
@@ -153,11 +135,11 @@ void user_init()
 	cpu_set_gpio_wakeup(WAKEUP_PAD, Level_High, 1);
 	gpio_setup_up_down_resistor(WAKEUP_PAD, PM_PIN_PULLDOWN_100K);
 
-	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW32K , PM_WAKEUP_PAD, 0);
+	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K , PM_WAKEUP_PAD, 0);
 
 #elif(PM_MODE==DEEP_RET_32K_RC_WAKEUP||PM_MODE==DEEP_RET_32K_XTAL_WAKEUP)
 
-	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW32K , PM_WAKEUP_TIMER,(clock_time() + 3000*CLOCK_16M_SYS_TIMER_CLK_1MS));
+	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K , PM_WAKEUP_TIMER,(clock_time() + 4000*CLOCK_16M_SYS_TIMER_CLK_1MS));
 
 #elif(PM_MODE==DEEP_RET_MDEC_WAKEUP)
 	if((analog_read(0x44) & WAKEUP_STATUS_MDEC) && (CRC_OK == mdec_read_dat(dat)))
@@ -172,30 +154,20 @@ void user_init()
 
 #elif(PM_MODE==DEEP_RET_DEBOUNCE_WAKEUP)
 
-	//analog_write(0x2e, 0x06);                 //set the debounce filter 32k clock cycle
-	if(0 == (analog_read(0x2c) & BIT(6)))
-	{
-		unsigned char dat = 0;
-		unsigned char overflow = 0;
+	pm_set_debounce_count(0x0f);
+	if(pm_get_wakeup_src() & WAKEUP_STATUS_DEBOUNCE){
+		unsigned int k = 0;
 		do{
-			dat = analog_read(0x48);
-			overflow = dat & BIT(6);
-			dat = dat & 0x1f;
-
-			for(unsigned char j=0; j < dat; j++)
-			{
-				read_dat_lowbyte = analog_read(0x45);
-				read_dat_highbyte = analog_read(0x46);
-
-				sleep_ms(1);
-				analog_write(0x46, read_dat_highbyte | BIT(7));
+			if(!pm_debounce_fifo_empty()){
+				read_data_time_sustain[k] = pm_debounce_read_data();
+				k++;
 			}
-		}while(overflow == 0);
+		}while(pm_debounce_data_overflow() == 0);
 	}
 
-	cpu_set_gpio_wakeup(DEBOUNCE_WAKEUP_PA1, Level_High, 1);
-	gpio_setup_up_down_resistor(DEBOUNCE_WAKEUP_PA1, PM_PIN_PULLDOWN_100K);
-	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW32K , PM_WAKEUP_DEBOUNCE, 0);
+	cpu_set_gpio_wakeup(DEBOUNCE_WAKEUP_PA1, Level_High, 1);	//Set the wake-up pin, wake-up polarity and whether to enable
+	gpio_setup_up_down_resistor(DEBOUNCE_WAKEUP_PA1, PM_PIN_PULLDOWN_100K);	//Set the pull-up and pull-up mode of the wake-up pin
+	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW32K , PM_WAKEUP_DEBOUNCE, 0);	//Put the chip into low power mode
 
 #elif(PM_MODE==SHUTDOWN_PAD_WAKEUP)
 	/* Caution: if wake-up source is only pad, 32K clock source MUST be 32K RC * */
@@ -236,31 +208,6 @@ void main_loop (void)
 		sleep_ms(2000);
 	}
 	mdec_reset();
-
-#elif(PM_MODE==SUSPEND_DEBOUNCE_WAKEUP)
-
-	//analog_write(0x2e, 0x06);                 //set the debounce filter 32k clock cycle
-	if(0 == (analog_read(0x2c) & BIT(6)))
-	{
-		unsigned char dat = 0;
-		unsigned char overflow = 0;
-		do{
-			dat = analog_read(0x48);
-			overflow = dat & BIT(6);
-			dat = dat & 0x1f;
-
-			for(unsigned char j=0; j < dat; j++)
-			{
-				read_dat_lowbyte = analog_read(0x45);
-				read_dat_highbyte = analog_read(0x46);
-
-				sleep_ms(1);
-				analog_write(0x46, read_dat_highbyte | BIT(7));
-			}
-		}while(overflow == 0);
-	}
-
-	cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_DEBOUNCE, 0);
 
 #elif(PM_MODE==SUSPEND_CORE_WAKEUP)
 	if(clock_time_exceed (tick_suspend_interval, 300000))

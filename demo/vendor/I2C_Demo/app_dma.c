@@ -4,7 +4,7 @@
  * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -77,13 +77,11 @@ void user_init()
 	gpio_set_input_en(LED2 ,0);			//disable input
 	gpio_write(LED2, 1);              	//LED On
 
-   #if(MCU_CORE_B89)
-	i2c_gpio_set(I2C_GPIO_SDA_A0,I2C_GPIO_SCL_A1);
-   #elif(MCU_CORE_B87)
-	i2c_gpio_set(I2C_GPIO_SDA_A3,I2C_GPIO_SCL_A4);
-   #elif(MCU_CORE_B85)
-	i2c_gpio_set(I2C_GPIO_GROUP_C0C1);
-   #endif
+#if(MCU_CORE_B87||MCU_CORE_B89||MCU_CORE_B80)
+	i2c_gpio_set(I2C_GPIO_SDA,I2C_GPIO_SCL);
+#elif(MCU_CORE_B85)
+	i2c_gpio_set(I2C_GPIO_SDA_SCL);
+#endif
 #if(I2C_DEVICE == I2C_MASTER_DEVICE)
 
 	i2c_master_init(0x5C, (unsigned char)(CLOCK_SYS_CLOCK_HZ/(4*I2C_CLK_SPEED)) ); // 200KHz

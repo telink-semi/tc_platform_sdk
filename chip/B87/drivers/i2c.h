@@ -6,7 +6,7 @@
  * @author	Driver Group
  * @date	2019
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without
@@ -53,7 +53,7 @@
 #define I2C_SLAVE_DEVICE_NO_START_EN   						0
 
 /**
- *  @brief  select pin as SDA and SCL of i2c
+ *  @brief  select pin as SDA and SCL of i2c,can be combined in any way.
  */
 typedef enum{
 	I2C_GPIO_SDA_A3		= GPIO_PA3,

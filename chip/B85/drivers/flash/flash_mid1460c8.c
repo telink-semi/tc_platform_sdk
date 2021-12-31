@@ -1,10 +1,10 @@
 /********************************************************************************************************
  * @file	flash_mid1460c8.c
  *
- * @brief	This is the source file for b85m
+ * @brief	This is the source file for b85
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.

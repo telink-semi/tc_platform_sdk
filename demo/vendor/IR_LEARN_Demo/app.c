@@ -4,7 +4,7 @@
  * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -45,15 +45,16 @@
  *******************************************************************************************************/
 #include "app_config.h"
 
-#if (MCU_CORE_B87)
-#define GPIO_Type		AS_PWM0
-#elif (MCU_CORE_B89)
-#define GPIO_Type		PC2_PWM0
+#if (MCU_CORE_B89)
+#define PWM_PIN		GPIO_PC2
+#define GPIO_Type         PC2_PWM0
+#elif (MCU_CORE_B87||MCU_CORE_B85)
+#define PWM_PIN		GPIO_PC1
+#define GPIO_Type			AS_PWM0
 #elif (MCU_CORE_B80)
-#define GPIO_Type		PWM0
+#define PWM_PIN		GPIO_PC1
+#define GPIO_Type         PWM0
 #endif
-
-#define PWM_PIN			GPIO_PC2
 #define IRLEARN_RX_PIN	GPIO_PB5
 
 #define IR_LEARN_MODE					1

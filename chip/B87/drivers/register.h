@@ -6,7 +6,7 @@
  * @author	Driver Group
  * @date	2019
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without
@@ -459,6 +459,49 @@ enum{
 	FLD_ANA_START  = 			BIT(6),
 	FLD_ANA_CYC  = 				BIT(7),
 };
+/*******************************      qdec registers: 0xd0      ******************************/
+#define 	REG_QDEC_BASE		    0xd0
+
+#define reg_qdec_count0        REG_ADDR8(REG_QDEC_BASE+0x00)
+
+#define reg_qdec_dbntime       REG_ADDR8(REG_QDEC_BASE+0x01)
+enum{
+	FLD_QDEC_DBNTIME  = BIT_RNG(0,2),
+	FLD_QDEC_POLA     = BIT(4),
+	FLS_QDEC_SHUTTLE0 = BIT(5),
+};
+
+#define reg_qdec_channel_a     REG_ADDR8(REG_QDEC_BASE+0x02)
+enum{
+	FLD_QDEC_CHANNEL_A   = BIT_RNG(0,2),
+};
+#define reg_qdec_channel_b     REG_ADDR8(REG_QDEC_BASE+0x03)
+enum{
+	FLD_QDEC_CHANNEL_B   = BIT_RNG(0,2),
+};
+
+#define reg_qdec_mask     REG_ADDR8(REG_QDEC_BASE+0x04)
+enum{
+	FLD_QDEC_MASK       = BIT(0),
+};
+
+#define reg_qdec_int0     REG_ADDR8(REG_QDEC_BASE+0x05)
+enum{
+	FLD_QDEC_INT0     = BIT(0),
+};
+
+
+#define reg_qdec_reset         REG_ADDR8(REG_QDEC_BASE+0x06)
+
+#define reg_qdec_mode          REG_ADDR8(REG_QDEC_BASE+0x07)
+enum{
+	FLD_QDEC_DOUBLE0   = BIT(0),
+};
+
+#define reg_qdec_load 	       REG_ADDR8(REG_QDEC_BASE+0x08)
+enum{
+	FLD_QDEC_COUNT0_RELOAD   = BIT(0),
+};
 
 
 /*******************************      usb registers: 0x100      ******************************/
@@ -771,6 +814,17 @@ enum{
 #define reg_mux_func_c2     		REG_ADDR8(0x5ad)
 #define reg_mux_func_d1     		REG_ADDR8(0x5ae)
 #define reg_mux_func_d2     		REG_ADDR8(0x5af)
+
+#define reg_pb_dbg_en               REG_ADDR8(0x5b1)
+enum{
+	FLD_PB3_DBG_EN     = BIT(3),
+	FLD_PB4_DBG_EN     = BIT(4),
+};
+
+#define reg_wife_io_sel            REG_ADDR8(0x5b4)
+enum{
+	FLD_WIFI_IO_SEL    =BIT(4),
+};
 
 #define reg_gpio_wakeup_irq  		REG_ADDR8(0x5b5)
 enum{
@@ -1297,7 +1351,18 @@ enum{
 	FLD_RF_IRQ_FIRST_TIMEOUT =	BIT(10),
 	FLD_RF_IRQ_INVALID_PID =    BIT(11),
 	FLD_RF_IRQ_STX_TIMEOUT =    BIT(12),
-	FLD_RF_IRQ_ALL =            0X1FFF,
+	FLD_RF_IRQ_WIFI_DENY   =    BIT(13),
+	FLD_RF_IRQ_ALL =            0X3FFF,
+};
+#define  reg_rf_ll_wifi_coex        REG_ADDR8(0xf30)
+enum{
+	FLD_RF_COEX_EN			=	BIT(0),
+	FLD_RF_COEX_WF_DN_POL	=	BIT(1),
+	FLD_RF_COEX_STATUS		=	BIT(2),
+	FLD_RF_COEX_TRX_POL		=	BIT(3),
+	FLD_RF_TRX_PRIO			=	BIT(4),
+	FLD_RF_TX_PRIO			=	BIT(5),
+	FLD_RF_RX_PRIO			=	BIT(6),
 };
 /*******************************      aura registers: 0x1200      ******************************/
 #define REG_AURA_BASE            0x1200
@@ -1333,41 +1398,21 @@ enum
 	FLD_RF_HPMC_EXP_DIFF_COUNT_L	  = BIT_RNG(4,7),
 };
 /*******************************      pke registers: 0x2000      ******************************/
-#define reg_pke_ctrl             REG_ADDR32(0x2000)
-enum{
-	FLD_PKE_CTRL_START = 		 BIT(0),
-	FLD_PKE_CTRL_STOP = 		 BIT(16),
-};
-
-#define reg_pke_conf             REG_ADDR32(0x2004)
-enum{
-	FLD_PKE_CONF_IRQ_EN = 		 BIT(8),
-	FLD_PKE_CONF_PARTIAL_RADIX = BIT_RNG(16,23),
-	FLD_PKE_CONF_BASE_RADIX	=    BIT_RNG(24,26),
-};
-
-#define reg_pke_mc_ptr           REG_ADDR32(0x2010)
-
-#define reg_pke_stat             REG_ADDR32(0x2020)
-enum{
-	FLD_PKE_STAT_DONE = 		 BIT(0),
-};
-
-#define reg_pke_rt_code          REG_ADDR32(0x2024)
-enum{
-	FLD_PKE_RT_CODE_STOP_LOG =	 BIT_RNG(0,3),
-};
-
-#define reg_pke_exe_conf         REG_ADDR32(0x2050)
-enum{
-	FLD_PKE_EXE_CONF_IAFF_R0 = 	 BIT(0),
-	FLD_PKE_EXE_CONF_IMON_R0 = 	 BIT(1),
-	FLD_PKE_EXE_CONF_IAFF_R1 = 	 BIT(2),
-	FLD_PKE_EXE_CONF_IMON_R1 = 	 BIT(3),
-	FLD_PKE_EXE_CONF_OAFF = 	 BIT(4),
-	FLD_PKE_EXE_CONF_OMON = 	 BIT(5),
-	FLD_PKE_EXE_CONF_ME_SCA_EN = BIT_RNG(8,9),
-};
+#define PKE_BASE             (0x802000)
+#define PKE_CTRL             (*((volatile unsigned int *)(PKE_BASE)))
+#define PKE_CONF             (*((volatile unsigned int *)(PKE_BASE+0x04)))
+typedef enum{
+	FLD_PKE_CONF_IRQ_EN			= BIT(8),
+	FLD_PKE_CONF_PARTIAL_RADIX	= BIT_RNG(16,23),
+	FLD_PKE_CONF_BASE_RADIX		= BIT_RNG(24,26),
+}pke_conf_e;
+#define PKE_MC_PTR           (*((volatile unsigned int *)(PKE_BASE+0x10)))
+#define PKE_STAT             (*((volatile unsigned int *)(PKE_BASE+0x20)))
+#define PKE_RT_CODE          (*((volatile unsigned int *)(PKE_BASE+0x24)))
+#define PKE_EXE_CONF         (*((volatile unsigned int *)(PKE_BASE+0x50)))
+#define PKE_VERSION          (*((volatile unsigned int *)(PKE_BASE+0x80)))
+#define PKE_A(a, step)       ((volatile unsigned int *)(PKE_BASE+0x0400+(a)*(step)))
+#define PKE_B(a, step)       ((volatile unsigned int *)(PKE_BASE+0x1000+(a)*(step)))
 
 /********************************************************************************************
  *****|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|*****

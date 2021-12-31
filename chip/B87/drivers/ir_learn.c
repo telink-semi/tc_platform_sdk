@@ -6,7 +6,7 @@
  * @author	Driver Group
  * @date	2019
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
  *          Redistribution and use in source and binary forms, with or without
@@ -53,8 +53,7 @@
  */
 void ir_learn_set_pin(GPIO_PinTypeDef ir_rx_pin)
 {
-	reg_il_cfg0 &= ~FLD_IL_INPUT_SEL;
-	reg_il_cfg0 |= BIT_LOW_BIT(ir_rx_pin&0xFF)+((ir_rx_pin>>8)*8);
+	reg_il_cfg0 = ((reg_il_cfg0 & (~FLD_IL_INPUT_SEL)) | ( BIT_LOW_BIT(ir_rx_pin&0xFF)+((ir_rx_pin>>8)*8)));
 
 	gpio_set_output_en(ir_rx_pin,0);
 	gpio_set_input_en(ir_rx_pin,1);
@@ -65,9 +64,9 @@ void ir_learn_set_pin(GPIO_PinTypeDef ir_rx_pin)
  * @brief	This function servers to set the tick counter four modes.
  * @param	cnt_mode - variable to select tick count modes.
  * @return	none.
- */void ir_learn_set_mode(il_mode_e cnt_mode)
+ */
+void ir_learn_set_mode(il_mode_e cnt_mode)
 {
-	reg_il_cfg0 &= (~FLD_IL_MODE);
-	reg_il_cfg0 |= (cnt_mode << 5);
+	reg_il_cfg0 = ((reg_il_cfg0 & (~FLD_IL_MODE)) | (cnt_mode << 5));
 }
 

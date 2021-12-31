@@ -4,7 +4,7 @@
  * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -55,11 +55,17 @@
 #define rec_buff_Len    32
 #define trans_buff_Len  16
 
+
+#define TX     1
+#define RX     2
+#define UART_MODE_TRX RX
+
 __attribute__((aligned(4))) unsigned char rec_buff[rec_buff_Len]={0};
 __attribute__((aligned(4))) unsigned char trans_buff[trans_buff_Len] = {0x0c,0x00,0x00,0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc};
 volatile unsigned char uart_dmairq_tx_cnt;
 volatile unsigned char uart_dmairq_rx_cnt;
 extern volatile unsigned char rts_count;
+volatile unsigned char uart_dmairq_err_cnt;
 volatile unsigned char uart_dma_send_flag = 1;
 
 void user_init()
@@ -80,19 +86,19 @@ void user_init()
 
 	//baud rate: 115200
 	uart_init_baudrate(115200,CLOCK_SYS_CLOCK_HZ,PARITY_NONE, STOP_BIT_ONE);
-
 	uart_dma_enable(1, 1); 	//uart data in hardware buffer moved by dma, so we need enable them first
 
+#if(UART_DMA_INT_TYPE == UART_RXDMA_IRQ)
 	irq_enable_type(FLD_IRQ_DMA_EN);// uart_rx use dma_rx irq
 
 	dma_chn_irq_enable(FLD_DMA_CHN_UART_RX, 1);   	//uart Rx dma irq enable
-
-	irq_enable_type(FLD_IRQ_UART_EN);// uart_tx use uart_txdone irq
-
+#elif((UART_DMA_INT_TYPE == UART_RXDONE_IRQ)&&MCU_CORE_B80)
+	uart_rxdone_irq_en();  //mask rx_done irq
+#endif
 	uart_mask_tx_done_irq_enable();
 
 	uart_mask_error_irq_enable();// open uart_error_mask,when stop bit error or parity error,it will enter error_interrupt.
-
+	irq_enable_type(FLD_IRQ_UART_EN);// uart_tx use uart_txdone irq
 	irq_enable();
 
 #if( FLOW_CTR ==  USE_CTS )
@@ -105,15 +111,17 @@ void user_init()
 void main_loop (void)
 {
 #if( (FLOW_CTR == NONE)||(FLOW_CTR ==  USE_CTS))
-
-	sleep_ms(100);
+#if(UART_MODE_TRX == TX)
 	if(uart_dma_send_flag == 1)
 	{
 		uart_send_dma((unsigned char *)trans_buff);
 		trans_buff[4] ++;
 		uart_dma_send_flag = 0;
 	}
-
+#elif(UART_MODE_TRX == RX)
+	gpio_toggle(LED1);
+	sleep_ms(500);
+#endif
 #elif( FLOW_CTR ==  USE_RTS )
 	while(rts_count==1) //to make the rts obvious,design the program to trigger rts one time.
 	{

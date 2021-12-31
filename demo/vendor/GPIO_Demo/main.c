@@ -4,7 +4,7 @@
  * @brief	This is the source file for b85m
  *
  * @author	Driver Group
- * @date	2020
+ * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
@@ -44,12 +44,13 @@
  *
  *******************************************************************************************************/
 #include "app_config.h"
+#include "calibration.h"
 
 
 extern void user_init();
 extern void main_loop (void);
 volatile unsigned int gpio_irq_cnt;
-
+volatile unsigned int gpio_set_irq_cnt;
 /**
  * @brief		This function serves to handle the interrupt of MCU
  * @param[in] 	none
@@ -61,27 +62,16 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 
 	if((reg_irq_src & FLD_IRQ_GPIO_EN)==FLD_IRQ_GPIO_EN){
 		reg_irq_src |= FLD_IRQ_GPIO_EN; // clear the relevant irq
-		if(gpio_read(SW1)== 0){ // press key with low level to flash light
-			sleep_ms(10);
-			if(gpio_read(SW1)== 0){
-				gpio_irq_cnt++;
-				gpio_toggle(LED1);
-			}
-		}
+			gpio_irq_cnt++;
+			gpio_toggle(LED1);
 	}
 
 #elif(GPIO_MODE == GPIO_IRQ_RSIC0)
 
 	if((reg_irq_src & FLD_IRQ_GPIO_RISC0_EN)==FLD_IRQ_GPIO_RISC0_EN){
 		reg_irq_src |= FLD_IRQ_GPIO_RISC0_EN; // clear the relevant irq
-
-		if(gpio_read(SW2)== 0){ // press key with low level to flash light
-			sleep_ms(10);
-			if(gpio_read(SW2)== 0){
-				gpio_irq_cnt++;
-				gpio_toggle(LED1);
-			}
-		}
+			gpio_irq_cnt++;
+			gpio_toggle(LED1);
 	}
 
 #elif(GPIO_MODE == GPIO_IRQ_RSIC1)
@@ -89,13 +79,18 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 	if((reg_irq_src & FLD_IRQ_GPIO_RISC1_EN)==FLD_IRQ_GPIO_RISC1_EN){
 		reg_irq_src |= FLD_IRQ_GPIO_RISC1_EN; // clear the relevant irq
 
-		if(gpio_read(SW2)== 0){ // press key with low level to flash light
-			sleep_ms(10);
-			if(gpio_read(SW2)== 0){
-				gpio_irq_cnt++;
-				gpio_toggle(LED1);
-			}
-		}
+			gpio_irq_cnt++;
+			gpio_toggle(LED1);
+	}
+#elif((GPIO_MODE == GPIO_SEL_IRQ_SRC)&&(MCU_CORE_B80))
+	static unsigned char gpio_irqsrc;
+	gpio_irqsrc =(reg_gpio_irq_from_pad&SET_GROUP_GPIO);
+	if(gpio_irqsrc)
+	{
+		reg_gpio_irq_from_pad|=SET_GROUP_GPIO;
+
+			gpio_irq_cnt++;
+			gpio_toggle(LED1);
 	}
 #endif
 
@@ -108,17 +103,29 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
  */
 int main (void)   //must on ramcode
 {
-#if (MCU_CORE_B89)
+
+#if(MCU_CORE_B80||MCU_CORE_B89)
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
-#elif (MCU_CORE_B87)
-	cpu_wakeup_init(LDO_MODE, EXTERNAL_XTAL_24M);
 #elif (MCU_CORE_B85)
 	cpu_wakeup_init();
+#elif (MCU_CORE_B87)
+	cpu_wakeup_init(LDO_MODE, EXTERNAL_XTAL_24M);
+
 #endif
 
-	gpio_init(0);
+#if (MCU_CORE_B85) || (MCU_CORE_B87)
+	//Note: This function must be called, otherwise an abnormal situation may occur.
+	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
+	user_read_flash_value_calib();
+#elif (MCU_CORE_B89)
+	//Note: This function must be called, otherwise an abnormal situation may occur.
+	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
+	user_read_otp_value_calib();
+#endif
 
 	clock_init(SYS_CLK);
+
+	gpio_init(0);
 
 	user_init();
 
