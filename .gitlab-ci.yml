@@ -1,0 +1,81 @@
+stages:
+  - release_sdk_s1_s2_s3
+
+release_sdk_S1:
+  variables:
+    VERSION: "S1"
+    CHIP: "B80"
+    TAR_SDK_NAME: ${CI_PROJECT_NAME}_${CHIP}_${VERSION}
+    SDK_TAG_NAME: $TAG_NAME
+    SRC_TAG_NAME: $TAG_NAME
+  stage: release_sdk_s1_s2_s3
+  tags:
+    - windows_tc32_test
+
+  script:
+    - echo $SDK_TAG_NAME $TAG_NAME $CHIP
+    - driver_b85m_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $SDK_TAG_NAME $SRC_TAG_NAME $CHIP
+
+  artifacts:
+    name: "$TAR_SDK_NAME"
+    expire_in: '3 yrs'
+    paths:
+    - "chip/"
+    - "common/"
+    - "demo/"
+    - "project/"
+    - "README.md/"
+  when: manual
+  
+release_sdk_S2:
+  variables:
+    VERSION: "S2"
+    CHIP: "B80"
+    TAR_SDK_NAME: ${CI_PROJECT_NAME}_${CHIP}_${VERSION}
+    SDK_TAG_NAME: $TAG_NAME
+    SRC_TAG_NAME: $TAG_NAME
+  stage: release_sdk_s1_s2_s3
+  tags:
+    - windows_tc32_test
+
+  script:
+    - echo $SDK_TAG_NAME $TAG_NAME $CHIP
+    - driver_b85m_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $SDK_TAG_NAME $SRC_TAG_NAME $CHIP
+
+  artifacts:
+    name: "$TAR_SDK_NAME"
+    expire_in: '3 yrs'
+    paths:
+    - "chip/"
+    - "common/"
+    - "demo/"
+    - "project/"
+    - "README.md/"
+  when: manual
+
+release_sdk_S3:
+  variables:
+    VERSION: "S3"
+    CHIP: "B80"
+    TAR_SDK_NAME: ${CI_PROJECT_NAME}_${CHIP}_${VERSION}
+    SDK_TAG_NAME: $TAG_NAME
+    SRC_TAG_NAME: $TAG_NAME
+  stage: release_sdk_s1_s2_s3
+  tags:
+    - windows_tc32_test
+
+  script:
+    - echo $SDK_TAG_NAME $TAG_NAME $CHIP
+    - driver_b85m_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $SDK_TAG_NAME $SRC_TAG_NAME $CHIP
+
+  artifacts:
+    name: "$TAR_SDK_NAME"
+    expire_in: '3 yrs'
+    paths:
+    - "chip/"
+    - "common/"
+    - "demo/"
+    - "project/"
+    - "README.md/"
+  when: manual
+
