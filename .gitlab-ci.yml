@@ -1,145 +1,81 @@
 stages:
-  - scc
-  - genLicense
-  - checkLicense
-  - cov
-  - build_tc32
-  - fossid
-  - plainPW_check
-  - misspellChecking
+  - release_sdk_s1_s2_s3
 
-scc:
-  stage: scc 
-  script:
-    - echo "Enter scc stage"
-    - scc | tee scc.txt
-    - bash /usr/bin/scc_calc.sh
-    - echo "The End SCC result:"
-    - cat scc.txt
-  artifacts:
-    paths:
-    - scc.txt
-
-genLicense:
+release_sdk_S1:
   variables:
-    CODE_COMPILE_ARCH: 'EAGLE_ANDES'
-    COV_PF_CATALOG: 'BLE'
-  stage: genLicense
-  before_script:
-  script:
-    - date
-    - generat_license_list
-    - date
-  artifacts:
-    paths:
-    - "license_list_gen.txt"
-    - "no_license_list_gen.txt"
-    - "mismatch_license_file_gen.txt"
-  when: manual
+    VERSION: "S1"
+    CHIP: "B80"
+    TAR_SDK_NAME: ${CI_PROJECT_NAME}_${CHIP}_${VERSION}
+    SDK_TAG_NAME: $TAG_NAME
+    SRC_TAG_NAME: $TAG_NAME
+  stage: release_sdk_s1_s2_s3
+  tags:
+    - windows_tc32_test
 
-checkLicense:
+  script:
+    - echo $SDK_TAG_NAME $TAG_NAME $CHIP
+    - driver_b85m_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $SDK_TAG_NAME $SRC_TAG_NAME $CHIP
+
+  artifacts:
+    name: "$TAR_SDK_NAME"
+    expire_in: '3 yrs'
+    paths:
+    - "chip/"
+    - "common/"
+    - "demo/"
+    - "project/"
+    - "README.md/"
+  when: manual
+  
+release_sdk_S2:
   variables:
-    CODE_COMPILE_ARCH: 'EAGLE_ANDES'
-    COV_PF_CATALOG: 'BLE'
-  stage: checkLicense
-  allow_failure: yes
-  before_script:
-  script:
-    - date
-    - check_license
-    #- generat_license_list # For no license files
-    - date
-
-  artifacts:
-    when: always
-    paths:
-    - "mismatch_license.txt"
-    - "no_license*.txt"
-    - "unknow_type_file.txt"
-    
-build_tc32:
-  stage: build_tc32
+    VERSION: "S2"
+    CHIP: "B80"
+    TAR_SDK_NAME: ${CI_PROJECT_NAME}_${CHIP}_${VERSION}
+    SDK_TAG_NAME: $TAG_NAME
+    SRC_TAG_NAME: $TAG_NAME
+  stage: release_sdk_s1_s2_s3
   tags:
-    - LINUX
-    - TC32
-  before_script:
+    - windows_tc32_test
+
   script:
-    - which tc32-elf-gcc
-    - date
-    
-    - $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS1  -import project/tlsr_tc32/B80 -cleanBuild B80_Driver_Demo/UART_Demo
-    - $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS1  -import project/tlsr_tc32/B85 -cleanBuild B85_Driver_Demo/UART_Demo
-    - $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS1  -import project/tlsr_tc32/B87 -cleanBuild B87_Driver_Demo/UART_Demo
-    - $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS1  -import project/tlsr_tc32/B89 -cleanBuild B89_Driver_Demo/UART_Demo
-    - date
+    - echo $SDK_TAG_NAME $TAG_NAME $CHIP
+    - driver_b85m_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $SDK_TAG_NAME $SRC_TAG_NAME $CHIP
 
   artifacts:
+    name: "$TAR_SDK_NAME"
+    expire_in: '3 yrs'
     paths:
-    - "project/tlsr_tc32/B80/UART_Demo/*.bin"
-    - "project/tlsr_tc32/B80/UART_Demo/*.lst"
-    - "project/tlsr_tc32/B80/UART_Demo/*.elf"
-    - "project/tlsr_tc32/B85/UART_Demo/*.bin"
-    - "project/tlsr_tc32/B85/UART_Demo/*.lst"
-    - "project/tlsr_tc32/B85/UART_Demo/*.elf"
-    - "project/tlsr_tc32/B87/UART_Demo/*.bin"
-    - "project/tlsr_tc32/B87/UART_Demo/*.lst"
-    - "project/tlsr_tc32/B87/UART_Demo/*.elf"
-    - "project/tlsr_tc32/B89/UART_Demo/*.bin"
-    - "project/tlsr_tc32/B89/UART_Demo/*.lst"
-    - "project/tlsr_tc32/B89/UART_Demo/*.elf"
-    - mm_pretty.csv
+    - "chip/"
+    - "common/"
+    - "demo/"
+    - "project/"
+    - "README.md/"
+  when: manual
 
-# The cov job definition
-cov:
+release_sdk_S3:
   variables:
-    CODE_COMPILE_ARCH: 'TC32'
-    COV_PF_CATALOG: 'BLE'
-  stage: cov
+    VERSION: "S3"
+    CHIP: "B80"
+    TAR_SDK_NAME: ${CI_PROJECT_NAME}_${CHIP}_${VERSION}
+    SDK_TAG_NAME: $TAG_NAME
+    SRC_TAG_NAME: $TAG_NAME
+  stage: release_sdk_s1_s2_s3
   tags:
-    - COV    
-    - LINUX    
-    - TC32
-  before_script:
+    - windows_tc32_test
+
   script:
-    - $COV_B COV_$CI_PROJECT_NAME $COV_B_TEMPLATE/$CODE_COMPILE_ARCH $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import project/tlsr_tc32/B80  -cleanBuild B80_Driver_Demo/UART_Demo    
-    - $COV_B COV_$CI_PROJECT_NAME $COV_B_TEMPLATE/$CODE_COMPILE_ARCH $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import project/tlsr_tc32/B85  -cleanBuild B85_Driver_Demo/UART_Demo  
-    - $COV_B COV_$CI_PROJECT_NAME $COV_B_TEMPLATE/$CODE_COMPILE_ARCH $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import project/tlsr_tc32/B87  -cleanBuild B87_Driver_Demo/UART_Demo  
-    - $COV_B COV_$CI_PROJECT_NAME $COV_B_TEMPLATE/$CODE_COMPILE_ARCH $TC32_ECLIPSE_BUILD  -data ${CI_PIPELINE_ID}_WS  -import project/tlsr_tc32/B89  -cleanBuild B89_Driver_Demo/UART_Demo  
-    - $COV_A COV_$CI_PROJECT_NAME 
-    - cov_add_commit_steam_project_2_platform.sh
+    - echo $SDK_TAG_NAME $TAG_NAME $CHIP
+    - driver_b85m_sdk_release.sh $CI_PROJECT_NAME $VERSION $TAR_SDK_NAME $SDK_TAG_NAME $SRC_TAG_NAME $CHIP
+
+  artifacts:
+    name: "$TAR_SDK_NAME"
+    expire_in: '3 yrs'
+    paths:
+    - "chip/"
+    - "common/"
+    - "demo/"
+    - "project/"
+    - "README.md/"
   when: manual
 
-fossid:
-  tags:
-    - FOSSID
-  stage: fossid
-  script:
-    - fossid_check.sh
-  artifacts:
-    paths:
-    - fossid*.txt
-  when: manual
-
-plainPW_check:
-  stage: plainPW_check 
-  script:
-    - echo "Enter Plain Password checking stage"
-    - check_plain_weak_password | tee result.txt
-    - ls -l result.txt
-    - echo "Error List:"
-    - cat result.txt
-  artifacts:
-    paths:
-    - result.txt
-  when: manual
-
-misspellChecking:
-  stage: misspellChecking
-  tags:
-    - LINUX
-  script:
-    - echo "--------------- Begin ------------------------"
-    - misspell-check
-    - echo "---------------- End -----------------------"
-  artifacts:
-    paths:
