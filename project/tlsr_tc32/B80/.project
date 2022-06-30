@@ -117,6 +117,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/BQB_EMI_Demo</locationURI>
 		</link>
 		<link>
+			<name>vendor/DUT_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/DUT_Demo</locationURI>
+		</link>
+		<link>
 			<name>vendor/Debug_Demo</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/Debug_Demo</locationURI>

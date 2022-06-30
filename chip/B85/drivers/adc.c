@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file	adc.c
  *
- * @brief	This is the source file for b85
+ * @brief	This is the source file for B85
  *
  * @author	Driver Group
  * @date	2018
@@ -9,38 +9,17 @@
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
- *          Redistribution and use in source and binary forms, with or without
- *          modification, are permitted provided that the following conditions are met:
+ *          Licensed under the Apache License, Version 2.0 (the "License");
+ *          you may not use this file except in compliance with the License.
+ *          You may obtain a copy of the License at
  *
- *              1. Redistributions of source code must retain the above copyright
- *              notice, this list of conditions and the following disclaimer.
+ *              http://www.apache.org/licenses/LICENSE-2.0
  *
- *              2. Unless for usage inside a TELINK integrated circuit, redistributions
- *              in binary form must reproduce the above copyright notice, this list of
- *              conditions and the following disclaimer in the documentation and/or other
- *              materials provided with the distribution.
- *
- *              3. Neither the name of TELINK, nor the names of its contributors may be
- *              used to endorse or promote products derived from this software without
- *              specific prior written permission.
- *
- *              4. This software, with or without modification, must only be used with a
- *              TELINK integrated circuit. All other usages are subject to written permission
- *              from TELINK and different commercial license may apply.
- *
- *              5. Licensee shall be solely responsible for any claim to the extent arising out of or
- *              relating to such deletion(s), modification(s) or alteration(s).
- *
- *          THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- *          ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- *          WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- *          DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER BE LIABLE FOR ANY
- *          DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- *          (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *          LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- *          ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *          (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- *          SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *          Unless required by applicable law or agreed to in writing, software
+ *          distributed under the License is distributed on an "AS IS" BASIS,
+ *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *          See the License for the specific language governing permissions and
+ *          limitations under the License.
  *
  *******************************************************************************************************/
 #include "adc.h"
@@ -69,30 +48,57 @@ GPIO_PinTypeDef ADC_GPIO_tab[10] = {
 };
 
 /**
- * @brief This function is used for IO port configuration of ADC supply voltage sampling.
+ * @brief This function is used for IO port configuration of ADC IO port voltage sampling.
+ *        This interface can be used to switch sampling IO without reinitializing the ADC.
  * @param[in]   pin - GPIO_PinTypeDef
  * @return none
  */
 void adc_base_pin_init(GPIO_PinTypeDef pin)
 {
+	unsigned char i;
+	unsigned char gpio_num=0;
 	//ADC GPIO Init
 	gpio_set_func(pin, AS_GPIO);
 	gpio_set_input_en(pin,0);
 	gpio_set_output_en(pin,0);
 	gpio_write(pin,0);
+
+	for(i=0;i<10;i++)
+	{
+		if(pin == ADC_GPIO_tab[i])
+		{
+			gpio_num = i+1;
+			break;
+		}
+	}
+	adc_set_ain_channel_differential_mode(ADC_MISC_CHN, gpio_num, GND);
 }
 
 /**
- * @brief This function is used for IO port configuration of ADC supply voltage sampling.
+ * @brief This function is used for IO port configuration of ADC IO port voltage sampling.
+ *        This interface can be used to switch sampling IO without reinitializing the ADC.
  * @param[in]  pin -  GPIO_PinTypeDef pin
  * @return none
  */
 void adc_vbat_pin_init(GPIO_PinTypeDef pin)
 {
+	unsigned char i;
+	unsigned char gpio_no=0;
 	gpio_set_func(pin, AS_GPIO);
 	gpio_set_input_en(pin,0);
 	gpio_set_output_en(pin,1);
 	gpio_write(pin,1);
+	//set channel mode and channel
+	for(i=0;i<10;i++)
+	{
+		if(pin == ADC_GPIO_tab[i])
+		{
+			gpio_no = i+1;
+			break;
+		}
+	}
+	adc_set_input_mode(ADC_MISC_CHN, DIFFERENTIAL_MODE);
+	adc_set_ain_channel_differential_mode(ADC_MISC_CHN, gpio_no, GND);
 }
 
 /**
@@ -297,6 +303,19 @@ void adc_init(void){
 	adc_set_left_gain_bias(GAIN_STAGE_BIAS_PER100);
 	adc_set_right_gain_bias(GAIN_STAGE_BIAS_PER100);
 	dfifo_disable_dfifo2();//disable misc channel data dfifo
+	//Add 192K sample rate by jiarong.ji at 20220621
+	if(ADC_SAMPLE_RATE_SELECT==ADC_SAMPLE_RATE_23K)
+	{
+		adc_set_state_length(1023, 0, 15);  	//set R_max_mc=1023,R_max_s=15
+	}
+	else if(ADC_SAMPLE_RATE_SELECT==ADC_SAMPLE_RATE_96K)
+	{
+		adc_set_state_length(240, 0, 10);  	//set R_max_mc=240,R_max_s=10
+	}
+	else if(ADC_SAMPLE_RATE_SELECT==ADC_SAMPLE_RATE_192K)
+	{
+		adc_set_state_length(115, 0, 10);  	//set R_max_mc=115,R_max_s=10
+	}
 }
 /**
  * @brief This function is used to calib ADC 1.2V vref for GPIO.
@@ -323,21 +342,8 @@ void adc_set_gpio_two_point_calib_offset(signed char offset)
  */
 void adc_base_init(GPIO_PinTypeDef pin)
 {
-	unsigned char i;
-	unsigned char gpio_num=0;
 	adc_set_chn_enable_and_max_state_cnt(ADC_MISC_CHN, 2);//enable the mic channel and set max_state_cnt
 
-if(ADC_SAMPLE_RATE_SELECT==ADC_SAMPLE_RATE_23K)
-{
-
-	//This configure from Jianbo and Congqing. The purpose of this configuration is to prevent leakage
-	adc_set_state_length(1023, 0, 15);  	//set R_max_mc=240,R_max_s=15
-//	analog_write(areg_r_max_s, (analog_read(areg_r_max_s) & 0x3f) | 0xc0 );
-}
-else if(ADC_SAMPLE_RATE_SELECT==ADC_SAMPLE_RATE_96K)
-{
-	adc_set_state_length(240, 0, 10);  	//set R_max_mc=240,R_max_s=10
-}
 	/**
 	 * Add Vref calibrate operation.
 	 * add by jiarong.ji at 20201029.
@@ -350,16 +356,7 @@ else if(ADC_SAMPLE_RATE_SELECT==ADC_SAMPLE_RATE_96K)
 	adc_set_vref_vbat_divider(ADC_VBAT_DIVIDER_OFF);//set Vbat divider select,
 //	ADC_VBAT_Scale = VBAT_Scale_tab[ADC_VBAT_DIVIDER_OFF];
 
-	adc_base_pin_init(pin);		//ADC GPIO Init
-	for(i=0;i<10;i++)
-	{
-		if(pin == ADC_GPIO_tab[i])
-		{
-			gpio_num = i+1;
-			break;
-		}
-	}
-	adc_set_ain_channel_differential_mode(ADC_MISC_CHN, gpio_num, GND);
+	adc_base_pin_init(pin);
 	adc_set_resolution(ADC_MISC_CHN, RES14);
 	adc_set_tsample_cycle(ADC_MISC_CHN, SAMPLING_CYCLES_6);
 	adc_set_ain_pre_scaler(ADC_PRESCALER_1F8);//adc scaling factor is 1/8
@@ -376,26 +373,12 @@ else if(ADC_SAMPLE_RATE_SELECT==ADC_SAMPLE_RATE_96K)
  */
 void adc_vbat_init(GPIO_PinTypeDef pin)
 {
-	unsigned char i;
-	unsigned char gpio_no=0;
 	adc_set_chn_enable_and_max_state_cnt(ADC_MISC_CHN, 2);
-	adc_set_state_length(240, 0, 10);  	//set R_max_mc,R_max_c,R_max_s
 
 	//set Vbat divider select,
 	adc_set_vref_vbat_divider(ADC_VBAT_DIVIDER_OFF);
 	//ADC_VBAT_Scale = VBAT_Scale_tab[ADC_VBAT_DIVIDER_OFF];
-	//set channel mode and channel
-	adc_vbat_pin_init(pin);
-	for(i=0;i<10;i++)
-	{
-		if(pin == ADC_GPIO_tab[i])
-		{
-			gpio_no = i+1;
-			break;
-		}
-	}
-	adc_set_input_mode(ADC_MISC_CHN, DIFFERENTIAL_MODE);
-	adc_set_ain_channel_differential_mode(ADC_MISC_CHN, gpio_no, GND);
+
 	/**
 	 * Add Vref calibrate operation.
 	 * add by jiarong.ji at 20201029.
@@ -403,6 +386,8 @@ void adc_vbat_init(GPIO_PinTypeDef pin)
 	adc_vref = adc_gpio_calib_vref;//set adc_vref as adc_gpio_calib_vref
 	adc_vref_offset = adc_gpio_calib_vref_offset;//set adc_vref_offset as adc_gpio_calib_vref_offset
 
+
+	adc_vbat_pin_init(pin);
 	adc_set_ref_voltage(ADC_MISC_CHN, ADC_VREF_1P2V);//set channel Vref ,must be ADC_VREF_1P2V
 	//ADC_Vref = (unsigned char)ADC_VREF_1P2V;
 	adc_set_resolution(ADC_MISC_CHN, RES14);//set resolution
@@ -452,6 +437,10 @@ unsigned int adc_sample_and_get_result(void)
 	{
 		while(!clock_time_exceed(t0, 25));  //wait at least 2 sample cycle(f = 96K, T = 10.4us)
 	}
+	else if(ADC_SAMPLE_RATE_SELECT==ADC_SAMPLE_RATE_192K)
+	{
+		while(!clock_time_exceed(t0, 11));  //wait at least 2 sample cycle(f = 192K, T = 5.2us)
+	}
 //////////////// get adc sample data and sort these data ////////////////
 	for(i=0;i<ADC_SAMPLE_NUM;i++){
 		/*wait for new adc sample data, When the data is not zero and more than 1.5 sampling times (when the data is zero),
@@ -466,7 +455,11 @@ unsigned int adc_sample_and_get_result(void)
 		{
 			while(!clock_time_exceed(t0, 25));  //wait at least 2 sample cycle(f = 96K, T = 10.4us)
 		}
-
+		//Add 192K sample rate by jiarong.ji at 20220621
+		else if(ADC_SAMPLE_RATE_SELECT==ADC_SAMPLE_RATE_192K)
+		{
+			while(!clock_time_exceed(t0, 11));  //wait at least 2 sample cycle(f = 192K, T = 5.2us)
+		}
 		t0 = clock_time();
 		if(adc_data_buf[i] & BIT(13)){  //14 bit resolution, BIT(13) is sign bit, 1 means negative voltage in differential_mode
 			adc_sample[i] = 0;
@@ -517,7 +510,35 @@ unsigned int adc_sample_and_get_result(void)
 	return adc_vol_mv;
 }
 
+/**
+ * @brief      This function serves to set adc sampling and get results in manual mode for Base and Vbat mode.
+ *             If you want to get the sampling results twice in succession,
+ *             Must ensure that the sampling interval is more than 2 times the sampling period.
+ * @param[in]  none.
+ * @return the result of sampling.
+ */
+unsigned short adc_sample_and_get_result_manual_mode(void)
+{
+	volatile unsigned char adc_misc_data_L;
+	volatile unsigned char adc_misc_data_H;
+	volatile unsigned short adc_misc_data;
 
+	analog_write(adc_data_sample_control,analog_read(adc_data_sample_control) | NOT_SAMPLE_ADC_DATA);
+	adc_misc_data_L = analog_read(areg_adc_misc_l);
+	adc_misc_data_H = analog_read(areg_adc_misc_h);
+	analog_write(adc_data_sample_control,analog_read(adc_data_sample_control) & (~NOT_SAMPLE_ADC_DATA));
+
+	adc_misc_data = (adc_misc_data_H<<8 | adc_misc_data_L);
+
+	if(adc_misc_data & BIT(13)){
+		adc_misc_data=0;
+	}
+	else{
+		adc_misc_data &= 0x1FFF;
+	}
+
+	return adc_misc_data;
+}
 
 
 

@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file	adc.c
  *
- * @brief	This is the source file for b87
+ * @brief	This is the source file for B87
  *
  * @author	Driver Group
  * @date	2019
@@ -9,38 +9,17 @@
  * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
- *          Redistribution and use in source and binary forms, with or without
- *          modification, are permitted provided that the following conditions are met:
+ *          Licensed under the Apache License, Version 2.0 (the "License");
+ *          you may not use this file except in compliance with the License.
+ *          You may obtain a copy of the License at
  *
- *              1. Redistributions of source code must retain the above copyright
- *              notice, this list of conditions and the following disclaimer.
+ *              http://www.apache.org/licenses/LICENSE-2.0
  *
- *              2. Unless for usage inside a TELINK integrated circuit, redistributions
- *              in binary form must reproduce the above copyright notice, this list of
- *              conditions and the following disclaimer in the documentation and/or other
- *              materials provided with the distribution.
- *
- *              3. Neither the name of TELINK, nor the names of its contributors may be
- *              used to endorse or promote products derived from this software without
- *              specific prior written permission.
- *
- *              4. This software, with or without modification, must only be used with a
- *              TELINK integrated circuit. All other usages are subject to written permission
- *              from TELINK and different commercial license may apply.
- *
- *              5. Licensee shall be solely responsible for any claim to the extent arising out of or
- *              relating to such deletion(s), modification(s) or alteration(s).
- *
- *          THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- *          ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- *          WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- *          DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER BE LIABLE FOR ANY
- *          DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- *          (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *          LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- *          ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *          (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- *          SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *          Unless required by applicable law or agreed to in writing, software
+ *          distributed under the License is distributed on an "AS IS" BASIS,
+ *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *          See the License for the specific language governing permissions and
+ *          limitations under the License.
  *
  *******************************************************************************************************/
 #include "adc.h"
@@ -74,29 +53,55 @@ GPIO_PinTypeDef ADC_GPIO_tab[10] = {
 
 /**
  * @brief This function is used for IO port configuration of ADC IO port voltage sampling.
+ *        This interface can be used to switch sampling IO without reinitializing the ADC.
  * @param[in]  pin - GPIO_PinTypeDef
  * @return none
  */
 void adc_base_pin_init(GPIO_PinTypeDef pin)
 {
+	unsigned char i;
+	unsigned char gpio_num=0;
 	//ADC GPIO Init
 	gpio_set_func(pin, AS_GPIO);
 	gpio_set_input_en(pin,0);
 	gpio_set_output_en(pin,0);
 	gpio_write(pin,0);
+
+	for(i=0;i<10;i++)
+	{
+		if(pin == ADC_GPIO_tab[i])
+		{
+			gpio_num = i+1;
+			break;
+		}
+	}
+	adc_set_ain_channel_differential_mode(gpio_num, GND);
 }
 
 /**
- * @brief This function is used for IO port configuration of ADC supply voltage sampling.
+ * @brief This function is used for IO port configuration of ADC IO port voltage sampling.
+ *        This interface can be used to switch sampling IO without reinitializing the ADC.
  * @param[in]  pin - GPIO_PinTypeDef
  * @return none
  */
 void adc_vbat_pin_init(GPIO_PinTypeDef pin)
 {
+	unsigned char i;
+	unsigned char gpio_no=0;
 	gpio_set_func(pin, AS_GPIO);
 	gpio_set_input_en(pin,0);
 	gpio_set_output_en(pin,1);
 	gpio_write(pin,1);
+
+	for(i=0;i<10;i++)
+	{
+		if(pin == ADC_GPIO_tab[i])
+		{
+			gpio_no = i+1;
+			break;
+		}
+	}
+	adc_set_ain_channel_differential_mode(gpio_no, GND);
 }
 
 /**
@@ -252,8 +257,6 @@ void adc_set_vbat_calib_vref(unsigned short data)
  */
 void adc_base_init(GPIO_PinTypeDef pin)
 {
-	unsigned char i;
-	unsigned char gpio_num=0;
 	adc_set_chn_enable_and_max_state_cnt(ADC_MISC_CHN, 2);//enable the mic channel and set max_state_cnt
 	adc_set_state_length(240, 10);  	//set R_max_mc=240,R_max_s=10
 	/**
@@ -265,17 +268,7 @@ void adc_base_init(GPIO_PinTypeDef pin)
 	adc_set_ref_voltage(ADC_VREF_1P2V);//set channel Vref,
 	adc_set_vref_vbat_divider(ADC_VBAT_DIVIDER_OFF);//set Vbat divider select,
 
-	adc_base_pin_init(pin);		//ADC GPIO Init
-
-	for(i=0;i<10;i++)
-	{
-		if(pin == ADC_GPIO_tab[i])
-		{
-			gpio_num = i+1;
-			break;
-		}
-	}
-	adc_set_ain_channel_differential_mode(gpio_num, GND);
+	adc_base_pin_init(pin);
 	adc_set_resolution(RES14);
 	adc_set_tsample_cycle(SAMPLING_CYCLES_6);
 	adc_set_ain_pre_scaler(ADC_PRESCALER_1F8);//adc scaling factor is 1/8
@@ -352,8 +345,6 @@ void adc_temp_init(void)
  */
 void adc_vbat_init(GPIO_PinTypeDef pin)
 {
-	unsigned char i;
-	unsigned char gpio_no=0;
 	adc_set_chn_enable_and_max_state_cnt(ADC_MISC_CHN, 2);
 	adc_set_state_length(240, 10);  	//set R_max_mc,R_max_c,R_max_s
 	/**
@@ -364,17 +355,8 @@ void adc_vbat_init(GPIO_PinTypeDef pin)
 	adc_vref_offset = adc_gpio_calib_vref_offset;//set adc_vref_offset as adc_gpio_calib_vref_offset
 	//set Vbat divider select,
 	adc_set_vref_vbat_divider(ADC_VBAT_DIVIDER_OFF);
-	//set channel mode and channel
+
 	adc_vbat_pin_init(pin);
-	for(i=0;i<10;i++)
-	{
-		if(pin == ADC_GPIO_tab[i])
-		{
-			gpio_no = i+1;
-			break;
-		}
-	}
-	adc_set_ain_channel_differential_mode(gpio_no, GND);
 	adc_set_ref_voltage(ADC_VREF_1P2V);//set channel Vref
 	adc_set_resolution(RES14);//set resolution
 	//Number of ADC clock cycles in sampling phase

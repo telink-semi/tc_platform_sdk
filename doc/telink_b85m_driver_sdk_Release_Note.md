@@ -1,3 +1,184 @@
+## V1.4.0
+
+### Version
+
+* SDK version: telink_b85m_driver_sdk V1.4.0.
+* This version of SDK supports B80, B85 and B87 chips.
+
+### BREAKING CHANGES
+
+* **FLASH**
+  * (b85)Modify midxxxx_otp_block_e and midxxxx_lock_otp_e element name of mid011460C8/mid136085/mid1360eb to change the unit K to B to avoid misleading OTP size.
+* **ADC**
+  * (B80)Integrate the complete configuration sampling IO operation from the adc_base_init interface to the adc_base_pin_init interface, so that the adc_base_pin_init interface can directly switch the sampling IO without calling the adc_base_init interface again. Modified the parameter type 'adc_input_pin_def_e pin'.
+* **PM**
+  * (B80)Removed interfaces cpu_stall_wakeup_by_timer0, cpu_stall_wakeup_by_timer1, cpu_stall_wakeup_by_timer2, cpu_stall.Use the new interface cpu_stall_wakeup instead, the usage method can refer to pm demo.
+* **cstartup_sram.S** 
+  * (B80)Delete the cstartup_sram.S file and merge the functions into the cstartup_flash.S and cstartup_otp.S files.
+
+### Bug Fixes
+
+* **cstartup_xx.S**
+  * (B80)Fixed an issue that could cause the program to crash after waking up from retention under certain code structures or optimization options.
+* **RF**
+  * (B87/B80)Fixed the inaccurate problem that rf_set_tx_modulation_index and rf_set_rx_modulation_index set MI to values other than 0.32 and 0.50, and added new gears as required.
+* **OTP**
+  * (B80)if the otp read-write function interface is used to read and write data from the following start address range: 0x3ff4/0x3ff8, an exception is triggered, which has been corrected. the otp of this version can read and write data from the start address range: 0x0000 to 0x3ffc.
+* **PM**
+  * (B80)Fix the problem that the retention return sleep flag pmParam.is_deepretn_back is invalid;.
+* **EMI_Demo**
+  * (B85/B87/B80)Added usb interface initialization after gpio_shutdown to solve the problem that some chips that only support Swire (through-usb) communication cannot communicate through Swire after downloading the EMI program.
+
+### Refactoring
+
+* **BQB_Demo**
+  * (B85/B87/B80)Modified the writing method of obtaining the size of the flash capacity, which is consistent with the description of the flash capacity in flash.h.
+* **EMI_Demo**
+  * (B85/B87/B80)Added the interface read_calibration_flash for reading calibration parameters.
+  * (B85/B87/B80)Modified the writing method of obtaining the size of the flash capacity, which is consistent with the description of the flash capacity in flash.h.
+* **Vendor/common/calibration**
+  * (B85/B87)Adjust user_calib_adc_vref and user_calib_freq_offset to be externally callable interfaces.
+* **ADC**
+  * (B85/B87)Integrate the complete configuration sampling IO operation from the adc_base_init interface to the adc_base_pin_init interface, so that the adc_base_pin_init interface can directly switch the sampling IO without calling the adc_base_init interface again.
+  * (B85/B87)Integrate the complete configuration sampling IO operation from the adc_vbat_init interface to the adc_vbat_pin_init interface, so that the adc_vbat_pin_init interface can directly switch the sampling IO without calling the adc_vbat_init interface again.
+  * (B80)Fixed that C5N in ADC_InputNchTypeDef is A3N, and C5P in ADC_InputPchTypeDef is A3P.
+  * (B85)Move the code for configuring the sampling rate in the 'adc_base_init' and 'adc_vbat_init' interfaces to 'adc_init', reduce repetitive code.
+* **ADC_Demo**
+  * (B80/B87/B85)Fixed ADC_Demo default mode is ADC_BASE_MODE.
+* **PM**
+  * (B80)Add the ALL_SRAM_CODE macro definition to the cstartup_flash.S and cstartup_otp.S files. When the program is downloaded to flash or otp, it provides the choice of whether to move all programs to sram when the program is powered on for the first time;
+* **License**
+  * (B80/B87/B85)update license of related files from TELINK_BSD to TELINK_APACHE.
+  
+### Features
+
+* **UART_Demo**
+  * (B85/B87/B80)Added GPIO simulation UART RX function
+* **FLASH**
+  * (B80)Add flash GD25LD10C and GD25LD40C, delete flash P25D40L.
+* **TIMER**
+  * (B80)Added interface timer_set_irq_mask, timer_clr_irq_mask.
+* **PM**
+  * (B80)Added interface cpu_stall_wakeup.Interface usage can refer to PM_demo.
+* **PM_Demo**
+  * (B80)Added demo of using cpu_stall_wakeup interface, including using timer/stimer/RF/PAD to wake up.
+* **ADC**
+  * (B85)Added interface 'adc_sample_and_get_result_manual_mode', for single sampling.
+  * (B85)Added the configuration of sampling rate 192KHz.
+  * (B80)Added interface 'adc_set_gpio_calib_vref' and interface 'adc_set_vbat_calib_vref' for calibrating reference voltage.
+* **CALIBRATION**
+  * (B80)Added interface 'user_read_otp_value_calib'. The OTP package chip is used to calibrate various parameters. This time, the ADC calibration part and the frequency offset calibration part are updated.
+  * (B80)Added interface 'user_read_flash_value_calib'. The FLASH package chip is used to calibrate various parameters. This time, the ADC calibration part and the frequency offset calibration part are updated.
+  * (B80)Added interface 'user_calib_adc_vref'. Used to read the ADC calibration value and pass it to the ADC module. 
+* **BQB_EMI_Demo(B85m)**
+  * Synchronize frequency offset calibration address with calibration.h.
+
+### Performance Improvements
+
+* **OTP**
+  * (B80)Code optimization, ramcode saves 56 bytes;
+  * (B80)The otp_set_auto_pce_tcs interface must be called. after optimization, the otp_set_auto_pce_tcs interface can not use;
+
+### Note
+  *	(B80)PB0/PB3 defaults to high level when powered on. If you use this pin as ADC sampling, you need to wait for tens of milliseconds after IO is configured as GPIO before sampling is normal. 
+  *      Therefore, you can try to use other available pins when designing products.
+  * (B80)note the following two point need to noticed when using PB0, PB1, PB3, PD4 and PF0 GPIO ports:
+  *  		1. These pins are not recommend to use as wake-up source;
+  *  		2. Since these pins are output functions by default, even if they are configured with pull-up/pull-down retention,
+  *  		when deep/deep Retention is invoked, they can't maintain high/low level and an abnormal level will occur.
+  *  		Therefore, these pins can't be used in applications where a certain level state needs to be maintained all the time.
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+
+### 版本
+
+* SDK版本: telink_b85m_driver_sdk V1.4.0。
+* 此版本SDK支持B80、B85、B87芯片。
+
+### BREAKING CHANGES
+
+* **FLASH**
+  * (b85)修改mid分别为mid011460C8/mid136085/mid1360eb的midxxxx_otp_block_e和midxxxx_lock_otp_e元素名,将单位K改为B,避免误导OTP的大小。
+* **ADC**
+  * (B80)将完整的配置采样IO操作从adc_base_init接口整合到adc_base_pin_init接口，方便adc_base_pin_init接口直接切换采样的IO，无需再次调用adc_base_init接口。修改了传参类型'adc_input_pin_def_e pin'。
+* **PM**
+  * (B80)删除了接口cpu_stall_wakeup_by_timer0、cpu_stall_wakeup_by_timer1、cpu_stall_wakeup_by_timer2、cpu_stall。使用新接口cpu_stall_wakeup替代，使用方法可以参考pm demo。
+* **cstartup_sram.S** 
+  * (B80)删除cstartup_sram.S文件，功能合并至cstartup_flash.S和cstartup_otp.S文件内。 
+   
+### Bug Fixes
+
+* **Cstartup_xx.S**
+  * (B80)修复了在某些代码结构或者优化选项下，可能导致程序retention醒来后死机的问题
+* **RF**
+  * (B87/B80)修复了rf_set_tx_modulation_index，rf_set_rx_modulation_index设置MI为0.32，0.50以外值不准确的问题，同时根据需求添加新的挡位。
+* **OTP**
+  * (B80)如果使用OTP读写函数接口对如下起始地址范围进行读写：0x3ff4/0x3ff8，会触发异常，现已修正，该版本OTP可读写起始地址范围为0x0000~0x3ffc;
+* **PM**
+  * (B80)修复retention回来睡眠标志位pmParam.is_deepretn_back无效的问题;
+* **EMI_Demo**
+  * (B85/B87/B80)在gpio_shutdown之后添加了usb接口初始化的操作，以解决某些仅支持Swire(through-usb)通信方式的芯片在下载EMI程序之后无法进行Swire通信的问题。
+	
+### Refactoring
+
+* **BQB_Demo**
+  * (B85/B87/B80)修改了获取flash容量大小的写法，与flash.h中关于flash容量的描述保持一致。
+* **EMI_Demo**
+  * (B85/B87/B80)增加了读校准参数的接口read_calibration_flash。
+  * (B85/B87/B80)修改了获取flash容量大小的写法，与flash.h中关于flash容量的描述保持一致。
+* **Vendor/common/calibration**
+  * (B85/B87)调整user_calib_adc_vref和user_calib_freq_offset为可被外部调用的接口。
+* **ADC**
+  * (B85/B87)将完整的配置采样IO操作从adc_base_init接口整合到adc_base_pin_init接口，方便adc_base_pin_init接口直接切换采样的IO，无需再次调用adc_base_init接口。
+  * (B85/B87)将完整的配置采样IO操作从adc_vbat_init接口整合到adc_vbat_pin_init接口，方便adc_vbat_pin_init接口直接切换采样的IO，无需再次调用adc_vbat_init接口。
+  * (B80)修正ADC_InputNchTypeDef中的C5N为A3N，而ADC_InputPchTypeDef中的 C5P 为 A3P。
+  * (B85)将'adc_base_init'和'adc_vbat_init'接口中配置采样率的代码移动至'adc_init'中，减少重复代码。
+* **ADC_Demo**
+  * (B80/B87/B85)修正ADC_Demo默认模式为ADC_BASE_MODE。
+* **PM**
+  * (B80)在cstartup_flash.S和cstartup_otp.S文件中添加ALL_SRAM_CODE宏定义，当程序下载到flash或otp时，提供程序第一次上电是否将所有程序搬到sram中的选择；
+* **license**
+  * (B80/B87/B85)将相关文件的许可证从 TELINK_BSD 更新为 TELINK_APACHE
+  
+
+### Features
+
+* **UART_Demo**
+  * (B85/B87/B80)新增GPIO模拟UART RX功能
+* **FLASH**
+  * (B80)增加 flash GD25LD10C 和 GD25LD40C, 删除 flash P25D40L.
+* **Timer**
+  * (B80)新增接口timer_set_irq_mask、timer_clr_irq_mask。
+* **PM**
+  * (B80)新增接口cpu_stall_wakeup。接口使用可以参考PM_demo 。
+* **PM_Demo**
+  * (B80)新增cpu_stall_wakeup接口的使用demo，包括使用timer/stimer/RF/PAD唤醒。
+* **ADC**
+  * (B85)增加了接口'adc_sample_and_get_result_manual_mode'，用于单次采样。
+  * (B85)增加了采样率192KHz的配置。
+  * (B80)增加了接口'adc_set_gpio_calib_vref'和接口'adc_set_vbat_calib_vref',用于校准参考电压。
+* **CALIBRATION**
+  * (B80)增加了接口'user_read_otp_value_calib'。OTP封装芯片用于校准各种参数，这次更新了ADC校准部分和频偏校准部分。
+  * (B80)增加了接口'user_read_flash_value_calib'。FLASH封装芯片用于校准各种参数，这次更新了ADC校准部分和频偏校准部分。
+  * (B80)增加了接口'user_calib_adc_vref'。用于读取ADC校准值并传给ADC模块。
+* **BQB_EMI_Demo**
+  * (B85/B87/B80)与calibration.h同步频偏值校准值地址。
+
+### Performance Improvements
+* **OTP**
+  * (B80)代码优化，ramcode节省56个字节;
+  * (B80)之前otp读接口和clock_init中的otp_set_auto_pce_tcs接口存在关联关系，otp_set_auto_pce_tcs接口必须调用才可以，优化之后，otp_set_auto_pce_tcs接口调用不调用都可以;
+  
+### Note
+* **ADC**
+  * (B80)PB0/PB3上电默认为高电平，若使用该管脚作为ADC采样，需要在IO配置为GPIO后等几十毫秒，才能采样正常,所以产品设计的时候可以尽量考虑使用其他可用管脚。
+  * (B80)注意在使用 PB0、PB1、PB3、PD4 和 PF0 GPIO 端口时需要注意以下两点：
+  * 		1. 这些引脚不推荐用作唤醒源；
+  *			2. 由于这些管脚默认为输出功能，即使配置了上拉/下拉保持，当调用deep/deep Retention时，它们不能保持高/低电平，会出现电平异常。
+  *		   	   当调用 deep/deep Retention 时，它们无法保持高/低电平，会出现异常电平。因此，这些引脚不能用于需要一直保持某种电平状态的应用。
+  
+  
 ### Version
 
 * SDK version: telink_b85m_driver_sdk v1.3.0.

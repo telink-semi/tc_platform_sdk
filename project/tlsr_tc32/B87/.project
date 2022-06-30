@@ -97,6 +97,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/chip/B87/drivers</locationURI>
 		</link>
 		<link>
+			<name>link</name>
+			<type>2</type>
+			<locationURI>PROJECT_LOC/link</locationURI>
+		</link>
+		<link>
 			<name>vendor</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
@@ -120,6 +125,11 @@
 			<name>vendor/BQB_EMI_Demo</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/BQB_EMI_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/DUT_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/DUT_Demo</locationURI>
 		</link>
 		<link>
 			<name>vendor/Debug_Demo</name>

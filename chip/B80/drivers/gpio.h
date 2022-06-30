@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file	gpio.h
  *
- * @brief	This is the header file for b80
+ * @brief	This is the header file for B80
  *
  * @author	Driver Group
  * @date	2021
@@ -9,38 +9,17 @@
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
- *          Redistribution and use in source and binary forms, with or without
- *          modification, are permitted provided that the following conditions are met:
+ *          Licensed under the Apache License, Version 2.0 (the "License");
+ *          you may not use this file except in compliance with the License.
+ *          You may obtain a copy of the License at
  *
- *              1. Redistributions of source code must retain the above copyright
- *              notice, this list of conditions and the following disclaimer.
+ *              http://www.apache.org/licenses/LICENSE-2.0
  *
- *              2. Unless for usage inside a TELINK integrated circuit, redistributions
- *              in binary form must reproduce the above copyright notice, this list of
- *              conditions and the following disclaimer in the documentation and/or other
- *              materials provided with the distribution.
- *
- *              3. Neither the name of TELINK, nor the names of its contributors may be
- *              used to endorse or promote products derived from this software without
- *              specific prior written permission.
- *
- *              4. This software, with or without modification, must only be used with a
- *              TELINK integrated circuit. All other usages are subject to written permission
- *              from TELINK and different commercial license may apply.
- *
- *              5. Licensee shall be solely responsible for any claim to the extent arising out of or
- *              relating to such deletion(s), modification(s) or alteration(s).
- *
- *          THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- *          ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- *          WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- *          DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER BE LIABLE FOR ANY
- *          DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- *          (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *          LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- *          ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *          (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- *          SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *          Unless required by applicable law or agreed to in writing, software
+ *          distributed under the License is distributed on an "AS IS" BASIS,
+ *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *          See the License for the specific language governing permissions and
+ *          limitations under the License.
  *
  *******************************************************************************************************/
 #pragma once
@@ -100,6 +79,11 @@
 */
 /**
  *  @brief  Define GPIO types.
+ * 	@note	the following two point need to noticed when using PB0, PB1, PB3, PD4 and PF0 GPIO ports:
+ *  		1. These pins are not recommend to use as wake-up source;
+ *  		2. Since these pins are output functions by default, even if they are configured with pull-up/pull-down retention,
+ *  		when deep/deep Retention is invoked, they can't maintain high/low level and an abnormal level will occur.
+ *  		Therefore, these pins can't be used in applications where a certain level state needs to be maintained all the time.
  */
 typedef enum{
 		GPIO_GROUPA    = 0x000,
@@ -527,6 +511,11 @@ void gpio_set_data_strength(GPIO_PinTypeDef pin, unsigned int value);
  * @param[in] gpio - the pin needs to set its pull-up/down resistor, GPIOE group is not supported
  * @param[in] up_down - the type of the pull-up/down resistor
  * @return    none
+ * @note	* @note	the following two point need to noticed when using PB0, PB1, PB3, PD4 and PF0 GPIO ports:
+ *  		1. These pins are not recommend to use as wake-up source;
+ *  		2. Since these pins are output functions by default, even if they are configured with pull-up/pull-down retention,
+ *  		when deep/deep Retention is invoked, they can't maintain high/low level and an abnormal level will occur.
+ *  		Therefore, these pins can't be used in applications where a certain level state needs to be maintained all the time.
  */
 
 void gpio_setup_up_down_resistor(GPIO_PinTypeDef gpio, GPIO_PullTypeDef up_down);

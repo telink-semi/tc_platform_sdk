@@ -122,9 +122,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/BQB_EMI_Demo</locationURI>
 		</link>
 		<link>
-			<name>vendor/DUT_Test</name>
+			<name>vendor/DUT_Demo</name>
 			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/DUT_Test</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/DUT_Demo</locationURI>
 		</link>
 		<link>
 			<name>vendor/Debug_Demo</name>
@@ -145,6 +145,11 @@
 			<name>vendor/I2C_Demo</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/I2C_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/IO_Swire_Demo</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/IO_Swire_Demo</locationURI>
 		</link>
 		<link>
 			<name>vendor/LPC_Demo</name>

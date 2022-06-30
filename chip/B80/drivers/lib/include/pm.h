@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file	pm.h
  *
- * @brief	This is the header file for b80
+ * @brief	This is the header file for B80
  *
  * @author	Driver Group
  * @date	2021
@@ -9,38 +9,17 @@
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
- *          Redistribution and use in source and binary forms, with or without
- *          modification, are permitted provided that the following conditions are met:
+ *          Licensed under the Apache License, Version 2.0 (the "License");
+ *          you may not use this file except in compliance with the License.
+ *          You may obtain a copy of the License at
  *
- *              1. Redistributions of source code must retain the above copyright
- *              notice, this list of conditions and the following disclaimer.
+ *              http://www.apache.org/licenses/LICENSE-2.0
  *
- *              2. Unless for usage inside a TELINK integrated circuit, redistributions
- *              in binary form must reproduce the above copyright notice, this list of
- *              conditions and the following disclaimer in the documentation and/or other
- *              materials provided with the distribution.
- *
- *              3. Neither the name of TELINK, nor the names of its contributors may be
- *              used to endorse or promote products derived from this software without
- *              specific prior written permission.
- *
- *              4. This software, with or without modification, must only be used with a
- *              TELINK integrated circuit. All other usages are subject to written permission
- *              from TELINK and different commercial license may apply.
- *
- *              5. Licensee shall be solely responsible for any claim to the extent arising out of or
- *              relating to such deletion(s), modification(s) or alteration(s).
- *
- *          THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- *          ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- *          WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- *          DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER BE LIABLE FOR ANY
- *          DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- *          (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *          LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- *          ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *          (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- *          SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *          Unless required by applicable law or agreed to in writing, software
+ *          distributed under the License is distributed on an "AS IS" BASIS,
+ *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *          See the License for the specific language governing permissions and
+ *          limitations under the License.
  *
  *******************************************************************************************************/
 #pragma once
@@ -51,18 +30,12 @@
 #include "flash.h"
 #define PM_DEBUG							0
 
-
 #if(PM_DEBUG)
 volatile unsigned char debug_pm_info;
 volatile unsigned int ana_32k_tick;
 #endif
 
 #define PM_LONG_SUSPEND_EN					1
-
-#ifndef PM_TIM_RECOVER_MODE
-#define PM_TIM_RECOVER_MODE			    	0
-#endif
-
 
 #define XTAL_READY_CHECK_TIMING_OPTIMIZE	1
 
@@ -211,17 +184,6 @@ typedef struct{
 
 extern _attribute_aligned_(4) pm_para_t	pmParam;
 
-#if (PM_TIM_RECOVER_MODE)
-
-typedef struct{
-	unsigned int   tick_sysClk;
-	unsigned int   tick_32k;
-	unsigned int   recover_flag;
-}pm_tim_recover_t;
-
-extern _attribute_aligned_(4) pm_tim_recover_t			pm_timRecover;
-#endif
-
 
 typedef int (*suspend_handler_t)(void);
 extern  suspend_handler_t 		 func_before_suspend;
@@ -309,38 +271,22 @@ static inline int pm_get_wakeup_src(void)
 void pm_set_suspend_power_cfg(pm_suspend_power_cfg_e value, unsigned char on_off);
 
 /**
- * @brief   This function serves to wake up cpu from stall mode by timer0.
- * @param   tick - capture value of timer0.
- * @return  none.
+ * @brief		This function will put the cpu into the stall state, and then wake up by the specified wakeup source.
+ * 				All interrupt sources can wake the CPU from stall mode.
+ * 				Depending on the configuration, the execution flow after waking up will be different:
+ * 				If the bit corresponding to the wake-up source in the register reg_irq_mask is enabled and the total interrupt is turned on,
+ * 				the CPU will be interrupted first after waking up from the stall state, and then continue to execute.
+ * 				If the bit corresponding to the wake-up source in the register reg_irq_mask is disabled,
+ * 				the CPU will continue to execute after waking up from the stall state.
+ * 				No matter which execution flow is taken after wake-up, the interrupt flag corresponding to the wake-up source needs to be clear after wake-up.
+ * @param[in]	irq_mask - interrupt source for wake up.
+ * @return		none.
  */
-void cpu_stall_wakeup_by_timer0(unsigned int tick);
-
-/**
- * @brief   This function serves to wake up cpu from stall mode by timer1.
- * @param   tick - capture value of timer1.
- * @return  none.
- */
-void cpu_stall_wakeup_by_timer1(unsigned int tick);
-
-/**
- * @brief   This function serves to wake up cpu from stall mode by timer2.
- * @param   tick - capture value of timer2.
- * @return  none.
- */
-void cpu_stall_wakeup_by_timer2(unsigned int tick);
-
-/**
- * @brief   This function serves to wake up cpu from stall mode by timer1 or RF TX done irq.
- * @param   WakeupSrc  - timer1.
- * @param   IntervalUs - capture value of timer1.
- * @param   sysclktick - tick value of per us based on system clock.
- * @return  none.
- */
-unsigned int cpu_stall(int WakeupSrc, unsigned int IntervalUs,unsigned int sysclktick);
+void cpu_stall_wakeup(irq_list_e irq_mask);
 
 /**
  * @brief      This function configures a GPIO pin as the wakeup pin.
- * @param[in]  pin - the pin needs to be configured as wakeup pin
+ * @param[in]  pin - the pins can be set to all GPIO except PB0, PB1, PB3, PD4, PF0 and GPIOE groups.
  * @param[in]  pol - the wakeup polarity of the pad pin(0: low-level wakeup, 1: high-level wakeup)
  * @param[in]  en  - enable or disable the wakeup function for the pan pin(1: Enable, 0: Disable)
  * @return     none
@@ -394,7 +340,6 @@ extern  pm_tim_recover_handler_t pm_tim_recover;
 
 /**
  * @brief      This function serves to set the working mode of MCU based on 32k rc,e.g. suspend mode, deepsleep mode, deepsleep with SRAM retention mode and shutdown mode.
- 				This chip use 1.5V power supply,the 32k rc ppm about 2000,if need the accuracy higher,need use software to improve it. 
  * @param[in]  sleep_mode - sleep mode type select.
  * @param[in]  wakeup_src - wake up source select.
  * @param[in]  wakeup_tick - the time of short sleep, which means MCU can sleep for less than 5 minutes.

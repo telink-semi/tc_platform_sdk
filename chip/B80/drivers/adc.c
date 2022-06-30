@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file	adc.c
  *
- * @brief	This is the source file for b80
+ * @brief	This is the source file for B80
  *
  * @author	Driver Group
  * @date	2021
@@ -9,38 +9,17 @@
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
- *          Redistribution and use in source and binary forms, with or without
- *          modification, are permitted provided that the following conditions are met:
+ *          Licensed under the Apache License, Version 2.0 (the "License");
+ *          you may not use this file except in compliance with the License.
+ *          You may obtain a copy of the License at
  *
- *              1. Redistributions of source code must retain the above copyright
- *              notice, this list of conditions and the following disclaimer.
+ *              http://www.apache.org/licenses/LICENSE-2.0
  *
- *              2. Unless for usage inside a TELINK integrated circuit, redistributions
- *              in binary form must reproduce the above copyright notice, this list of
- *              conditions and the following disclaimer in the documentation and/or other
- *              materials provided with the distribution.
- *
- *              3. Neither the name of TELINK, nor the names of its contributors may be
- *              used to endorse or promote products derived from this software without
- *              specific prior written permission.
- *
- *              4. This software, with or without modification, must only be used with a
- *              TELINK integrated circuit. All other usages are subject to written permission
- *              from TELINK and different commercial license may apply.
- *
- *              5. Licensee shall be solely responsible for any claim to the extent arising out of or
- *              relating to such deletion(s), modification(s) or alteration(s).
- *
- *          THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- *          ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- *          WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- *          DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER BE LIABLE FOR ANY
- *          DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- *          (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *          LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- *          ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *          (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- *          SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *          Unless required by applicable law or agreed to in writing, software
+ *          distributed under the License is distributed on an "AS IS" BASIS,
+ *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *          See the License for the specific language governing permissions and
+ *          limitations under the License.
  *
  *******************************************************************************************************/
 #include "adc.h"
@@ -51,26 +30,35 @@
 #include "flash.h"
 #include "lib/include/pm.h"
 _attribute_data_retention_
-adc_vref_ctr_t adc_vref_cfg = {
-	.adc_vref 		= 1175, //default ADC ref voltage (unit:mV)
-	.adc_calib_en	= 1, 	//default disable
-};
+volatile unsigned short g_adc_vref = 1175;//ADC calibration value voltage (unit:mV).
+_attribute_data_retention_
+volatile signed char g_adc_vref_offset = 0;//ADC calibration value voltage offset (unit:mV).
+_attribute_data_retention_
+unsigned short g_adc_gpio_calib_vref = 1175;//ADC gpio calibration value voltage (unit:mV)(used for gpio voltage sample).
+_attribute_data_retention_
+signed char g_adc_gpio_calib_vref_offset = 0;//ADC gpio calibration value voltage offset (unit:mV)(used for gpio voltage sample).
+_attribute_data_retention_
+unsigned short g_adc_vbat_calib_vref = 1175;//ADC vbat calibration value voltage (unit:mV)(used for internal voltage sample).
+_attribute_data_retention_
+signed char g_adc_vbat_calib_vref_offset = 0;//ADC vbat calibration value voltage offset (unit:mV)(used for vbat voltage sample).
 volatile unsigned short	adc_code;
 unsigned char   adc_pre_scale;
 unsigned char   adc_vbat_divider;
 
 /**
  * @brief This function is used for IO port configuration of ADC IO port voltage sampling.
- * @param[in]  pin - GPIO_PinTypeDef
+ *        This interface can be used to switch sampling IO without reinitializing the ADC.
+ * @param[in]  pin - adc_input_pin_def_e
  * @return none
  */
-void adc_base_pin_init(GPIO_PinTypeDef pin)
+void adc_base_pin_init(adc_input_pin_def_e pin)
 {
 	//ADC GPIO Init
-	gpio_set_func(pin, AS_GPIO);
-	gpio_set_input_en(pin,0);
-	gpio_set_output_en(pin,0);
-	gpio_write(pin,0);
+	gpio_set_func(pin&0xfff, AS_GPIO);
+	gpio_set_input_en(pin&0xfff,0);
+	gpio_set_output_en(pin&0xfff,0);
+	gpio_write(pin&0xfff,0);
+	adc_set_ain_chn_misc(pin >> 12, GND);
 }
 
 
@@ -162,6 +150,29 @@ void adc_init(void){
 }
 
 /**
+ * @brief This function is used to calib ADC 1.2V vref for GPIO.
+ * @param[in] vref - GPIO sampling calibration value.
+ * @param[in] offset - GPIO sampling two-point calibration value offset.
+ * @return none
+ */
+void adc_set_gpio_calib_vref(unsigned short vref,signed char offset)
+{
+	g_adc_gpio_calib_vref = vref;
+	g_adc_gpio_calib_vref_offset = offset;
+}
+/**
+ * @brief This function is used to calib ADC 1.2V vref for Vbat.
+ * @param[in] vref - Vbat channel sampling calibration value.
+ * @param[in] offset - Vbat channel sampling two-point calibration value offset.
+ * @return none
+ */
+void adc_set_vbat_calib_vref(unsigned short vref,signed char offset)
+{
+	g_adc_vbat_calib_vref = vref;
+	g_adc_vbat_calib_vref_offset = offset;
+}
+
+/**
  * @brief This function is used for ADC configuration of ADC IO voltage sampling.
  * @param[in]   pin - GPIO_PinTypeDef
  * @return none
@@ -169,10 +180,7 @@ void adc_init(void){
 void adc_base_init(adc_input_pin_def_e pin)
 {
 	adc_set_vref_vbat_divider(ADC_VBAT_DIVIDER_OFF);//set Vbat divider select,
-
-	adc_base_pin_init(pin&0xfff);		//ADC GPIO Init
-
-	adc_set_ain_chn_misc(pin >> 12, GND);
+	adc_base_pin_init(pin);
 	adc_set_ain_pre_scaler(ADC_PRESCALER_1F8);//adc scaling factor is 1/8
 }
 
@@ -205,6 +213,12 @@ void adc_temp_init(void)
  */
 void adc_vbat_channel_init(void)
 {
+	/**
+		 * Add Vref calibrate operation.
+		 * add by jiarong.20220418.
+	*/
+	g_adc_vref = g_adc_vbat_calib_vref;//set adc_vref as adc_vbat_calib_vref
+	g_adc_vref_offset = g_adc_vbat_calib_vref_offset;//set adc_vref_offset as adc_vbat_calib_vref_offset
 	adc_set_vref_vbat_divider(ADC_VBAT_DIVIDER_1F4);
 
 	adc_set_ain_chn_misc(VBAT, GND);
@@ -278,12 +292,17 @@ unsigned int adc_sample_and_get_result(void)
 #endif
 	adc_code=adc_result = adc_average;
 
-	 //////////////// adc sample data convert to voltage(mv) ////////////////
-	//                          (Vref, adc_pre_scale)   (BIT<12~0> valid data)
-	//			 =  adc_result * Vref * adc_pre_scale / 0x2000
-	//           =  adc_result * Vref*adc_pre_scale >>13
-	adc_vol_mv  = (adc_vbat_divider*adc_result*adc_pre_scale*adc_vref_cfg.adc_vref)>>13;
-
+	//When the code value is 0, the returned voltage value should be 0.
+	if(adc_result == 0){
+		return 0;
+	}
+	else{
+		//////////////// adc sample data convert to voltage(mv) ////////////////
+		//                          (Vref, adc_pre_scale)   (BIT<12~0> valid data)
+		//			 =  adc_result * Vref * adc_pre_scale / 0x2000 + offset
+		//           =  adc_result * Vref*adc_pre_scale >>13 + offset
+		adc_vol_mv  = ((adc_vbat_divider*adc_result*adc_pre_scale*g_adc_vref)>>13) + g_adc_vref_offset;
+	}
 	return adc_vol_mv;
 }
 

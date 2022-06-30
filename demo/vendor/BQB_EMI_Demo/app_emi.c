@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file	app_emi.c
  *
- * @brief	This is the source file for b85m
+ * @brief	This is the source file for B85m
  *
  * @author	Driver Group
  * @date	2018
@@ -9,43 +9,23 @@
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *          All rights reserved.
  *
- *          Redistribution and use in source and binary forms, with or without
- *          modification, are permitted provided that the following conditions are met:
+ *          Licensed under the Apache License, Version 2.0 (the "License");
+ *          you may not use this file except in compliance with the License.
+ *          You may obtain a copy of the License at
  *
- *              1. Redistributions of source code must retain the above copyright
- *              notice, this list of conditions and the following disclaimer.
+ *              http://www.apache.org/licenses/LICENSE-2.0
  *
- *              2. Unless for usage inside a TELINK integrated circuit, redistributions
- *              in binary form must reproduce the above copyright notice, this list of
- *              conditions and the following disclaimer in the documentation and/or other
- *              materials provided with the distribution.
- *
- *              3. Neither the name of TELINK, nor the names of its contributors may be
- *              used to endorse or promote products derived from this software without
- *              specific prior written permission.
- *
- *              4. This software, with or without modification, must only be used with a
- *              TELINK integrated circuit. All other usages are subject to written permission
- *              from TELINK and different commercial license may apply.
- *
- *              5. Licensee shall be solely responsible for any claim to the extent arising out of or
- *              relating to such deletion(s), modification(s) or alteration(s).
- *
- *          THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- *          ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- *          WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- *          DISCLAIMED. IN NO EVENT SHALL COPYRIGHT HOLDER BE LIABLE FOR ANY
- *          DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- *          (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *          LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- *          ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- *          (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- *          SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *          Unless required by applicable law or agreed to in writing, software
+ *          distributed under the License is distributed on an "AS IS" BASIS,
+ *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *          See the License for the specific language governing permissions and
+ *          limitations under the License.
  *
  *******************************************************************************************************/
 #include "app_config.h"
 
 #if(TEST_DEMO==EMI_DEMO)
+#include "calibration.h"
 //#define ATE_SW_TEST		//for ate test when it use single wire to send cmd;then close this define for normal EMI
 
 /*
@@ -74,6 +54,14 @@
  * @brief 	This macro definition is used to select whether to shutdown internal cap.
  * */
 #define CLOSE_INTERNAL_CAP						0
+
+#if MCU_CORE_B80
+/*
+ * @brief 	This macro definition is used to select whether to read offset calibration from OTP.
+ * */
+#define READ_OFFSET_CLIBRATION_OTP						0
+#endif
+
 
 #if CHN_DEFUALT_VALUE_SET_FLASH
 #define CHN_SET_FLASH_ADDR				0x770e0
@@ -411,9 +399,6 @@ struct  test_list_s  ate_list[] = {
 void emi_init(void)
 {
 	rf_access_code_comm(0x29417671 );//access code  0xf8118ac9
-#if CLOSE_INTERNAL_CAP
-	rf_turn_off_internal_cap();
-#endif
 	write_reg8(TX_PACKET_MODE_ADDR,tx_cnt);//tx_cnt
 	write_reg8(RUN_STATUE_ADDR,run);//run
 	write_reg8(TEST_COMMAND_ADDR,cmd_now);//cmd
@@ -425,6 +410,9 @@ void emi_init(void)
 	write_reg16(PA_TX_RX_SETTING, pa_setting);
 	write_reg32(RX_PACKET_NUM_ADDR, 0);
 	gpio_shutdown(GPIO_ALL);//for pm
+#if(!MCU_CORE_B89)
+	usb_set_pin_en(); //add for chips only support swire function of through-usb
+#endif
 	analog_write(0x33,0xff);
 }
 
@@ -852,7 +840,7 @@ void read_flash_para(void)
 	unsigned char cap_close_en = 0;
 	unsigned char temp = 0;
 	unsigned long calib_flash_base_addr = EMI_TEST_FLASH_128K_BASE;
-	unsigned char flash_size = (flash_read_mid() >> 16) & 0x7f;
+	unsigned char flash_size = (flash_read_mid() >> 16) & 0xff;
 
 	switch (flash_size)
 	{
@@ -917,29 +905,96 @@ void read_flash_para(void)
 }
 
 #if MCU_CORE_B80
+extern unsigned char otp_program_flag;
 /**
- * @brief		This function serves to read otp EMI Parameter
+ * @brief		This function serves to read calibration from otp
  * @param[in] 	none
  * @return 		none
  */
-
-void read_otp_para(void)
+void read_calibration_otp(void)
 {
 	unsigned int temp;
-	otp_read(CAP_VALUE_OTP, 1, &temp);
+
+	if(otp_program_flag != 1)
+	{
+		otp_set_active_mode();
+	}
+	otp_read(OTP_CAP_VALUE_ADDR, 1, &temp);
 	if((temp&0xff) != 0xff)
 	{
 		rf_update_internal_cap(temp&0xff);
 	}
+	if(otp_program_flag != 1)
+	{
+		otp_set_deep_standby_mode();
+	}
 }
 #endif
+
+/**
+ * @brief		This function serves to read calibration from flash
+ * @param[in] 	none
+ * @return 		none
+ */
+void update_calibration_flash(unsigned int addr)
+{
+	unsigned char temp;
+	flash_read_page(addr, 1, &temp);
+	if(temp != 0xff)
+	{
+		rf_update_internal_cap(temp&0xff);
+	}
+}
+
+/**
+ * @brief		This function serves to read calibration from flash
+ * @param[in] 	none
+ * @return 		none
+ */
+void read_calibration_flash(void)
+{
+	unsigned char flash_size = (flash_read_mid() >> 16) & 0xff;
+	switch (flash_size)
+	{
+		case FLASH_SIZE_64K:
+			update_calibration_flash(FLASH_CAP_VALUE_ADDR_64K);
+			break;
+		case FLASH_SIZE_128K:
+		case FLASH_SIZE_256K:
+			update_calibration_flash(FLASH_CAP_VALUE_ADDR_128K);
+			break;
+		case FLASH_SIZE_512K:
+			update_calibration_flash(FLASH_CAP_VALUE_ADDR_512K);
+			break;
+		case FLASH_SIZE_1M:
+			update_calibration_flash(FLASH_CAP_VALUE_ADDR_1M);
+			break;
+		case FLASH_SIZE_2M:
+			update_calibration_flash(FLASH_CAP_VALUE_ADDR_2M);
+			break;
+		default:
+			break;
+	}
+}
 
 void user_init(void)
 {
 	emi_init();
-    read_flash_para();   //  Power on read flash EMI parameter
+
 #if MCU_CORE_B80
-    read_otp_para();
+#if READ_OFFSET_CLIBRATION_OTP
+	read_calibration_otp();
+#else
+	read_flash_para();   //  Power on read flash EMI parameter
+	read_calibration_flash();
+#endif
+#else
+    read_flash_para();   //  Power on read flash EMI parameter
+	read_calibration_flash();
+#endif
+
+#if CLOSE_INTERNAL_CAP
+	rf_turn_off_internal_cap();
 #endif
 }
 
