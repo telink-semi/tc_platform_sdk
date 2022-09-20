@@ -39,7 +39,7 @@ extern "C" {
 #endif
 
 #define	 USB_DEMO_TYPE		USB_MOUSE
-
+#define  MCU_CORE_B85       1
 
 #if	(USB_DEMO_TYPE == USB_MOUSE)
 	#define	USB_MOUSE_ENABLE 		1
@@ -54,11 +54,29 @@ extern "C" {
 #endif
 
 
-/* Define LED pin :C1T139A30_V1.0 */
-#define LED1                 	GPIO_PD2
-#define LED2    				GPIO_PD3
-#define LED3     		    	GPIO_PD4
-#define LED4                 	GPIO_PD5
+#if (MCU_CORE_B80)
+#define LED1     		        GPIO_PA4
+#define LED2     		        GPIO_PA5
+#define LED3     		        GPIO_PA6
+#define LED4     		        GPIO_PA7
+#elif (MCU_CORE_B85)
+#define LED1     		        GPIO_PD2
+#define LED2     		        GPIO_PD3
+#define LED3     		        GPIO_PD4
+#define LED4     		        GPIO_PD5
+#elif (MCU_CORE_B87)
+#define LED1     		        GPIO_PD2
+#define LED2     		        GPIO_PD3
+#define LED3     		        GPIO_PD4
+#define LED4     		        GPIO_PD5
+#elif (MCU_CORE_B89)
+#define LED1     		        GPIO_PD0
+#define LED2     		        GPIO_PD1
+#define LED3     		        GPIO_PD2
+#define LED4     		        GPIO_PD3
+
+#endif
+
 #define ON            				1
 #define OFF           				0
 

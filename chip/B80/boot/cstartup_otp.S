@@ -28,8 +28,10 @@
 /**
  * @brief	If your usage is as follows, you need to set ALL_SRAM_CODE = 1:
  * 			The program is burned in flash, you want to power up and move all code to sram for execution.
- * 			Note: Configure the bin file compiled by ALL_SRAM_CODE=1. It is not recommended to use tools to directly download to sram for execution,
- * 			this method of use may lead to abnormal current and abnormal flash function.
+ * 			Note: 1. Configure the bin file compiled by ALL_SRAM_CODE=1. It is not recommended to use tools to directly download to sram for execution,
+ * 			         this method of use may lead to abnormal current and abnormal flash function.
+ *                2. when set ALL_SRAM_CODE = 1,meanwhile set OTP_ALL_SRAM_CODE =1 in calibration.h.
+ *
  */
 #ifndef	ALL_SRAM_CODE
 #define	 ALL_SRAM_CODE					0
@@ -101,7 +103,6 @@ __start:					@ MUST,  referenced by boot.link
 	.extern  _ramcode_size_align_256_
 	.extern  _ictag_start_
 	.extern  _ictag_end_
-	.extern  tl_multi_addr
 	.org 0x0
 	tj	__reset
 @	.word	(firmwareVersion)
@@ -110,7 +111,11 @@ __start:					@ MUST,  referenced by boot.link
 	@Boot will write the value here to the digital register 0x602, mainly the difference of 0x602[4],
 	@write 1 to fetch instructions from otp, and write 0 to fetch instructions from flash;
 	@This part of the code will be used in boot and cannot be modified on the application side.
+#if	ALL_SRAM_CODE
+	.word	(0x00980000 + _bin_size_div_16)
+#else
 	.word	(0x00980000 + _ramcode_size_div_16_align_256_)
+#endif
 
 	.org 0x10
 	tj		__irq
@@ -336,18 +341,12 @@ RANA_REG_END:
 	tshftr		r2,r2,#31
 	tcmp        r2,#0
 	/*if ana_reg_0x7e==0x00 retention data initiate after waking up from deep*/
-	tjeq		MULTI_ADDRESS_END
-MULTI_ADDRESS_BEGIN:
-	tloadr      r0, MULTI_ADDRESS_DATA
-	tloadr		r1, MULTI_ADDRESS_DATA+4
-	tloadrh     r2, [r1,#0]
-	tstorerh    r2, [r0,#0]
+	tjeq		COPY_RET_DATA
 #if COPY_DATA_EN
 	tj			COPY_DATA                   @deep wakeup with retention
 #else
 	tj          COPY_DATA_END
 #endif
-MULTI_ADDRESS_END:
 
 
 @********************************************************************************************************
@@ -448,10 +447,6 @@ FLL_D:
 	.word	(0x844000)		    		@12  	stack end
 
 	.word   _ramcode_size_div_256_      @12
-
-MULTI_ADDRESS_DATA:
-	.word	(0x0080063e)				@0
-	.word   tl_multi_addr				@4
 
 	.align 4
 __irq:

@@ -35,6 +35,17 @@ extern void rd_usr_definition(unsigned char _s);
 extern usr_def_t usr_config;
 #endif
 
+#if MCU_CORE_B87
+#define POWER_MODE_LDO			0
+#define POWER_MODE_DCDC_LDO 	1
+#define POWER_MODE_DCDC			2
+
+/**
+ * @brief		This is macro used to set the initialize power mode.
+ */
+#define POWER_MODE_SELECT		POWER_MODE_LDO
+#endif
+
 /**
  * @brief		This function serves to handle the interrupt of MCU
  * @param[in] 	none
@@ -80,14 +91,22 @@ int main (void) {
 #if (MCU_CORE_B85)
 	cpu_wakeup_init();
 #elif (MCU_CORE_B87)
+#if POWER_MODE_SELECT == POWER_MODE_LDO
 	cpu_wakeup_init(LDO_MODE, EXTERNAL_XTAL_24M);
+#elif POWER_MODE_SELECT == POWER_MODE_DCDC
+	cpu_wakeup_init(DCDC_MODE, EXTERNAL_XTAL_24M);
+#elif POWER_MODE_SELECT == POWER_MODE_DCDC_LDO
+	cpu_wakeup_init(DCDC_LDO_MODE, EXTERNAL_XTAL_24M);
+#endif
 #elif (MCU_CORE_B89 || MCU_CORE_B80)
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
 #endif
 
 #endif
 
-
+#if(MCU_CORE_B80||MCU_CORE_B89)
+	wd_32k_stop();
+#endif
 #if (MCU_CORE_B85) || (MCU_CORE_B87)
 	//Note: This function must be called, otherwise an abnormal situation may occur.
 	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.

@@ -33,8 +33,10 @@
 	Flash Type	uid CMD			MID		Company		Sector Erase Time(MAX)
 	GD25LD10C	0x4b(AN)	0x1160C8	GD			500ms
 	GD25LD40C	0x4b		0x1360C8	GD			500ms
+	P25Q40SU    0x4b        0x136085    PUYA        30ms
+	P25D09U		0x4b		0x114485	PUYA		20ms
  */
-unsigned int flash_support_mid[] = {0x1160c8,0x1360c8};
+unsigned int flash_support_mid[] = {0x1160c8,0x1360c8,0x136085,0x114485};
 const unsigned int FLASH_CNT = sizeof(flash_support_mid)/sizeof(*flash_support_mid);
 
 flash_hander_t flash_read_page = flash_read_data;
@@ -409,6 +411,46 @@ void flash_read_uid(unsigned char idcmd, unsigned char *buf)
 	}
 }
 
+/**
+ * @brief 		This function is used to write the configure of the flash,P25Q40SU uses this function.
+ * @param[in]   cmd			- the write command.
+ * @param[out]  data		- the start address of the data buffer.
+ * @return 		none.
+ * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
+ *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
+ *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
+ *              to the specific application and hardware circuit.
+ *
+ *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
+ *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
+ *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
+ */
+void flash_write_config(unsigned char cmd,unsigned char data)
+{
+	flash_mspi_write_ram(cmd, 0, 0, &data, 1);
+}
+
+/**
+ * @brief 		This function is used to read the configure of the flash,P25Q40SU uses this function.
+ * @return 		the value of configure.
+ * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
+ *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
+ *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
+ *              to the specific application and hardware circuit.
+ *
+ *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
+ *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
+ *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
+ */
+unsigned char  flash_read_config(void)
+{
+	unsigned char config=0;
+	flash_mspi_read_ram(FLASH_READ_CONFIGURE_CMD, 0, 0, 0, &config, 1);
+	return config;
+}
+
 /*******************************************************************************************************************
  *												Secondary interface
  ******************************************************************************************************************/
@@ -473,6 +515,8 @@ unsigned int flash_get_vendor(unsigned int flash_mid)
 	case 0x00004051:
 		return FLASH_ETOX_GD;
 	case 0x00006085:
+		return FLASH_SONOS_PUYA;
+	case 0x00004485:
 		return FLASH_SONOS_PUYA;
 	case 0x000060EB:
 		return FLASH_SONOS_TH;

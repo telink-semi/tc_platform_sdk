@@ -229,7 +229,7 @@ __reset:
 #if 0
 	@ add debug, PB4 output 1
 	tloadr     	r1, DEBUG_GPIO    @0x80058a  PB oen
-	tmov		r0, #139      @0b 11101111
+	tmov		r0, #239      @0b 11101111
 	tstorerb	r0, [r1, #0]
 
 	tmov		r0, #16			@0b 00010000
@@ -248,6 +248,9 @@ __reset:
 	tand		r1, r0
  	tstorerb	r1, [r3, #1]	  @pdstb = 0  pldo = 0
 
+@The design of the eaglet chip is to power off the flash when the chip goes to sleep,
+@and then power on the flash again after waking up, so there is no need to perform the flash wake-up action.
+#if 0
 FLASH_WAKEUP_BEGIN:
 	tloadr      r0,DATA_I+44
 	tmov		r1,#0
@@ -263,6 +266,7 @@ TNOP:
 	tmov		r1,#1
 	tstorerb    r1,[r0,#1]
 FLASH_WAKEUP_END:
+#endif
 
 
 @********************************************************************************************************

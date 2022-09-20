@@ -37,31 +37,7 @@ volatile unsigned int ana_32k_tick;
 
 #define PM_LONG_SUSPEND_EN					1
 
-#define XTAL_READY_CHECK_TIMING_OPTIMIZE	1
-
 #define RAM_CRC_EN							0		//if use RAM_CRC func, retention ldo will turn down to 0.6V in A1, A0 is 0.8V.
-
-//when timer wakeup,the DCDC delay time is accurate,but other wake-up sources wake up,
-//this time is ((PM_DCDC_DELAY_CYCLE+1)*2-1)*32us ~ (PM_DCDC_DELAY_CYCLE+1)*2*32us
-#define PM_DCDC_DELAY_DURATION     					250   // delay_time_us = (PM_DCDC_DELAY_CYCLE+1)*2*32us
-												  // 2 * 1/16k = 125 uS, 3 * 1/16k = 187.5 uS  4*1/16k = 250 uS
-
-#define PM_XTAL_MANUAL_MODE_DELAY		    200  //150  200
-
-#if(PM_DCDC_DELAY_DURATION == 62)
-#define PM_DCDC_DELAY_CYCLE		0
-#elif(PM_DCDC_DELAY_DURATION == 125)
-#define PM_DCDC_DELAY_CYCLE		1
-#elif(PM_DCDC_DELAY_DURATION == 187)
-#define PM_DCDC_DELAY_CYCLE		2
-#elif(PM_DCDC_DELAY_DURATION == 250)
-#define PM_DCDC_DELAY_CYCLE		3
-#endif
-
-#define EARLYWAKEUP_TIME_US_SUSPEND 		(PM_DCDC_DELAY_DURATION + PM_XTAL_MANUAL_MODE_DELAY + 200)  //100: code running time margin//154  //175
-#define EARLYWAKEUP_TIME_US_DEEP_RET    	(PM_DCDC_DELAY_DURATION + 90)//(PM_DCDC_DELAY_DURATION + 32)
-//#define EARLYWAKEUP_TIME_US_DEEP	    	(PM_DCDC_DELAY_DURATION + 32 + ((SOFT_START_DLY)*62))
-#define EMPTYRUN_TIME_US       	    		(EARLYWAKEUP_TIME_US_SUSPEND + 200)
 
 #define EARLYWAKEUP_TIME			19
 #define	tick_32k_tick_per_ms		32
@@ -77,7 +53,7 @@ volatile unsigned int ana_32k_tick;
  * 	      Reset these analog registers only by power cycle
  */
 
-#define DEEP_ANA_REG0                       0x3a //initial value =0x00
+#define DEEP_ANA_REG0                       0x3a //initial value =0x00	[Bit1] The crystal oscillator failed to start normally.The customer cannot change!
 #define DEEP_ANA_REG1                       0x3b //initial value =0x00
 #define DEEP_ANA_REG2                       0x3c //initial value =0x0f
 
@@ -97,7 +73,7 @@ volatile unsigned int ana_32k_tick;
 
 
 //ana3b system used, user can not use
-#define SYS_DEEP_ANA_REG 					DEEP_ANA_REG1
+//#define SYS_DEEP_ANA_REG 					DEEP_ANA_REG1
 #define WAKEUP_STATUS_TIMER_CORE     	    ( WAKEUP_STATUS_TIMER | WAKEUP_STATUS_CORE)
 #define WAKEUP_STATUS_TIMER_PAD		        ( WAKEUP_STATUS_TIMER | WAKEUP_STATUS_PAD)
 
@@ -159,6 +135,35 @@ typedef enum {
 	 PM_POWER_USB  			= BIT(1),	//weather to power on the USB before suspend.
 }pm_suspend_power_cfg_e;
 
+/**
+ * @brief	wakeup tick type definition
+ */
+typedef enum {
+	 PM_TICK_STIMER_16M		= 0,
+	 PM_TICK_32K			= 1,
+}pm_wakeup_tick_type_e;
+
+/**
+ * @brief	early wakeup time
+ */
+typedef struct {
+	unsigned short  suspend;	/*< suspend_early_wakeup_time_us >*/
+	unsigned short  deep_ret;	/*< deep_ret_early_wakeup_time_us >*/
+	unsigned short  deep;		/*< deep_early_wakeup_time_us >*/
+	unsigned short  min;		/*< sleep_min_time_us >*/
+}pm_early_wakeup_time_us_s;
+
+extern volatile pm_early_wakeup_time_us_s g_pm_early_wakeup_time_us;
+
+/**
+ * @brief	hardware delay time
+ */
+typedef struct {
+	unsigned short  deep_r_delay_cycle ;			/**< hardware delay time, deep_r_delay_us = (deep_r_delay_cycle+1) * 1/16k */
+	unsigned short  suspend_ret_r_delay_cycle ;		/**< hardware delay time, suspend_ret_r_delay_us = (suspend_ret_r_delay_cycle+1) * 1/16k */
+}pm_r_delay_cycle_s;
+
+extern volatile pm_r_delay_cycle_s g_pm_r_delay_cycle;
 
 /**
  * @brief   deepsleep wakeup by external xtal
@@ -182,6 +187,21 @@ typedef struct{
 	unsigned char rsvd;
 }pm_para_t;
 
+
+/**
+ * @brief	vdd_1v2 voltage definition
+ */
+typedef enum {
+	 VDD_1V2_1V35   = 0x07,
+	 VDD_1V2_1V3    = 0x06,
+	 VDD_1V2_1V25   = 0x05,
+	 VDD_1V2_1V2    = 0x04,
+	 VDD_1V2_1V15   = 0x03,
+	 VDD_1V2_1V1    = 0x02,
+	 VDD_1V2_1V05   = 0x01,
+	 VDD_1V2_1V0    = 0x00,
+}pm_vdd_1v2_voltage_e;
+
 extern _attribute_aligned_(4) pm_para_t	pmParam;
 
 
@@ -203,20 +223,6 @@ static inline void ram_crc_en_timing(unsigned int RAM_CRC_16K_Timing, unsigned i
 {
 	RAM_CRC_EN_16KRAM_TIME = RAM_CRC_16K_Timing;
 	RAM_CRC_EN_32KRAM_TIME = RAM_CRC_32K_Timing;
-}
-
-
-/**
- * @brief      This function serves to change the timing of soft start delay.
- * @param[in]  none.
- * @return     none.
- */
-extern unsigned char SOFT_START_DLY;
-extern unsigned int EARLYWAKEUP_TIME_US_DEEP;
-static inline void soft_start_dly_time(unsigned char soft_start_time)
-{
-	SOFT_START_DLY = soft_start_time;
-	EARLYWAKEUP_TIME_US_DEEP = PM_DCDC_DELAY_DURATION + 90 + ((SOFT_START_DLY)*62);
 }
 
 /**
@@ -341,24 +347,27 @@ extern  pm_tim_recover_handler_t pm_tim_recover;
 /**
  * @brief      This function serves to set the working mode of MCU based on 32k rc,e.g. suspend mode, deepsleep mode, deepsleep with SRAM retention mode and shutdown mode.
  * @param[in]  sleep_mode - sleep mode type select.
- * @param[in]  wakeup_src - wake up source select.
+ * @param[in]  wakeup_src - wake up source select, and if only KEY_SCAN is set as the wake-up source in sleep mode (there is no Timer wake-up source), the 32K watchdog will be turned off inside the function..
  * @param[in]  wakeup_tick - the time of short sleep, which means MCU can sleep for less than 5 minutes.
  * @return     indicate whether the cpu is wake up successful.
  */
-int  cpu_sleep_wakeup_32k_rc(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, unsigned int  wakeup_tick);
+int  cpu_sleep_wakeup_32k_rc(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, pm_wakeup_tick_type_e wakeup_tick_type, unsigned int  wakeup_tick);
 
 /**
  * @brief      This function serves to set the working mode of MCU based on 32k crystal,e.g. suspend mode, deepsleep mode, deepsleep with SRAM retention mode and shutdown mode.
  * @param[in]  sleep_mode - sleep mode type select.
- * @param[in]  wakeup_src - wake up source select.
+ * @param[in]  wakeup_src - wake up source select, and if only KEY_SCAN is set as the wake-up source in sleep mode (there is no Timer wake-up source), the 32K watchdog will be turned off inside the function..
  * @param[in]  wakeup_tick - the time of short sleep, which means MCU can sleep for less than 5 minutes.
  * @return     indicate whether the cpu is wake up successful.
  */
-int  cpu_sleep_wakeup_32k_xtal(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, unsigned int  wakeup_tick);
+int  cpu_sleep_wakeup_32k_xtal(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, pm_wakeup_tick_type_e wakeup_tick_type, unsigned int  wakeup_tick);
 
-typedef int (*cpu_pm_handler_t)(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, unsigned int  wakeup_tick);
+typedef int (*cpu_pm_handler_t)(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, pm_wakeup_tick_type_e wakeup_tick_type, unsigned int  wakeup_tick);
 
-extern 	cpu_pm_handler_t  		 cpu_sleep_wakeup;
+extern 	cpu_pm_handler_t  		 cpu_sleep_wakeup_and_longsleep;
+
+#define cpu_sleep_wakeup(sleep_mode, wakeup_src, wakeup_tick)  cpu_sleep_wakeup_and_longsleep(sleep_mode, wakeup_src, PM_TICK_STIMER_16M, wakeup_tick)
+#define cpu_long_sleep_wakeup(sleep_mode, wakeup_src, wakeup_tick)  cpu_sleep_wakeup_and_longsleep(sleep_mode, wakeup_src, PM_TICK_32K, wakeup_tick)
 
 /**
  * @brief      This function serves to determine whether wake up source is internal 32k RC.
@@ -367,10 +376,9 @@ extern 	cpu_pm_handler_t  		 cpu_sleep_wakeup;
  */
 static inline void blc_pm_select_internal_32k_crystal(void)
 {
-	cpu_sleep_wakeup 	 	= cpu_sleep_wakeup_32k_rc;
-	pm_tim_recover  	 	= pm_tim_recover_32k_rc;
-
-	blt_miscParam.pm_enter_en 	= 1; // allow enter pm, 32k rc does not need to wait for 32k clk to be stable
+	cpu_sleep_wakeup_and_longsleep	= cpu_sleep_wakeup_32k_rc;
+	pm_tim_recover					= pm_tim_recover_32k_rc;
+	blt_miscParam.pm_enter_en		= 1; // allow enter pm, 32k rc does not need to wait for 32k clk to be stable
 }
 
 extern void check_32k_clk_stable(void);
@@ -382,11 +390,10 @@ extern void check_32k_clk_stable(void);
  */
 static inline void blc_pm_select_external_32k_crystal(void)
 {
-	cpu_sleep_wakeup 	 	= cpu_sleep_wakeup_32k_xtal;
-	pm_check_32k_clk_stable = check_32k_clk_stable;
-	pm_tim_recover		 	= pm_tim_recover_32k_xtal;
-
-	blt_miscParam.pad32k_en 	= 1; // set '1': 32k clk src use external 32k crystal
+	cpu_sleep_wakeup_and_longsleep	= cpu_sleep_wakeup_32k_xtal;
+	pm_check_32k_clk_stable			= check_32k_clk_stable;
+	pm_tim_recover					= pm_tim_recover_32k_xtal;
+	blt_miscParam.pad32k_en			= 1; // set '1': 32k clk src use external 32k crystal
 }
 /**
  * @brief		This function serves to set flash voltage vdd_f.TO ensure the vdd_f is enough to supply the flash,need to calibration the vdd_f.
@@ -394,6 +401,34 @@ static inline void blc_pm_select_external_32k_crystal(void)
  * @return		none.
  */
 void pm_set_vdd_f(Flash_VoltageDef voltage_ldo);
+
+/**
+ * @brief		This function serves to set dig_ldo vdd_1v2.
+ *              for otp products, if all codes cannot be executed in ram code, there is a risk of crash. need to enable 32K watchdog and trim vDD1V2 voltage to reduce the risk.
+ * @param[in]	vdd_1v2_voltage - the vdd_1v2 need to set.
+ * @return		none.
+ */
+void pm_set_vdd_1v2(pm_vdd_1v2_voltage_e vdd_1v2_voltage);
+
+/**
+ * @brief		This function is used to configure the early wake-up time.
+ * @param[in]	param - deep/suspend/deep_retention r_delay time.(default value: suspend/deep_ret=7, deep=15)
+ * @return		none.
+ */
+void pm_set_wakeup_time_param(pm_r_delay_cycle_s param);
+
+/**
+ * @brief		This function is used in applications where the crystal oscillator is relatively slow to start.
+ * 				When the start-up time is very slow, you can call this function to avoid restarting caused
+ * 				by insufficient crystal oscillator time (it is recommended to leave a certain margin when setting).
+ * @param[in]	delay_us - This time setting is related to the parameter nopnum, which is about the execution time of the for loop
+ * 							in the ramcode(default value: 200).
+ * @param[in]	loopnum - The time for the crystal oscillator to stabilize is approximately: loopnum*40us(default value: 10).
+ * @param[in]	nopnum - The number of for loops used to wait for the crystal oscillator to stabilize after suspend wakes up.
+ * 						 for(i = 0; i < nopnum; i++){ asm("tnop"); }(default value: Flash=250, OTP=Flash-60).
+ * @return		none.
+ */
+void pm_set_xtal_stable_timer_param(unsigned int delay_us, unsigned int loopnum, unsigned int nopnum);
 
 /**********************************  Internal APIs (not for user)***************************************************/
 extern  unsigned short 		    tl_multi_addr;
@@ -412,7 +447,6 @@ void cpu_set_32k_tick(unsigned int tick);
 
 void soft_reboot_dly13ms_use24mRC(void);
 
-void pm_set_32k_watchdog_interval(unsigned int interval_offset);
 
 
 

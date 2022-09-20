@@ -1,9 +1,189 @@
+## V1.5.0
+
+### Version
+
+* SDK version: telink_b85m_driver_sdk V1.5.0.
+* This version of SDK supports B80(A1), B85, B87 chips.
+* The default configuration of LEDs and KEYs match the following hardware revisions:
+*	B80	 	C1T261A30_V1_1
+*	B85	 	C1T139A30_V1_2
+*	B87  	C1T197A30_V1_2
+
+### BREAKING CHANGES
+
+* **watchdog**
+  * (B80)When the chip is powered on, a 32K watchdog is enabled by default. In the previous version of the driver, this function is disabled in the cpu_wakeup_init function. In this version of the driver, cpu_wakeup_init does not handle,need the application, according to the use of their own needs.
+* **PM**
+  * (B80)delete the pm_set_32k_watchdog_interval interface and add a new 32K watchdog interface to replace it.
+  * (B80)Delete the soft_start_dly_time interface and add the pm_set_wakeup_time_param interface instead.
+  * (B80)Occupies DEEP_ANA_REG0[bit1] (0x3a[1]) to mark whether restart caused by abnormal start-up has occurred, the customer cannot use this bit. 
+
+### Bug Fixes
+
+* **BQB_Demo**
+  * (B80/B85/B87)When testing the RX, when switching from 2M to S8 mode, the CMW500 showed a prompt of PER 100%. After restart, it still has no effect. It needs to be powered on again to return to normal.
+* **cstartup_otp.S**
+  * (B80)Fixed the abnormal function of the otp program when ALL_SRAM_CODE=1.
+* **pm**
+  * (B80)Fixed the problem that the flash power-on time does not meet the time required by the flash datasheet after deep/deep retention wakes up (this may have a probabilistic exception, but it has not been tested so far).
+* **sys**
+  * (B80)Solve the problem that the crystal oscillator stability flag fails to cause the crash. If the start-up is abnormal, it will restart. Use DEEP_ANA_REG0[bit1] to check whether the restart caused by the abnormal start-up has occurred. (It has been implemented in the driver layer, and does not require special calls from the application layer.)
+* **aoa**
+  * (B85/B87)Fix the problem that the rf_aoa_aod_get_pkt_rssi and rf_aoa_aod_hdinfo_offset functions get abnormal results.
+### Refactoring
+
+* **ALL_Demo**
+  * (B80/B85/B87)All demos use the led and key of the telink development board by default, and delete the useless definitions of SW1 and SW2.
+* **cstartup_flash.S**
+  * (B80)Optimized code: removed flash wake-up code.
+* **cstartup_otp.S**
+  * (B80)Optimized code: Removed the code for multi-address startup.
+* **emi.c**
+  * (B85/B87/B80)Move emi.c out of the library file and make it an open file.
+* **adc.c**
+  * (B85)Move the code for configuring the sampling rate in the 'adc_base_init' and 'adc_vbat_init' interfaces to 'adc_init', Reduce repetitive code.
+  
+### Features
+
+* **GPIO_Demo**
+  * (B80/B85/B87)Added the function of triggering interrupts by using the buttons that come with the development board.
+* **Vendor/common/calibration**
+  * (B80)add interface(user_calib_vdd_1v2):
+  *      1.vdd_1v2 needs to be calibrated only if the chip is running otp programs and does not move all programs to ram. to distinguish whether the otp program is moving all programs to ram, add the macro OTP_ALL_SRAM_CODE; 
+  *      2.The calibration principle of vdd_1v2 is as follows: if there is a calibration value in otp, use the calibration value in otp if there is no calibration value, use VDD_1V2_1V1;
+  * (B80)Added interface 'user_read_otp_value_calib'. The OTP package chip is used to calibrate various parameters, and this time the ADC calibration section has been updated.
+  * (B80)Added interface 'user_read_flash_value_calib'. The FLASH package chip is used to calibrate various parameters, this time the ADC calibration part is updated.
+  * (B80)Added interface 'user_calib_adc_vref'. Used to read the ADC calibration value and pass it to the ADC module.
+* **PM**
+  * (B80)add interface(pm_set_vdd_1v2): used to adjust vdd_1v2, cannot be called at will, must follow the rules of user_calib_vdd_1v2 interface.
+  * (B80)cpu_sleep_wakeup_32k_rc/cpu_sleep_wakeup_32k_xtal: 
+  *      1. the previous version of the driver, suspend wake, 32k watchdog closed, the current version of the driver, no processing; 
+  *      2. If the wakeup source does not contain the timer wakeup source, close the 32K watchdog;
+  * (B80)Added function interface pm_set_wakeup_time_param.
+  * (B80)Added long sleep interface cpu_long_sleep_wakeup.
+* **WATCHDOG**
+  * (B80)add 32k watchdog interface(wd_32k_start/wd_32k_stop/wd_32k_set_interval_ms),and add case in time_demo;
+* **rf**
+  * (B87)Add the frequency point setting function rf_set_channel_k_step with K as the step
+* **clock**
+  * (B80) XTAL_TypeDef added EXTERNAL_XTAL_EXTERNAL_CAP_24M, deleted EXTERNAL_XTAL_48M.
+* **Zb_flash**
+  * (B85/B87):add zb_cam_check api for zb flash cam check.
+* **flash**
+  * (B80)add flash P25Q40SU/P25D09U.
+* **adc**
+  * (B80)Added interface 'adc_set_gpio_calib_vref' and interface 'adc_set_vbat_calib_vref' for calibrating reference voltage.
+  * (B85)Added interface 'adc_sample_and_get_result_manual_mode', for single sampling.
+  * (B85)Added the configuration of sampling rate 192KHz.
+* **SDK VERSION**  
+  * (B80/B85/B87):Add sdk version at the end of bin file.
+  
+### Performance Improvements
+
+* N/A
+
+### Note
+
+* N/A
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+
+### 版本
+
+* SDK版本: telink_b85m_driver_sdk V1.5.0。
+* 此版本SDK支持B80(A1)、B85、B87芯片。
+* LED和KEY的默认配置匹配以下硬件版本:
+*	B80	 	C1T261A30_V1_1
+*	B85	 	C1T139A30_V1_2
+*	B87  	C1T197A30_V1_2
+
+### BREAKING CHANGES
+* **WATCHDOG**
+  * (B80)芯片上电，默认会有个32k watchdog是打开的，之前版本的驱动，在cpu_wakeup_init函数中关闭该功能，现在这个版本的驱动，改为cpu_wakeup_init不做处理，需要上层应用，根据使用需求自行处理;
+* **PM**
+  * (B80)删除pm_set_32k_watchdog_interval接口，添加新32k watchdog接口进行替代;
+  * (B80)删除soft_start_dly_time接口，添加pm_set_wakeup_time_param接口进行替代。
+  * (B80)占用DEEP_ANA_REG0[bit1]（0x3a[1]）标志是否发生过起振异常导致的重启，客户不能使用这个bit。
+   
+### Bug Fixes
+
+* **BQB_Demo**
+  * (B80/B85/B87)在测试RX时，从2M切到S8模式，CMW500出现出现PER 100%的提示，restart之后依旧没有作用，需要重新上电后恢复正常。
+* **cstartup_otp.S**
+  * (B80)修复了ALL_SRAM_CODE=1时的otp程序功能异常问题。
+* **pm**
+  * (B80)修复了deep/deep retention唤醒后，flash上电时间不满足flash datasheet要求的时间的问题（这个可能会出现概率性异常，但是目前没有测试到）。
+* **sys** 
+  * (B80)解决晶振稳定标志位失灵导致死机的问题。 起振异常则重启，通过DEEP_ANA_REG0[bit1]查询是否发生过起振异常导致的重启。（已在驱动层实现，不需要应用层特殊调用。）
+* **aoa**
+  * (B85/B87)修复rf_aoa_aod_get_pkt_rssi和rf_aoa_aod_hdinfo_offset函数获取结果异常的问题.
+  
+### Refactoring
+
+* **ALL_Demo**
+  * (B80/B85/B87)所有的demo默认使用telink开发板的led和key，同时删掉了无用的SW1、SW2的定义。
+* **cstartup_flash.S**
+  * (B80)优化代码：删除了flash唤醒代码。
+* **cstartup_otp.S**
+  * (B80)优化代码：删除了多地址启动的代码。
+* **emi.c**
+  * (B85/B87/B80)将emi.c从库文件中移出，改为开放性文件。
+* **adc.c**
+  * (B85)将'adc_base_init'和'adc_vbat_init'接口中配置采样率的代码移动至'adc_init'中，减少重复代码。
+
+### Features
+
+* **GPIO_Demo**
+  * (B80/B85/B87)新增使用开发板自带的按键来触发中断的功能。
+* **Vendor/common/calibration**
+  * (B80)新增函数接口user_calib_vdd_1v2：
+  *     1.只有在如下情况下才需要校准vdd_1v2，芯片跑OTP程序并且不会将程序全搬到ram中时，为了区分跑Otp程序是否将程序全搬到ram中，添加宏OTP_ALL_SRAM_CODE; 
+  *     2.vdd_1v2的校准原则是：如果otp中有校准值，使用OTP中的校准值，如果没有校准值使用VDD_1V2_1V1挡位;
+  * (B80)增加了接口'user_read_otp_value_calib'。OTP封装芯片用于校准各种参数，这次更新了ADC校准部分。
+  * (B80)增加了接口'user_read_flash_value_calib'。FLASH封装芯片用于校准各种参数，这次更新了ADC校准部分。
+  * (B80)增加了接口'user_calib_adc_vref'。用于读取ADC校准值并传给ADC模块。
+* **PM**
+  * (B80)新增函数接口pm_set_vdd_1v2：用于调整vdd_1v2，不可随意调用，必须遵循user_calib_vdd_1v2接口的规则.
+  * (B80)cpu_sleep_wakeup_32k_rc/cpu_sleep_wakeup_32k_xtal接口：
+  *      1.之前版本的驱动，suspend唤醒之后，将32k watchdog关闭，现在这个版本的驱动，没有做处理;
+  *      2.如果唤醒源不包含timer唤醒源的话，将32k watchdog关闭;
+  * (B80)新增函数接口pm_set_wakeup_time_param。
+  * (B80)增加长睡眠接口cpu_long_sleep_wakeup。
+* **WATCHDOG**
+  * (B80)添加32k watchdog接口(wd_32k_start/wd_32k_stop/wd_32k_set_interval_ms),并在timer_demo中添加接口使用case;
+* **rf**
+  * (B87)添加以KHz为步进的频点设置函数rf_set_channel_k_step。
+* **clock**
+  * (B80)XTAL_TypeDef新增EXTERNAL_XTAL_EXTERNAL_CAP_24M，删除EXTERNAL_XTAL_48M。
+* **Zb_flash**
+  * (B85/B87):增加了zb_cam_check接口用于校验zb flash cam value。
+* **flash**
+  * (B80)新增flash P25Q40SU/P25D09U。
+* **adc**
+  * (B80)增加了接口'adc_set_gpio_calib_vref'和接口'adc_set_vbat_calib_vref',用于校准参考电压。
+  * (B85)增加了接口'adc_sample_and_get_result_manual_mode'，用于单次采样。
+  * (B85)增加了采样率192KHz的配置。
+* **SDK版本**  
+  * (B80/B85/B87):bin文件末尾添加SDK版本.
+
+### Performance Improvements
+
+* N/A
+
+### Note
+
+* N/A
+
 ## V1.4.0
 
 ### Version
 
 * SDK version: telink_b85m_driver_sdk V1.4.0.
-* This version of SDK supports B80, B85 and B87 chips.
+* This version of SDK supports B80(A1), B85 and B87 chips.
+* When B80 was in V1.3.0, only A0 chips were tested, and when B80 was in V1.4.0, only A1 chips were tested.
+* According to the chip revision instructions, A0 and A1 do not need special software processing for the chip version. In fact, V1.3.0 and V1.4.0 can be used for A0 and A1 chips.
+* For the subsequent software update version, only A1 version chips will be verified, and only A1 will be marked for the chip version. It is recommended to use the marked chip version.
 
 ### BREAKING CHANGES
 
@@ -94,7 +274,10 @@
 ### 版本
 
 * SDK版本: telink_b85m_driver_sdk V1.4.0。
-* 此版本SDK支持B80、B85、B87芯片。
+* 此版本SDK支持B80(A1)、B85、B87芯片。
+* B80在V1.3.0版本的时候，只有A0芯片，只测试了A0，在V1.4.0版本的时候，我们只测试了A1版本的芯片。
+* 根据芯片的改版说明，A0、A1是不需要软件针对芯片版本做特殊处理的，其实V1.3.0和V1.4.0都是可以用于A0和A1芯片的，
+* 针对后续软件更新版本，只会对A1版本芯片进行验证，芯片版本标注也只会标注A1，建议按照标注的芯片版本进行使用。
 
 ### BREAKING CHANGES
 
@@ -181,8 +364,8 @@
   
 ### Version
 
-* SDK version: telink_b85m_driver_sdk v1.3.0.
-* This version of SDK supports B80, B85, and B87 chips.
+* SDK version: telink_b85m_driver_sdk V1.3.0.
+* This version of SDK supports B80(A0), B85, and B87 chips.
 
 ### Bug Fixes
 
@@ -297,8 +480,8 @@
 
 ### 版本
 
-* SDK版本: telink_b85m_driver_sdk v1.3.0。
-* 此版本SDK支持B80、B85、B87芯片。
+* SDK版本: telink_b85m_driver_sdk V1.3.0。
+* 此版本SDK支持B80(A0)、B85、B87芯片。
 
 ### Bug Fixes
 

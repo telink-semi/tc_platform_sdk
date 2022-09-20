@@ -74,7 +74,9 @@ int main (void)   //must on ramcode
 	user_read_flash_value_calib();
 #endif
 #endif
-
+#if(MCU_CORE_B80||MCU_CORE_B89)
+	wd_32k_stop();
+#endif
 	clock_init(SYS_CLK);
 
 	gpio_init(0);

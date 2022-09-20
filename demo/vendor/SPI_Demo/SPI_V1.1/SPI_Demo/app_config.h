@@ -30,8 +30,10 @@ extern "C" {
 #endif
 
 /*//Be careful not to conflict with the SPI pin*/
-#define LED1     		        GPIO_PB5
-#define LED2     		        GPIO_PB6
+#define LED1     		        GPIO_PA4
+#define LED2     		        GPIO_PA5
+#define LED3     		        GPIO_PA6
+#define LED4     		        GPIO_PA7
 
 
 

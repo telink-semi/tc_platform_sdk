@@ -29,29 +29,21 @@
 extern "C" {
 #endif
 
-#if (MCU_CORE_B89)
-#define LED1     		        GPIO_PD0
-#define LED2     		        GPIO_PD1
-#define LED3     		        GPIO_PD2
-#define LED4     		        GPIO_PD3
+#if (MCU_CORE_B85)
+#define LED1     		        GPIO_PD2
+#define LED2     		        GPIO_PD3
+#define LED3     		        GPIO_PD4
+#define LED4     		        GPIO_PD5
 #elif (MCU_CORE_B87)
 #define LED1     		        GPIO_PD2
 #define LED2     		        GPIO_PD3
 #define LED3     		        GPIO_PD4
 #define LED4     		        GPIO_PD5
-
-#define SW1      		        GPIO_PD1
-#define SW2      		        GPIO_PD2
-
-#elif (MCU_CORE_B85)
+#elif (MCU_CORE_B89)
 #define LED1     		        GPIO_PD0
-#define LED2     		        GPIO_PD3
-#define LED3     		        GPIO_PD4
-#define LED4     		        GPIO_PD5
-
-#define SW1      		        GPIO_PD1
-#define SW2      		        GPIO_PD2
-
+#define LED2     		        GPIO_PD1
+#define LED3     		        GPIO_PD2
+#define LED4     		        GPIO_PD3
 #endif
 
 /* Define system clock */

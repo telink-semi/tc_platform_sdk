@@ -50,10 +50,13 @@ enum{
 
 	//special cmd
 	FLASH_WRITE_STATUS_CMD_LOWBYTE		=	0x01,
-	FLASH_WRITE_STATUS_CMD_HIGHBYTE		=	0x31,
+	FLASH_WRITE_STATUS_CMD_HIGHBYTE		=	0x31,    // Flash Type = P25Q40SU for write status register-1;
+	FLASH_WRITE_CONFIGURE_CMD_1         =   0x31,
+	FLASH_WRITE_CONFIGURE_CMD_2         =   0x11,    // Flash Type = P25Q40SU for write configure register;
 
 	FLASH_READ_STATUS_CMD_LOWBYTE		=	0x05,
 	FLASH_READ_STATUS_CMD_HIGHBYTE		=	0x35,
+	FLASH_READ_CONFIGURE_CMD            =   0x15,
 
 	FLASH_WRITE_DISABLE_CMD 			= 	0x04,
 	FLASH_WRITE_ENABLE_CMD 				= 	0x06,

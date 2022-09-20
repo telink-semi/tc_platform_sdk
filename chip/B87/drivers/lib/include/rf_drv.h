@@ -40,6 +40,15 @@
 #define		ADJUST_RX_CALIBRATION			0
 
 /**
+ * @brief	Define function to set tx chanel or rx chanel.
+ */
+typedef enum
+{
+	TX_CHANNEL		= 0,
+	RX_CHANNEL		= 1,
+}rf_trx_chn_e;
+
+/**
  * @brief	Take 4 antennas as an example to illustrate the antenna switching sequence.
  * 			SWITCH_SEQ_MODE0	- antenna index switch sequence 01230123
  * 			SWITCH_SEQ_MODE1	- antenna index switch sequence 0123210
@@ -1275,6 +1284,18 @@ void rf_set_rx_modulation_index(RF_MIVauleTypeDef mi_value);
  * @return	 	none.
  */
 void rf_set_tx_modulation_index(RF_MIVauleTypeDef mi_value);
+
+/**
+ * @brief   	This function serves to set RF's channel.The step of this function is in KHz.
+ *				The frequency set by this function is (chn+2400) MHz+chn_k KHz.
+ * @param[in]   chn_m - RF channel. The unit of this parameter is MHz, and its set frequency
+ * 					 	point is (2400+chn)MHz.
+ * @param[in]   chn_k - The unit of this parameter is KHz, which means to shift chn_k KHz to
+ * 						the right on the basis of chn.Its value ranges from 0 to 999.
+ * @param[in]	trx_mode - Defines the frequency point setting of tx mode or rx mode.
+ * @return  	none.
+ */
+void rf_set_channel_k_step(signed char chn_m,unsigned int chn_k,rf_trx_chn_e trx_mode);//general
 
 /**
  * @brief   This function serves to set RF tx settle time and rx settle time.

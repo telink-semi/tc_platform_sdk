@@ -84,7 +84,9 @@ int main (void)   //must on ramcode
 #endif
 #endif
 
-
+#if(MCU_CORE_B80||MCU_CORE_B89)
+	wd_32k_stop();
+#endif
 	gpio_init(1);
 
 	clock_init(SYS_CLK);

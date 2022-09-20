@@ -26,6 +26,12 @@
 
 #if(TEST_DEMO==EMI_DEMO)
 #include "calibration.h"
+
+/*
+ * @brief 	When you want to perform all pin corner wake-up tests, you need to define the macro ALL_PIN_WAKEUP = 1.
+ * */
+#define ALL_PIN_WAKEUP			0
+
 //#define ATE_SW_TEST		//for ate test when it use single wire to send cmd;then close this define for normal EMI
 
 /*
@@ -53,13 +59,13 @@
 /*
  * @brief 	This macro definition is used to select whether to shutdown internal cap.
  * */
-#define CLOSE_INTERNAL_CAP						0
+#define CLOSE_INTERNAL_CAP		0
 
-#if MCU_CORE_B80
+#if MCU_CORE_B80 || MCU_CORE_B89
 /*
  * @brief 	This macro definition is used to select whether to read offset calibration from OTP.
  * */
-#define READ_OFFSET_CLIBRATION_OTP						0
+#define READ_OFFSET_CLIBRATION_OTP		0
 #endif
 
 
@@ -116,9 +122,11 @@ signed char get_noise_value()
 }
 
 #endif
-
+#define EMI_TEST_FLASH_64K_BASE		 	 0xc000
 #define EMI_TEST_FLASH_128K_BASE		 0x1c000
 #define EMI_TEST_FLASH_512K_BASE		 0x7c000
+#define EMI_TEST_FLASH_1M_BASE		 	 0xfc000
+#define EMI_TEST_FLASH_2M_BASE		 	 0x1fc000
 
 #define EMI_TEST_TX_MODE  			     0x00
 #define EMI_TEST_CMD  				     0x01
@@ -250,7 +258,11 @@ const GPIO_PinTypeDef gpio_map[48] = {
 	GPIO_PD3,//44
 	GPIO_PD4,//45
 	GPIO_PD5,//46
-	GPIO_PD6//47
+	GPIO_PD6,//47
+#if	(ALL_PIN_WAKEUP && MCU_CORE_B80)
+	GPIO_PF0,
+	GPIO_PF1
+#endif
 };
 #ifdef ATE_SW_TEST
 const unsigned char rf_power_Level_list_ate[63]={
@@ -412,6 +424,9 @@ void emi_init(void)
 	gpio_shutdown(GPIO_ALL);//for pm
 #if(!MCU_CORE_B89)
 	usb_set_pin_en(); //add for chips only support swire function of through-usb
+#endif
+#if	ALL_PIN_WAKEUP
+	usb_dp_pullup_en(0);
 #endif
 	analog_write(0x33,0xff);
 }
@@ -808,6 +823,8 @@ void emi_deepio_ren(RF_ModeTypeDef rf_mode,unsigned char pin,signed char rf_chn)
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW32K , PM_WAKEUP_PAD,0);
 #elif(MCU_CORE_B85)
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K , PM_WAKEUP_PAD,0);
+#elif(ALL_PIN_WAKEUP && MCU_CORE_B80)
+	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K , PM_WAKEUP_PAD,0);
 #endif
 }
 
@@ -844,11 +861,20 @@ void read_flash_para(void)
 
 	switch (flash_size)
 	{
+		case FLASH_SIZE_64K:
+			calib_flash_base_addr = EMI_TEST_FLASH_64K_BASE;
+			break;
 		case FLASH_SIZE_128K:
 			calib_flash_base_addr = EMI_TEST_FLASH_128K_BASE;
 			break;
 		case FLASH_SIZE_512K:
 			calib_flash_base_addr = EMI_TEST_FLASH_512K_BASE;
+			break;
+		case FLASH_SIZE_1M:
+			calib_flash_base_addr = EMI_TEST_FLASH_1M_BASE;
+			break;
+		case FLASH_SIZE_2M:
+			calib_flash_base_addr = EMI_TEST_FLASH_2M_BASE;
 			break;
 		default:
 			break;
@@ -904,7 +930,7 @@ void read_flash_para(void)
 #endif
 }
 
-#if MCU_CORE_B80
+#if MCU_CORE_B80 || MCU_CORE_B89
 extern unsigned char otp_program_flag;
 /**
  * @brief		This function serves to read calibration from otp
@@ -981,7 +1007,7 @@ void user_init(void)
 {
 	emi_init();
 
-#if MCU_CORE_B80
+#if MCU_CORE_B80 || MCU_CORE_B89
 #if READ_OFFSET_CLIBRATION_OTP
 	read_calibration_otp();
 #else

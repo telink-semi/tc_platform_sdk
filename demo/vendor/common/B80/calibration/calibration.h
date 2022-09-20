@@ -32,6 +32,12 @@
 #define FLASH_PACKAGE	2
 #define PACKAGE_TYPE	OTP_PACKAGE
 
+/*
+ * For otp products, if all codes cannot be executed in ram code, there is a risk of crash,
+ * It is necessary to calibrate the voltage of VDD_1V2 to reduce the risk,through this macro distinction, it can distinguish whether it is a program with full ram code.
+ */
+#define OTP_ALL_SRAM_CODE    0
+
 #ifndef FLASH_ADC_VREF_CALIB_ADDR_64K
 #define FLASH_ADC_VREF_CALIB_ADDR_64K	0xe0c7
 #endif
@@ -94,6 +100,9 @@
 #define OTP_CAP_VALUE_ADDR					0x3fc8
 #endif
 
+#ifndef OTP_VDD_1V2_CALIB_ADDR
+#define OTP_VDD_1V2_CALIB_ADDR             0x3fc0
+#endif
 
 /**
  * @brief		This function is used to calibrate the user's parameters.

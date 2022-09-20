@@ -29,60 +29,46 @@
 extern "C" {
 #endif
 
-#if (MCU_CORE_B89)
-#define LED1     		        GPIO_PD0
-#define LED2     		        GPIO_PD1
-#define LED3     		        GPIO_PD2
-#define LED4     		        GPIO_PD3
-
-#define SW1      		        GPIO_PD4
-#define SW2      		        GPIO_PD5
-
-#define   UART_TX_PIN    UART_TX_PA1
-#define   UART_RX_PIN    UART_RX_PA0
-#define   UART_CTS_PIN   UART_CTS_PA3
-#define   UART_RTS_PIN   UART_RTS_PA2
-#define   UART_RTX_PIN   UART_RTX_PD3  //The RTX can be used as UART-RX,but only some of the UART-RX can be used as RTX.
-
-#elif (MCU_CORE_B87)
-#define LED1     		        GPIO_PD2
-#define LED2     		        GPIO_PD3
-#define LED3     		        GPIO_PD4
-#define LED4     		        GPIO_PD5
-
-#define SW1      		        GPIO_PD0
-#define SW2      		        GPIO_PD1
-
-#define   UART_TX_PIN    UART_TX_PA2
-#define   UART_RX_PIN    UART_RX_PA0
-#define   UART_CTS_PIN   UART_CTS_PA3
-#define   UART_RTS_PIN   UART_RTS_PA4
-#define   UART_RTX_PIN   UART_RTX_PD3//The RTX can be used as UART-TX,but only some of the UART-TX can be used as RTX.
-
+#if (MCU_CORE_B80)
+#define LED1     		        GPIO_PA4
+#define LED2     		        GPIO_PA5
+#define LED3     		        GPIO_PA6
+#define LED4     		        GPIO_PA7
+#define UART_TX_PIN				GPIO_PD0
+#define UART_RX_PIN				GPIO_PD1
+#define UART_CTS_PIN			GPIO_PD2
+#define UART_RTS_PIN			GPIO_PD3
+#define UART_RTX_PIN			GPIO_PC7
 #elif (MCU_CORE_B85)
 #define LED1     		        GPIO_PD2
 #define LED2     		        GPIO_PD3
 #define LED3     		        GPIO_PD4
 #define LED4     		        GPIO_PD5
-
-#define SW1      		        GPIO_PD0
-#define SW2      		        GPIO_PD1
-
-#define   UART_TX_PIN    UART_TX_PA2
-#define   UART_RX_PIN    UART_RX_PA0
-#define   UART_CTS_PIN   UART_CTS_PA3
-#define   UART_RTS_PIN   UART_RTS_PB3
-#define   UART_RTX_PIN   UART_RTX_PD3//The RTX can be used as UART-TX,but only some of the UART-TX can be used as RTX.
-#elif (MCU_CORE_B80)
-#define LED1     		        GPIO_PB3
-#define LED2     		        GPIO_PB4
-#define LED3     		        GPIO_PB5
-#define LED4     		        GPIO_PB6
-#define   UART_TX_PIN    GPIO_PA4
-#define   UART_RX_PIN    GPIO_PA5
-#define   UART_CTS_PIN   GPIO_PA6
-#define   UART_RTS_PIN   GPIO_PA7
-#define   UART_RTX_PIN   GPIO_PA4
+#define UART_TX_PIN				UART_TX_PA2
+#define UART_RX_PIN				UART_RX_PA0
+#define UART_CTS_PIN			UART_CTS_PA3
+#define UART_RTS_PIN			UART_RTS_PB3
+#define UART_RTX_PIN			UART_RTX_PD3//The RTX can be used as UART-TX,but only some of the UART-TX can be used as RTX.
+#elif (MCU_CORE_B87)
+#define LED1     		        GPIO_PD2
+#define LED2     		        GPIO_PD3
+#define LED3     		        GPIO_PD4
+#define LED4     		        GPIO_PD5
+#define UART_TX_PIN				UART_TX_PA2
+#define UART_RX_PIN				UART_RX_PA0
+#define UART_CTS_PIN			UART_CTS_PA3
+#define UART_RTS_PIN			UART_RTS_PA4
+#define UART_RTX_PIN			UART_RTX_PD3//The RTX can be used as UART-TX,but only some of the UART-TX can be used as RTX.
+#elif (MCU_CORE_B89)
+#define LED1     		        GPIO_PD0
+#define LED2     		        GPIO_PD1
+#define LED3     		        GPIO_PD2
+#define LED4     		        GPIO_PD3
+#define UART_TX_PIN				UART_TX_PA1
+#define UART_RX_PIN				UART_RX_PA0
+#define UART_CTS_PIN			UART_CTS_PA3
+#define UART_RTS_PIN			UART_RTS_PA2
+#define UART_RTX_PIN			UART_RTX_PD3  //The RTX can be used as UART-RX,but only some of the UART-RX can be used as RTX.
 #endif
 
 

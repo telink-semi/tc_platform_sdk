@@ -42,7 +42,11 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 	if((reg_irq_src & FLD_IRQ_GPIO_EN)==FLD_IRQ_GPIO_EN){
 		reg_irq_src |= FLD_IRQ_GPIO_EN; // clear the relevant irq
 			gpio_irq_cnt++;
-			gpio_toggle(LED1);
+#if (GPIO_DEMO_MODE == GPIO_DEMO_KEY)
+			gpio_write(LED2, 1);
+#elif (GPIO_DEMO_MODE == GPIO_DEMO_SQUARE_WAVE)
+			gpio_toggle(LED2);
+#endif
 	}
 
 #elif(GPIO_MODE == GPIO_IRQ_RSIC0)
@@ -50,7 +54,11 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 	if((reg_irq_src & FLD_IRQ_GPIO_RISC0_EN)==FLD_IRQ_GPIO_RISC0_EN){
 		reg_irq_src |= FLD_IRQ_GPIO_RISC0_EN; // clear the relevant irq
 			gpio_irq_cnt++;
-			gpio_toggle(LED1);
+#if (GPIO_DEMO_MODE == GPIO_DEMO_KEY)
+			gpio_write(LED3, 1);
+#elif (GPIO_DEMO_MODE == GPIO_DEMO_SQUARE_WAVE)
+			gpio_toggle(LED3);
+#endif
 	}
 
 #elif(GPIO_MODE == GPIO_IRQ_RSIC1)
@@ -59,18 +67,31 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 		reg_irq_src |= FLD_IRQ_GPIO_RISC1_EN; // clear the relevant irq
 
 			gpio_irq_cnt++;
-			gpio_toggle(LED1);
+#if (GPIO_DEMO_MODE == GPIO_DEMO_KEY)
+			gpio_write(LED4, 1);
+#elif (GPIO_DEMO_MODE == GPIO_DEMO_SQUARE_WAVE)
+			gpio_toggle(LED4);
+#endif
 	}
 #elif((GPIO_MODE == GPIO_SEL_IRQ_SRC)&&(MCU_CORE_B80))
 	static unsigned char gpio_irqsrc;
-	gpio_irqsrc =(reg_gpio_irq_from_pad&SET_GROUP_GPIO);
+#if (GPIO_DEMO_MODE == GPIO_DEMO_KEY)
+	gpio_irqsrc = (reg_gpio_irq_from_pad & KEY1);
 	if(gpio_irqsrc)
 	{
-		reg_gpio_irq_from_pad|=SET_GROUP_GPIO;
-
-			gpio_irq_cnt++;
-			gpio_toggle(LED1);
+		reg_gpio_irq_from_pad |= KEY1;
+		gpio_irq_cnt++;
+		gpio_write(LED1, 1);
 	}
+#elif (GPIO_DEMO_MODE == GPIO_DEMO_SQUARE_WAVE)
+	gpio_irqsrc = (reg_gpio_irq_from_pad & IRQ_PIN);
+	if(gpio_irqsrc)
+	{
+		reg_gpio_irq_from_pad |= IRQ_PIN;
+		gpio_irq_cnt++;
+		gpio_toggle(LED1);
+	}
+#endif
 #endif
 
 }
@@ -91,7 +112,9 @@ int main (void)   //must on ramcode
 	cpu_wakeup_init(LDO_MODE, EXTERNAL_XTAL_24M);
 
 #endif
-
+#if(MCU_CORE_B80||MCU_CORE_B89)
+	wd_32k_stop();
+#endif
 #if (MCU_CORE_B85) || (MCU_CORE_B87)
 	//Note: This function must be called, otherwise an abnormal situation may occur.
 	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.

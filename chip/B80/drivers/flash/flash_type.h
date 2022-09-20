@@ -28,6 +28,8 @@
 #include "flash.h"
 #include "flash_mid1160c8.h"	// GD25LD10C
 #include "flash_mid1360c8.h"	// GD25LD40C
+#include "flash_mid136085.h"	// P25Q40SU
+#include "flash_mid114485.h"	// P25D09U
 
 
 /**
@@ -116,6 +118,36 @@ void flash_write_otp(unsigned long addr, unsigned long len, unsigned char *buf);
  */
 void flash_erase_otp(unsigned long addr);
 
+/**
+ * @brief 		This function is used to write the configure of the flash,P25Q40SU uses this function.
+ * @param[in]   cmd			- the write command.
+ * @param[out]  data		- the start address of the data buffer.
+ * @return 		none.
+ * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
+ *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
+ *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
+ *              to the specific application and hardware circuit.
+ *
+ *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
+ *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
+ *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
+ */
+void flash_write_config(unsigned char cmd,unsigned char data);
 
+/**
+ * @brief 		This function is used to read the configure of the flash,P25Q40SU uses this function.
+ * @return 		the value of configure.
+ * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
+ *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
+ *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
+ *              to the specific application and hardware circuit.
+ *
+ *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
+ *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
+ *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
+ */
+unsigned char  flash_read_config(void);
 #endif
 

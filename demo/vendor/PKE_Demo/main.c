@@ -50,7 +50,9 @@ int main (void)   //must on ramcode
 #elif (MCU_CORE_B89)
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
 #endif
-
+#if(MCU_CORE_B89)
+	wd_32k_stop();
+#endif
 	clock_init(SYS_CLK);
 
 #if (MCU_CORE_B87)

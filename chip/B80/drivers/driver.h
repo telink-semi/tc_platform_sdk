@@ -26,7 +26,7 @@
 
 #include "driver_func_cfg.h"
 
-#include "lib/include/emi.h"
+#include "emi.h"
 #include "lib/include/pm.h"
 #include "lib/include/random.h"
 #include "lib/include/rf_drv.h"
@@ -62,3 +62,4 @@
 #include "keyscan.h"
 #include "flash/flash_type.h"
 #include "stimer.h"
+#include "sdk_version.h"

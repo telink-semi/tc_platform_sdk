@@ -29,62 +29,43 @@
 extern "C" {
 #endif
 
-
-#if (MCU_CORE_B89)
-#define LED1     		        GPIO_PD0
-#define LED2     		        GPIO_PD1
-#define LED3     		        GPIO_PD2
-#define LED4     		        GPIO_PD3
-
-#define SW1      		        GPIO_PD4
-#define SW2      		        GPIO_PD5
-
-#define S7816_TRX_PIN    S7816_TRX_PD3
-#define S7816_VCC_PIN    GPIO_PB5
-#define S7816_RST_PIN    GPIO_PB6
-#define S7816_CLK_PIN    S7817_CLK_PB2
-
-#elif (MCU_CORE_B87)
-#define LED1     		        GPIO_PD2
-#define LED2     		        GPIO_PD3
-#define LED3     		        GPIO_PD4
-#define LED4     		        GPIO_PD5
-
-#define SW1      		        GPIO_PD0
-#define SW2      		        GPIO_PD1
-
-#define S7816_TRX_PIN    S7816_TRX_D0
-#define S7816_VCC_PIN    GPIO_PB0
-#define S7816_RST_PIN    GPIO_PB1
-#define S7816_CLK_PIN    S7817_CLK_PA1
-
+#if (MCU_CORE_B80)
+#define LED1     		        GPIO_PA4
+#define LED2     		        GPIO_PA5
+#define LED3     		        GPIO_PA6
+#define LED4     		        GPIO_PA7
+#define S7816_TRX_PIN			GPIO_PB2
+#define S7816_VCC_PIN			GPIO_PB3
+#define S7816_RST_PIN			GPIO_PB4
+#define S7816_CLK_PIN			GPIO_PB5
 #elif (MCU_CORE_B85)
 #define LED1     		        GPIO_PD2
 #define LED2     		        GPIO_PD3
 #define LED3     		        GPIO_PD4
 #define LED4     		        GPIO_PD5
-
-#define SW1      		        GPIO_PD0
-#define SW2      		        GPIO_PD1
-
-#define S7816_TRX_PIN    S7816_TRX_D0
-#define S7816_VCC_PIN    GPIO_PB0
-#define S7816_RST_PIN    GPIO_PB1
-#define S7816_CLK_PIN    S7817_CLK_PA1 //the clk-source of s7816 is 24M.
-#elif(MCU_CORE_B80)
-#define S7816_TRX_PIN    GPIO_PA4
-#define S7816_VCC_PIN    GPIO_PA5
-#define S7816_RST_PIN    GPIO_PA6
-#define S7816_CLK_PIN    GPIO_PA7
-
-
-#define LED1     		        GPIO_PB3
-#define LED2     		        GPIO_PB4
-#define LED3     		        GPIO_PB5
-#define LED4     		        GPIO_PB6
-
+#define S7816_TRX_PIN			S7816_TRX_D0
+#define S7816_VCC_PIN			GPIO_PB0
+#define S7816_RST_PIN			GPIO_PB1
+#define S7816_CLK_PIN			S7817_CLK_PA1 //the clk-source of s7816 is 24M.
+#elif (MCU_CORE_B87)
+#define LED1     		        GPIO_PD2
+#define LED2     		        GPIO_PD3
+#define LED3     		        GPIO_PD4
+#define LED4     		        GPIO_PD5
+#define S7816_TRX_PIN			S7816_TRX_D0
+#define S7816_VCC_PIN			GPIO_PB0
+#define S7816_RST_PIN			GPIO_PB1
+#define S7816_CLK_PIN			S7817_CLK_PA1
+#elif (MCU_CORE_B89)
+#define LED1     		        GPIO_PD0
+#define LED2     		        GPIO_PD1
+#define LED3     		        GPIO_PD2
+#define LED4     		        GPIO_PD3
+#define S7816_TRX_PIN			S7816_TRX_PD3
+#define S7816_VCC_PIN			GPIO_PB5
+#define S7816_RST_PIN			GPIO_PB6
+#define S7816_CLK_PIN			S7817_CLK_PB2
 #endif
-
 
 
 

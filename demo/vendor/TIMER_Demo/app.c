@@ -53,12 +53,13 @@ void user_init()
 	timer_start(TIMER0);
 	irq_enable();
 #elif(TIMER_MODE==TIMER_GPIO_TRIGGER_MODE)
-	timer0_gpio_init(SW1, POL_FALLING);
+	/****  timer0 POL_FALLING  TIMER_GPIO link LED3  **/
+	timer0_gpio_init(TIMER_GPIO, POL_FALLING);
 	irq_enable();
 	timer0_set_mode(TIMER_MODE_GPIO_TRIGGER,0,3);
 	timer_start(TIMER0);
 #elif(TIMER_MODE==TIMER_GPIO_WIDTH_MODE)
-	timer0_gpio_init(SW1, POL_FALLING);
+	timer0_gpio_init(TIMER_GPIO, POL_FALLING);
 	irq_enable();
 	timer0_set_mode(TIMER_MODE_GPIO_WIDTH,0,0);
 	timer_start(TIMER0);
@@ -71,6 +72,11 @@ void user_init()
 #elif(TIMER_MODE==TIMER_WATCHDOG_MODE)
 	wd_set_interval_ms(1000,CLOCK_SYS_CLOCK_1MS);
 	wd_start();
+#elif(TIMER_MODE == TIMER_32K_WATCHDOG_MODE)
+	gpio_write(LED2, 1);
+	blc_pm_select_internal_32k_crystal();
+	wd_32k_set_interval_ms(1000);
+	wd_32k_start();
 #elif(TIMER_MODE==STIMER_MODE && MCU_CORE_B80)
 	stimer_set_irq_mask();
 	stimer_set_capture_tick(clock_time() + CLOCK_16M_SYS_TIMER_CLK_1S);
@@ -102,6 +108,21 @@ void main_loop (void)
 	while(!clock_time_exceed(t0,990000));
 	wd_clear();
 	gpio_toggle(LED1);
+
+#elif(TIMER_MODE == TIMER_32K_WATCHDOG_MODE)
+#if(MCU_CORE_B80 || MCU_CORE_B89)
+	sleep_ms(990);
+	//32K watchdog capture time settings: program run time and sleep time to leave some margin.
+	wd_32k_stop();
+
+	wd_32k_set_interval_ms(1000);
+
+	wd_32k_start();
+	sleep_ms(200);
+	cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_PAD|PM_WAKEUP_TIMER, (clock_time() + 500*CLOCK_16M_SYS_TIMER_CLK_1MS));
+	wd_32k_stop();
+	gpio_toggle(LED1);
+#endif
 #else
 
 	sleep_ms(500);

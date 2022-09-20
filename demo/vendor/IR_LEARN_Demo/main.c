@@ -43,7 +43,9 @@ int main (void)
 #elif (MCU_CORE_B89||MCU_CORE_B80)
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
 #endif
-
+#if(MCU_CORE_B80||MCU_CORE_B89)
+	wd_32k_stop();
+#endif
 #if (MCU_CORE_B87)
 	//Note: This function must be called, otherwise an abnormal situation may occur.
 	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.

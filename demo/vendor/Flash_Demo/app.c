@@ -79,6 +79,7 @@ typedef struct{
 	unsigned char otp_erase_err:1;
 	unsigned char otp_write_err:1;
 	unsigned char otp_lock_err:1;
+	unsigned char flash_vendor_add_err:1;
 }err_status_t;
 typedef struct{
 	unsigned char erase_check:1;
@@ -89,6 +90,7 @@ typedef struct{
 	unsigned char otp_write_check:1;
 	unsigned char otp_lock_check:1;
 	unsigned char umid_check:1;
+	unsigned char flash_vendor_add_check:1;
 }check_status_t;
 volatile err_status_t err_status;
 volatile check_status_t check_status;
@@ -558,6 +560,101 @@ void flash_mid1360eb_test(void)
 }
 #endif
 
+#if (MCU_CORE_B80)
+void flash_mid136085_test(void)
+{
+	int i;
+
+	status1 = flash_read_status_mid136085();
+	flash_lock_mid136085(FLASH_LOCK_LOW_64K_MID136085);
+	status2 = flash_read_status_mid136085();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.lock_err = 1;
+			while(1);
+		}
+	}
+	check_status.lock_check = 1;
+
+	flash_unlock_mid136085();
+	status3 = flash_read_status_mid136085();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != 0xff){
+			err_status.unlock_err = 1;
+			while(1);
+		}
+	}
+	check_status.unlock_check = 1;
+
+	flash_erase_otp_mid136085(FLASH_SECURITY_ADDR);
+	flash_read_otp_mid136085(FLASH_SECURITY_ADDR,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != 0xff){
+			err_status.otp_erase_err = 1;
+			while(1);
+		}
+	}
+	check_status.otp_erase_check = 1;
+
+	flash_write_otp_mid136085(FLASH_SECURITY_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Write_Buff);
+	flash_read_otp_mid136085(FLASH_SECURITY_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.otp_write_err = 1;
+			while(1);
+		}
+	}
+	check_status.otp_write_check = 1;
+
+#if FLASH_OTP_LOCK
+	status4 = flash_read_status_mid136085();
+	flash_lock_otp_mid136085(FLASH_LOCK_OTP_0x001000_512B_MID136085);
+	status5 = flash_read_status_mid136085();
+	flash_erase_otp_mid136085(FLASH_SECURITY_ADDR);
+	flash_read_otp_mid136085(FLASH_SECURITY_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.otp_lock_err = 1;
+			while(1);
+		}
+	}
+	check_status.otp_lock_check = 1;
+#endif
+}
+void flash_mid114485_test(void)
+{
+	int i;
+
+	status1 = flash_read_status_mid114485();
+	flash_lock_mid114485(FLASH_LOCK_LOW_64K_MID114485);
+	status2 = flash_read_status_mid114485();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.lock_err = 1;
+			while(1);
+		}
+	}
+	check_status.lock_check = 1;
+
+	flash_unlock_mid114485();
+	status3 = flash_read_status_mid114485();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != 0xff){
+			err_status.unlock_err = 1;
+			while(1);
+		}
+	}
+	check_status.unlock_check = 1;
+}
+#endif
 void user_init()
 {
 	int i;
@@ -594,6 +691,12 @@ void user_init()
 		break;
 	case 0x1360c8:
 		flash_mid1360c8_test();
+		break;
+	case 0x136085:
+		flash_mid136085_test();
+		break;
+	case 0x114485:
+		flash_mid114485_test();
 		break;
 	default:
 		break;
@@ -670,6 +773,14 @@ void user_init()
 #endif
 
 	check_status.umid_check = flash_read_mid_uid_with_check((unsigned int *)&mid, uid);
+	if(flash_get_vendor(mid)){
+		check_status.flash_vendor_add_check =1;
+	}else{
+		err_status.flash_vendor_add_err =1;
+	}
+
+
+
 }
 
 void main_loop (void)

@@ -52,7 +52,8 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
  */
 int main (void)   //must on ramcode
 {
-#if(PM_MODE==SUSPEND_32K_XTAL_WAKEUP||PM_MODE==DEEP_32K_XTAL_WAKEUP||PM_MODE==DEEP_RET_32K_XTAL_WAKEUP)
+#if(PM_MODE==SUSPEND_32K_XTAL_WAKEUP||PM_MODE==DEEP_32K_XTAL_WAKEUP||PM_MODE==DEEP_RET_32K_XTAL_WAKEUP)\
+	||(PM_MODE==SUSPEND_LONG_32K_XTAL_WAKEUP||PM_MODE==DEEP_LONG_32K_XTAL_WAKEUP||PM_MODE==DEEP_RET_LONG_32K_XTAL_WAKEUP)
 	blc_pm_select_external_32k_crystal();
 #else
 	blc_pm_select_internal_32k_crystal();
@@ -67,6 +68,9 @@ int main (void)   //must on ramcode
 #elif (MCU_CORE_B89)
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
 
+#endif
+#if(MCU_CORE_B80||MCU_CORE_B89)
+	wd_32k_stop();
 #endif
 
 #if (MCU_CORE_B85) || (MCU_CORE_B87)

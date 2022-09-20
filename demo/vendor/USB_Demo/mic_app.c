@@ -39,8 +39,14 @@ volatile signed short MicBuf[MIC_BUFFER_SIZE>>1];
 #define AMIC_BIAS_PIN			     GPIO_PC4 //need check the evk board
 void user_init(void)
 {
-	 gpio_set_output_en(LED1|LED2|LED3|LED4,1);
-	 gpio_set_func(LED1|LED2|LED3|LED4,AS_GPIO);
+	gpio_set_output_en(LED1,1);
+	gpio_set_func(LED1,AS_GPIO);
+	gpio_set_output_en(LED2,1);
+	gpio_set_func(LED2,AS_GPIO);
+	gpio_set_output_en(LED3,1);
+	gpio_set_func(LED3,AS_GPIO);
+	gpio_set_output_en(LED4,1);
+	gpio_set_func(LED4,AS_GPIO);
 	//1.enable USB DP pull up 1.5k
 	usb_set_pin_en();
 	//2.enable USB manual interrupt(in auto interrupt mode,USB device would be USB printer device)

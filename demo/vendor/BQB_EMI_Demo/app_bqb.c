@@ -76,14 +76,14 @@ void read_bqb_calibration()
 	{
 		if(usr_config.cal_pos == 1)//OTP
 		{
-#if MCU_CORE_B80
+#if MCU_CORE_B80 || MCU_CORE_B89
 			extern unsigned char otp_program_flag;
 			unsigned int temp;
 			if(otp_program_flag != 1)
 			{
 				otp_set_active_mode();
 			}
-			otp_read(CAP_SET_OTP_16K, 1, &temp);
+			otp_read(OTP_CAP_VALUE_ADDR, 1, &temp);
 			if(otp_program_flag != 1)
 			{
 				otp_set_deep_standby_mode();

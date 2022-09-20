@@ -169,6 +169,34 @@ unsigned char user_calib_adc_vref(unsigned int addr)
 #endif
 	return 1;
 }
+
+
+/**
+ * @brief      This function is used to calib vdd_1v2.
+ * @return 	   1 - the calibration value update, 0 - the calibration value is not update.
+ * @note       if rf rx_mode is turned on, otp has read error problem, if running otp program, do to avoid the solution,
+ *             trim core voltage, and use 32K watchdog (enable in the front position).
+ */
+unsigned char user_calib_vdd_1v2(unsigned int addr){
+/*
+ * When the bit[7] of 0x3fc0 is 0, it indicates that the lower 3Bit is the calibration value and read 0x3fc0 bit<2:0> to afe3V_reg03<5:3>;
+ * if 0x3fc0 bit[7] is 1, it indicates that there is no calibration value, and the value 0x02(1.1V) is assigned to afe3V_reg03<5:3>.
+ */
+	unsigned int vdd1v2_trim_value = 0xff;
+	otp_read(addr,1,&vdd1v2_trim_value);
+
+	if(0x00 == (vdd1v2_trim_value&BIT(7)))
+	{
+		pm_set_vdd_1v2(vdd1v2_trim_value&0x07);
+		return 1;
+	}
+	else{
+		pm_set_vdd_1v2(VDD_1V2_1V1);
+	}
+
+	return 0;
+}
+
 /**
  * @brief		This function is used to calibrate the user's parameters.
  * 				This function is to read the calibration value stored in otp,
@@ -180,6 +208,9 @@ void user_read_otp_value_calib(void)
 {
 	user_calib_adc_vref(0);
 	user_calib_freq_offset(OTP_CAP_VALUE_ADDR);
+#if(!OTP_ALL_SRAM_CODE)
+	user_calib_vdd_1v2(OTP_VDD_1V2_CALIB_ADDR);
+#endif
 }
 /**
  * @brief		This function is used to calibrate the user's parameters.

@@ -23,21 +23,46 @@
  *
  *******************************************************************************************************/
 #include "register.h"
+#include "lib/include/pm.h"
+#include "analog.h"
 
 /**
- * @brief     This function set the feed dog capture value (capture_tick), the clock source is the system clock.
- * 			  When this capture value is reached, the chip will restart. The actual capture value is only high 14Bits will work,
- * 			  so there will be some deviation from the set value, the deviation can be calculated by the following principle,
- * 			  the actual capture value is: capture_tick = (period_ms*tick_per_ms) & 0xfff30000.
- * @param[in] period_ms - feeding period time, the unit is ms
- * @param[in] tick_per_ms - tick value required for 1ms under system clock timing
+ * @brief     start 32k watchdog.
  * @return    none
+ * @note      For otp products, if all codes cannot be executed in ram code, there will be a risk of crash,
+ *            so 32K watchdog needs to be enabled to reduce the risk (this interface must be put in ram code to reduce the risk, if put in text segment, there will be a risk of error).
  */
-void wd_set_interval_ms(unsigned int period_ms,unsigned long int tick_per_ms)
-{
-	static unsigned short tmp_period_ms = 0;
-	tmp_period_ms = (period_ms*tick_per_ms>>18);
-	reg_tmr2_tick = 0x00000000;    //reset tick register
-	reg_tmr_ctrl=(reg_tmr_ctrl&(~FLD_TMR_WD_CAPT))|((tmp_period_ms<<9)&FLD_TMR_WD_CAPT);//set the capture register
+_attribute_ram_code_sec_noinline_ void wd_32k_start(void){
+
+	analog_write(0x70, analog_read(0x70) | 0x01);
 }
 
+/**
+ * @brief     stop 32k watchdog.
+ * @return    none
+ * @note      For otp products, if all codes cannot be executed in ram code, there will be a risk of crash,
+ *            so 32K watchdog needs to be enabled to reduce the risk (this interface must be put in ram code to reduce the risk, if put in text segment, there will be a risk of error).
+ */
+_attribute_ram_code_sec_noinline_ void wd_32k_stop(void){
+
+	analog_write(0x70, analog_read(0x70) & 0xfe);
+}
+
+/**
+ * @brief     This function set the watchdog trigger time.
+ * @param[in] period_ms - The watchdog trigger time. Unit is  millisecond, ranges from 1~134,217,720ms.
+ * @return    none
+ * @note      For otp products, if all codes cannot be executed in ram code, there will be a risk of crash,
+ *            so 32K watchdog needs to be enabled to reduce the risk (this interface must be put in ram code to reduce the risk, if put in text segment, there will be a risk of error).
+ */
+_attribute_ram_code_sec_noinline_ void wd_32k_set_interval_ms(unsigned int period_ms)
+{
+	unsigned int tmp_period_ms = 0;
+
+	tmp_period_ms = pm_get_32k_tick() + 32 * period_ms;
+
+	analog_write(0x73, tmp_period_ms >> 24);
+	analog_write(0x72, tmp_period_ms >> 16);
+	analog_write(0x71, tmp_period_ms >> 8);
+	analog_write(0x70,(analog_read(0x70)&(~BIT_RNG(5,7)))|(tmp_period_ms&0xe0));
+}

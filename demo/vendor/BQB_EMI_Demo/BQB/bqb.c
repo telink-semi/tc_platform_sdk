@@ -218,9 +218,7 @@ void bqb_serviceloop (void)
 		unsigned short rsp=0;
 		unsigned char cmd = cmd_pkt >> 14;
 		unsigned char k;
-#if DEBUG_FLAG
-		gpio_write(LED1, !gpio_read(LED1));
-#endif
+
 		tick_tx =  reg_system_tick;
 		switch(cmd)
 		{
@@ -456,8 +454,12 @@ void bqb_serviceloop (void)
 				if((ctrl==0) && (para==0))
 				{
 					pkt_length.len =0;
-					rf_set_tx_rx_off_auto_mode();
 
+					/*Wait for the end of the state machine to prevent the state machine from being forced to stop during the process of sending and receiving packets
+					 * to prevent abnormal interruptions from causing abnormal packet reception in S2/S8 mode.Modified by Pengcheng,confirmed by Qiangkai, 2022/07/19*/
+					while(is_rf_receiving_pkt());
+
+					rf_set_tx_rx_off_auto_mode();
 					uart_ndma_send_byte((BIT(7))|((pkt_cnt>>8)&0x7f));
 					uart_ndma_send_byte(pkt_cnt&0xff);
 

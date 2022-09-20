@@ -62,9 +62,17 @@ typedef enum{
  * @brief   system Timer : 16Mhz, Constant
  */
 enum{
-	CLOCK_16M_SYS_TIMER_CLK_1S  =  16*1000*1000,
+	CLOCK_16M_SYS_TIMER_CLK_1S  = 16*1000*1000,
 	CLOCK_16M_SYS_TIMER_CLK_1MS = 16*1000,
 	CLOCK_16M_SYS_TIMER_CLK_1US = 16,
+};
+
+/**
+ * @brief   system Timer : 32Khz, Constant
+ */
+enum{
+	CLOCK_32K_SYS_TIMER_CLK_1S  = 32*1000,
+	CLOCK_32K_SYS_TIMER_CLK_1MS = 32,
 };
 
 /**

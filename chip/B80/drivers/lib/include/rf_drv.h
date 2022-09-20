@@ -508,6 +508,9 @@ void rf_set_tx_rx_off(void);
  * @brief   This function serves to turn off RF auto mode.
  * @param   none.
  * @return  none.
+ * @note    Before calling this function, you need to call is_rf_receiving_pkt
+ * 			to judge whether the state machine is in the receiving state; otherwise,
+ * 			it will cause abnormal sending and receiving of packets.
  */
 static inline void rf_set_tx_rx_off_auto_mode(void)
 {
@@ -909,6 +912,10 @@ static inline unsigned short rf_access_code_32to16 (unsigned int code)
  * @brief   This function serves to judge the statue of  RF receive.
  * @param   none.
  * @return  none.
+ * @note	Before calling the rf_set_tx_rx_off_auto_mode function to stop the state machine,
+ * 			you need to call this function to judge whether the state machine is in the state
+ * 			of receiving packets; if it is in the process of receiving packets, it will cause
+ * 			the abnormality of receiving packets.
  */
 static inline unsigned char is_rf_receiving_pkt(void)
 {

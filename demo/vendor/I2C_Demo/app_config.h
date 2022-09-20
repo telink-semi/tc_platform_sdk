@@ -29,50 +29,35 @@
 extern "C" {
 #endif
 
-#if (MCU_CORE_B89)
-#define LED1     		        GPIO_PD0
-#define LED2     		        GPIO_PD1
-#define LED3     		        GPIO_PD2
-#define LED4     		        GPIO_PD3
-
-#define SW1      		        GPIO_PD4
-#define SW2      		        GPIO_PD5
-
-#define I2C_GPIO_SDA            I2C_GPIO_SDA_A0
-#define I2C_GPIO_SCL            I2C_GPIO_SCL_A1
-
-#elif (MCU_CORE_B87)
-#define LED1     		        GPIO_PD2
-#define LED2     		        GPIO_PD3
-#define LED3     		        GPIO_PD4
-#define LED4     		        GPIO_PD5
-
-#define SW1      		        GPIO_PD0
-#define SW2      		        GPIO_PD1
-
-#define I2C_GPIO_SDA            I2C_GPIO_SDA_A3
-#define I2C_GPIO_SCL            I2C_GPIO_SCL_A4
-
+#if (MCU_CORE_B80)
+#define LED1     		        GPIO_PA4
+#define LED2     		        GPIO_PA5
+#define LED3     		        GPIO_PA6
+#define LED4     		        GPIO_PA7
+#define I2C_GPIO_SDA            GPIO_PB5
+#define I2C_GPIO_SCL            GPIO_PB4
 #elif (MCU_CORE_B85)
 #define LED1     		        GPIO_PD2
 #define LED2     		        GPIO_PD3
 #define LED3     		        GPIO_PD4
 #define LED4     		        GPIO_PD5
-
-#define SW1      		        GPIO_PD0
-#define SW2      		        GPIO_PD1
-
 #define I2C_GPIO_SDA_SCL        I2C_GPIO_GROUP_A3A4
-
-#elif (MCU_CORE_B80)
-#define LED1     		        GPIO_PB3
-#define LED2     		        GPIO_PB4
-#define LED3     		        GPIO_PB5
-#define LED4     		        GPIO_PB6
-
-#define I2C_GPIO_SDA            GPIO_PA6
-#define I2C_GPIO_SCL            GPIO_PA7
+#elif (MCU_CORE_B87)
+#define LED1     		        GPIO_PD2
+#define LED2     		        GPIO_PD3
+#define LED3     		        GPIO_PD4
+#define LED4     		        GPIO_PD5
+#define I2C_GPIO_SDA            I2C_GPIO_SDA_A3
+#define I2C_GPIO_SCL            I2C_GPIO_SCL_A4
+#elif (MCU_CORE_B89)
+#define LED1     		        GPIO_PD0
+#define LED2     		        GPIO_PD1
+#define LED3     		        GPIO_PD2
+#define LED4     		        GPIO_PD3
+#define I2C_GPIO_SDA            I2C_GPIO_SDA_A0
+#define I2C_GPIO_SCL            I2C_GPIO_SCL_A1
 #endif
+
 
 
 #define I2C_DMA_MODE                1

@@ -68,8 +68,8 @@ extern unsigned char system_clk_type;
  * @brief 	crystal for different application
  */
 typedef enum{
-	EXTERNAL_XTAL_24M	= 0,
-	EXTERNAL_XTAL_48M	= 1,
+	EXTERNAL_XTAL_24M	= 0,			//Use an external 24M crystal and internal capacitors.
+	EXTERNAL_XTAL_EXTERNAL_CAP_24M	= 2,//Use an external 24M crystal and external capacitors.
 }XTAL_TypeDef;
 /**
  * @brief system clock type, to optimize the code and reduce the code size, add bit8-bit10 and bit11,
@@ -114,7 +114,9 @@ typedef enum{
 /**
  * @brief       This function to select the system clock source.
  * @param[in]   SYS_CLK - the clock source of the system clock.
- * @return      none
+ * @note		Do not switch the clock during the DMA sending and receiving process;
+ * 			    because during the clock switching process, the system clock will be
+ * 			    suspended for a period of time, which may cause data loss.
  */
 void clock_init(SYS_CLK_TypeDef SYS_CLK);
 

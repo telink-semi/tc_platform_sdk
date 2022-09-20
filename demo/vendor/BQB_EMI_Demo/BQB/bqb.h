@@ -140,8 +140,7 @@ extern usr_def_t usr_config;
 #define STATUS_EVENT_MASK	(0)
 #define REPORT_EVENT_MASK	(BIT(15))
 
-#define DEBUG_FLAG			0
-#define LED1     			GPIO_PB2
+
 
 
 /**

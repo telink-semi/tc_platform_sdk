@@ -86,7 +86,9 @@ typedef enum{
 /**
  * @brief       This function to select the system clock source.
  * @param[in]   SYS_CLK - the clock source of the system clock.
- * @return      none
+ * @note		Do not switch the clock during the DMA sending and receiving process;
+ * 			    because during the clock switching process, the system clock will be
+ * 			    suspended for a period of time, which may cause data loss.
  */
 void clock_init(SYS_CLK_TypeDef SYS_CLK);
 
