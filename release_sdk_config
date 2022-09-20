@@ -89,6 +89,10 @@ MACRO               ./chip/B80/drivers/driver_func_cfg.h        ONLY_SUPPORT_OTP
 MACRO               ./chip/B80/drivers/driver_func_cfg.h        PM_32K_EXTERNAL_XTAL_EN                   0
 MACRO               ./common/compiler.h                              BLC_PM_DEEP_RETENTION_MODE_EN      0
 MACRO               ./common/sdk_version.h                           B80_SDK_VERSION_NUM                        B80_S0_OTP_NO_RET_NO_EXT32K_V1.5.0
+
+MACRO               ./../chip/B80/drivers/driver_func_cfg.h        ONLY_SUPPORT_OTP_PROGRAM             1
+MACRO               ./../chip/B80/drivers/driver_func_cfg.h        PM_32K_EXTERNAL_XTAL_EN                   0
+MACRO               ./../common/compiler.h                              BLC_PM_DEEP_RETENTION_MODE_EN      0
 MACRO               ./../common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S0_OTP_NO_RET_NO_EXT32K_V1.5.0
 
 LIB_OBJ             ./project/tlsr_tc32/B80/PM_Demo/drivers/lib/src
@@ -113,6 +117,10 @@ MACRO               ./chip/B80/drivers/driver_func_cfg.h        ONLY_SUPPORT_OTP
 MACRO               ./chip/B80/drivers/driver_func_cfg.h        PM_32K_EXTERNAL_XTAL_EN                   0
 MACRO               ./common/compiler.h                              BLC_PM_DEEP_RETENTION_MODE_EN      0
 MACRO               ./common/sdk_version.h                           B80_SDK_VERSION_NUM                        B80_S1_OTP_NO_RET_NO_EXT32K_V1.5.0
+
+MACRO               ./../chip/B80/drivers/driver_func_cfg.h        ONLY_SUPPORT_OTP_PROGRAM             1
+MACRO               ./../chip/B80/drivers/driver_func_cfg.h        PM_32K_EXTERNAL_XTAL_EN                   0
+MACRO               ./../common/compiler.h                              BLC_PM_DEEP_RETENTION_MODE_EN      0
 MACRO               ./../common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S1_OTP_NO_RET_NO_EXT32K_V1.5.0
 
 LIB_OBJ             ./project/tlsr_tc32/B80/PM_Demo/drivers/lib/src
@@ -136,6 +144,10 @@ MACRO               ./chip/B80/drivers/driver_func_cfg.h        ONLY_SUPPORT_OTP
 MACRO               ./chip/B80/drivers/driver_func_cfg.h        PM_32K_EXTERNAL_XTAL_EN                   0
 MACRO               ./common/compiler.h                              BLC_PM_DEEP_RETENTION_MODE_EN      0
 MACRO               ./common/sdk_version.h                           B80_SDK_VERSION_NUM                        B80_S2_OTP_NO_RET_NO_EXT32K_V1.5.0
+
+MACRO               ./../chip/B80/drivers/driver_func_cfg.h        ONLY_SUPPORT_OTP_PROGRAM             1
+MACRO               ./../chip/B80/drivers/driver_func_cfg.h        PM_32K_EXTERNAL_XTAL_EN                   0
+MACRO               ./../common/compiler.h                              BLC_PM_DEEP_RETENTION_MODE_EN      0
 MACRO               ./../common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S2_OTP_NO_RET_NO_EXT32K_V1.5.0
 
 LIB_OBJ             ./project/tlsr_tc32/B80/PM_Demo/drivers/lib/src
@@ -160,6 +172,10 @@ MACRO               ./chip/B80/drivers/driver_func_cfg.h        ONLY_SUPPORT_OTP
 MACRO               ./chip/B80/drivers/driver_func_cfg.h        PM_32K_EXTERNAL_XTAL_EN                   0
 MACRO               ./common/compiler.h                              BLC_PM_DEEP_RETENTION_MODE_EN      0
 MACRO               ./common/sdk_version.h                           B80_SDK_VERSION_NUM                        B80_S3_OTP_NO_RET_NO_EXT32K_V1.5.0
+
+MACRO               ./../chip/B80/drivers/driver_func_cfg.h        ONLY_SUPPORT_OTP_PROGRAM             1
+MACRO               ./../chip/B80/drivers/driver_func_cfg.h        PM_32K_EXTERNAL_XTAL_EN                   0
+MACRO               ./../common/compiler.h                              BLC_PM_DEEP_RETENTION_MODE_EN      0
 MACRO               ./../common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S3_OTP_NO_RET_NO_EXT32K_V1.5.0
 
 LIB_OBJ             ./project/tlsr_tc32/B80/PM_Demo/drivers/lib/src
