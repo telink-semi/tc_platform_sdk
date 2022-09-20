@@ -24,6 +24,9 @@
  *******************************************************************************************************/
 #pragma once
 
+/*
+ * It is only used by SDK, and the customer is not allowed to modify it
+ */
 #if(MCU_CORE_B80)
 /*
  * Release Tool need to change this macro to match the release version,
@@ -60,7 +63,7 @@
 #endif
 
 
-#define	SDK_VERSION1(sdk_version_num)	"$$$telink_B85m_driver_sdk_"#sdk_version_num"$$$"
+#define	SDK_VERSION1(sdk_version_num)	"$$$B85m_driver_sdk_"#sdk_version_num"$$$"
 #define	SDK_VERSION(sdk_version_num)	SDK_VERSION1(sdk_version_num)
 
 

@@ -39,7 +39,7 @@ extern "C" {
 #endif
 
 #define	 USB_DEMO_TYPE		USB_MOUSE
-#define  MCU_CORE_B85       1
+
 
 #if	(USB_DEMO_TYPE == USB_MOUSE)
 	#define	USB_MOUSE_ENABLE 		1
