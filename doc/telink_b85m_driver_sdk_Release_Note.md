@@ -9,9 +9,26 @@
 *	B85	 	C1T139A30_V1_2
 *	B87  	C1T197A30_V1_2
 
+### BREAKING CHANGES
+* N/A
+
+### Bug Fixes
+* N/A
+
 ### Refactoring
 * **rf**
   * (B85/B87/B80)Normalizes the naming of content related to private schemas.
+
+### Features
+* N/A
+
+### Performance Improvements
+
+* N/A
+
+### Note
+
+* N/A
 
 <hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
 
@@ -24,9 +41,26 @@
 *	B85	 	C1T139A30_V1_2
 *	B87  	C1T197A30_V1_2
 
+### BREAKING CHANGES
+* N/A
+
+### Bug Fixes
+* N/A
+
 ### Refactoring
 * **rf**
   * (B85/B87/B80)规范化与私有模式相关内容的命名。
+
+### Features
+* N/A
+
+### Performance Improvements
+
+* N/A
+
+### Note
+
+* N/A
 
 ## V1.5.0
 
