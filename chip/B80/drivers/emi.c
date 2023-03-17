@@ -38,7 +38,7 @@
 static unsigned char  emi_rx_packet[64] __attribute__ ((aligned (4)));
 static unsigned char  emi_zigbee_tx_packet[48]  __attribute__ ((aligned (4))) = {19,0,0,0,20,0,0};
 static unsigned char  emi_ble_tx_packet [48]  __attribute__ ((aligned (4))) = {39, 0, 0, 0,0, 37};
-static unsigned char  Private_ESB_tx_packet[48] __attribute__ ((aligned (4))) = {0x21,0x00,0x00,0x00,0x20};
+static unsigned char  Private_TPLL_tx_packet[48] __attribute__ ((aligned (4))) = {0x21,0x00,0x00,0x00,0x20};
 static unsigned int   emi_rx_cnt=0,emi_rssibuf=0;
 static signed  char   rssi=0;
 static unsigned int   state0,state1;
@@ -413,10 +413,10 @@ void rf_emi_tx_burst_setup(RF_ModeTypeDef rf_mode,RF_PowerTypeDef power_level,si
 
 		case RF_MODE_PRIVATE_2M:
 		case RF_MODE_PRIVATE_1M:
-			Private_ESB_tx_packet[5] = pkt_type;
+			Private_TPLL_tx_packet[5] = pkt_type;
 			for( i=0;i<37;i++)
 			{
-				Private_ESB_tx_packet[5+i]=tx_data;
+				Private_TPLL_tx_packet[5+i]=tx_data;
 			}
 			break;
 
@@ -501,10 +501,10 @@ void rf_emi_tx_brust_setup_ramp(RF_ModeTypeDef rf_mode,RF_PowerTypeDef power_lev
 			break;
 		case RF_MODE_PRIVATE_2M:
 		case RF_MODE_PRIVATE_1M:
-			Private_ESB_tx_packet[5] = pkt_type;
+			Private_TPLL_tx_packet[5] = pkt_type;
 			for( i=0;i<37;i++)
 			{
-				Private_ESB_tx_packet[5+i]=tx_data;
+				Private_TPLL_tx_packet[5+i]=tx_data;
 			}
 			break;
 		default:
@@ -568,7 +568,7 @@ void rf_emi_tx_burst_loop_ramp(RF_ModeTypeDef rf_mode,unsigned char pkt_type)
 		{
 			sub_wr(0x137c, i , 6, 1);
 		}
-		rf_tx_pkt (Private_ESB_tx_packet);
+		rf_tx_pkt (Private_TPLL_tx_packet);
 		while(!rf_tx_finish());
 		rf_tx_finish_clear_flag();
 		for(int i=power;i>=0;i--)
@@ -577,7 +577,7 @@ void rf_emi_tx_burst_loop_ramp(RF_ModeTypeDef rf_mode,unsigned char pkt_type)
 		}
 		sleep_ms(2);
 		if(pkt_type==0)
-			rf_phy_test_prbs9(&Private_ESB_tx_packet[5],37);
+			rf_phy_test_prbs9(&Private_TPLL_tx_packet[5],37);
 	}
 }
 
@@ -636,12 +636,12 @@ void rf_emi_tx_burst_loop(RF_ModeTypeDef rf_mode,unsigned char pkt_type)
 	}
 	else if((rf_mode==RF_MODE_PRIVATE_2M)||(rf_mode==RF_MODE_PRIVATE_1M))
 	{
-		rf_start_stx ((void *)Private_ESB_tx_packet, read_reg32(0x740) + 10);
+		rf_start_stx ((void *)Private_TPLL_tx_packet, read_reg32(0x740) + 10);
 		while(!rf_tx_finish());
 		rf_tx_finish_clear_flag();
 		sleep_us(625);//
 		if(pkt_type==0)
-			rf_phy_test_prbs9(&Private_ESB_tx_packet[5],37);
+			rf_phy_test_prbs9(&Private_TPLL_tx_packet[5],37);
 	}
 }
 

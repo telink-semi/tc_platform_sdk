@@ -33,7 +33,7 @@
 #define MANUAL				2
 #define RF_AUTO_MODE 		AUTO
 
-#define ESB_MODE  			1
+#define TPLL_MODE  			1
 #define SB_MODE   			2
 #define PRI_MODE			SB_MODE
 
@@ -49,7 +49,7 @@ unsigned char  rx_packet[64]  __attribute__ ((aligned (4)));
 unsigned char  ble_tx_packet[48] __attribute__ ((aligned (4))) = {0x23,0x00,0x00,0x00,0x00,0x21,0x00,0x00,0x00,0x00,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff};
 unsigned char  Zigbee_tx_packet[48] __attribute__ ((aligned (4))) = {0x12,0x00,0x00,0x00,0x13,0x00,0x00,0x00,0x00,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff};
 unsigned char  Private_SB_tx_packet[48] __attribute__ ((aligned (4))) = {0x20,0x00,0x00,0x00,0x20,0x00,0x00,0x00,0x00,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff};
-unsigned char  Private_ESB_tx_packet[48] __attribute__ ((aligned (4))) = {0x21,0x00,0x00,0x00,0x20,0x00,0x00,0x00,0x00,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff};
+unsigned char  Private_TPLL_tx_packet[48] __attribute__ ((aligned (4))) = {0x21,0x00,0x00,0x00,0x20,0x00,0x00,0x00,0x00,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff};
 unsigned char  Ant_tx_packet[48] __attribute__ ((aligned (4))) = {RX_PAYLOAD_LEN-2,0x00,0x00,0x00,0x20,0x00,0x00,0x00,0x00,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff};
 
 #if(RF_AUTO_MODE == AUTO)
@@ -70,7 +70,7 @@ void user_init()
 
 	rf_access_code_comm(ACCESS_CODE);
 
-#if(PRI_MODE == ESB_MODE)
+#if(PRI_MODE == TPLL_MODE)
 
 #elif(PRI_MODE == SB_MODE)
 	rf_fix_payload_len_set(RX_PAYLOAD_LEN);
@@ -84,8 +84,8 @@ void main_loop (void)
 	while(1)
 	{
 		sleep_ms(1);
-	#if(PRI_MODE == ESB_MODE)
-		rf_start_stx (Private_ESB_tx_packet, clock_time() + 16*1000*TX_INTERVAL_MS);
+	#if(PRI_MODE == TPLL_MODE)
+		rf_start_stx (Private_TPLL_tx_packet, clock_time() + 16*1000*TX_INTERVAL_MS);
 	#elif(PRI_MODE == SB_MODE)
 		rf_start_stx (Private_SB_tx_packet, clock_time() + 16*1000*TX_INTERVAL_MS);
 	#endif
@@ -104,10 +104,10 @@ void main_loop (void)
 	{
 		if(rf_is_rx_finish())
 		{
-		#if(PRI_MODE == ESB_MODE)
-			if(RF_NRF_ESB_PACKET_CRC_OK(rx_packet)&&RF_NRF_ESB_PACKET_LENGTH_OK(rx_packet))
+		#if(PRI_MODE == TPLL_MODE)
+			if(RF_TPLL_PACKET_CRC_OK(rx_packet)&&RF_TPLL_PACKET_LENGTH_OK(rx_packet))
 		#elif(PRI_MODE == SB_MODE)
-			if(RF_NRF_SB_PACKET_CRC_OK(rx_packet))
+			if(RF_SB_PACKET_CRC_OK(rx_packet))
 		#endif
 			{
 				gpio_toggle(LED1);
@@ -138,7 +138,7 @@ void user_init()
 
 
 	rf_access_code_comm(ACCESS_CODE);
-#if(PRI_MODE == ESB_MODE)
+#if(PRI_MODE == TPLL_MODE)
 
 #elif(PRI_MODE == SB_MODE)
 	rf_fix_payload_len_set(RX_PAYLOAD_LEN);
@@ -152,8 +152,8 @@ void main_loop (void)
 	while(1)
 	{
 		sleep_ms(1);
-	#if(PRI_MODE == ESB_MODE)
-		rf_tx_pkt (Private_ESB_tx_packet);
+	#if(PRI_MODE == TPLL_MODE)
+		rf_tx_pkt (Private_TPLL_tx_packet);
 	#elif(PRI_MODE == SB_MODE)
 		rf_tx_pkt (Private_SB_tx_packet);
 	#endif
@@ -171,10 +171,10 @@ void main_loop (void)
 	{
 		if(rf_is_rx_finish())
 		{
-		#if(PRI_MODE == ESB_MODE)
-			if(RF_NRF_ESB_PACKET_CRC_OK(rx_packet)&&RF_NRF_ESB_PACKET_LENGTH_OK(rx_packet))
+		#if(PRI_MODE == TPLL_MODE)
+			if(RF_TPLL_PACKET_CRC_OK(rx_packet)&&RF_TPLL_PACKET_LENGTH_OK(rx_packet))
 		#elif(PRI_MODE == SB_MODE)
-			if(RF_NRF_SB_PACKET_CRC_OK(rx_packet))
+			if(RF_SB_PACKET_CRC_OK(rx_packet))
 		#endif
 			{
 				gpio_toggle(LED1);

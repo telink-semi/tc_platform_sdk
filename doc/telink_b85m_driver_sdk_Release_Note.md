@@ -1,3 +1,31 @@
+## V1.5.1
+
+### Version
+
+* SDK version: telink_b85m_driver_sdk V1.5.0.
+* This version of SDK supports B80(A1), B85, B87 chips.
+* The default configuration of LEDs and KEYs match the following hardware revisions:
+*	B80	 	C1T261A30_V1_1
+*	B85	 	C1T139A30_V1_2
+*	B87  	C1T197A30_V1_2
+
+### Refactoring
+* **rf**
+  * (B85/B87/B80)Normalizes the naming of content related to private schemas.
+
+### 版本
+
+* SDK版本: telink_b85m_driver_sdk V1.5.0。
+* 此版本SDK支持B80(A1)、B85、B87芯片。
+* LED和KEY的默认配置匹配以下硬件版本:
+*	B80	 	C1T261A30_V1_1
+*	B85	 	C1T139A30_V1_2
+*	B87  	C1T197A30_V1_2
+
+### Refactoring
+* **rf**
+  * (B85/B87/B80)规范化与私有模式相关内容的命名。
+
 ## V1.5.0
 
 ### Version

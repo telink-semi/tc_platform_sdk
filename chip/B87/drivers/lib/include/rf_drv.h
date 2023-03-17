@@ -505,15 +505,15 @@ typedef enum {
 #define    RF_ZIGBEE_PACKET_RSSI_GET(p)     			(p[p[0]+2])
 #define    RF_ZIGBEE_PACKET_TIMESTAMP_GET(p)           	(p[p[0]-4] | (p[p[0]-3]<<8) | (p[p[0]-2]<<16) | (p[p[0]-1]<<24))
 #define    RF_ZIGBEE_PACKET_PAYLOAD_LENGTH_GET(p)      	(p[4])
-#define    RF_NRF_ESB_PACKET_LENGTH_OK(p)              	(p[0] == (p[4] & 0x3f) + 11)
-#define    RF_NRF_ESB_PACKET_CRC_OK(p)                 	((p[p[0]+3] & 0x01) == 0x00)
-#define    RF_NRF_ESB_PACKET_RSSI_GET(p)               	(p[p[0]+2])
-#define    RF_NRF_SB_PACKET_PAYLOAD_LENGTH_GET(p)      	(p[0] - 10)
-#define    RF_NRF_SB_PACKET_CRC_OK(p)                  	((p[p[0]+3] & 0x01) == 0x00)
-#define    RF_NRF_SB_PACKET_CRC_GET(p)                 	((p[p[0]-8]<<8) + p[p[0]-7]) //Note: here assume that the MSByte of CRC is received first
-#define    RF_NRF_SB_PACKET_RSSI_GET(p)                	(p[p[0]+2])
-#define    RF_NRF_ESB_PACKET_TIMESTAMP_GET(p)          (p[p[0]-4] | (p[p[0]-3]<<8) | (p[p[0]-2]<<16) | (p[p[0]-1]<<24))
-#define    RF_NRF_SB_PACKET_TIMESTAMP_GET(p)           (p[p[0]-4] | (p[p[0]-3]<<8) | (p[p[0]-2]<<16) | (p[p[0]-1]<<24))
+#define    RF_TPLL_PACKET_LENGTH_OK(p)              	(p[0] == (p[4] & 0x3f) + 11)
+#define    RF_TPLL_PACKET_CRC_OK(p)                 	((p[p[0]+3] & 0x01) == 0x00)
+#define    RF_TPLL_PACKET_RSSI_GET(p)               	(p[p[0]+2])
+#define    RF_SB_PACKET_PAYLOAD_LENGTH_GET(p)      		(p[0] - 10)
+#define    RF_SB_PACKET_CRC_OK(p)                  		((p[p[0]+3] & 0x01) == 0x00)
+#define    RF_SB_PACKET_CRC_GET(p)                 		((p[p[0]-8]<<8) + p[p[0]-7]) //Note: here assume that the MSByte of CRC is received first
+#define    RF_SB_PACKET_RSSI_GET(p)                		(p[p[0]+2])
+#define    RF_TPLL_PACKET_TIMESTAMP_GET(p)          	(p[p[0]-4] | (p[p[0]-3]<<8) | (p[p[0]-2]<<16) | (p[p[0]-1]<<24))
+#define    RF_SB_PACKET_TIMESTAMP_GET(p)           		(p[p[0]-4] | (p[p[0]-3]<<8) | (p[p[0]-2]<<16) | (p[p[0]-1]<<24))
 
 #define    rf_aoa_aod_iq_data_offset(p)					(p[5]+10)
 
@@ -1101,12 +1101,12 @@ static inline unsigned char is_rf_receiving_pkt(void)
 extern void rf_set_channel_500k(signed short chn, unsigned short set);
 /**
 *	@brief		this function is to set shock burst for RF.
-*	@param[in]	len - length of shockburst.
+*	@param[in]	len - length of payload.
 *	@return	 	none.
 */
 static inline void rf_fix_payload_len_set(int len)
 {
-    write_reg8(0x404, read_reg8(0x404)|0x03); //select shockburst header mode
+    write_reg8(0x404, read_reg8(0x404)|0x03); //select private header mode
     write_reg8(0x406, len);
 }
 
@@ -1187,21 +1187,21 @@ extern unsigned char rf_stop_ed_154(void);
 extern void rf_rffe_set_pin(RF_PATxPinDef tx_pin, RF_LNARxPinDef rx_pin);
 
 /**
- * @brief      This function process the received packet in 1mbps shockburst mode only for hanshow for the
+ * @brief      This function process the received packet in 1mbps private mode only for hanshow for the
  *             compatibility with third-party chips. The process includes data-whitening
                transformation and crc check.
  * @param[in]  rx_buf - the rf rx buffer containing the received packet(dma length+payload+3 byte crc)
- * @param[in]  len - the expected rx length of shockburst mode, containing payload and 3byte crc
+ * @param[in]  len - the expected rx length of private mode, containing payload and 3byte crc
  * @return     the status of the processing procesure. 1: the received packet is correct, 0: the received packet is incorrect
  */
 
 unsigned char rx_packet_process_1mbps(unsigned char *rx_buf, unsigned int len);
 /**
- * @brief      This function process the tx packet in 1mbps shockburst mode only for hanshow for the
+ * @brief      This function process the tx packet in 1mbps private mode only for hanshow for the
  *             compatibility with third-party chips. The process includes data-whitening
                transformation and crc padding.
  * @param[in]  tx_buf - the rf tx buffer containing the tx packet(dma length+payload+3 byte crc)
- * @param[in]  len - the expected tx length of shockburst mode, containing payload and 3byte crc
+ * @param[in]  len - the expected tx length of private mode, containing payload and 3byte crc
  * @return     none
  */
 void tx_packet_process_1mbps(unsigned char *tx_buf, unsigned char *payload, unsigned int len);
