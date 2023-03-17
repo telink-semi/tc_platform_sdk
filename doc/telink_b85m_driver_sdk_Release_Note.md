@@ -13,6 +13,8 @@
 * **rf**
   * (B85/B87/B80)Normalizes the naming of content related to private schemas.
 
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
 ### 版本
 
 * SDK版本: telink_b85m_driver_sdk V1.5.1。
