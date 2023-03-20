@@ -930,7 +930,7 @@ static inline unsigned char is_rf_receiving_pkt(void)
  */
 extern void rf_set_channel_500k(signed short chn, unsigned short set);
 /**
-*	@brief		this function is to set shock burst for RF.
+*	@brief		This function is to set Private mode payload len for RF.
 *	@param[in]	len - length of payload.
 *	@return	 	none.
 */
