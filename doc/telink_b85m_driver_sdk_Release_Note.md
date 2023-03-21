@@ -450,7 +450,7 @@
 	* The qdec_clear_conuter interface cannot realize the function of clearing the count. Delete it, add the qdec_reset interface, and use the qdec_reset interface to reset qdec and clear the qdec count value. ([5f5ed691](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/5f5ed69104a9e64dd3bd16233c958375a3bba4b0))
 * **RF**
 	* (B85/B87) Fix the problem that IO may be in an unstable state during the setting of rf_rffe_set_pin in B85 and B87. ([1ff99a4f](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/1ff99a4fb72836352f6b5e314032d787ad200577))
-	* (B87) Fixed the problem of getting the timestamp error from the received package through RF_ZIGBEE_PACKET_TIMESTAMP_GET/RF_NRF_ESB_PACKET_TIMESTAMP_GET/RF_NRF_SB_PACKET_TIMESTAMP_GET and rf_aoa_aod_get_pkt_timestamp. ([3a281ed6](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/3a281ed695326e686b55bcb2d653fa214b3d0ae4))
+	* (B87) Fixed the problem of getting the timestamp error from the received package through RF_ZIGBEE_PACKET_TIMESTAMP_GET/RF_TPLL_PACKET_TIMESTAMP_GET/RF_SB_PACKET_TIMESTAMP_GET and rf_aoa_aod_get_pkt_timestamp. ([3a281ed6](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/3a281ed695326e686b55bcb2d653fa214b3d0ae4))
 	* (B85/B87) Fixed the problem of abnormal packet receiving caused by calling rf_access_code_comm or rf_longrange_access_code_comm within 5us after calling rf_drv_init(RF_MODE_LR_S2_500K) or rf_drv_init(RF_MODE_LR_S8_125K). ([3a281ed6](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/3a281ed695326e686b55bcb2d653fa214b3d0ae4))
 * **GPIO(B85/B87)**
 	* To realize the shutdown function, IO must be set to GPIO function, the original configuration is wrong. ([1b797a29](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/1b797a292c8b242f799cbda46cc7dcb70acb7400))
@@ -566,7 +566,7 @@
 	* qdec_clear_conuter接口不能实现清除计数的功能，将其删除，添加qdec_reset接口，使用qdec_reset接口来复位qdec,清除qdec计数值。([5f5ed691](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/5f5ed69104a9e64dd3bd16233c958375a3bba4b0))
 * **RF**
 	* (B85/B87)修复B85，B87中rf_rffe_set_pin设置过程中可能会造成IO处于不定态的问题。([1ff99a4f](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/1ff99a4fb72836352f6b5e314032d787ad200577))
-	* (B87)修复了通过RF_ZIGBEE_PACKET_TIMESTAMP_GET/RF_NRF_ESB_PACKET_TIMESTAMP_GET/RF_NRF_SB_PACKET_TIMESTAMP_GET以及rf_aoa_aod_get_pkt_timestamp从收到的包中获取timestamp错误的问题。([3a281ed6](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/3a281ed695326e686b55bcb2d653fa214b3d0ae4))
+	* (B87)修复了通过RF_ZIGBEE_PACKET_TIMESTAMP_GET/RF_TPLL_PACKET_TIMESTAMP_GET/RF_SB_PACKET_TIMESTAMP_GET以及rf_aoa_aod_get_pkt_timestamp从收到的包中获取timestamp错误的问题。([3a281ed6](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/3a281ed695326e686b55bcb2d653fa214b3d0ae4))
 	* (B85/B87)修复了调用rf_drv_init(RF_MODE_LR_S2_500K)或者rf_drv_init(RF_MODE_LR_S8_125K)之后，5us内调用rf_access_code_comm或者rf_longrange_access_code_comm造成收包异常的问题。([3a281ed6](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/3a281ed695326e686b55bcb2d653fa214b3d0ae4))
 * **GPIO(B85/B87)**
 	* 实现shutdown功能必须要将IO设为GPIO功能，原来的配置有误。([1b797a29](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/1b797a292c8b242f799cbda46cc7dcb70acb7400))
