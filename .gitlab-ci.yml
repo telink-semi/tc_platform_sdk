@@ -22,6 +22,10 @@ stages:
   when: manual
 
 
+release_sdk_S0:
+  <<: *release_sdk_template
+  variables:
+    PACK_NAME: "telink_b85m_driver_sdk_B80_S0"
     
 release_sdk_S1:
   <<: *release_sdk_template
