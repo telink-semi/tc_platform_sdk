@@ -7,7 +7,6 @@
  * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -27,7 +26,7 @@
 #include "compiler.h"
 
 /**
- * @brief     This function is used to look for the prime.if the prime is finded,it will
+ * @brief     This function is used to look for the prime.if the prime is fined,it will
  * 			  return 1, or return 0.
  * @param[in] the value to judge
  * @return    none
@@ -52,7 +51,7 @@ static unsigned char IsPrime(unsigned int n)
 }
 
 /**
- * @brief  		This funciton serves to calculate the best bwpc(bit width) .i.e reg0x96
+ * @brief  		This function serves to calculate the best bwpc(bit width) .i.e reg0x96
  * @param[in] 	baut_rate:The value of the baut rate to set.
  * @param[in] 	tmp_sysclk:The system clock
  *    			algorithm: BaudRate*(div+1)*(bwpc+1)=system clock
@@ -252,7 +251,7 @@ void uart_dma_enable(unsigned char rx_dma_en, unsigned char tx_dma_en)
 		reg_uart_ctrl0  |= FLD_UART_TX_DMA_EN;
 
 	}else{
-		/*diable DMA function of tx */
+		/*disable DMA function of tx */
 		reg_uart_ctrl0	&= (~FLD_UART_TX_DMA_EN);
 	}
 
@@ -262,6 +261,7 @@ void uart_dma_enable(unsigned char rx_dma_en, unsigned char tx_dma_en)
  * @brief     config the irq of uart tx and rx
  * @param[in] rx_irq_en - 1:enable rx irq. 0:disable rx irq
  * @param[in] tx_irq_en - 1:enable tx irq. 0:disable tx irq
+ *                        (In general, nodma does not use this interrupt,is sent in polling mode, uart_tx_is_busy() is used to determine whether the sending is complete)
  * @return    none
  */
 void uart_irq_enable(unsigned char rx_irq_en, unsigned char tx_irq_en)
@@ -289,17 +289,11 @@ void uart_irq_enable(unsigned char rx_irq_en, unsigned char tx_irq_en)
 }
 
 /**
- * @brief     config the number level setting the irq bit of status register 0x9d
- *            ie 0x9d[3].
- *            If the cnt register value(0x9c[0,3]) larger or equal than the value of 0x99[0,3]
- *            or the cnt register value(0x9c[4,7]) less or equal than the value of 0x99[4,7],
- *            it will set the irq bit of status register 0x9d, ie 0x9d[3]
- * @param[in] rx_level - receive level value. ie 0x99[0,3]
- * @param[in] tx_level - transmit level value.ie 0x99[4,7]
+ * @brief     configure the trigger level setting the rx_irq and tx_irq interrupt
+ * @param[in] rx_level - rx_irq trigger level value.When the number of rxfifo is greater than or equal to the rx_level, an interrupt is generated, and the interrupt flag is automatically cleared.
+ * @param[in] tx_level - tx_irq trigger level value.When the number of txfifo is less than or equal to the tx_level, an interrupt is generated and the interrupt flag is automatically cleared.
  * @return    none
  */
-
-
 void uart_ndma_irq_triglevel(unsigned char rx_level, unsigned char tx_level)
 {
 	reg_uart_ctrl3 = rx_level | (tx_level<<4);
@@ -352,14 +346,14 @@ volatile unsigned char uart_ndma_read_byte(void)
 }
 
 /**
- * @brief     uart send data function, this  function tell the DMA to get data from the RAM and start the DMA transmission
- * @param[in] Addr - pointer to the buffer containing data need to send
+ * @brief     Send an amount of data in DMA mode.
+ * @param[in] Addr   - Pointer to data buffer. It must be 4-bytes aligned address,
+ *                     The first four bytes of addr store the send length,the send length can only send (4079-4) bytes one time at most.
  * @return    none
  * @note      If you want to use uart DMA mode to send data, it is recommended to use this function.
  *            This function just triggers the sending action, you can use interrupt or polling with the FLD_UART_TX_DONE flag to judge whether the sending is complete. 
- *            After the current packet has been sent, this FLD_UART_TX_DONE will be set to 1, and FLD_UART_TX_DONE interrupt can be generated.
+ *            After the current packet has been sent, this FLD_UART_TX_DONE will be set to 1, and FLD_UART_TX_DONE interrupt can be generated. 
  *			  If you use interrupt mode, you need to call uart_clr_tx_done() in the interrupt processing function, uart_clr_tx_done() will set FLD_UART_TX_DONE to 0.
- *            DMA can only send 2047-bytes one time at most.
  */
 void uart_send_dma(unsigned char* Addr)
 {
@@ -385,7 +379,7 @@ void uart_send_dma(unsigned char* Addr)
  * @return    1: DMA triggered successfully
  *            0: UART busy : last packet not send over,you can't start to send the current packet data
  *
- * @note      DMA can only send 2047-bytes one time at most.
+ * @note      DMA can only send (4079-4) bytes one time at most.
  *			  
  */
 volatile unsigned char uart_dma_send(unsigned char* Addr)
@@ -428,11 +422,13 @@ volatile unsigned char uart_send_byte(unsigned char byte)
 }
 
 /**
- * @brief     data receive buffer initiate function. DMA would move received uart data to the address space,
- *            uart packet length needs to be no larger than (recBuffLen - 4).
- * @param[in] RecvAddr - pointer to the receiving buffer
- * @param[in] RecvBufLen - length in byte of the receiving buffer
+ * @brief     Receive an amount of data in DMA mode.
+ * @param[in] RecvAddr - Pointer to data buffer, it must be 4-bytes aligned.
+ * @param[in] RecvBufLen - Length of DMA in bytes, it must be multiple of 16,the maximum value can be up to 4079,
+ *                         RecvBufLen contains the first four bytes to indicate the received length,so uart packet length needs to be no larger than (recBuffLen - 4).
  * @return    none
+ * @note      -# If the dma receive length reaches the set length, the uart is still receiving data, no rxtimeout is generated,
+ *               the dma will continue to receive, but no buff overflow occurs, and the loopback receive overwrites the received data.
  */
 
 void uart_recbuff_init(unsigned char *RecvAddr, unsigned short RecvBufLen)
@@ -476,7 +472,7 @@ unsigned char uart_is_parity_error(void)
  */
 void uart_clear_parity_error(void)
 {
-	reg_uart_status0|= FLD_UART_CLEAR_RX_FLAG; //write 1 to clear
+	reg_uart_status0 = FLD_UART_CLEAR_RX_FLAG; //write 1 to clear
 }
 
 /**
@@ -599,9 +595,15 @@ void uart_set_pin_mux(GPIO_PinTypeDef pin,gpio_func_e function)
 */
 void uart_gpio_set(GPIO_PinTypeDef tx_pin,GPIO_PinTypeDef rx_pin)
 {
-	uart_set_pin_mux(tx_pin,(tx_pin != GPIO_PA2) ? UART_TX:1);
-	uart_set_pin_mux(rx_pin,(rx_pin != GPIO_PA1) ? UART_RX_I:1);
+	if(tx_pin !=GPIO_NONE_PIN){
+	  uart_set_pin_mux(tx_pin,(tx_pin != GPIO_PA2) ? UART_TX:1);
+	}
+	if(rx_pin!= GPIO_NONE_PIN){
+	 uart_set_pin_mux(rx_pin,(rx_pin != GPIO_PA1) ? UART_RX_I:1);
+	}
 }
+
+
 /**
  * @brief   This function enables the irq when UART module receives error data.
  * @param[in] none

@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -22,6 +21,26 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
+/**	@page UART
+ *
+ *	Header File: uart.h
+ *
+ *	How to use this driver
+ *	==============
+ *  nodma usage instructions:
+ *  -# Since there is no rxdone interrupt under nodma:
+ *      - if the length of the received data is not known, rx_level should be set to 1;
+ *      - if the length of the received data is known, rx_level should be set to less than 8 and an integer multiple of the received length;
+ *  -# rx_irq interrupt processing: Use reg_uart_buf_cnt to determine the number of FIFOs and use uart_ndma_read_byte () to read all data in fifo;
+ *  -# The depth size of the uart fifo is 8. If the time before and after entering the rx_irq interrupt exceeds the time of receiving 8 bytes, the fifo pointer may be disturbed, resulting in abnormal received data.
+ *     You can determine whether reg_uart_buf_cnt is greater than 8 as an exception,If this exception occurs, it is recommended to use dma mode to receive.
+ *
+ *  dma:
+ *  advantage: Automatically received by dma hardware, does not require mcu polling receive,
+ *  shortcoming:dma maximum receive length (4079-4) bytes, if this length is reached, excess data will overwrite the previously received data.
+ *
+ */
+
 #include "register.h"
 #include "gpio.h"
 #include "compiler.h"
@@ -78,6 +97,7 @@ typedef enum{
 	UART_TX_PD0 = GPIO_PD0,
 	UART_TX_PD3 = GPIO_PD3,
 	UART_TX_PD7 = GPIO_PD7,
+	UART_TX_NONE_PIN =0xfff,
 }UART_TxPinDef;
 
 /**
@@ -91,6 +111,7 @@ typedef enum{
 	UART_RX_PC3 = GPIO_PC3,
 	UART_RX_PC5 = GPIO_PC5,
 	UART_RX_PD6 = GPIO_PD6,
+	UART_RX_NONE_PIN =0xfff,
 }UART_RxPinDef;
 
 /**
@@ -154,6 +175,8 @@ static inline void uart_ndma_clear_tx_index(void)
  * @brief     This function resets the UART module.
  * @param[in] none
  * @return    none
+ * @note      After calling the uart_reset interface, uart_ndma_clear_tx_index and uart_ndma_clear_rx_index must be called to clear the read/write pointer,
+ *            after the uart_reset interface is invoked, the hardware read and write Pointers are cleared to zero,therefore the software read and write Pointers are cleared to ensure logical correctness.
  */
 static inline void uart_reset(void)
 {
@@ -240,6 +263,7 @@ extern void uart_dma_enable(unsigned char rx_dma_en, unsigned char tx_dma_en);
  * @brief     config the irq of uart tx and rx
  * @param[in] rx_irq_en - 1:enable rx irq. 0:disable rx irq
  * @param[in] tx_irq_en - 1:enable tx irq. 0:disable tx irq
+ *                        (In general, nodma does not use this interrupt,is sent in polling mode, uart_tx_is_busy() is used to determine whether the sending is complete)
  * @return    none
  */
 
@@ -267,7 +291,7 @@ extern volatile unsigned char uart_ndma_read_byte(void);
 extern unsigned char uart_RxIndex;
 /**
  * @brief     This function is used to set the 'uart_RxIndex' to 0.
- *			  After wakeup from power-saving mode, you must call this function before read data.
+ *			  After wakeup from power-saving mode or uart_reset, you must call this function before read data.
  * @param[in] none.
  * @return    none.
  */
@@ -276,14 +300,13 @@ static inline void uart_ndma_clear_rx_index(void)
     uart_RxIndex=0;
 }
 /**
- * @brief     config the number level setting the irq bit of status register 0x9d
- *            ie 0x9d[3].
- *          uart_ndma_get_irq  If the cnt register value(0x9c[0,3]) larger or equal than the value of 0x99[0,3]
- *            or the cnt register value(0x9c[4,7]) less or equal than the value of 0x99[4,7],
- *            it will set the irq bit of status register 0x9d, ie 0x9d[3]
- * @param[in] rx_level - receive level value. ie 0x99[0,3]
- * @param[in] tx_level - transmit level value.ie 0x99[4,7]
+ * @brief     configure the trigger level setting the rx_irq and tx_irq interrupt
+ * @param[in] rx_level - rx_irq trigger level value.When the number of rxfifo is greater than or equal to the rx_level, an interrupt is generated, and the interrupt flag is automatically cleared.
+ * @param[in] tx_level - tx_irq trigger level value.When the number of txfifo is less than or equal to the tx_level, an interrupt is generated and the interrupt flag is automatically cleared.
  * @return    none
+ * @note      Since there is no rxdone interrupt under nodma:
+ *           -# if the length of the received data is not known, rx_level should be set to 1;
+ *           -# if the length of the received data is known, rx_level should be set to less than 8 and an integer multiple of the received length;
  */
 extern void uart_ndma_irq_triglevel(unsigned char rx_level, unsigned char tx_level);
 
@@ -297,14 +320,14 @@ extern void uart_ndma_irq_triglevel(unsigned char rx_level, unsigned char tx_lev
 extern unsigned char uart_ndmairq_get(void);
 
 /**
- * @brief     uart send data function, this  function tell the DMA to get data from the RAM and start the DMA transmission
- * @param[in] Addr - pointer to the buffer containing data need to send
+ * @brief     Send an amount of data in DMA mode.
+ * @param[in] Addr   - Pointer to data buffer. It must be 4-bytes aligned address,
+ *                     The first four bytes of addr store the send length,the send length can only send (4079-4) bytes one time at most.
  * @return    none
  * @note      If you want to use uart DMA mode to send data, it is recommended to use this function.
  *            This function just triggers the sending action, you can use interrupt or polling with the FLD_UART_TX_DONE flag to judge whether the sending is complete. 
  *            After the current packet has been sent, this FLD_UART_TX_DONE will be set to 1, and FLD_UART_TX_DONE interrupt can be generated. 
  *			  If you use interrupt mode, you need to call uart_clr_tx_done() in the interrupt processing function, uart_clr_tx_done() will set FLD_UART_TX_DONE to 0.
- *            DMA can only send 2047-bytes one time at most.
  */
 extern void uart_send_dma(unsigned char* Addr);
 
@@ -319,7 +342,7 @@ extern void uart_send_dma(unsigned char* Addr);
  * @return    1: DMA triggered successfully
  *            0: UART busy : last packet not send over,you can't start to send the current packet data
  *
- * @note      DMA can only send 2047-bytes one time at most.
+ * @note      DMA can only send (4079-4) bytes one time at most.
  *			  
  */
 extern volatile unsigned char uart_dma_send(unsigned char* Addr);
@@ -333,11 +356,13 @@ extern volatile unsigned char uart_dma_send(unsigned char* Addr);
  */
 extern volatile unsigned char uart_send_byte(unsigned char byte);
 /**
- * @brief     data receive buffer initiate function. DMA would move received uart data to the address space,
- *            uart packet length needs to be no larger than (recBuffLen - 4).
- * @param[in] RecvAddr - pointer to the receiving buffer
- * @param[in] RecvBufLen - length in byte of the receiving buffer
+ * @brief     Receive an amount of data in DMA mode.
+ * @param[in] RecvAddr - Pointer to data buffer, it must be 4-bytes aligned.
+ * @param[in] RecvBufLen - Length of DMA in bytes, it must be multiple of 16,the maximum value can be up to 4079,
+ *                         RecvBufLen contains the first four bytes to indicate the received length,so uart packet length needs to be no larger than (recBuffLen - 4).
  * @return    none
+ * @note      -# If the dma receive length reaches the set length, the uart is still receiving data, no rxtimeout is generated,
+ *               the dma will continue to receive, but no buff overflow occurs, and the loopback receive overwrites the received data.
  */
 
 extern void uart_recbuff_init(unsigned char *RecvAddr, unsigned short RecvBufLen);

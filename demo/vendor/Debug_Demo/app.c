@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -53,6 +52,23 @@ void main_loop (void)
 	sleep_ms(1000);
 	gpio_toggle(LED1|LED2|LED3|LED4);
 	printf(" Hello world! \n");
+
+    // test sprintf 
+	int hex_test=0xab;
+	char hex_buff[3];//The minimum length is set to 3 bytes ('a'+ 'b'+'\0').
+	sprintf(hex_buff,"%x",hex_test);
+
+	int num_test=123;
+	char num_buff[4];//The minimum length is set to 4 bytes ('1'+'2'+'3'+'\0').
+	sprintf(num_buff,"%d",num_test);
+
+	const char* string_test = "ABCD";
+	char string_buff[5];//The minimum length is set to 5 bytes ('A'+'B'+'C'+'D'+'\0').
+	sprintf(string_buff,"%s",string_test);
+
+	printf("hex_test=%s , num_test=%s , string_test=%s \n",hex_buff,num_buff,string_buff);
+
+
 }
 
 

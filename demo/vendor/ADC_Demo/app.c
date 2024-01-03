@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -79,7 +78,7 @@ void main_loop (void)
 		temp_new_val = adc_temp_result();
 	#endif
 
-    #if(MANNUAL_MODE_GET_ADC_SAMPLE_RESULT==1)
+    #if(MANUAL_MODE_GET_ADC_SAMPLE_RESULT==1)
 		adc_manual_val = adc_sample_and_get_result_manual_mode();
     #endif
 

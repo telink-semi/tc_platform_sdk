@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -60,7 +59,7 @@ enum {
 	USB_INTF_MIC,
 #endif
 #if(0)
-	USB_INTF_AUDIO_HID,		//  use for volumn control, mute, next, prev track,  move to mouse hid
+	USB_INTF_AUDIO_HID,		//  use for volume control, mute, next, prev track,  move to mouse hid
 #endif
 #if USB_KEYBOARD_ENABLE
 	USB_INTF_KEYBOARD,
@@ -96,7 +95,7 @@ enum {
 };
 
 #if(USB_MIC_ENABLE)
-#define USB_MIC_CHANNELS_LEN   (MIC_CHANNLE_COUNT*(MIC_SAMPLE_RATE*MIC_RESOLUTION_BIT/1000/8))//=20
+#define USB_MIC_CHANNELS_LEN   (MIC_CHANNEL_COUNT*(MIC_SAMPLE_RATE*MIC_RESOLUTION_BIT/1000/8))//=20
 #endif
 
 enum {

@@ -7,7 +7,6 @@
  * @date	2019
  *
  * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -33,6 +32,9 @@
 extern _attribute_data_retention_ unsigned char tl_24mrc_cal;
 
 _attribute_data_retention_	unsigned char system_clk_type;
+
+/*24m rc calibrate configuration, the default value is set to require calibration*/
+volatile static unsigned char g_24m_rc_calib_flag = 1;
 
 #if 0
 /**
@@ -60,12 +62,16 @@ void clock_rc_set(SYS_CLK_TypeDef SYS_CLK)
 	}
 }
 #endif
+
 /**
  * @brief       This function to select the system clock source.
  * @param[in]   SYS_CLK - the clock source of the system clock.
- * @note		Do not switch the clock during the DMA sending and receiving process;
- * 			    because during the clock switching process, the system clock will be
- * 			    suspended for a period of time, which may cause data loss.
+ * @return      none
+ * @note		1. Do not switch the clock during the DMA sending and receiving process because during the clock switching process, 
+ * 					the system clock will be suspended for a period of time, which may cause data loss.
+ * 				2. When this function called after power on or deep sleep wakeup, it will perform 24m rc calibration. 
+ * 					The usage rules of 24m rc, please refer to the rc_24m_cal() for details.
+ * 					If do not want this logic, you can check the usage and precautions of clock_init_calib_24m_rc_cfg().
  */
 #if (BLC_PM_DEEP_RETENTION_MODE_EN)
 _attribute_ram_code_sec_noinline_
@@ -81,7 +87,12 @@ void clock_init(SYS_CLK_TypeDef SYS_CLK)
 		clock_rc_set(SYS_CLK);
 	}
 #endif
-	if(!pm_is_MCU_deepRetentionWakeup()){
+	/*
+		In some customer application scenarios, they want code execution time to be short and power consumption to be low.
+		Meanwhile, they do not concerned about the accuracy of 24m rc or they want to control the calibration cycle themselves. 
+		Therefore, here we provide a way for users to configure the calibration logic without affecting compatibility.
+	*/
+	if(!pm_is_MCU_deepRetentionWakeup() && (g_24m_rc_calib_flag == 1)){
 		rc_24m_cal ();
 	}
 
@@ -193,6 +204,13 @@ void rc_48m_cal (void)
  * @brief     This function performs to select 24M as the system clock source.
  * @param[in] none.
  * @return    none.
+ * @note	  During the first power-on, after the xtal is stable (cpu_wakeup_init()), it is necessary to calibrate the 24m rc as soon as possible 
+ * 				to prevent some unknown problems caused by a large frequency deviation of the RC clock.
+ *            1. If the sleep function is not used and the accuracy of 24m rc is not high, then there is no need for regular calibration.
+ *            2. If the sleep wake-up function is required, it is necessary to calibrate the 24m rc before the first sleep, otherwise it may cause the 
+ * 					oscillator to fail to start after waking up.The recommended interval for regular calibration is 10 seconds. 
+ *            3. If the 24m rc is more accurate, the oscillator will start up faster after waking up. If it is not accurate, the oscillator may not start
+ * 					up after waking up.Therefore, regular calibration is needed to prevent the impact of temperature changes.
  */
 void rc_24m_cal (void)
 {
@@ -218,6 +236,10 @@ void rc_24m_cal (void)
  * @brief     This function performs to select 32K as the system clock source.
  * @param[in] none.
  * @return    none.
+ * @note	  1. If a more accurate 32K RC timing is required, then to prevent temperature effects, calibration can be performed regularly.
+ * 			  2. If it is to ensure accurate sleep time, then the 32K RC calibration is not necessary. Although sleep time is measured by 32K RC, 
+ * 				    sleep time is obtained through tracking way and will not affected by 32K RC deviation. So in this scenario, it is necessary to 
+ * 				    calibrate once when power-on (to prevent significant frequency deviation caused by 32K RC), and regular calibration is not necessary.
  */
 void rc_32k_cal (void)
 {
@@ -262,4 +284,15 @@ void dmic_prob_24M_rc()
 	write_reg8(0x59e,0x5b);
 }
 
-
+/**
+ * @brief 	  This function performs to configure whether to calibrate the 24m rc in the clock_init() when power-on or wakeup from deep sleep mode.
+ * 				If wakeup from deep retention sleep mode will not calibrate.
+ * @param[in] calib_flag - Choose whether to calibrate the 24m rc or not.
+ * 						1 - calibrate; 0 - not calibrate
+ * @return	  none
+ * @note	  This function will not take effect until it is called before clock_init(). 
+ */
+void clock_init_calib_24m_rc_cfg(char calib_flag)
+{
+	g_24m_rc_calib_flag = calib_flag;
+}

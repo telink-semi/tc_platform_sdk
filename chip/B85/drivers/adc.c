@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -27,7 +26,10 @@
 #include "clock.h"
 #include "dfifo.h"
 #include "timer.h"
-
+/**
+ * Note: When the reference voltage is configured to 1.2V, the calculated ADC voltage value is closest to the actual voltage value using 1175 as the coefficient default.
+ * 1175 is the value obtained by ATE through big data statistics, which is more in line with most chips than 1200.
+ */
 _attribute_data_retention_
 unsigned short adc_vref = 1175;//ADC gpio calibration value voltage (unit:mV)(used for gpio voltage sample).
 _attribute_data_retention_
@@ -116,13 +118,16 @@ void adc_set_ref_voltage(ADC_ChTypeDef ch_n, ADC_RefVolTypeDef v_ref)
 		//Vref buffer bias current trimming: 		150%
 		//Comparator preamp bias current trimming:  100%
 		analog_write( areg_ain_scale  , (analog_read( areg_ain_scale  )&(0xC0)) | 0x3d );
+		/* Note: If adc_set_ref_voltage() is called to switch v_ref to ADC_VREF_0P6V or ADC_VREF_0P9V
+		 * and then back to ADC_VREF_1P2V, note that adc_vref and adc_vref_offset are not re-assigned.*/
 	}
 	else
 	{
 		//Vref buffer bias current trimming: 		100%
 		//Comparator preamp bias current trimming:  100%
 		analog_write( areg_ain_scale  , (analog_read( areg_ain_scale  )&(0xC0)) | 0x15 );
-		adc_gpio_calib_vref=adc_ref_vol[v_ref];
+		adc_vref = adc_ref_vol[v_ref];
+		adc_vref_offset = 0;
 	}
 
 

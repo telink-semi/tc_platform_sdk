@@ -7,7 +7,6 @@
  * @date	2019
  *
  * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -38,6 +37,6 @@ void wd_set_interval_ms(unsigned int period_ms,unsigned long int tick_per_ms)
 	static unsigned short tmp_period_ms = 0;
 	tmp_period_ms = (period_ms*tick_per_ms>>18);
 	reg_tmr2_tick = 0x00000000;    //reset tick register
-	reg_tmr_ctrl=(reg_tmr_ctrl&(~FLD_TMR_WD_CAPT))|((tmp_period_ms<<9)&FLD_TMR_WD_CAPT);//set the capture register
+	reg_tmr_ctrl=(((reg_tmr_ctrl&(~FLD_TMR_WD_CAPT))|((tmp_period_ms<<9)&FLD_TMR_WD_CAPT))&0x00ffffff);//set the capture register
 }
 

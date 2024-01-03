@@ -7,7 +7,6 @@
  * @date	2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -24,8 +23,60 @@
  *******************************************************************************************************/
 #include "calibration.h"
 #include "driver.h"
+#include "types.h"
 extern unsigned char	otp_program_flag;
-
+/**
+ * @brief		This function is used to Tighten the judgment of illegal values for gpio calibration and vbat calibration in the otp.
+ *              The ADC vref gain calibtation should range from 1100mV to 1300mV, the ADC vref offset calibration should range from -40mV to 100mV.
+ * @param[in]   gain - the value of gpio_calib_vref_gain or vbat_calib_vref_gain
+ *              offset - the value of gpio_calib_vref_offset or vbat_calib_vref_offset
+ *              calib_func - Function pointer to gpio_calibration or vbat_calibration.
+ * @return		false:the calibration function is invalid; true:the calibration function is valid.
+ */
+bool adc_update_vref_calib_value_ft_cp(unsigned char gain, signed char offset, void (*calib_func)(unsigned short, signed char))
+{
+	/**
+	 * The stored offset value is not of "signed" type, and the ATE writes the offset value with the following rules:
+	 * Bit[7] = 1 for negative value, Bit[7] = 0 for positive value, and the absolute value of Bit[0:6] indicates the absolute value of the offset.
+	 * Therefore, after taking out the offset value, it needs to be converted to "signed" type.
+	 */
+	offset = (offset & BIT(7)) ? ((-1) * (offset & 0x7f)) : offset;
+	if((gain >= 100) && (offset >= -20) && (offset <= 120))
+	{
+		(*calib_func)(gain+1000, offset-20);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+/**
+ * @brief		This function is used to Tighten the judgment of illegal values for gpio calibration and vbat calibration in the flash.
+ *              The ADC vref gain calibtation should range from 1047mV to 1300mV, the ADC vref offset calibration should range from 0mV to 127mV.
+ * @param[in]   gain - the value of gpio_calib_vref_gain or vbat_calib_vref_gain
+ *              offset - the value of gpio_calib_vref_offset or vbat_calib_vref_offset
+ *              calib_func - Function pointer to gpio_calibration or vbat_calibration.
+ * @return		false:the calibration function is invalid; true:the calibration function is valid.
+ */
+bool adc_update_vref_calib_value_flash(unsigned char gain, signed char offset, void (*calib_func)(unsigned short, signed char))
+{
+	/**
+	 * The stored offset value with the following rules:
+	 * Bit[7] = 1 for negative value, Bit[7] = 0 for positive value, and the absolute value of Bit[0:6] indicates the absolute value of the offset.
+	 * Therefore, after taking out the offset value, it needs to be converted to "signed" type.
+	 */
+	offset = (offset & BIT(7)) ? ((-1) * (offset & 0x7f)) : offset;
+	if((gain >= 47) && (offset >= 20) && (offset <= 147))
+	{
+		(*calib_func)(gain+1000, offset-20);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
 /**
  * @brief      This function serves to update rf frequency offset.
  * @param[in]  velfrom - the calibration value from flash or otp.
@@ -35,168 +86,65 @@ extern unsigned char	otp_program_flag;
 unsigned char user_calib_freq_offset(unsigned int addr)
 {
 #if(PACKAGE_TYPE == FLASH_PACKAGE)
-	unsigned char freqency_offset_value = 0xff;
-	flash_read_page(addr, 1, &freqency_offset_value);
+	unsigned char frequency_offset_value = 0xff;
+	flash_read_page(addr, 1, &frequency_offset_value);
 #elif(PACKAGE_TYPE == OTP_PACKAGE)
-	unsigned int freqency_offset_value = 0xff;
-	otp_read(addr,1,&freqency_offset_value);
+	unsigned int frequency_offset_value = 0xff;
+	otp_read(addr,1,&frequency_offset_value);
 #endif
-
-	if(0xff != (0xff&freqency_offset_value))
+	if(0xff != (0xff&frequency_offset_value))
 	{
-		rf_update_internal_cap(freqency_offset_value);
+		rf_update_internal_cap(frequency_offset_value);
 		return 1;
 	}
-
 	return 0;
 }
-
 /**
  * @brief      This function is used to calib ADC 1.2V vref.
  * @return 	   1 - the calibration value update, 0 - the calibration value is not update.
  */
 unsigned char user_calib_adc_vref(unsigned int addr)
 {
-#if(PACKAGE_TYPE == FLASH_PACKAGE)
-	unsigned char adc_vref_calib_value[4] = {0};
-#elif(PACKAGE_TYPE == OTP_PACKAGE)
+
 	unsigned char adc_vref_ft_calib_value[4] = {0};
-#endif
 	unsigned char adc_vref_cp_calib_value[4] = {0};
-	unsigned short gpio_calib_vref = 1175;
-	signed char gpio_calib_vref_offset = 0;
-	unsigned short vbat_calib_vref = 1175;
-	signed char vbat_calib_vref_offset = 0;
 	//It will be automatically active during OTP programming. This operation is to activate OTP during SRAM or FLASH programming.
 	if(otp_program_flag==0){
 		otp_set_active_mode();
 	}
-#if(PACKAGE_TYPE == OTP_PACKAGE)
 	/********************************************************************************************
 		The ADC calibration value priority of B80 is FT > CP.
 		The GPIO calibration value and the VBAT calibration value do not necessarily exist at the same time.
 	********************************************************************************************/
 	otp_read(OTP_ADC_VREF_FT_CALIB_ADDR,1,(unsigned int *)adc_vref_ft_calib_value);
-#endif
 	otp_read(OTP_ADC_VREF_CP_CALIB_ADDR,1,(unsigned int *)adc_vref_cp_calib_value);
 	//must
 	if(otp_program_flag==0){
 		otp_set_deep_standby_mode();
 	}
 #if(PACKAGE_TYPE == OTP_PACKAGE)
-	//The stored vref value may be 0xff, but the offset value of 0xff must be uncalibrated.
-	if((adc_vref_ft_calib_value[1]!=0xff)||(adc_vref_cp_calib_value[1]!=0xff))
+	//Determine if the stored vref gain value and stored vref offset matches the range, if it is, update the value.
+	if(!adc_update_vref_calib_value_ft_cp(adc_vref_ft_calib_value[0],(signed char)adc_vref_ft_calib_value[1],adc_set_gpio_calib_vref))//gpio_ft
 	{
-		if(adc_vref_ft_calib_value[1]!=0xff)
-		{
-			gpio_calib_vref = adc_vref_ft_calib_value[0] + 1000;
-			gpio_calib_vref_offset = adc_vref_ft_calib_value[1] - 20;
-		}
-		else
-		{
-			gpio_calib_vref = adc_vref_cp_calib_value[0] + 1000;
-			gpio_calib_vref_offset = adc_vref_cp_calib_value[1] - 20;
-		}
-		adc_set_gpio_calib_vref(gpio_calib_vref, gpio_calib_vref_offset);
+		adc_update_vref_calib_value_ft_cp(adc_vref_cp_calib_value[0],(signed char)adc_vref_cp_calib_value[1],adc_set_gpio_calib_vref);//gpio_cp
 	}
-	if((adc_vref_ft_calib_value[3]!=0xff)||(adc_vref_cp_calib_value[3]!=0xff))
+	if(!adc_update_vref_calib_value_ft_cp(adc_vref_ft_calib_value[2],(signed char)adc_vref_ft_calib_value[3],adc_set_vbat_calib_vref))//vbat_ft
 	{
-		if(adc_vref_ft_calib_value[3]!=0xff)
-		{
-			vbat_calib_vref = adc_vref_ft_calib_value[2] + 1000;
-			vbat_calib_vref_offset = adc_vref_ft_calib_value[3] - 20;
-		}
-		else
-		{
-			vbat_calib_vref = adc_vref_cp_calib_value[2] + 1000;
-			vbat_calib_vref_offset = adc_vref_cp_calib_value[3] - 20;
-		}
-		adc_set_vbat_calib_vref(vbat_calib_vref, vbat_calib_vref_offset);
+		adc_update_vref_calib_value_ft_cp(adc_vref_cp_calib_value[2],(signed char)adc_vref_cp_calib_value[3],adc_set_vbat_calib_vref);//vbat_cp
 	}
 #elif(PACKAGE_TYPE == FLASH_PACKAGE)
-	if(addr == 0)
+	//ADC calibration rule for flash has not been determined yet. Therefore, follow ADC calibration rule of OTP temporarily.
+	if(!adc_update_vref_calib_value_ft_cp(adc_vref_ft_calib_value[0],(signed char)adc_vref_ft_calib_value[1],adc_set_gpio_calib_vref))//gpio_ft
 	{
-		//The stored vref value may be 0xff, but the offset value of 0xff must be uncalibrated.
-		if(adc_vref_cp_calib_value[1]!=0xff)
-		{
-			gpio_calib_vref = adc_vref_cp_calib_value[0] + 1000;
-			gpio_calib_vref_offset = adc_vref_cp_calib_value[1] - 20;
-			adc_set_gpio_calib_vref(gpio_calib_vref, gpio_calib_vref_offset);
-		}
-		if(adc_vref_cp_calib_value[3]!=0xff)
-		{
-			vbat_calib_vref = adc_vref_cp_calib_value[2] + 1000;
-			vbat_calib_vref_offset = adc_vref_cp_calib_value[3] - 20;
-			adc_set_vbat_calib_vref(vbat_calib_vref, vbat_calib_vref_offset);
-		}
+		adc_update_vref_calib_value_ft_cp(adc_vref_cp_calib_value[0],(signed char)adc_vref_cp_calib_value[1],adc_set_gpio_calib_vref);//gpio_cp
 	}
-	else
+	if(!adc_update_vref_calib_value_ft_cp(adc_vref_ft_calib_value[2],(signed char)adc_vref_ft_calib_value[3],adc_set_vbat_calib_vref))//vbat_ft
 	{
-		/********************************************************************************************
-			The ADC calibration value priority of B80 is FLASH > CP.
-			The GPIO calibration value and the VBAT calibration value do not necessarily exist at the same time.
-		********************************************************************************************/
-		flash_read_page(addr, 4, adc_vref_calib_value);
-		if((adc_vref_calib_value[1]!=0xff)||(adc_vref_cp_calib_value[1]!=0xff))
-		{
-			if(adc_vref_calib_value[1]!=0xff)
-			{
-				gpio_calib_vref = adc_vref_calib_value[0] + 1000;
-				gpio_calib_vref_offset = adc_vref_calib_value[1] - 20;
-			}
-			else
-			{
-				gpio_calib_vref = adc_vref_cp_calib_value[0] + 1000;
-				gpio_calib_vref_offset = adc_vref_cp_calib_value[1] - 20;
-			}
-			adc_set_gpio_calib_vref(gpio_calib_vref, gpio_calib_vref_offset);
-		}
-		if((adc_vref_calib_value[3]!=0xff)||(adc_vref_cp_calib_value[3]!=0xff))
-		{
-			if(adc_vref_calib_value[3]!=0xff)
-			{
-				vbat_calib_vref = adc_vref_calib_value[2] + 1000;
-				vbat_calib_vref_offset = adc_vref_calib_value[3] - 20;
-			}
-			else
-			{
-				vbat_calib_vref = adc_vref_cp_calib_value[2] + 1000;
-				vbat_calib_vref_offset = adc_vref_cp_calib_value[3] - 20;
-			}
-			adc_set_vbat_calib_vref(vbat_calib_vref, vbat_calib_vref_offset);
-		}
+		adc_update_vref_calib_value_ft_cp(adc_vref_cp_calib_value[2],(signed char)adc_vref_cp_calib_value[3],adc_set_vbat_calib_vref);//vbat_cp
 	}
 #endif
 	return 1;
 }
-
-
-/**
- * @brief      This function is used to calib vdd_1v2.
- * @return 	   1 - the calibration value update, 0 - the calibration value is not update.
- * @note       if rf rx_mode is turned on, otp has read error problem, if running otp program, do to avoid the solution,
- *             trim core voltage, and use 32K watchdog (enable in the front position).
- */
-unsigned char user_calib_vdd_1v2(unsigned int addr){
-/*
- * When the bit[7] of 0x3fc0 is 0, it indicates that the lower 3Bit is the calibration value and read 0x3fc0 bit<2:0> to afe3V_reg03<5:3>;
- * if 0x3fc0 bit[7] is 1, it indicates that there is no calibration value, and the value 0x02(1.1V) is assigned to afe3V_reg03<5:3>.
- */
-	unsigned int vdd1v2_trim_value = 0xff;
-	otp_read(addr,1,&vdd1v2_trim_value);
-
-	if(0x00 == (vdd1v2_trim_value&BIT(7)))
-	{
-		pm_set_vdd_1v2(vdd1v2_trim_value&0x07);
-		return 1;
-	}
-	else{
-		pm_set_vdd_1v2(VDD_1V2_1V1);
-	}
-
-	return 0;
-}
-
 /**
  * @brief		This function is used to calibrate the user's parameters.
  * 				This function is to read the calibration value stored in otp,
@@ -208,9 +156,6 @@ void user_read_otp_value_calib(void)
 {
 	user_calib_adc_vref(0);
 	user_calib_freq_offset(OTP_CAP_VALUE_ADDR);
-#if(!OTP_ALL_SRAM_CODE)
-	user_calib_vdd_1v2(OTP_VDD_1V2_CALIB_ADDR);
-#endif
 }
 /**
  * @brief		This function is used to calibrate the user's parameters.
@@ -224,10 +169,8 @@ void user_read_flash_value_calib(void)
 	unsigned char flash_mid[4];
 	unsigned char flash_uid[16];
 	unsigned char flash_mid_sure = 0;
-
 	/******check for flash mid********/
 	flash_mid_sure = flash_read_mid_uid_with_check((unsigned int *)flash_mid, flash_uid);
-
 	if (1 == flash_mid_sure)
 	{
 		switch (flash_mid[2])

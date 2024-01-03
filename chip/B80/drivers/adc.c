@@ -7,7 +7,6 @@
  * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -29,6 +28,10 @@
 #include "timer.h"
 #include "flash.h"
 #include "lib/include/pm.h"
+/**
+ * Note: When the reference voltage is configured to 1.2V, the calculated ADC voltage value is closest to the actual voltage value using 1175 as the coefficient default.
+ * 1175 is the value obtained by ATE through big data statistics, which is more in line with most chips than 1200.
+ */
 _attribute_data_retention_
 volatile unsigned short g_adc_vref = 1175;//ADC calibration value voltage (unit:mV).
 _attribute_data_retention_
@@ -179,6 +182,8 @@ void adc_set_vbat_calib_vref(unsigned short vref,signed char offset)
  */
 void adc_base_init(adc_input_pin_def_e pin)
 {
+	g_adc_vref = g_adc_gpio_calib_vref;//set adc_vref as adc_gpio_calib_vref
+	g_adc_vref_offset = g_adc_gpio_calib_vref_offset;//set adc_vref_offset as adc_gpio_calib_vref_offset
 	adc_set_vref_vbat_divider(ADC_VBAT_DIVIDER_OFF);//set Vbat divider select,
 	adc_base_pin_init(pin);
 	adc_set_ain_pre_scaler(ADC_PRESCALER_1F8);//adc scaling factor is 1/8
@@ -196,7 +201,7 @@ void adc_temp_init(void)
 
 	adc_set_vref_vbat_divider(ADC_VBAT_DIVIDER_OFF);//set Vbat divider select,
 
-	adc_set_ain_chn_misc(TEMSENSORP_EE, TEMSENSORN_EE);
+	adc_set_ain_chn_misc(TEMPERATURE_SENSOR_P_EE, TEMPERATURE_SENSOR_N_EE);
 
 	adc_set_ain_pre_scaler(ADC_PRESCALER_1);//adc scaling factor is 1 or 1/8
 

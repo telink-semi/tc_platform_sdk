@@ -7,7 +7,6 @@
  * @date	2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -22,10 +21,15 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-
 #ifdef MCU_STARTUP_COPY_RAMCODE
 
-#define SRAM_SIZE_32K_EN		    	    1/*defaut sram size=32k*/
+//The default driver configuration is 32K to ensure that the default driver configuration can work properly on all models.
+//In actual use, please configure the sram size according to your own model, otherwise the efficiency will be affected.
+#define SRAM_32K      (0x848000)	//32KSRAM
+#define SRAM_48K      (0x84c000)	//48KSRAM
+#define SRAM_64K      (0x850000)	//64KSRAM
+
+#define	SRAM_SIZE     SRAM_32K
 
 #define  FLL_STK_EN           			1
 #define  ZERO_IC_TAG_EN		  			1
@@ -57,6 +61,7 @@
 	.equ __LOAD_FLASH, 	1
 	.equ __LOAD_DUT, 	0
 	.equ __LOAD_RAM, 	0
+	.equ __SRAM_SIZE,   SRAM_SIZE
 #if FW_BOOT_ADDR_NON_ZERO
 	.equ FW_BOOT_ADDR,	0x1000
 #else
@@ -74,6 +79,7 @@
 	.global		__LOAD_DUT
 	.global		__LOAD_FLASH
 	.global		FW_BOOT_ADDR
+	.global		__SRAM_SIZE
 
 __start:					@ MUST,  referenced by boot.link
 
@@ -158,7 +164,7 @@ EFUSE_DELAY_END:
 
 	tloadr	r0, FLL_D						@r0 = 0xffffffff
 	tloadr	r1, FLL_D+4						@r1 = _start_data_
-	tloadr	r2, FLL_D+8						@r2 = 0x850000
+	tloadr	r2, FLL_D+8						@r2 = SRAM_SIZE
 
 FLL_STK:
 	tcmp	r1, r2							@
@@ -179,7 +185,7 @@ FLL_STK_END:
 
 	tloadr	r0, DAT0 + 4					@r0 = 0x13 SVC
 	tmcsr	r0								@CPSR=r0
-	tloadr	r0, DAT0 + 12					@r0 = 0x850000
+	tloadr	r0, DAT0 + 12					@r0 = SRAM_SIZE
 	tmov	r13, r0  						@r13= r0		update SP under SVC mode
 @********************************************************************************************************
 @                                    .BSS INITIALIZATION FOR 0
@@ -340,11 +346,7 @@ DAT0:
 	.word	0x12			    		@0		IRQ
 	.word	0x13			    		@4		SVC
 	.word	(irq_stk + IRQ_STK_SIZE)	@8
-#if  SRAM_SIZE_32K_EN
-	.word	(0x848000)		    		@12  	stack end
-#else
-	.word	(0x850000)		    		@12  	stack end
-#endif
+	.word	(SRAM_SIZE)		    		@12  stack end
 	.word	(_start_bss_)               @16
 	.word	(_end_bss_)                 @20
 	.word	(0x80060c)                  @24
@@ -375,11 +377,7 @@ DEBUG_GPIO:
 FLL_D:
 	.word	0xffffffff                	@0
 	.word	(_start_data_)    			@4
-#if  SRAM_SIZE_32K_EN
-	.word	(0x848000)		    		@8
-#else
-	.word	(0x850000)		    		@8
-#endif
+	.word	(SRAM_SIZE)		    		@8  stack end
 	.word   _ramcode_size_div_256_      @12
 
 MULTI_ADDRESS_DATA:

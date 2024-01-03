@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -87,7 +86,7 @@
 #define BQB_UART_TX_PORT   				GPIO_PA7
 #define BQB_UART_RX_PORT   				GPIO_PA6
 #endif
-#define BQB_UART_BUAD	   	115200
+#define BQB_UART_BAUD	   	115200
 
 /* set pa port */
 #if !SUPPORT_CONFIGURATION
@@ -164,7 +163,7 @@ void  bqbtest_init(void);
 
 
 /**
- * @brief   This function serves to read the usrt data and execute BQB program
+ * @brief   This function serves to read the uart data and execute BQB program
  * @param   none.
  * @return  none.
  */

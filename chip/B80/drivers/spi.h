@@ -7,7 +7,6 @@
  * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -80,13 +79,13 @@ typedef struct{
  * @brief  Define the SPI command & translate mode.
  */
 typedef enum{
-	SPI_MODE_WRITE_AND_READ = 0,//write and read at the same.must enbale CmdEn
+	SPI_MODE_WRITE_AND_READ = 0,//write and read at the same.must enable CmdEn
 	SPI_MODE_WRITE_ONLY,//write
-	SPI_MODE_READ_ONLY,// read must enbale CmdEn
+	SPI_MODE_READ_ONLY,// read must enable CmdEn
 	SPI_MODE_WRITE_READ,//write_ read
 	SPI_MODE_READ_WRITE,//read_write
 	SPI_MODE_WRITE_DUMMY_READ,//write_dummy_read
-	SPI_MODE_READ_DUMMY_WRITE,//read_ dummy_write must enbale CmdEn
+	SPI_MODE_READ_DUMMY_WRITE,//read_ dummy_write must enable CmdEn
 	SPI_MODE_NONE_DATA,//must enable CmdEn
 	SPI_MODE_DUMMY_WRITE,//dummy_write
 	SPI_MODE_DUMMY_READ,//dummy_read
@@ -99,12 +98,12 @@ typedef enum{
 }spi_wr_tans_mode_e;
 
 typedef enum{
-	SPI_MODE_RD_READ_ONLY  = 2,//must enbale CmdEn
+	SPI_MODE_RD_READ_ONLY  = 2,//must enable CmdEn
 	SPI_MODE_RD_DUMMY_READ = 9,//dummy_read
 }spi_rd_tans_mode_e;
 
 typedef enum{
-	SPI_MODE_WR_RD 		 = 3,//must enbale CmdEn
+	SPI_MODE_WR_RD 		 = 3,//must enable CmdEn
 	SPI_MODE_WR_DUMMY_RD = 5,//write_dummy_read
 }spi_wr_rd_tans_mode_e;
 
@@ -427,7 +426,7 @@ static inline void spi_set_fetch_flash_address(unsigned int addr)
 /**
  * @brief 		This function servers to set irq mask.
  * @param[in] 	mask 	- the irq mask.
- * @return  	cmd 	- transferd by master.
+ * @return  	cmd 	- transferred by master.
  */
 static inline void spi_set_irq_mask(spi_irq_mask mask)
 {
@@ -437,7 +436,7 @@ static inline void spi_set_irq_mask(spi_irq_mask mask)
 /**
  * @brief 		This function servers to clear irq mask.
  * @param[in] 	mask 	- the irq mask.
- * @return  	cmd 	- transferd by master.
+ * @return  	cmd 	- transferred by master.
  */
 static inline void spi_clr_irq_mask( spi_irq_mask mask)
 {
@@ -620,7 +619,7 @@ static inline void spi_set_rgb_endian_dis(void)
  * @param[in] none
  * @return none
  */
-static inline void reset_spi_moudle(void)
+static inline void reset_spi_module(void)
 {
 	reg_rst0 |= FLD_RST0_SPI;
 	reg_rst0 &= (~FLD_RST0_SPI);

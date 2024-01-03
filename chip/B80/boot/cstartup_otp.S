@@ -7,7 +7,6 @@
  * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -28,9 +27,8 @@
 /**
  * @brief	If your usage is as follows, you need to set ALL_SRAM_CODE = 1:
  * 			The program is burned in flash, you want to power up and move all code to sram for execution.
- * 			Note: 1. Configure the bin file compiled by ALL_SRAM_CODE=1. It is not recommended to use tools to directly download to sram for execution,
- * 			         this method of use may lead to abnormal current and abnormal flash function.
- *                2. when set ALL_SRAM_CODE = 1,meanwhile set OTP_ALL_SRAM_CODE =1 in calibration.h.
+ * 			Note:  Configure the bin file compiled by ALL_SRAM_CODE=1. It is not recommended to use tools to directly download to sram for execution,
+ * 			       this method of use may lead to abnormal current and abnormal flash function.
  *
  */
 #ifndef	ALL_SRAM_CODE

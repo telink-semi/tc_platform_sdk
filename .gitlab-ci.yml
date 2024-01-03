@@ -21,7 +21,6 @@ stages:
     - README.md
   when: manual
 
-
 release_sdk_S0:
   <<: *release_sdk_template
   variables:

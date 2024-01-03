@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -169,7 +168,7 @@ void user_init(void)
 #endif
 	uart_gpio_set(bqb_uart_tx_port, bqb_uart_rx_port);// uart tx/rx pin set
 	uart_reset();  //will reset uart digital registers from 0x90 ~ 0x9f, so uart setting must set after this reset
-	uart_init_baudrate(BQB_UART_BUAD,CLOCK_SYS_CLOCK_HZ,PARITY_NONE, STOP_BIT_ONE);
+	uart_init_baudrate(BQB_UART_BAUD,CLOCK_SYS_CLOCK_HZ,PARITY_NONE, STOP_BIT_ONE);
 	uart_dma_enable(0, 0);
 	irq_disable_type(FLD_IRQ_DMA_EN);
 	dma_chn_irq_enable(FLD_DMA_CHN_UART_RX | FLD_DMA_CHN_UART_TX, 0);
@@ -179,7 +178,11 @@ void user_init(void)
 	/* for SRAM calibration */
 	write_config(CAP_CALIBRATION_SRAM, 0xff);
 	read_bqb_calibration();
-
+	/*DP through sws*/
+#if(MCU_CORE_B85||MCU_CORE_B87)
+	usb_set_pin_en();
+	gpio_setup_up_down_resistor(GPIO_PA5, PM_PIN_PULLUP_10K);
+#endif
 	bqbtest_init();
 	//SET PA PORT
 	bqb_pa_init();

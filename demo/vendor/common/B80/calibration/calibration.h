@@ -7,7 +7,6 @@
  * @date	2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -25,41 +24,32 @@
 #ifndef _CALIBRATION_H_
 #define _CALIBRATION_H_
 
-/**
- *  For flash packaged chips: users cannot use OTP (because all OTP areas will not be verified when the chip leaves the factory, and all areas cannot be guaranteed to be available).
- */
 #define OTP_PACKAGE		1
 #define FLASH_PACKAGE	2
 #define PACKAGE_TYPE	OTP_PACKAGE
 
-/*
- * For otp products, if all codes cannot be executed in ram code, there is a risk of crash,
- * It is necessary to calibrate the voltage of VDD_1V2 to reduce the risk,through this macro distinction, it can distinguish whether it is a program with full ram code.
- */
-#define OTP_ALL_SRAM_CODE    0
-
 #ifndef FLASH_ADC_VREF_CALIB_ADDR_64K
-#define FLASH_ADC_VREF_CALIB_ADDR_64K	0xe0c7
+#define FLASH_ADC_VREF_CALIB_ADDR_64K	0xe0c0
 #endif
 
 #ifndef FLASH_ADC_VREF_CALIB_ADDR_128K
-#define FLASH_ADC_VREF_CALIB_ADDR_128K	0x1e0c7
+#define FLASH_ADC_VREF_CALIB_ADDR_128K	0x1e0c0
 #endif
 
 #ifndef FLASH_ADC_VREF_CALIB_ADDR_512K
-#define FLASH_ADC_VREF_CALIB_ADDR_512K	0x770c7
+#define FLASH_ADC_VREF_CALIB_ADDR_512K	0x7e0c0
 #endif
 
 #ifndef FLASH_ADC_VREF_CALIB_ADDR_1M
-#define FLASH_ADC_VREF_CALIB_ADDR_1M	0xfe0c7
+#define FLASH_ADC_VREF_CALIB_ADDR_1M	0xfe0c0
 #endif
 
 #ifndef FLASH_ADC_VREF_CALIB_ADDR_2M
-#define FLASH_ADC_VREF_CALIB_ADDR_2M	0x1fe0c7
+#define FLASH_ADC_VREF_CALIB_ADDR_2M	0x1fe0c0
 #endif
 
 #ifndef FLASH_ADC_VREF_CALIB_ADDR_4M
-#define FLASH_ADC_VREF_CALIB_ADDR_4M	0x3fe0c7
+#define FLASH_ADC_VREF_CALIB_ADDR_4M	0x3fe0c0
 #endif
 
 

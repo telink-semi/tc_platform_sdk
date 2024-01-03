@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -54,7 +53,7 @@ extern u8 usb_ff_wptr;
 typedef struct {
 #define KEYBOARD_REPORT_KEY_MAX     6
     u8 Modifier; /**< Keyboard modifier byte, indicating pressed modifier keys (a combination of
-                       *   \c HID_KEYBOARD_MODIFER_* masks).
+                       *   \c HID_KEYBOARD_MODIFIER_* masks).
                        */
     u8 Reserved; /**< Reserved for OEM use, always set to 0. */
     u8 KeyCode[KEYBOARD_REPORT_KEY_MAX]; /**< Key codes of the currently pressed keys. */

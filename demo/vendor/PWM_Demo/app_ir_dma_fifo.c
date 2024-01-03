@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -65,7 +64,7 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 		IRQ_IR_DMA_Buff[irq_index++]= pwm_config_dma_fifo_waveform(1, PWM0_PULSE_NORMAL, 560 * CLOCK_SYS_CLOCK_1US/IR_DMA_MAX_TICK);
 		IRQ_IR_DMA_Buff[irq_index++]= pwm_config_dma_fifo_waveform(0, PWM0_PULSE_SHADOW, 1690 * CLOCK_SYS_CLOCK_1US/IR_DMA_SHADOW_MAX_TICK);
 		unsigned int irq_length = irq_index*2 - 4;//The first four bytes are data length bytes, not included in the actual length to be sent
-		unsigned char* irq_buff = &IRQ_IR_DMA_Buff[0];
+		unsigned char* irq_buff = (unsigned char*)&IRQ_IR_DMA_Buff[0];
 		//The maximum length that the PWM can send is 511bytes
 		irq_buff[0]= irq_length&0xff;
 		irq_buff[1]= (irq_length>>8)&0xff;
@@ -105,7 +104,7 @@ void user_init()
 	IR_DMA_Buff[index++]= pwm_config_dma_fifo_waveform(1, PWM0_PULSE_SHADOW, 560 * CLOCK_SYS_CLOCK_1US/IR_DMA_SHADOW_MAX_TICK);
 
 	unsigned int length = index*2 - 4;//The first four bytes are data length bytes, not included in the actual length to be sent
-	unsigned char* buff = &IR_DMA_Buff[0];
+	unsigned char* buff = (unsigned char*)&IR_DMA_Buff[0];
 	buff[0]= length&0xff;
 	buff[1]= (length>>8)&0xff;
 	buff[2]= (length>>16)&0xff;

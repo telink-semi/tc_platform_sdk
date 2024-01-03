@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -42,7 +41,9 @@ extern "C" {
 #if(MCU_CORE_B85)
 #define AUDIO_CODEC_TO_CODEC				10
 #endif
-#define AUDIO_MODE							AUDIO_AMIC_TO_CODEC
+#define AUDIO_SINE_WAVE_TO_SDM		          11      /*The capacitance between SDMP and SDMN(C21 220nF default)needs to be set to 1uF */
+#define AUDIO_MODE							AUDIO_AMIC_TO_SDM
+
 
 /* Define system clock */
 #define CLOCK_SYS_CLOCK_HZ  	24000000

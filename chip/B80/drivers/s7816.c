@@ -7,7 +7,6 @@
  * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -144,7 +143,7 @@ void s7816_set_pin(GPIO_PinTypeDef rst_pin,GPIO_PinTypeDef vcc_pin,GPIO_PinTypeD
  * @param[in]  	d            - the bitrate regulator of s7816,1 by default.
  * @return     	none.
  */
-void s7816_init(S7816_ClkTpyeDef clock,int f,int d)
+void s7816_init(S7816_ClkTypeDef clock,int f,int d)
 {
 	s7816_clock=clock;
 	s7816_rst_time=40000/clock;//us

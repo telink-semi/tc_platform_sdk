@@ -7,7 +7,6 @@
  * @date	2019
  *
  * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -72,8 +71,8 @@ void i2c_gpio_set(I2C_GPIO_SdaTypeDef sda_pin,I2C_GPIO_SclTypeDef scl_pin)
 
 /**
  * @brief      This function serves to set the id of slave device and the speed of I2C interface
- *             note: the param ID contain the bit of writting or reading.
- *             eg:the parameter 0x5C. the reading will be 0x5D and writting 0x5C.
+ *             note: the param ID contain the bit of writing or reading.
+ *             eg:the parameter 0x5C. the reading will be 0x5D and writing 0x5C.
  * @param[in]  SlaveID - the id of slave device.it contains write or read bit,the lsb is write or read bit.
  *                       ID|0x01 indicate read. ID&0xfe indicate write.
  * @param[in]  DivClock - the division factor of I2C clock,
@@ -132,30 +131,30 @@ void i2c_write_byte(unsigned int Addr, unsigned int AddrLen, unsigned char Data)
 {
 	reg_i2c_id	 &= (~FLD_I2C_WRITE_READ_BIT); 	//SlaveID & 0xfe,.i.e write data. R:High  W:Low
 	if(AddrLen == 0){  						//telink 82xx slave mapping mode no need send any address
-	    //lanuch start /id    start
+	    //launch start /id    start
 	#if (I2C_SLAVE_DEVICE_NO_START_EN)
 		reg_i2c_ctrl = FLD_I2C_CMD_ID ;
 	#else
-		//lanuch start /id    start
+		//launch start /id    start
 		reg_i2c_ctrl = (FLD_I2C_CMD_ID | FLD_I2C_CMD_START );// when addr=0,other (not telink) iic device no need start signal
 	#endif
 	}
     if (AddrLen == 1) {
     	reg_i2c_adr = (unsigned char)Addr; //address
-        //lanuch start /id/04    start
+        //launch start /id/04    start
     	reg_i2c_ctrl = (FLD_I2C_CMD_ID | FLD_I2C_CMD_ADDR | FLD_I2C_CMD_START);
     }
     else if (AddrLen == 2) {
     	reg_i2c_adr = (unsigned char)(Addr>>8); //address high
     	reg_i2c_do = (unsigned char)Addr; //address low
-        //lanuch start /id/04/05    start
+        //launch start /id/04/05    start
     	reg_i2c_ctrl = (FLD_I2C_CMD_ID | FLD_I2C_CMD_ADDR | FLD_I2C_CMD_DO | FLD_I2C_CMD_START);
     }
 	else if (AddrLen == 3) {
 		reg_i2c_adr = (unsigned char)(Addr>>16); //address high
 		reg_i2c_do = (unsigned char)(Addr>>8); //address middle
 		reg_i2c_di = (unsigned char)(Addr);    //address low
-        //lanuch start /id/04/05/06    start
+        //launch start /id/04/05/06    start
 		reg_i2c_ctrl = (FLD_I2C_CMD_ID | FLD_I2C_CMD_ADDR | FLD_I2C_CMD_DO | FLD_I2C_CMD_DI | FLD_I2C_CMD_START);
 	}
     while(reg_i2c_status & FLD_I2C_CMD_BUSY	);
@@ -185,27 +184,27 @@ unsigned char i2c_read_byte(unsigned int Addr, unsigned int AddrLen)
 	#if (I2C_SLAVE_DEVICE_NO_START_EN)
 		reg_i2c_ctrl = FLD_I2C_CMD_ID ;
 	#else
-		//lanuch start /id    start
+		//launch start /id    start
 		reg_i2c_ctrl = (FLD_I2C_CMD_ID | FLD_I2C_CMD_START );// when addr=0,other (not telink) iic device no need start signal
 	#endif
 	}
 
 	else if (AddrLen == 1) {
 		reg_i2c_adr = (unsigned char)Addr; //address
-		//lanuch start /id/04    start
+		//launch start /id/04    start
 		reg_i2c_ctrl = (FLD_I2C_CMD_ID | FLD_I2C_CMD_ADDR | FLD_I2C_CMD_START);
 	}
 	else if (AddrLen == 2) {
 		reg_i2c_adr = (unsigned char)(Addr>>8); //address high
 		reg_i2c_do = (unsigned char)Addr; //address low
-		//lanuch start /id/04/05    start
+		//launch start /id/04/05    start
 		reg_i2c_ctrl = (FLD_I2C_CMD_ID | FLD_I2C_CMD_ADDR | FLD_I2C_CMD_DO | FLD_I2C_CMD_START);
 	}
 	else if (AddrLen == 3) {
 		reg_i2c_adr = (unsigned char)(Addr>>16); //address high
 		reg_i2c_do = (unsigned char)(Addr>>8); //address middle
 		reg_i2c_di = (unsigned char)(Addr);    //address low
-		//lanuch start /id/04/05/06    start
+		//launch start /id/04/05/06    start
 		reg_i2c_ctrl = (FLD_I2C_CMD_ID | FLD_I2C_CMD_ADDR | FLD_I2C_CMD_DO | FLD_I2C_CMD_DI | FLD_I2C_CMD_START);
 	}
 	while(reg_i2c_status & FLD_I2C_CMD_BUSY	);
@@ -244,27 +243,27 @@ void i2c_write_series(unsigned int Addr, unsigned int AddrLen, unsigned char * d
 	#if (I2C_SLAVE_DEVICE_NO_START_EN)
 	    reg_i2c_ctrl = FLD_I2C_CMD_ID ;
 	#else
-        //lanuch start /id    start
+        //launch start /id    start
     	reg_i2c_ctrl = (FLD_I2C_CMD_ID | FLD_I2C_CMD_START );// when addr=0,other (not telink) iic device no need start signal
 	#endif
 	    	//while(reg_i2c_status & FLD_I2C_CMD_BUSY	);
 	}
 	else if (AddrLen == 1) {
     	reg_i2c_adr = (unsigned char)Addr; //address
-        //lanuch start /id/04    start
+        //launch start /id/04    start
     	reg_i2c_ctrl = (FLD_I2C_CMD_ID | FLD_I2C_CMD_ADDR | FLD_I2C_CMD_START);
     }
     else if (AddrLen == 2) {
     	reg_i2c_adr = (unsigned char)(Addr>>8); //address high
     	reg_i2c_do = (unsigned char)Addr; //address low
-        //lanuch start /id/04/05    start
+        //launch start /id/04/05    start
     	reg_i2c_ctrl = (FLD_I2C_CMD_ID | FLD_I2C_CMD_ADDR | FLD_I2C_CMD_DO | FLD_I2C_CMD_START);
     }
 	else if (AddrLen == 3) {
 		reg_i2c_adr = (unsigned char)(Addr>>16); //address high
 		reg_i2c_do = (unsigned char)(Addr>>8); //address middle
 		reg_i2c_di = (unsigned char)(Addr);    //address low
-        //lanuch start /id/04/05/06    start
+        //launch start /id/04/05/06    start
 		reg_i2c_ctrl = (FLD_I2C_CMD_ID | FLD_I2C_CMD_ADDR | FLD_I2C_CMD_DO | FLD_I2C_CMD_DI | FLD_I2C_CMD_START);
 	}
     while(reg_i2c_status & FLD_I2C_CMD_BUSY	);
@@ -297,26 +296,26 @@ void i2c_read_series(unsigned int Addr, unsigned int AddrLen, unsigned char * da
 	#if (I2C_SLAVE_DEVICE_NO_START_EN)
 		reg_i2c_ctrl = FLD_I2C_CMD_ID ;
 	#else
-		//lanuch start /id    start
+		//launch start /id    start
 		reg_i2c_ctrl = (FLD_I2C_CMD_ID | FLD_I2C_CMD_START );// when addr=0,other (not telink) iic device no need start signal
 	#endif
 	}
 	else if (AddrLen == 1) {
 		reg_i2c_adr = (unsigned char)Addr; //address
-		//lanuch start /id/04    start
+		//launch start /id/04    start
 		reg_i2c_ctrl = (FLD_I2C_CMD_ID | FLD_I2C_CMD_ADDR | FLD_I2C_CMD_START);
 	}
 	else if (AddrLen == 2) {
 		reg_i2c_adr = (unsigned char)(Addr>>8); //address high
 		reg_i2c_do = (unsigned char)Addr; //address low
-		//lanuch start /id/04/05    start
+		//launch start /id/04/05    start
 		reg_i2c_ctrl = (FLD_I2C_CMD_ID | FLD_I2C_CMD_ADDR | FLD_I2C_CMD_DO | FLD_I2C_CMD_START);
 	}
 	else if (AddrLen == 3) {
 		reg_i2c_adr = (unsigned char)(Addr>>16); //address high
 		reg_i2c_do = (unsigned char)(Addr>>8); //address middle
 		reg_i2c_di = (unsigned char)(Addr);    //address low
-		//lanuch start /id/04/05/06    start
+		//launch start /id/04/05/06    start
 		reg_i2c_ctrl = (FLD_I2C_CMD_ID | FLD_I2C_CMD_ADDR | FLD_I2C_CMD_DO | FLD_I2C_CMD_DI | FLD_I2C_CMD_START);
 	}
 	while(reg_i2c_status & FLD_I2C_CMD_BUSY	);
@@ -343,7 +342,7 @@ void i2c_read_series(unsigned int Addr, unsigned int AddrLen, unsigned char * da
 	while(reg_i2c_status & FLD_I2C_CMD_BUSY	);
 	dataBuf[bufIndex] = reg_i2c_di;
 
-	//termiante
+	//terminate
 	reg_i2c_ctrl = FLD_I2C_CMD_STOP; //launch stop cycle
 	while(reg_i2c_status & FLD_I2C_CMD_BUSY	);
 }

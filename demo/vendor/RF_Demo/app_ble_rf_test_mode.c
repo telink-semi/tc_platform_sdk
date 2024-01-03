@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -133,7 +132,7 @@ typedef enum advChannelPDUType_e {
 	LL_TYPE_ADV_NONCONN_IND = 0x02,
 	LL_TYPE_SCAN_REQ = 0x03,
 	LL_TYPE_SCAN_RSP = 0x04,
-	LL_TYPE_CONNNECT_REQ = 0x05,
+	LL_TYPE_CONNECT_REQ = 0x05,
 	LL_TYPE_ADV_SCAN_IND = 0x06,
 } advChannelPDUType_t;
 
@@ -500,7 +499,7 @@ void ble_brx_rx_test(void)
 	{
 
 
-		// 2mS before peer devoce TX
+		// 2mS before peer devoice TX
 		while( (unsigned long)(clock_time() - (bltc_connExpectTime - 2 * CLOCK_16M_SYS_TIMER_CLK_1MS)) > BIT(30) );
 
 

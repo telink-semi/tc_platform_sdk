@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -198,7 +197,7 @@ enum{
     VK_W_SRCH = 			VK_MEDIA_START,	//0xa3
     VK_WEB,									//0xa4
     VK_W_BACK,
-    VK_W_FORWRD,
+    VK_W_FORWARD,
     VK_W_STOP,
     VK_W_REFRESH,
     VK_W_FAV,								//0xa9
@@ -252,7 +251,7 @@ typedef struct{
 	u8 val[VK_EXT_LEN];
 }vk_ext_t;
 
-// mulit-byte keycode for media keys, cannot used directly in c code..for reference
+// multi-byte keycode for media keys, cannot used directly in c code..for reference
 #define VK_POWER_V			0x01
 #define VK_SLEEP_V			0x02
 #define VK_WAKEUP_V			0x04
@@ -260,7 +259,7 @@ typedef struct{
 #define VK_W_SRCH_V			{0x21,0x02}
 #define VK_HOME_V			{0x23,0x02}
 #define VK_W_BACK_V			{0x24,0x02}
-#define VK_W_FORWRD_V		{0x25,0x02}
+#define VK_W_FORWARD_V		{0x25,0x02}
 #define VK_W_STOP_V			{0x26,0x02}
 #define VK_W_REFRESH_V		{0x27,0x02}
 // favorite
@@ -270,7 +269,7 @@ typedef struct{
 // calculator
 #define VK_CAL_V			{0x92,0x01}
 #define VK_MY_COMP_V		{0x94,0x01}
-// next track -- 01(mosue-ep/USB_EDP_MOUSE) 05(len) 03(kb-report-id/USB_HID_KB_MEDIA)
+// next track -- 01(mouse-ep/USB_EDP_MOUSE) 05(len) 03(kb-report-id/USB_HID_KB_MEDIA)
 // b5(val) 00 00 00
 #define VK_MENU_V			{0x40,0x00}
 #define VK_MENU_PICK_V		{0x41,0x00}

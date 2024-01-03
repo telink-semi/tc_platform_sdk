@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -370,8 +369,12 @@ typedef enum {
 		#define		RF_PACKET_CRC_OK(p)			((p[p[0]+3] & 0x51) == 0x40)
 	#endif
 #elif		RF_FAST_MODE_1M
-	#define		RF_BLE_PACKET_LENGTH_OK(p)				( *((unsigned int*)p) == p[5]+13)    			//dma_len must 4 byte aligned
-	#define		RF_BLE_PACKET_CRC_OK(p)					((p[*((unsigned int*)p) + 3] & 0x01) == 0x0)
+/*According to the BLE packet structure, the maximum payload length is 255Bytes.
+  Combined with the DMA len calculation formula, two bytes can cover all situations.
+  changed by kunhe, confirmed by zhiwei; 20230904.*/
+		#define RF_BLE_PACKET_LENGTH_OK(p) (((p[1]<<8)|p[0]) == p[5]+13)
+		#define RF_BLE_PACKET_CRC_OK(p) ((p[p[5]+13 + 3] & 0x01) == 0x0) /*Change the DMA length index to payload length index.
+																           changed by kunhe, confirmed by zhiwei; 20230904.*/
 
 	#if (1) // support RF RX/TX MAX data Length: 251byte
 		#define		RF_PACKET_LENGTH_OK(p)				(MAKE_U16(p[1], p[0]) == p[5]+13)
@@ -413,12 +416,12 @@ typedef enum {
 #define    RF_TPLL_PACKET_LENGTH_OK(p)              	(p[0] == (p[4] & 0x3f) + 11)
 #define    RF_TPLL_PACKET_CRC_OK(p)                 	((p[p[0]+3] & 0x01) == 0x00)
 #define    RF_TPLL_PACKET_RSSI_GET(p)               	(p[p[0]+2])
-#define    RF_SB_PACKET_PAYLOAD_LENGTH_GET(p)      		(p[0] - 10)
-#define    RF_SB_PACKET_CRC_OK(p)                  		((p[p[0]+3] & 0x01) == 0x00)
-#define    RF_SB_PACKET_CRC_GET(p)                 		((p[p[0]-8]<<8) + p[p[0]-7]) //Note: here assume that the MSByte of CRC is received first
-#define    RF_SB_PACKET_RSSI_GET(p)                		(p[p[0]+2])
-#define    RF_TPLL_PACKET_TIMESTAMP_GET(p)         	 	(p[p[0]-4] | (p[p[0]-3]<<8) | (p[p[0]-2]<<16) | (p[p[0]-1]<<24))
-#define    RF_SB_PACKET_TIMESTAMP_GET(p)           		(p[p[0]-4] | (p[p[0]-3]<<8) | (p[p[0]-2]<<16) | (p[p[0]-1]<<24))
+#define    RF_SB_PACKET_PAYLOAD_LENGTH_GET(p)      	(p[0] - 10)
+#define    RF_SB_PACKET_CRC_OK(p)                  	((p[p[0]+3] & 0x01) == 0x00)
+#define    RF_SB_PACKET_CRC_GET(p)                 	((p[p[0]-8]<<8) + p[p[0]-7]) //Note: here assume that the MSByte of CRC is received first
+#define    RF_SB_PACKET_RSSI_GET(p)                	(p[p[0]+2])
+#define    RF_TPLL_PACKET_TIMESTAMP_GET(p)          (p[p[0]-4] | (p[p[0]-3]<<8) | (p[p[0]-2]<<16) | (p[p[0]-1]<<24))
+#define    RF_SB_PACKET_TIMESTAMP_GET(p)           (p[p[0]-4] | (p[p[0]-3]<<8) | (p[p[0]-2]<<16) | (p[p[0]-1]<<24))
 
 #define    rf_aoa_aod_iq_data_offset(p)					(p[5]+10)
 
@@ -434,6 +437,33 @@ static inline void reset_baseband(void)
 	REG_ADDR8(0x61) = BIT(0);		//reset_baseband
 	REG_ADDR8(0x61) = 0;			//release reset signal
 }
+
+/**
+ * @brief      This function serves to optimize RF performance
+ * 			   This function must be called every time rx is turned on,
+ * 			   and is called by an internal function.
+ * 			   If there are other requirements that need to be called,
+ * 			   turn off rx first, then call it again to make sure the Settings take effect
+ * @param[in]  none
+ * @return     none
+ * @note	   1.Call this function after turning on rx 30us, and the calibration value set by the function
+ * 			      will take effect after calling rf_ldot_ldo_rxtxlf_bypass_en;if automatic calibration is
+ * 			      required, you can use rf_ldot_ldo_rxtxlf_bypass_dis to turn off the bypass function; how to
+ * 			      use it can refer to bqb.c file or rf_emi_rx in emi.c
+ *			   2. After using rf_ldot_ldo_rxtxlf_bypass_dis to turn off the bypass function and enter tx/rx
+ *			      automatic calibration, to use this function again, you need to call the rf_set_rxpara function
+ *			      again after entering rx 30us.
+ *
+ */
+
+static inline void rf_set_rxpara(void)
+{
+	unsigned char reg_calibration=0;
+	reg_calibration = ((read_reg8(0x12ed)&0xf)<<2)|((read_reg8(0x12ec)&0xc0)>>6);
+	if(reg_calibration>7)	reg_calibration -= 7;
+	write_reg8(0x12e5,(read_reg8(0x12e5)&0xc0)|reg_calibration);
+}
+
 
 /**
 *	@brief     This function serves to initiate the mode of RF
@@ -528,7 +558,7 @@ static inline void rf_access_code_comm (unsigned int acc)
 {
 	write_reg32 (0x800408, acc);
 	//notice: This state will be reset after reset baseband
-	write_reg8 (0x800405, read_reg8(0x405)|0x80);//setting acess code needs to writ 0x405 access code trigger bit 1 to enable in long range mode,,and the mode of  BLE1M and BLE2M need not.
+	write_reg8 (0x800405, read_reg8(0x405)|0x80);//setting access code needs to writ 0x405 access code trigger bit 1 to enable in long range mode,,and the mode of  BLE1M and BLE2M need not.
 }
 
 /**
@@ -539,7 +569,7 @@ static inline void rf_access_code_comm (unsigned int acc)
 static inline void rf_longrange_access_code_comm (unsigned int acc)
 {
 	write_reg32 (0x800408, acc);
-	write_reg8 (0x800405, read_reg8(0x405)|0x80);//setting acess code needs to writ 0x405 access code trigger bit to enable in long range mode,,and the mode of  BLE1M and BLE2M need not.
+	write_reg8 (0x800405, read_reg8(0x405)|0x80);//setting access code needs to writ 0x405 access code trigger bit to enable in long range mode,,and the mode of  BLE1M and BLE2M need not.
 }
 
 
@@ -997,7 +1027,7 @@ static inline unsigned char is_rf_receiving_pkt(void)
  */
 extern void rf_set_channel_500k(signed short chn, unsigned short set);
 /**
-*	@brief		This function is to set Private mode payload len for RF.
+*	@brief		this function is to set Private mode payload len for RF.
 *	@param[in]	len - length of payload.
 *	@return	 	none.
 */
@@ -1074,7 +1104,7 @@ extern void rf_rffe_set_pin(RF_PATxPinDef tx_pin, RF_LNARxPinDef rx_pin);
                transformation and crc check.
  * @param[in]  rx_buf - the rf rx buffer containing the received packet(dma length+payload+3 byte crc)
  * @param[in]  len - the expected rx length of private mode, containing payload and 3byte crc
- * @return     the status of the processing procesure. 1: the received packet is correct, 0: the received packet is incorrect
+ * @return     the status of the processing procedure. 1: the received packet is correct, 0: the received packet is incorrect
  */
 
 unsigned char rx_packet_process_1mbps(unsigned char *rx_buf, unsigned int len);
@@ -1150,6 +1180,28 @@ static inline void rf_set_rx_settle_time( unsigned short rx_stl_us )
 {
 	 rx_stl_us &= 0x0fff;
 	 write_reg16(0xf0c,(rx_stl_us - 1));
+}
+
+/**
+ * @brief	    This function is used to enable the ldo rxtxlf bypass function, and the calibration value
+ * 				written by the software will take effect after enabling.
+ * @param[in]	none.
+ * @return	 	none.
+ */
+static inline void rf_ldot_ldo_rxtxlf_bypass_en(void)
+{
+	write_reg8(0x12e4,read_reg8(0x12e4)|BIT(1));
+}
+
+/**
+ * @brief	    This function is used to close the ldo rxtxlf bypass function, and the hardware will
+ * 				automatically perform the calibration function after closing.
+ * @param[in]	none.
+ * @return	 	none.
+ */
+static inline void rf_ldot_ldo_rxtxlf_bypass_dis(void)
+{
+	write_reg8(0x12e4,read_reg8(0x12e4)&(~BIT(1)));
 }
 
 /**
@@ -1296,5 +1348,46 @@ signed char rf_aoa_aod_get_pkt_rssi(unsigned char *p);
  * @return		Returns the timestamp value in the packet.
  */
 unsigned int rf_aoa_aod_get_pkt_timestamp(unsigned char *p);
+
+/**
+ * @brief          This function serves to set the which irq enable.
+ * @param[in]      mask     - Options that need to be enabled.
+ * @return         Yes: 1, NO: 0.
+ */
+static inline void rf_set_irq_mask(rf_irq_e mask)
+{
+    BM_SET(reg_rf_irq_mask,mask);
+}
+
+/**
+ * @brief          This function is used to clear the irq mask that needs to be cleared.
+ * @param[in]      mask     - Options that need irq value.
+ * @return         none.
+ */
+static inline void rf_clr_irq_mask(rf_irq_e mask)
+{
+    BM_CLR(reg_rf_irq_mask ,mask);
+}
+
+/**
+ * @brief          This function serves to judge whether it is in a certain state.
+ * @param[in]      mask     - Options that need irq status.
+ * @return         Yes: 1, NO: 0.
+ */
+static inline unsigned short rf_get_irq_status(rf_irq_e status)
+{
+    return ((unsigned short )BM_IS_SET(reg_rf_irq_status,status));
+}
+
+/**
+ * @brief        This function serves to clear the irq finish flag bit that needs to be cleared.
+ *              When the status flag bit is 1, this flag bit needs to be cleared manually to avoid the next misjudgment.
+ * @param[in]    status     - Options that need irq status.
+ * @return       none.
+ */
+static inline void rf_clr_irq_status(rf_irq_e status)
+{
+     reg_rf_irq_status = status;
+}
 
 #endif

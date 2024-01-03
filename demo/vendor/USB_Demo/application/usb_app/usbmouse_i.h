@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -41,7 +40,7 @@ static const USB_Descriptor_HIDReport_Datatype_t mouse_report_desc[] = {
     HID_RPT_USAGE_PAGE(8, 0x09)		, /* Button */
 
 
-	// 1 is mouse left button,2 is mouse right button,3 is central buuton
+	// 1 is mouse left button,2 is mouse right button,3 is central button
     HID_RPT_USAGE_MINIMUM(8, 0x01)		,
 
     HID_RPT_USAGE_MAXIMUM(8, 0x05),
@@ -101,17 +100,17 @@ static const USB_Descriptor_HIDReport_Datatype_t mouse_report_desc[] = {
     HID_RPT_LOGICAL_MAXIMUM(16, 0x02ff),     //global, max  0x028c
     HID_RPT_USAGE_MINIMUM(8, 0x01),          //local, min   0x01
     HID_RPT_USAGE_MAXIMUM(16, 0x02ff),       //local, max    0x28c
-    HID_RPT_INPUT(8, HID_IOF_ABSOLUTE),      //main,  input data varible, absolute
+    HID_RPT_INPUT(8, HID_IOF_ABSOLUTE),      //main,  input data variable;, absolute
     HID_RPT_END_COLLECTION(0),               //main, end collection
 
-	HID_RPT_USAGE_PAGE(8, 0x01),             //gobal,  USAGE_PAGE 1 (Generic Desktop)
+	HID_RPT_USAGE_PAGE(8, 0x01),             //global,  USAGE_PAGE 1 (Generic Desktop)
 	HID_RPT_USAGE(8, 0x80),                  //local, usage ID 0x80 system control
-	HID_RPT_COLLECTION(8, 0x01),             //main conllection
+	HID_RPT_COLLECTION(8, 0x01),             //main collection
     HID_RPT_REPORT_ID(8, USB_HID_KB_SYS),    //Report ID
 	HID_RPT_REPORT_SIZE(8, 0x01),            //global, report size 2
 	HID_RPT_REPORT_COUNT(8, 0x03),           //report count  1
 	HID_RPT_LOGICAL_MINIMUM(8, 0x00),        //global min 01
-    HID_RPT_LOGICAL_MAXIMUM(8, 0x01),        //gobal, max 3
+    HID_RPT_LOGICAL_MAXIMUM(8, 0x01),        //global, max 3
 	HID_RPT_USAGE(8, 0x81),					//local usage ID 0x81 system power down
     HID_RPT_USAGE(8, 0x82),                  //local usage ID 0x82 system sleep
     HID_RPT_USAGE(8, 0x83),                  //local usage ID 0x83 system wakeup
@@ -178,17 +177,17 @@ static const USB_Descriptor_HIDReport_Datatype_t mouse_report_desc[] = {
 	0x19,0x01,     //local, min   0x01
 	0x2a,0x8c,0x02,  //local, max    0x28c
 #endif
-	0x81,0x00,     //main,  input data varible, absolute
+	0x81,0x00,     //main,  input data variable;, absolute
 	0xc0,        //main, end collection
 
-	0x05,0x01,     //gobal,  USAGE_PAGE 1 (Generic Desktop)
+	0x05,0x01,     //global,  USAGE_PAGE 1 (Generic Desktop)
 	0x09,0x80,     //local, usage ID 0x80 system control
-0xa1,0x01,     //main conllection
+0xa1,0x01,     //main collection
 	0x85,USB_HID_KB_SYS,     //global report ID 0x4
 	0x75,0x02,     //global, report size 2
 	0x95,0x01,     //report count  1
 	0x15,0x01,     //global min 01
-	0x25,0x03,     //gobal, max 3
+	0x25,0x03,     //global, max 3
 	0x09,0x82,     //local usage ID 0x82 system sleep
 	0x09,0x81,     //local usage ID 0x81 system power down
 	0x09,0x83,     //local usage ID 0x83 system wakeup

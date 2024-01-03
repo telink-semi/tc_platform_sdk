@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -44,7 +43,7 @@ typedef enum {
 	S7816_4MHZ = 4,
 	S7816_6MHZ = 6,
 	S7816_12MHZ = 12,
-}S7816_ClkTpyeDef;
+}S7816_ClkTypeDef;
 
 /**
  *  @brief  Define 7816 clk pin.
@@ -121,7 +120,7 @@ void s7816_set_pin(GPIO_PinTypeDef rst_pin,GPIO_PinTypeDef vcc_pin,S7816_Clk_Pin
  * @param[in]  	d            - the bitrate regulator of s7816,1 by default.
  * @return     	none.
  */
-void s7816_init(S7816_ClkTpyeDef clock,int f,int d);
+void s7816_init(S7816_ClkTypeDef clock,int f,int d);
 
 /**
  * @brief      	This function is used to active the IC card,set the trx pin and coldreset.

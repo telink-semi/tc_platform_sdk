@@ -231,5 +231,10 @@
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/s7816_Demo</locationURI>
 		</link>
+		<link>
+			<name>vendor/common/auto_test</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/common/auto_test</locationURI>
+		</link>
 	</linkedResources>
 </projectDescription>

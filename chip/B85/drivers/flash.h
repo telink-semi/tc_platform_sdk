@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -29,6 +28,21 @@
 
 #define PAGE_SIZE		256
 #define PAGE_SIZE_OTP	256
+
+/**
+ * @brief     flash mid definition
+ */
+typedef enum{
+	MID011460C8   =   0x011460c8,//GD25LE80C / GD25LQ80C
+	MID1060C8     =   0x1060c8,//GD25LD05C
+	MID13325E     =   0x13325e,//ZB25WD40B
+	MID134051     =   0x134051,//MD25D40D
+	MID136085     =   0x136085,//P25Q40L
+	MID1360C8     =   0x1360c8,//GD25LD40C / GD25LD40E
+	MID1360EB     =   0x1360eb,//TH25D40UA / TH25D40LA
+	MID14325E     =   0x14325e,//ZB25WD80B
+	MID1460C8     =   0x1460c8,//GD25LD80C / GD25LD80E
+}flash_mid_e;
 
 /**
  * @brief     flash command definition
@@ -112,9 +126,9 @@ typedef enum {
     FLASH_VOLTAGE_1V6      = 0x00,
 } Flash_VoltageDef;
 
-typedef void (*flash_hander_t)(unsigned long, unsigned long, unsigned char*);
-extern _attribute_data_retention_ flash_hander_t flash_read_page;
-extern _attribute_data_retention_ flash_hander_t flash_write_page;
+typedef void (*flash_handler_t)(unsigned long, unsigned long, unsigned char*);
+extern _attribute_data_retention_ flash_handler_t flash_read_page;
+extern _attribute_data_retention_ flash_handler_t flash_write_page;
 
 /*******************************************************************************************************************
  *												Primary interface
@@ -126,7 +140,7 @@ extern _attribute_data_retention_ flash_hander_t flash_write_page;
  * @param[in]   write	- the write function.
  * @none
  */
-static inline void flash_change_rw_func(flash_hander_t read, flash_hander_t write)
+static inline void flash_change_rw_func(flash_handler_t read, flash_handler_t write)
 {
 	flash_read_page = read;
 	flash_write_page = write;
@@ -175,7 +189,7 @@ void flash_read_data(unsigned long addr, unsigned long len, unsigned char *buf);
  * @param[in]   len		- the length(in byte) of content needs to write into the flash.
  * @param[in]   buf		- the start address of the content needs to write into.
  * @return 		none.
- * @note        the funciton support cross-page writing,which means the len of buf can bigger than 256.
+ * @note        the function support cross-page writing,which means the len of buf can bigger than 256.
  *
  *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
@@ -219,7 +233,7 @@ unsigned int flash_read_raw_mid(void);
  *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
  *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
  */
-unsigned int flash_read_mid(void);
+flash_mid_e flash_read_mid(void);
 
 /**
  * @brief	  	This function serves to read UID of flash.Before reading UID of flash, you must read MID of flash.

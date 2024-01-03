@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -27,6 +26,7 @@
 #include "bsp.h"
 #include "gpio.h"
 #include "flash.h"
+#include "clock.h"
 #define PM_DEBUG							0
 
 #if(PM_DEBUG)
@@ -37,17 +37,15 @@ volatile unsigned int ana_32k_tick;
 #define PM_LONG_SUSPEND_EN					1
 
 #ifndef PM_TIM_RECOVER_MODE
-#define PM_TIM_RECOVER_MODE			    	0
+#define PM_TIM_RECOVER_MODE			    	0 //this function only support for interface of cpu_sleep_wakeup_32k_rc and cpu_sleep_wakeup_32k_xtal
 #endif
 
-
-
 #define PM_XTAL_DELAY_DURATION      		500
-#define EARLYWAKEUP_TIME_US_DEEP    		1100
-#define EARLYWAKEUP_TIME_US_SUSPEND 		1250
-#define EMPTYRUN_TIME_US       	    		1500
+//#define EARLYWAKEUP_TIME_US_DEEP    		1240
+//#define EARLYWAKEUP_TIME_US_SUSPEND 		1190
+//#define EMPTYRUN_TIME_US       	    	1500
 
-#define PM_DCDC_DELAY_DURATION      		1000
+//#define PM_DCDC_DELAY_DURATION      		1000
 
 #define EARLYWAKEUP_TIME_MS_DEEP	2
 #define EARLYWAKEUP_TIME_MS_SUSPEND	1
@@ -66,7 +64,7 @@ volatile unsigned int ana_32k_tick;
  * 	      Reset these analog registers only by power cycle
  */
 
-#define DEEP_ANA_REG0                       0x3a //initial value =0x00
+#define DEEP_ANA_REG0                       0x3a //initial value =0x00 [Bit1] The crystal oscillator failed to start normally.The customer cannot change!
 #define DEEP_ANA_REG1                       0x3b //initial value =0x00
 #define DEEP_ANA_REG2                       0x3c //initial value =0x00
 
@@ -90,6 +88,8 @@ volatile unsigned int ana_32k_tick;
 #define WAKEUP_STATUS_TIMER_CORE     	    ( WAKEUP_STATUS_TIMER | WAKEUP_STATUS_CORE)
 #define WAKEUP_STATUS_TIMER_PAD		        ( WAKEUP_STATUS_TIMER | WAKEUP_STATUS_PAD)
 
+//API changed, compatible for the old SDK version user, define this macro.
+#define cpu_long_sleep_wakeup				cpu_long_sleep_wakeup_32k_rc
 
 /**
  * @brief sleep mode.
@@ -122,7 +122,13 @@ typedef enum {
 	 PM_WAKEUP_PAD   		= BIT(4),
 	 PM_WAKEUP_CORE  		= BIT(5),
 	 PM_WAKEUP_TIMER 		= BIT(6),
-	 PM_WAKEUP_COMPARATOR 	= BIT(7),
+	 PM_WAKEUP_COMPARATOR 	= BIT(7), /**<
+	 	 	 	 	 	 	 	 	 	There are two things to note when using LPC wake up:
+										1.After the LPC is configured, you need to wait 100 microseconds before you can go to sleep because the LPC need 1-2 32k tick to calculate the result.
+										  If you enter the sleep function at this time, you may not be able to sleep normally because the data in the result register is abnormal.
+
+										2.When entering sleep, keep the input voltage and reference voltage difference must be greater than 30mV, otherwise can not enter sleep normally, crash occurs.
+	  	  	  	  	  	  	  	  	  	 */
 	 //not available wake-up source for customer
 	 PM_TIM_RECOVER_START   = BIT(14),
 	 PM_TIM_RECOVER_END     = BIT(15),
@@ -139,18 +145,18 @@ enum {
 	 WAKEUP_STATUS_PAD    			= BIT(3),
 
 	 WAKEUP_STATUS_WD    			= BIT(6),
-	 STATUS_GPIO_ERR_NO_ENTER_PM  	= BIT(7),
-
+	 STATUS_GPIO_ERR_NO_ENTER_PM  	= BIT(8),/**<Bit8 is used to determine whether the wake source is normal.*/
+	 
 	 STATUS_ENTER_SUSPEND  			= BIT(30),
 };
 
 /**
- * @brief	pm power weather to power down definition
+ * @brief	pm power whether to power down definition
  */
 typedef enum {
-	 PM_POWER_BASEBAND  	= BIT(0),	//weather to power on the BASEBAND before suspend.
-	 PM_POWER_USB  			= BIT(1),	//weather to power on the USB before suspend.
-	 PM_POWER_AUDIO  		= BIT(2),	//weather to power on the AUDIO before suspend.
+	 PM_POWER_BASEBAND  	= BIT(0),	//whether to power on the BASEBAND before suspend.
+	 PM_POWER_USB  			= BIT(1),	//whether to power on the USB before suspend.
+	 PM_POWER_AUDIO  		= BIT(2),	//whether to power on the AUDIO before suspend.
 }pm_suspend_power_cfg_e;
 
 /**
@@ -174,6 +180,29 @@ typedef struct{
 }pm_para_t;
 
 extern pm_para_t	pmParam;
+
+/**
+ * @brief	early wakeup time
+ */
+typedef struct {
+	unsigned short  suspend;	/*< suspend_early_wakeup_time_us >*/
+	unsigned short  deep_ret;	/*< deep_ret_early_wakeup_time_us >*/
+	unsigned short  deep;		/*< deep_early_wakeup_time_us >*/
+	unsigned short  min;		/*< sleep_min_time_us >*/
+}pm_early_wakeup_time_us_s;
+
+extern volatile pm_early_wakeup_time_us_s g_pm_early_wakeup_time_us;
+
+/**
+ * @brief	hardware delay time
+ */
+typedef struct {
+	unsigned short  deep_r_delay_us ;			/**< hardware delay time, deep_r_delay_us = (deep_r_delay_cycle) * 1/16k */
+	unsigned short  suspend_ret_r_delay_us ;		/**< hardware delay time, suspend_ret_r_delay_us = (suspend_ret_r_delay_cycle) * 1/16k */
+}pm_r_delay_us_s;
+
+extern volatile pm_r_delay_us_s g_pm_r_delay_us;
+
 
 #if (PM_TIM_RECOVER_MODE)
 
@@ -225,10 +254,10 @@ static inline int pm_get_wakeup_src(void)
 
 /**
  * @brief		This function serves to set baseband/usb/audio power on/off before suspend sleep,If power
- * 				on this module,the suspend curent will increase;power down this module will save current,
+ * 				on this module,the suspend current will increase;power down this module will save current,
  * 				but you need to re-init this module after suspend wakeup.All power down default to save
  * 				current.
- * @param[in]	value - weather to power on/off the baseband/usb/audio.
+ * @param[in]	value - whether to power on/off the baseband/usb/audio.
  * @param[in]	on_off - select power on or off. 0 - power off, other value - power on; .
  * @return		none.
  */
@@ -294,8 +323,19 @@ extern unsigned int pm_get_32k_tick(void);
  * @brief   This function serves to initialize MCU
  * @param   none
  * @return  none
+ * @note	When this function called after power on or deep sleep wakeup, it will cost about 6~7ms for perform 32k RC calibration. 
+ * 			If do not want this logic, you can check the usage and precautions of cpu_wakeup_init_calib_32k_rc_cfg().
  */
-void cpu_wakeup_init(void);
+_attribute_ram_code_sec_noinline_ void cpu_wakeup_init(void);
+
+/**
+ * @brief 	  This function performs to configure whether to calibrate the 32k rc in the cpu_wakeup_init() when power-on or wakeup from deep sleep mode.If wakeup from deep retention sleep mode will not calibrate.
+ * @param[in] calib_flag - Choose whether to calibrate the 32k rc or not.
+ * 						1 - calibrate; 0 - not calibrate
+ * @return	  none
+ * @note	  This function will not take effect until it is called before cpu_wakeup_init(). 
+ */
+void cpu_wakeup_init_calib_32k_rc_cfg(char calib_flag);
 
 /**
  * @brief   This function serves to recover system timer from tick of internal 32k RC.
@@ -321,7 +361,7 @@ extern  pm_tim_recover_handler_t pm_tim_recover;
  * @brief      This function serves to set the working mode of MCU based on 32k crystal,e.g. suspend mode, deepsleep mode, deepsleep with SRAM retention mode and shutdown mode.
  * @param[in]  sleep_mode - sleep mode type select.
  * @param[in]  wakeup_src - wake up source select.
- * @param[in]  wakeup_tick - the time of short sleep, which means MCU can sleep for less than 5 minutes.
+ * @param[in]  wakeup_tick - the time of short sleep, which means MCU can sleep for less than 234 seconds.
  * @return     indicate whether the cpu is wake up successful.
  */
 int  cpu_sleep_wakeup_32k_rc(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, unsigned int  wakeup_tick);
@@ -330,10 +370,29 @@ int  cpu_sleep_wakeup_32k_rc(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeD
  * @brief      This function serves to set the working mode of MCU based on 32k crystal,e.g. suspend mode, deepsleep mode, deepsleep with SRAM retention mode and shutdown mode.
  * @param[in]  sleep_mode - sleep mode type select.
  * @param[in]  wakeup_src - wake up source select.
- * @param[in]  wakeup_tick - the time of short sleep, which means MCU can sleep for less than 5 minutes.
+ * @param[in]  wakeup_tick - the time of short sleep, which means MCU can sleep for less than 234 seconds.
  * @return     indicate whether the cpu is wake up successful.
  */
 int  cpu_sleep_wakeup_32k_xtal(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, unsigned int  wakeup_tick);
+
+/**
+ * @brief      This function servers to wake up the cpu from sleep mode.
+ * @param[in]  sleep_mode - sleep mode type select.
+ * @param[in]  wakeup_src - wake up source select.
+ * @param[in]  wakeup_tick - the 32k tick which you want to sleep.(32*1000 -> 1s)
+ * @return     indicate whether the cpu is wake up successful.
+ */
+int cpu_long_sleep_wakeup_32k_rc(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, unsigned int  wakeup_tick);
+
+/**
+ * @brief      This function servers to wake up the cpu from sleep mode.
+ * @param[in]  sleep_mode - sleep mode type select.
+ * @param[in]  wakeup_src - wake up source select.
+ * @param[in]  wakeup_tick - the 32k tick which you want to sleep.(32768 -> 1s)
+ * 							 Note that the frequency of the external 32k crystal is 32768, not 32000. The sleep tick value is calculated based on 32768 ticks being 1s.
+ * @return     indicate whether the cpu is wake up successful.
+ */
+int cpu_long_sleep_wakeup_32k_xtal(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, unsigned int  wakeup_tick);
 
 typedef int (*cpu_pm_handler_t)(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, unsigned int  wakeup_tick);
 
@@ -385,30 +444,9 @@ unsigned int  pm_get_info1(void);
  */
 unsigned short efuse_get_adc_calib_value(void);
 
-unsigned int cpu_get_32k_tick(void);
-
 void soft_reboot_dly13ms_use24mRC(void);
 
 void check_32k_clk_stable(void);
-
-/**
- * @brief      This function servers to wake up the cpu from sleep mode.
- * @param[in]  sleep_mode - sleep mode type select.
- * @param[in]  wakeup_src - wake up source select.
- * @param[in]  wakeup_tick - the 32k tick which you want to sleep.(32*1000 -> 1s)
- * @return     indicate whether the cpu is wake up successful.
- */
-int cpu_long_sleep_wakeup(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, unsigned int  wakeup_tick);
-
-/**
- * @brief      This function servers to wake up the cpu from sleep mode.
- * @param[in]  sleep_mode - sleep mode type select.
- * @param[in]  wakeup_src - wake up source select.
- * @param[in]  wakeup_tick - the 32k tick which you want to sleep.(32768 -> 1s)
- * 							 Note that the frequency of the external 32k crystal is 32768, not 32000. The sleep tick value is calculated based on 32768 ticks being 1s.
- * @return     indicate whether the cpu is wake up successful.
- */
-int cpu_long_sleep_wakeup_32k_xtal(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, unsigned int  wakeup_tick);
 
 /**
  * @brief		This function serves to set flash voltage vdd_f.TO ensure the vdd_f is enough to supply the flash,need to calibration the vdd_f.
@@ -416,6 +454,39 @@ int cpu_long_sleep_wakeup_32k_xtal(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc
  * @return		none.
  */
 void pm_set_vdd_f(Flash_VoltageDef voltage);
+
+/**
+ * @brief		This function is used to configure the early wake-up time.
+ * @param[in]	param - deep/suspend/deep_retention r_delay time.(default value: suspend/deep_ret=16, deep=24)
+ * @return		none.
+ */
+void pm_set_wakeup_time_param(pm_r_delay_us_s param);
+
+/**
+ * @brief		This function is used in applications where the crystal oscillator is relatively slow to start.
+ * 				When the start-up time is very slow, you can call this function to avoid restarting caused
+ * 				by insufficient crystal oscillator time (it is recommended to leave a certain margin when setting).
+ * @param[in]	delay_us - This time setting is related to the parameter nopnum, which is about the execution time of the for loop
+ * 							in the ramcode(default value: 135).
+ * @param[in]	loopnum - The time for the crystal oscillator to stabilize is approximately: loopnum*40us(default value: loopnum=10).
+ * @param[in]	nopnum - The number of for loops used to wait for the crystal oscillator to stabilize after suspend wakes up.
+ * 						 for(i = 0; i < nopnum; i++){ asm("tnop"); }(default value: Flash=200).
+ * @return		none.
+ */
+void pm_set_xtal_stable_timer_param(unsigned int delay_us, unsigned int loopnum, unsigned int nopnum);
+
+/**
+ * @brief   	This function is used to determine the stability of the crystal oscillator.
+ * 				To judge the stability of the crystal oscillator, xo_ready_ana is invalid, and use an alternative solution to judge.
+ * 				Alternative principle: Because the clock source of the stimer is the crystal oscillator,
+ * 				if the crystal oscillator does not vibrate, the tick value of the stimer does not increase or increases very slowly (when there is interference).
+ * 				So first use 24M RC to run the program and wait for a fixed time, calculate the number of ticks that the stimer should increase during this time,
+ * 				and then read the tick value actually increased by the stimer.
+ * 				When it reaches 50% of the calculated value, it proves that the crystal oscillator has started.
+ * 				If it is not reached for a long time, the system will reboot.
+ * @return  	none.
+ */
+_attribute_ram_code_sec_noinline_ void pm_wait_xtal_ready(void);
 
 #if PM_LONG_SLEEP_WAKEUP_EN
 /**

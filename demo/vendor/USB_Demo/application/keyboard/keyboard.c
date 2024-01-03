@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -119,7 +118,7 @@ static const unsigned char kb_map_normal[ARRAY_SIZE(scan_pins)][ARRAY_SIZE(drive
 	{VK_PAGE_UP, VK_RIGHT,	  VK_PAGE_DOWN,	VKPAD_PERIOD,	VKPAD_ASTERIX,VKPAD_MINUS,	VK_PAGE_UP,		VK_PAGE_DOWN},
 	{VKPAD_PLUS, VK_K107,	  VKPAD_ENTER,  VK_UP,		    VK_PLAY_PAUSE,VK_LEFT,	  	VK_HOME,	    VK_END},
 	{VK_WAKEUP,	 VK_SHIFT,	  VK_RSHIFT,	VK_VOL_DN,	    VK_VOL_UP,	  VK_NEXT_TRK,	VK_PREV_TRK,	VK_MEDIA},
-	{VK_MAIL,	 VK_WIN,	  VK_W_FORWRD,	VK_W_STOP,		VK_W_BACK,	  VK_W_REFRESH,	VK_W_MUTE,    	VK_W_SRCH},
+	{VK_MAIL,	 VK_WIN,	  VK_W_FORWARD,	VK_W_STOP,		VK_W_BACK,	  VK_W_REFRESH,	VK_W_MUTE,    	VK_W_SRCH},
 	{VK_KCL,	 VK_W_FAV,	  VK_RWIN,		VK_MY_COMP,		VK_STOP,	  VK_CAL,	  	VK_WEB,	    	VK_KCR},
 };
 #else
@@ -144,7 +143,7 @@ static const unsigned char kb_map_num[ARRAY_SIZE(scan_pins)][ARRAY_SIZE(drive_pi
 	{VKPAD_9,	 VKPAD_6,	  VKPAD_3,	    VKPAD_PERIOD,	VKPAD_ASTERIX,VKPAD_MINUS,	VK_PAGE_UP,		VK_PAGE_DOWN},
 	{VKPAD_PLUS, VK_K107,	  VKPAD_ENTER,  VK_UP,		    VK_PLAY_PAUSE,VK_LEFT,	  	VK_HOME,	    VK_END},
 	{VK_WAKEUP,	 VK_SHIFT,	  VK_RSHIFT,	VK_VOL_DN,	    VK_VOL_UP,	  VK_NEXT_TRK,	VK_PREV_TRK,	VK_MEDIA},
-	{VK_MAIL,	 VK_WIN,	  VK_W_FORWRD,	VK_W_STOP,		VK_W_BACK,	  VK_W_REFRESH,	VK_W_MUTE,    	VK_W_SRCH},
+	{VK_MAIL,	 VK_WIN,	  VK_W_FORWARD,	VK_W_STOP,		VK_W_BACK,	  VK_W_REFRESH,	VK_W_MUTE,    	VK_W_SRCH},
 	{VK_KCL,	 VK_W_FAV,	  VK_RWIN,		VK_MY_COMP,		VK_STOP,	  VK_CAL,	  	VK_WEB,	    	VK_KCR},
 };
 #else
@@ -169,7 +168,7 @@ static const unsigned char kb_map_fn[ARRAY_SIZE(scan_pins)][ARRAY_SIZE(drive_pin
 	{VKPAD_9,	 VKPAD_6,	  VKPAD_3,	    VKPAD_PERIOD,	VKPAD_ASTERIX,VKPAD_MINUS,	VK_PAGE_UP,		VK_PAGE_DOWN},
 	{VKPAD_PLUS, VK_K107,	  VKPAD_ENTER,  VK_UP,		    VK_PLAY_PAUSE,VK_LEFT,	  	VK_HOME,	    VK_END},
 	{VK_WAKEUP,	 VK_SHIFT,	  VK_RSHIFT,	VK_VOL_DN,	    VK_VOL_UP,	  VK_NEXT_TRK,	VK_PREV_TRK,	VK_MEDIA},
-	{VK_MAIL,	 VK_WIN,	  VK_W_FORWRD,	VK_W_STOP,		VK_W_BACK,	  VK_W_REFRESH,	VK_W_MUTE,    	VK_W_SRCH},
+	{VK_MAIL,	 VK_WIN,	  VK_W_FORWARD,	VK_W_STOP,		VK_W_BACK,	  VK_W_REFRESH,	VK_W_MUTE,    	VK_W_SRCH},
 	{VK_KCL,	 VK_W_FAV,	  VK_RWIN,		VK_MY_COMP,		VK_STOP,	  VK_CAL,	  	VK_WEB,	    	VK_KCR},
 
 };

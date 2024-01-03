@@ -7,7 +7,6 @@
  * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -28,8 +27,18 @@
 #include "timer.h"
 #include "string.h"
 
-/*
- *	If add flash type, need pay attention to the read uid command and the bit number of status register
+/**
+ *  If you add a new flash, you need to check the following location and add the corresponding flash model:
+	#1 need to add flash_midxxx.c and flash_midxxx.h to the driver/flash directory, and introduce the header file flash_midxxx.h into flash_type.h.
+	#2 need to add the corresponding mid to flash_mid_e in flash.h to check if Flash_CapacityDef contains the size of the added flash.
+	#3 Check that flash_get_vendor() in flash.c and flash_vendor_e in flash.h already contain the added flash model.
+	#4 need to add the corresponding mid in flash_support_mid[], and the Flash Type/uid CMD/MID/Company/Sector Erase Time(MAX) in the following table.
+	#5 need to add a flash test area of corresponding size in Test_Demo/app_flash_test.c.
+	#6 need to add the corresponding new flash to Flash_Deno/app.c in flash_lock()/flash_unlock(), as well as add the implementation of flash_midxxx_test()
+	and add the case of flash_midxxx_test() in user_init().
+	#7 If add ZB flash type,need to change the API zb_cam_modify(),and need to confirm the time sequence with ZB.
+
+    If add flash type, need pay attention to the read uid command and the bit number of status register
 	Flash Type	uid CMD			MID		Company		Sector Erase Time(MAX)
 	GD25LD10C	0x4b(AN)	0x1160C8	GD			500ms
 	GD25LD40C	0x4b		0x1360C8	GD			500ms
@@ -39,8 +48,8 @@
 unsigned int flash_support_mid[] = {0x1160c8,0x1360c8,0x136085,0x114485};
 const unsigned int FLASH_CNT = sizeof(flash_support_mid)/sizeof(*flash_support_mid);
 
-flash_hander_t flash_read_page = flash_read_data;
-flash_hander_t flash_write_page = flash_page_program;
+flash_handler_t flash_read_page = flash_read_data;
+flash_handler_t flash_write_page = flash_page_program;
 
 /*******************************************************************************************************************
  *												Primary interface
@@ -82,7 +91,7 @@ _attribute_ram_code_sec_noinline_ static void flash_send_addr(unsigned int addr)
 }
 
 /**
- * @brief     This function serves to wait flash done.(make this a asynchorous version).
+ * @brief     This function serves to wait flash done.(make this a asynchronous version).
  * @return    none.
  */
 _attribute_ram_code_sec_noinline_ static void flash_wait_done(void)
@@ -217,7 +226,7 @@ void flash_read_data(unsigned long addr, unsigned long len, unsigned char *buf)
  * @param[in]   len		- the length(in byte) of content needs to write into the flash.
  * @param[in]   buf		- the start address of the content needs to write into.
  * @return 		none.
- * @note        the funciton support cross-page writing,which means the len of buf can bigger than 256.
+ * @note        the function support cross-page writing,which means the len of buf can bigger than 256.
  *
  *              Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
@@ -279,8 +288,12 @@ unsigned char flash_read_status(unsigned char cmd)
  *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
  *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
  *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
+ *
+ *              Because the operation of the write state takes a long time, and the interface of the write state will close the interrupt,
+ *              it is not suitable for the situation that needs to respond to the interrupt in a timely manner.
+ *              By using a weak definition for this interface, the application layer can redefine the interface according to its own needs.
  */
-void flash_write_status(flash_status_typedef_e type , unsigned short data)
+__attribute__((weak)) void flash_write_status(flash_status_typedef_e type , unsigned short data)
 {
 	unsigned char buf[2];
 
@@ -380,7 +393,7 @@ void flash_erase_otp(unsigned long addr)
  *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
  *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
  */
-unsigned int flash_read_mid(void)
+flash_mid_e flash_read_mid(void)
 {
 	unsigned int flash_mid = 0;
 	flash_mspi_read_ram(FLASH_GET_JEDEC_ID, 0, 0, 0, (unsigned char*)(&flash_mid), 3);

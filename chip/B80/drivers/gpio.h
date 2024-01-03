@@ -7,7 +7,6 @@
  * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -140,6 +139,8 @@ typedef enum{
 
 
 		GPIO_ALL = 0x600,
+
+		GPIO_NONE_PIN =0xfff,
 }GPIO_PinTypeDef;
 
 /**
@@ -547,8 +548,8 @@ static inline void gpio_set_interrupt(GPIO_PinTypeDef pin, GPIO_PolTypeDef falli
 		BM_CLR(reg_gpio_pol(pin), bit);
 		BM_CLR(reg_gpio_irq_lvl,bit);
 	}
-    /*clear gpio interrupt sorce (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
-	reg_irq_src |= FLD_IRQ_GPIO_EN;
+    /*clear gpio interrupt source (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
+	reg_irq_src = FLD_IRQ_GPIO_EN;
 	reg_irq_mask |= FLD_IRQ_GPIO_EN;
 }
 
@@ -586,8 +587,8 @@ static inline void gpio_set_interrupt_risc0(GPIO_PinTypeDef pin, GPIO_PolTypeDef
 		BM_CLR(reg_gpio_pol(pin), bit);
 		BM_CLR(reg_gpio_irq_lvl,bit);
 	}
-/*clear gpio interrupt sorce (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
-	reg_irq_src |= FLD_IRQ_GPIO_RISC0_EN;
+/*clear gpio interrupt source (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
+	reg_irq_src = FLD_IRQ_GPIO_RISC0_EN;
 	reg_irq_mask |= FLD_IRQ_GPIO_RISC0_EN;
 }
 
@@ -627,8 +628,8 @@ static inline void gpio_set_interrupt_risc1(GPIO_PinTypeDef pin, GPIO_PolTypeDef
 		BM_CLR(reg_gpio_pol(pin), bit);
 		BM_CLR(reg_gpio_irq_lvl,bit);
 	}
-/*clear gpio interrupt sorce (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
-	reg_irq_src |= FLD_IRQ_GPIO_RISC1_EN;
+/*clear gpio interrupt source (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
+	reg_irq_src = FLD_IRQ_GPIO_RISC1_EN;
 	reg_irq_mask |= FLD_IRQ_GPIO_RISC1_EN;
 }
 
@@ -730,16 +731,60 @@ static inline void gpio_set_src_irq(GPIO_PinTypeDef pin, gpio_src_irq_trigger_ty
 			BM_SET(reg_gpio_irq_lvl,bit);
 		break;
 		}
-	   /*clear gpio interrupt sorce (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
-		reg_gpio_irq_from_pad |=bit;//must clear, or it will cause to unexpected interrupt.
+	   /*clear gpio interrupt source (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
+		reg_gpio_irq_from_pad  =bit;//must clear, or it will cause to unexpected interrupt.
 		reg_gpio_irq_pad_mask |=bit;
 		reg_irq_mask |= FLD_IRQ_GPIO_NEW_EN;
 }
 /**
- * @brief     This function set pin's 30k pull-up registor.
- * @param[in] pin - the pin needs to set its pull-up registor.
+ * @brief     This function set pin's 30k pull-up register.
+ * @param[in] pin - the pin needs to set its pull-up register.
  * @return    none.
  * @attention This function sets the digital pull-up, it will not work after entering low power consumption.
  */
 void gpio_set_pullup_res_30k(GPIO_PinTypeDef pin);
 
+/**
+ * @brief     This function set a pin's gpio gpio2risc2 interrupt,if need disable gpio interrupt,choose disable gpio mask,use interface gpio_clr_irq_mask.
+ * @param[in] pin - the pin needs to enable its IRQ
+ * @param[in] falling - value of the edge polarity(1: falling edge 0: rising edge)
+ * @return    none
+ */
+static inline void gpio_set_interrupt_risc2(GPIO_PinTypeDef pin, GPIO_PolTypeDef falling)
+{
+    unsigned char   bit = pin & 0xff;
+    BM_SET(reg_gpio_irq_risc2_en(pin), bit);
+
+    if(falling == POL_FALLING)
+    {
+        BM_SET(reg_gpio_pol(pin), bit);
+        BM_CLR(reg_gpio_irq_lvl,bit);
+    }
+    else if(falling == POL_RISING)
+    {
+        BM_CLR(reg_gpio_pol(pin), bit);
+        BM_CLR(reg_gpio_irq_lvl,bit);
+    }
+/*clear gpio interrupt source (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
+    reg_irq_src = FLD_IRQ_GPIO_RISC2_EN;
+    reg_irq_mask |= FLD_IRQ_GPIO_RISC2_EN;
+}
+
+/**
+ * @brief     This function enables a pin's gpio gpio2risc1 interrupt.
+ * @param[in] pin - The pin of the detected interrupt.
+ * @param[in] en - 1 enable. 0 disable.
+ * @return    none
+ */
+static inline void gpio_en_interrupt_risc2(GPIO_PinTypeDef pin, int en)
+{
+    unsigned char   bit = pin & 0xff;
+    if(en)
+    {
+        BM_SET(reg_gpio_irq_risc2_en(pin), bit);
+    }
+    else
+    {
+        BM_CLR(reg_gpio_irq_risc2_en(pin), bit);
+    }
+}

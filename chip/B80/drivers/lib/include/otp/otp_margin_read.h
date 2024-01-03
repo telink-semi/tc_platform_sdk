@@ -7,7 +7,6 @@
  * @date	2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -36,9 +35,18 @@
  * @param[in]  buff - data buff.
  * @return     none
  *
- * Attention: When the vbat voltage is greater than 3.3V, otp supply is 3.3V, if the vabt voltage is lower than 3.3V,
- * then the otp supply voltage will follow the vbat voltage value, write to otp, according to the datasheet,
- * the voltage value is at least 2.8V, if below the voltage value, you can not operate,and prompt adc sampling voltage has certain error,add by shuaixing.zhai, confirmed by baoyi 20211015.
+ * Attention:
+ * -# When the vbat voltage is greater than 3.3V, otp supply is 3.3V, if the vabt voltage is lower than 3.3V,
+ *    then the otp supply voltage will follow the vbat voltage value, write to otp, according to the datasheet,
+ *    the voltage value is at least 2.8V, if below the voltage value, you can not operate,and prompt adc sampling voltage has certain error,add by shuaixing.zhai, confirmed by baoyi 20211015.
+ * -# Chip version A0/A1/A2/A3 can't read/write OTP in RF RX state, A4 chip doesn't have this limitation.
+ *    The chip version number can be read in the following way: after calling cpu_wakeup_init(), read the value of the g_chip_version variable,
+ *    which corresponds to the chip version as follows:
+ *    A0: g_chip_version = 0xff
+ *    A1: g_chip_version = 0xfe
+ *    A2: g_chip_version = 0xfc
+ *    A3: g_chip_version = 0xf8
+ *    A4: g_chip_version = 0xfa
  */
 _attribute_ram_code_sec_noinline_ void otp_pgm_margin_read(unsigned int addr, unsigned int word_len, unsigned int *buff);
 /**
@@ -50,9 +58,18 @@ _attribute_ram_code_sec_noinline_ void otp_pgm_margin_read(unsigned int addr, un
  * @param[in]  buff - data buff.
  * @return     none
  *
- * Attention: When the vbat voltage is greater than 3.3V, otp supply is 3.3V, if the vabt voltage is lower than 3.3V,
- * then the otp supply voltage will follow the vbat voltage value, write to otp, according to the datasheet,
- * the voltage value is at least 2.8V, if below the voltage value, you can not operate,and prompt adc sampling voltage has certain error,add by shuaixing.zhai, confirmed by baoyi 20211015.
+ * Attention:
+ * -# When the vbat voltage is greater than 3.3V, otp supply is 3.3V, if the vabt voltage is lower than 3.3V,
+ *    then the otp supply voltage will follow the vbat voltage value, write to otp, according to the datasheet,
+ *    the voltage value is at least 2.8V, if below the voltage value, you can not operate,and prompt adc sampling voltage has certain error,add by shuaixing.zhai, confirmed by baoyi 20211015.
+ * -# Chip version A0/A1/A2/A3 can't read/write OTP in RF RX state, A4 chip doesn't have this limitation.
+ *    The chip version number can be read in the following way: after calling cpu_wakeup_init(), read the value of the g_chip_version variable,
+ *    which corresponds to the chip version as follows:
+ *    A0: g_chip_version = 0xff
+ *    A1: g_chip_version = 0xfe
+ *    A2: g_chip_version = 0xfc
+ *    A3: g_chip_version = 0xf8
+ *    A4: g_chip_version = 0xfa
  */
 _attribute_ram_code_sec_noinline_ void otp_initial_margin_read(unsigned int addr, unsigned int word_len, unsigned int *buff);
 

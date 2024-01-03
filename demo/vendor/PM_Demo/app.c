@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -24,8 +23,8 @@
  *******************************************************************************************************/
 #include "app_config.h"
 
-#define WAKEUP_PAD						GPIO_PA0
-#define CURRENT_TEST	     			1
+#define WAKEUP_PAD						GPIO_PD0
+#define CURRENT_TEST	     			0
 #define CRC_OK			     			1
 #define	MDEC_MATCH_VALUE				0x02
 unsigned char 	dat[5]={0};
@@ -51,11 +50,13 @@ volatile unsigned int rx_cnt=0;
 volatile unsigned int tx_cnt=0;
 unsigned char  rx_packet[64]  __attribute__ ((aligned (4)));
 unsigned char  ble_tx_packet[48] __attribute__ ((aligned (4))) = {0x23,0x00,0x00,0x00,0x00,0x21,0x00,0x00,0x00,0x00,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff};
+unsigned char  result = 0;
+
+_attribute_data_retention_ unsigned int retention_data_test = 0;
 
 void user_init()
 {
-
-	sleep_ms(1000);
+	sleep_ms(2000);
 #if CURRENT_TEST
 	gpio_shutdown(GPIO_ALL);
 
@@ -64,11 +65,27 @@ void user_init()
 	gpio_set_func(LED1 ,AS_GPIO);
 	gpio_set_output_en(LED1, 1); 		//enable output
 	gpio_set_input_en(LED1 ,0);			//disable input
-	gpio_write(LED1, 0);              	//LED On
-	gpio_set_func(LED2,AS_GPIO);
-	gpio_set_output_en(LED2, 1); 		//enable output
+	gpio_write(LED1, 1);              	//LED On
+	sleep_ms(1000);
+	gpio_write(LED1, 0);
+
+	gpio_set_func(LED2,AS_GPIO);		//enable output
+	gpio_set_output_en(LED2, 1);
 	gpio_set_input_en(LED2,0);			//disable input
-	gpio_write(LED2, 0);              	//LED On
+
+#endif
+
+#if ((PM_MODE == SUSPEND_COMPARATOR_WAKEUP)||(PM_MODE == DEEP_COMPARATOR_WAKEUP)||(PM_MODE == DEEP_RET_COMPARATOR_WAKEUP))
+	gpio_set_func(LED3 ,AS_GPIO);
+	gpio_set_output_en(LED3, 1); 		//enable output
+	gpio_set_input_en(LED3 ,0);			//disable input
+	result = lpc_get_result();
+	if(result){
+		gpio_write(LED3, 1);
+	}else{
+		gpio_write(LED3, 0);
+	}
+	sleep_ms(2000);
 #endif
 
 #if(PM_MODE==IDLE_TIMER_WAKEUP)
@@ -91,6 +108,13 @@ void user_init()
 	usb_set_pin_en();
 	pm_set_suspend_power_cfg(PM_POWER_USB, 1);
 
+#elif(PM_MODE==SUSPEND_COMPARATOR_WAKEUP)
+	lpc_set_input_chn(LPC_INPUT_PB2); //select input channel PB2
+	lpc_set_input_ref(LPC_LOWPOWER, LPC_LOWPOWER_REF_810MV);//select mode and reference
+	lpc_set_scaling_coeff(LPC_SCALING_PER75);//select scalign coefficient
+	lpc_power_on(); //power on
+
+	sleep_us(64);
 #elif(PM_MODE==DEEP_PAD_WAKEUP)
 	/* Caution: if wake-up source is only pad, 32K clock source MUST be 32K RC * */
 
@@ -165,6 +189,14 @@ void user_init()
 	gpio_setup_up_down_resistor(DEBOUNCE_WAKEUP_PA1, PM_PIN_PULLDOWN_100K);	//Set the pull-up and pull-up mode of the wake-up pin
 	cpu_sleep_wakeup(DEEPSLEEP_MODE , PM_WAKEUP_DEBOUNCE, 0);	//Put the chip into low power mode
 
+#elif(PM_MODE == DEEP_COMPARATOR_WAKEUP)
+	lpc_set_input_chn(LPC_INPUT_PB2); //select input channel PB2
+	lpc_set_input_ref(LPC_LOWPOWER, LPC_LOWPOWER_REF_810MV);//select mode and reference
+	lpc_set_scaling_coeff(LPC_SCALING_PER50);//select scalign coefficient
+	lpc_power_on(); //power on
+	sleep_us(64);
+
+	cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_COMPARATOR, 0);
 #elif(PM_MODE==DEEP_RET_PAD_WAKEUP)
 	/* Caution: if wake-up source is only pad, 32K clock source MUST be 32K RC * */
 
@@ -239,7 +271,16 @@ void user_init()
 	cpu_set_gpio_wakeup(DEBOUNCE_WAKEUP_PA1, Level_High, 1);	//Set the wake-up pin, wake-up polarity and whether to enable
 	gpio_setup_up_down_resistor(DEBOUNCE_WAKEUP_PA1, PM_PIN_PULLDOWN_100K);	//Set the pull-up and pull-up mode of the wake-up pin
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW32K , PM_WAKEUP_DEBOUNCE, 0);	//Put the chip into low power mode
+#elif(PM_MODE==DEEP_RET_COMPARATOR_WAKEUP)
+	retention_data_test++;
 
+	lpc_set_input_chn(LPC_INPUT_PB2); //select input channel PB2
+	lpc_set_input_ref(LPC_LOWPOWER, LPC_LOWPOWER_REF_810MV);//select mode and reference
+	lpc_set_scaling_coeff(LPC_SCALING_PER50);//select scalign coefficient
+	lpc_power_on(); //power on
+	sleep_us(64);
+
+	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW32K , PM_WAKEUP_COMPARATOR, 0);
 #elif(PM_MODE==SHUTDOWN_PAD_WAKEUP)
 	/* Caution: if wake-up source is only pad, 32K clock source MUST be 32K RC * */
 
@@ -258,6 +299,8 @@ unsigned int tick_suspend_interval = 0;
 /////////////////////////////////////////////////////////////////////
 void main_loop (void)
 {
+
+	rc_24m_cal();
 
 #if(PM_MODE == IDLE_TIMER_WAKEUP)
 	//After stall wakes up, it does not enter the interrupt, but only continues to execute, and the interrupt mask needs to be cleared.
@@ -314,6 +357,15 @@ void main_loop (void)
 	cpu_stall_wakeup(FLD_IRQ_GPIO_EN);
 	gpio_clr_irq_status(GPIO_IRQ_MASK_GPIO);//Clear the interrupt status.
 
+#elif(PM_MODE == IDLE_TIMER0_WAKEUP)
+	cpu_stall_wakeup_by_timer0(2*CLOCK_SYS_CLOCK_1S);
+
+#elif(PM_MODE == IDLE_TIMER1_WAKEUP)
+	cpu_stall_wakeup_by_timer1(2*CLOCK_SYS_CLOCK_1S);
+	
+#elif(PM_MODE == IDLE_TIMER2_WAKEUP)
+	cpu_stall_wakeup_by_timer2(2*CLOCK_SYS_CLOCK_1S);
+
 #elif(PM_MODE==SUSPEND_PAD_WAKEUP)
 
 	cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_PAD, 0);
@@ -342,18 +394,20 @@ void main_loop (void)
 		cpu_sleep_wakeup (SUSPEND_MODE, PM_WAKEUP_CORE, 0);
 		tick_suspend_interval = clock_time()|1;
 	}
-
+#elif(PM_MODE==SUSPEND_COMPARATOR_WAKEUP)
+	//When entering sleep, keep the input voltage and reference voltage difference must be greater than 30mV,
+	//otherwise can not enter sleep normally, crash occurs.
+	cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_COMPARATOR, 0);
+	if(1 == lpc_get_result())
+	{
+		gpio_toggle(LED3);
+	}
 #endif
 
-#if CURRENT_TEST
+#if !CURRENT_TEST
+	gpio_toggle(LED1);
+#endif
 	sleep_ms(1000);
-#else
-	gpio_write(LED1, 1);
-	sleep_ms(100);
-	gpio_write(LED1, 0);
-	sleep_ms(100);
-
-#endif
 }
 
 

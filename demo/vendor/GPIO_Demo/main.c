@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -40,58 +39,42 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 #if (GPIO_MODE == GPIO_IRQ )
 
 	if((reg_irq_src & FLD_IRQ_GPIO_EN)==FLD_IRQ_GPIO_EN){
-		reg_irq_src |= FLD_IRQ_GPIO_EN; // clear the relevant irq
+		reg_irq_src = FLD_IRQ_GPIO_EN; // clear the relevant irq
 			gpio_irq_cnt++;
-#if (GPIO_DEMO_MODE == GPIO_DEMO_KEY)
-			gpio_write(LED2, 1);
-#elif (GPIO_DEMO_MODE == GPIO_DEMO_SQUARE_WAVE)
-			gpio_toggle(LED2);
-#endif
+			gpio_toggle(LED1);
 	}
 
 #elif(GPIO_MODE == GPIO_IRQ_RSIC0)
 
 	if((reg_irq_src & FLD_IRQ_GPIO_RISC0_EN)==FLD_IRQ_GPIO_RISC0_EN){
-		reg_irq_src |= FLD_IRQ_GPIO_RISC0_EN; // clear the relevant irq
+		reg_irq_src = FLD_IRQ_GPIO_RISC0_EN; // clear the relevant irq
 			gpio_irq_cnt++;
-#if (GPIO_DEMO_MODE == GPIO_DEMO_KEY)
-			gpio_write(LED3, 1);
-#elif (GPIO_DEMO_MODE == GPIO_DEMO_SQUARE_WAVE)
-			gpio_toggle(LED3);
-#endif
+			gpio_toggle(LED2);
 	}
 
 #elif(GPIO_MODE == GPIO_IRQ_RSIC1)
 
 	if((reg_irq_src & FLD_IRQ_GPIO_RISC1_EN)==FLD_IRQ_GPIO_RISC1_EN){
-		reg_irq_src |= FLD_IRQ_GPIO_RISC1_EN; // clear the relevant irq
+		reg_irq_src = FLD_IRQ_GPIO_RISC1_EN; // clear the relevant irq
 
 			gpio_irq_cnt++;
-#if (GPIO_DEMO_MODE == GPIO_DEMO_KEY)
-			gpio_write(LED4, 1);
-#elif (GPIO_DEMO_MODE == GPIO_DEMO_SQUARE_WAVE)
-			gpio_toggle(LED4);
-#endif
+			gpio_toggle(LED3);
 	}
-#elif((GPIO_MODE == GPIO_SEL_IRQ_SRC)&&(MCU_CORE_B80))
-	static unsigned char gpio_irqsrc;
-#if (GPIO_DEMO_MODE == GPIO_DEMO_KEY)
-	gpio_irqsrc = (reg_gpio_irq_from_pad & KEY1);
-	if(gpio_irqsrc)
+#elif (GPIO_MODE == GPIO_IRQ_RSIC2)
+    if((reg_irq_src & FLD_IRQ_GPIO_RISC2_EN)==FLD_IRQ_GPIO_RISC2_EN){
+        reg_irq_src = FLD_IRQ_GPIO_RISC2_EN; // clear the relevant irq
+        gpio_irq_cnt++;
+    	gpio_toggle(LED4);
+    }
+#elif(GPIO_MODE == GPIO_SEL_IRQ_SRC)
+    /* reg_gpio_irq_from_pad [7:0 ] corresponding to 8 gpio irq status, write 1 clear 0*/
+	if(reg_gpio_irq_from_pad & IRQ_PIN)
 	{
-		reg_gpio_irq_from_pad |= KEY1;
-		gpio_irq_cnt++;
-		gpio_write(LED1, 1);
-	}
-#elif (GPIO_DEMO_MODE == GPIO_DEMO_SQUARE_WAVE)
-	gpio_irqsrc = (reg_gpio_irq_from_pad & IRQ_PIN);
-	if(gpio_irqsrc)
-	{
-		reg_gpio_irq_from_pad |= IRQ_PIN;
+		reg_gpio_irq_from_pad = (unsigned char)IRQ_PIN;
 		gpio_irq_cnt++;
 		gpio_toggle(LED1);
+		gpio_toggle(LED2);
 	}
-#endif
 #endif
 
 }

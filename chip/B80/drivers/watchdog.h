@@ -7,7 +7,6 @@
  * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -38,7 +37,7 @@
  *  |                |              |                                                    |source in the sleep state,32K watchdog cannot be enabled. |
  *  |                |              |                                                    |                                                          |
  *  |                |              | 1. reset exceptions that occur during active       |                                                          |                                                         |
- *  | 32k watchdog   | 32k timer    | 2. reser exceptions thar occur during sleep wakeup |2.Because the 32K clock source may also be used by other  |
+ *  | 32k watchdog   | 32k timer    | 2. reset exceptions that occur during sleep wakeup |2.Because the 32K clock source may also be used by other  |
  *  |                |              |                                                    |modules,the 32K watchdog has no action to clear watchdog, |
  *  |                |              |                                                    |and can only feed the dog by resetting the capture value. |
  *  |                |              |                                                    |The correct operation process is:                         |
@@ -69,7 +68,7 @@ static inline void wd_set_interval_ms(unsigned int period_ms,unsigned long int t
 	static unsigned short tmp_period_ms = 0;
 	tmp_period_ms = (period_ms*tick_per_ms>>18);
 	reg_tmr2_tick = 0x00000000;    //reset tick register
-	reg_tmr_ctrl=(reg_tmr_ctrl&(~FLD_TMR_WD_CAPT))|((tmp_period_ms<<9)&FLD_TMR_WD_CAPT);//set the capture register
+	reg_tmr_ctrl=(((reg_tmr_ctrl&(~FLD_TMR_WD_CAPT))|((tmp_period_ms<<9)&FLD_TMR_WD_CAPT))&0x00ffffff);//set the capture register
 }
 
 /**
@@ -78,8 +77,8 @@ static inline void wd_set_interval_ms(unsigned int period_ms,unsigned long int t
  * @return    none
  */
 static inline void wd_start(void){
-	BM_SET(reg_tmr_ctrl, FLD_TMR2_EN);
-	BM_SET(reg_tmr_ctrl, FLD_TMR_WD_EN);
+	BM_SET(reg_tmr_ctrl8, FLD_TMR2_EN);
+	BM_SET(reg_wd_ctrl1, FLD_WD_EN);
 }
 /**
  * @brief     stop watchdog. ie disable watchdog
@@ -87,7 +86,7 @@ static inline void wd_start(void){
  * @return    none
  */
 static inline void wd_stop(void){
-	BM_CLR(reg_tmr_ctrl, FLD_TMR_WD_EN);
+	BM_CLR(reg_wd_ctrl1, FLD_WD_EN);
 }
 
 /**

@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -29,7 +28,7 @@ unsigned char  usb_cdc_data[CDC_TXRX_EPSIZE];
 unsigned short usb_cdc_data_len;
 unsigned int usb_cdc_tx_cnt;
 unsigned char LineCoding[7]={0x00,0xC2,0x01,0x00,0x00,0x00,0x08};
-unsigned char cdc_lenth=0;
+unsigned char cdc_length=0;
 /**
  * @brief		This function serves to send data to USB host in CDC device
  * @param[in] 	data_ptr -  the pointer of data, which need to be sent.
@@ -49,7 +48,7 @@ void usb_cdc_tx_data_to_host(unsigned char * data_ptr, unsigned short data_len)
 		data_len = CDC_TXRX_EPSIZE;
 
 	}
-	cdc_lenth=data_len;
+	cdc_length=data_len;
 	usbhw_reset_ep_ptr(USB_EDP_CDC_IN);
 
 	while(data_len-- > 0) {
@@ -61,7 +60,7 @@ void usb_cdc_tx_data_to_host(unsigned char * data_ptr, unsigned short data_len)
 	/*If the length of the data sent is equal to the wMaxPacketSize (CDC_TXRX_EPSIZE),
 		 the device must return a zero-length packet to indicate the end of the data stage,
 		 The following is the process of sending zero-length packet*/
-	if(cdc_lenth%CDC_TXRX_EPSIZE==0)
+	if(cdc_length%CDC_TXRX_EPSIZE==0)
 	{
 		sleep_us(64);//delay for the actual data transfer to complete
 		usbhw_reset_ep_ptr(USB_EDP_CDC_IN);

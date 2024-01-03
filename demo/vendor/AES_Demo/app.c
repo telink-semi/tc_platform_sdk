@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -146,7 +145,7 @@ void main_loop (void)
 	}
 	aes_encrypt(sKey, temp, EncryptResult1);
 
-	//chech result
+	//check result
 	for(int i = 0;i<16;i++)
 	{
 		if(EncryptResult1[i] != EncryptStd1[i])
@@ -163,7 +162,7 @@ void main_loop (void)
 	}
 	aes_encrypt(sKey, temp, EncryptResult2);
 
-	//chech result
+	//check result
 	for(int i = 0;i<16;i++)
 	{
 		if(EncryptResult2[i] != EncryptStd2[i])
@@ -180,7 +179,7 @@ void main_loop (void)
 		DecryptResult1[i] = DecryptResult1[i]^init[i];
 	}
 
-	//chech result
+	//check result
 	for(int i = 0;i<16;i++)
 	{
 		if(DecryptResult1[i] != sPlainText1[i])
@@ -197,7 +196,7 @@ void main_loop (void)
 		DecryptResult2[i] = DecryptResult2[i]^EncryptResult1[i];
 	}
 
-	//chech result
+	//check result
 	for(int i = 0;i<16;i++)
 	{
 		if(DecryptResult2[i] != sPlainText2[i])

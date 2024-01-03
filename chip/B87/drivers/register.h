@@ -7,7 +7,6 @@
  * @date	2019
  *
  * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -624,10 +623,10 @@ enum{
 	FLD_USB_EDP6_IRQ 		= 	BIT(6),
 	FLD_USB_EDP7_IRQ 		= 	BIT(7),
 };
-#define reg_usb_ep8_send_max	REG_ADDR8(0x13b)
-#define reg_usb_ep8_send_thre	REG_ADDR8(0x13c)
-#define reg_usb_ep8_fifo_mode	REG_ADDR8(0x13d)
-#define reg_usb_ep_max_size		REG_ADDR8(0x13e)
+#define reg_usb_ep8_send_max		REG_ADDR8(0x13b)
+#define reg_usb_ep8_send_thres		REG_ADDR8(0x13c)
+#define reg_usb_ep8_fifo_mode		REG_ADDR8(0x13d)
+#define reg_usb_ep_max_size			REG_ADDR8(0x13e)
 
 enum{
 	FLD_USB_ENP8_FIFO_MODE =	BIT(0),
@@ -666,53 +665,68 @@ enum {
 #define reg_audio_ctrl     REG_ADDR8(0x560)
 enum{
 	AUDIO_OUTPUT_OFF		   = 0,
-	FLD_AUDIO_MONO_MODE        = BIT(0),
+	FLD_AUDIO_MONO_MODE        = BIT(0),//1-mono mode audio output,0--stereo mode audio output  for SDM
 	FLD_AUDIO_I2S_PLAYER_EN    = BIT(1),
-	FLD_AUDIO_SDM_PLAYER_EN    = BIT(2),
+	FLD_AUDIO_SDM_PLAYER_EN    = BIT(2),//1-enable SDM player, 0--disable SDM player
 	FLD_AUDIO_ISO_PLAYER_EN	   = BIT(3),
 	FLD_AUDIO_I2S_RECORDER_EN  = BIT(4),
 	FLD_AUDIO_I2S_INTERFACE_EN = BIT(5),
-	FLD_AUDIO_GRP_EN           = BIT(6),
+	FLD_AUDIO_GRP_EN           = BIT(6),//1-enable GRP, 0--disable GRP
 	FLD_AUDIO_HPF_EN           = BIT(7),
 };
 
 #define	reg_pwm_ctrl	  REG_ADDR8(0x563)
 enum{
-	FLD_PWM_MULTIPLY2			= BIT(0),
-	FLD_PWM_ENABLE				= BIT(1),
-	FLD_LINER_INTERPOLATE_EN	= BIT(2),
-	FLD_LEFT_SHAPING_EN 		= BIT(5),
-	FLD_RIGTH_SHAPING_EN 		= BIT(6)
+	FLD_PWM_MULTIPLY2			= BIT(0),//1--not multiply 2 when PWM, 0--multiply2 when PWM
+	FLD_PWM_ENABLE				= BIT(1),//1--PWM, 0--not PWM
+	FLD_LINER_INTERPOLATE_EN	= BIT(2),//1-linear interpolate,  0-delay interpolate
+	FLD_LEFT_SHAPING_EN 		= BIT(5),//1-left Shapping used,   0-left Shapping not used
+	FLD_RIGHT_SHAPING_EN 		= BIT(6),//1-right Shapping used,  0-right Shapping not used
 };
 
 #define reg_ascl_tune     REG_ADDR32(0x564)
 
+#define reg_ascl_tune0     REG_ADDR8(0x564)//[7:0] tune step_i for rate matching block
+
+#define reg_ascl_tune1     REG_ADDR8(0x565)
+enum{
+	FACTOR_TO_GN_I2S_CLK = BIT_RNG(0,3),//factor to generate I2S clock
+	STEPI_LOW_BITS  	 = BIT_RNG(4,7),//low 4 bits of rate matching block step_i[3:0]
+};
+#define reg_ascl_tune2     REG_ADDR8(0x566)
+enum{
+	STEPI_MID_BITS  	 = BIT_RNG(0,7),// middle byte of rate matching block step_i[11:4]
+};
+#define reg_ascl_tune3     REG_ADDR8(0x567)
+enum{
+	STEPI_HIGH_BITS  	 = BIT_RNG(0,7),//high byte of rate matching block step_i[19:12]
+};
 #define reg_pn1_left      REG_ADDR8(0x568)
 enum{
-	PN1_LEFT_CHN_BITS 	= BIT_RNG(0,4),
-	PN2_LEFT_CHN_EN	  	= BIT(5),
-	PN1_LEFT_CHN_EN   	= BIT(6),
+	PN1_LEFT_CHN_BITS 	= BIT_RNG(0,4),//bits used in pn1 of left channel, range from 0 to 16
+	PN2_LEFT_CHN_EN	  	= BIT(5),//1-pn2 of left enable, 0-pn2 of left disable
+	PN1_LEFT_CHN_EN   	= BIT(6),//1-pn2 of left enable, 0-pn2 of left disable
 };
 
 #define reg_pn2_left      REG_ADDR8(0x569)
 enum{
-	PN2_LEFT_CHN_BITS 	= BIT_RNG(0,4),
-	PN2_RIGHT_CHN_EN	= BIT(5),
-	PN1_RIGHT_CHN_EN	= BIT(6),
+	PN2_LEFT_CHN_BITS 	= BIT_RNG(0,4),//bits used in pn2 of left channel, range from 0 to 16
+	PN2_RIGHT_CHN_EN	= BIT(5),//1-pn2 of right enable,  0-pn2 of right disable
+	PN1_RIGHT_CHN_EN	= BIT(6),//1-pn1 of right enable,  0-pn1 of right disable
 };
 
 #define reg_pn1_right      REG_ADDR8(0x56a)
 enum{
-	PN1_RIGHT_CHN_BITS 	= BIT_RNG(0,4),
+	PN1_RIGHT_CHN_BITS 	= BIT_RNG(0,4),//bits used in pn1 of right channel, range from 0 to 16
 	CLK2A_AUDIO_CLK_EN	= BIT(5),
 	EXCHANGE_SDM_DATA_EN= BIT(6),
 };
 
 #define reg_pn2_right      REG_ADDR8(0x56b)
 enum{
-	PN2_RIGHT_CHN_BITS 		= BIT_RNG(0,4),
-	SDM_LEFT_CHN_CONST_EN	= BIT(5),
-	SDM_RIGHT_CHN_CONST_EN	= BIT(6),
+	PN2_RIGHT_CHN_BITS 		= BIT_RNG(0,4),//bits used in pn2 of right channel, range from 0 to 16
+	SDM_LEFT_CHN_CONST_EN	= BIT(5),//1-left channel use const value,0-left channel use pn
+	SDM_RIGHT_CHN_CONST_EN	= BIT(6),//1-right channel use const value,0-right channel use pn
 };
 
 /*******************************      gpio registers: 0x580      ******************************/
@@ -851,7 +865,10 @@ enum{
 	FLD_TMR2_STA =				BIT(26),
 	FLD_CLR_WD =				BIT(27),
 };
-
+#define reg_wd_ctrl1            REG_ADDR8(0x622)
+enum{
+	FLD_WD_EN     = BIT(7),
+};
 #define reg_tmr_sta				REG_ADDR8(0x623)
 enum{
 	FLD_TMR_STA_TMR0 =			BIT(0),
@@ -930,9 +947,9 @@ enum{
 enum{
 	FLD_SYSTEM_32K_TIMER_BUSY 			=   BIT(6),
 	FLD_SYSTEM_32K_TIMER_UPDATE_RD 		=   BIT(5),			FLD_SYSTEM_32K_TIMER_CLEAR_RD		=   BIT(5),
-	FLD_SYSTEM_STATE_MACHINE_STATUS		=   BIT_RNG(3,4),  	FLD_SYSTEM_32K_TIMER_SYCN_TRIG		=   BIT(3),
+	FLD_SYSTEM_STATE_MACHINE_STATUS		=   BIT_RNG(3,4),  	FLD_SYSTEM_32K_TIMER_SYNC_TRIG		=   BIT(3),
 	FLD_SYSTEM_CMD_SET_TRIG 			=   BIT(2),
-	FLD_SYSTEM_CMD_SYCN_TRIG 			=   BIT(1),
+	FLD_SYSTEM_CMD_SYNC_TRIG 			=   BIT(1),
 	FLD_SYSTEM_TIMER_STATUS 			=   BIT(0),
 };
 
@@ -1120,10 +1137,15 @@ enum{
 
 #define reg_dfifo_irq_status	REG_ADDR8(0xb13)
 enum{
-	FLD_AUD_DFIFO0_L_IRQ	= BIT(4),
-	FLD_AUD_DFIFO0_H_IRQ	= BIT(5),
-	FLD_AUD_DFIFO1_L_IRQ	= BIT(6),
-	FLD_AUD_DFIFO1_H_IRQ	= BIT(7),
+	FLD_AUD_DFIFO0_L_IRQ_FLAG	= BIT(0),//Write 1 to clear.
+	FLD_AUD_DFIFO0_H_IRQ_FLAG	= BIT(1),//Write 1 to clear.
+	FLD_AUD_DFIFO1_H_IRQ_FLAG	= BIT(2),//Write 1 to clear.
+	FLD_AUD_DFIFO2_H_IRQ_FLAG	= BIT(3),//Write 1 to clear.
+
+	FLD_AUD_DFIFO0_L_IRQ	= BIT(4),//automatically cleared when the data number in DFIFO0 is no less than the threshold
+	FLD_AUD_DFIFO0_H_IRQ	= BIT(5),//automatically cleared when the data number in DFIFO0 is no less than the threshold
+	FLD_AUD_DFIFO1_H_IRQ	= BIT(6),
+	FLD_AUD_DFIFO2_H_IRQ	= BIT(7),
 };
 #define reg_dfifo0_rptr			REG_ADDR16(0xb14)
 #define reg_dfifo0_wptr			REG_ADDR16(0xb16)
@@ -1317,7 +1339,7 @@ enum{
 
 #define		CLEAR_ALL_RFIRQ_STATUS   ( reg_rf_irq_status = 0xffff )
 
-enum{
+typedef enum{
 	FLD_RF_IRQ_RX = 			BIT(0),
 	FLD_RF_IRQ_TX =				BIT(1),
 	FLD_RF_IRQ_RX_TIMEOUT =		BIT(2),
@@ -1332,7 +1354,7 @@ enum{
 	FLD_RF_IRQ_STX_TIMEOUT =    BIT(12),
 	FLD_RF_IRQ_WIFI_DENY   =    BIT(13),
 	FLD_RF_IRQ_ALL =            0X3FFF,
-};
+}rf_irq_e;
 #define  reg_rf_ll_wifi_coex        REG_ADDR8(0xf30)
 enum{
 	FLD_RF_COEX_EN			=	BIT(0),
