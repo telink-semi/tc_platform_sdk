@@ -7,7 +7,6 @@
  * @date	2019
  *
  * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -29,6 +28,10 @@
 #include "timer.h"
 #include "flash.h"
 #include "lib/include/pm.h"
+/**
+ * Note: When the reference voltage is configured to 1.2V, the calculated ADC voltage value is closest to the actual voltage value using 1175 as the coefficient default.
+ * 1175 is the value obtained by ATE through big data statistics, which is more in line with most chips than 1200.
+ */
 _attribute_data_retention_
 volatile unsigned short adc_vref = 1175;//ADC calibration value voltage (unit:mV).
 _attribute_data_retention_
@@ -120,6 +123,8 @@ void adc_set_ref_voltage(ADC_RefVolTypeDef v_ref)
 		//Vref buffer bias current trimming: 		150%
 		//Comparator preamp bias current trimming:  100%
 		analog_write( areg_ain_scale  , (analog_read( areg_ain_scale  )&(0xC0)) | 0x3d );
+		/* Note: If adc_set_ref_voltage() is called to switch v_ref to ADC_VREF_0P9V
+		 * and then back to ADC_VREF_1P2V, note that adc_vref and adc_vref_offset are not re-assigned.*/
 	}
 	else
 	{
@@ -127,6 +132,7 @@ void adc_set_ref_voltage(ADC_RefVolTypeDef v_ref)
 		//Comparator preamp bias current trimming:  100%
 		analog_write( areg_ain_scale  , (analog_read( areg_ain_scale  )&(0xC0)) | 0x15 );
 		adc_vref=900;// v_ref=ADC_VREF_0P9V,
+		adc_vref_offset=0;
 	}
 }
 
@@ -296,7 +302,7 @@ void adc_old_temp_init(void)
 	adc_set_ref_voltage(ADC_VREF_1P2V);//set channel Vref,
 	adc_set_vref_vbat_divider(ADC_VBAT_DIVIDER_OFF);//set Vbat divider select,
 
-	adc_set_ain_channel_differential_mode(TEMSENSORP, TEMSENSORN);
+	adc_set_ain_channel_differential_mode(TEMPERATURE_SENSOR_P, TEMPERATURE_SENSOR_N);
 	adc_set_resolution(RES14);
 	adc_set_tsample_cycle(SAMPLING_CYCLES_6);
 	adc_set_ain_pre_scaler(ADC_PRESCALER_1);//adc scaling factor is 1 or 1/8
@@ -328,7 +334,7 @@ void adc_temp_init(void)
 	adc_set_ref_voltage(ADC_VREF_1P2V);//set channel Vref,
 	adc_set_vref_vbat_divider(ADC_VBAT_DIVIDER_OFF);//set Vbat divider select,
 
-	adc_set_ain_channel_differential_mode(TEMSENSORP_EE, TEMSENSORN_EE);
+	adc_set_ain_channel_differential_mode(TEMPERATURE_SENSOR_P_EE, TEMPERATURE_SENSOR_N_EE);
 	adc_set_resolution(RES14);
 	adc_set_tsample_cycle(SAMPLING_CYCLES_6);
 	adc_set_ain_pre_scaler(ADC_PRESCALER_1);//adc scaling factor is 1 or 1/8

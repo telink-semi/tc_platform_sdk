@@ -7,7 +7,6 @@
  * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -185,7 +184,7 @@ unsigned char keyscan_get_ks_value(void)
 
 /**
  * @brief 		This function serves to set keyscan scan times.
- * @param[in] 	scan_times - 1 is to set tripple scan times,0 is to set double scan times.
+ * @param[in] 	scan_times - 1 is to set triple scan times,0 is to set double scan times.
  * @return 		none
  */
 void keyscan_set_scan_times(ks_scan_times_e scan_times)
@@ -203,7 +202,7 @@ void keyscan_set_scan_times(ks_scan_times_e scan_times)
  * 										  The value setting range is 1-32.
  * 										  The idle state will stop scanning and reduce power consumption.
  * 										  Press again to exit the idle state.
- * @param[in] 	scan_times 				- 1 is to set tripple scan times,0 is to set double scan times.
+ * @param[in] 	scan_times 				- 1 is to set triple scan times,0 is to set double scan times.
  * @return 		none
  */
 void keyscan_init(ks_debounce_period_e debounce_period,unsigned char enter_idle_period_num, ks_scan_times_e scan_times)

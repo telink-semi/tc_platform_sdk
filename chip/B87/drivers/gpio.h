@@ -7,7 +7,6 @@
  * @date	2019
  *
  * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -31,6 +30,10 @@
 
 /**
  *  @brief  Define GPIO types. 
+ *  @note	If want to use PA5/PA6<dp/dm> as the suspend wakeup pad,
+ * 			and the polarity is low wakeup,need to set this IO as GPIO or call API pm_set_suspend_power_cfg() to power
+ * 			on the USB power, power on USB will increase the suspend current about 0.1uA;In deep/deep_ret and low polarity
+ * 			wakeup mode,you need call API pm_set_suspend_power_cfg() to power on USB,power on USB will not increase deep current.
  */
 
 typedef enum{
@@ -403,8 +406,8 @@ static inline void gpio_set_interrupt(GPIO_PinTypeDef pin, GPIO_PolTypeDef falli
 	}else{
 		BM_CLR(reg_gpio_pol(pin), bit);
 	}
-/*clear gpio interrupt sorce (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
-	reg_irq_src |= FLD_IRQ_GPIO_EN;
+/*clear gpio interrupt source (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
+	reg_irq_src = FLD_IRQ_GPIO_EN;
 	reg_irq_mask |= FLD_IRQ_GPIO_EN;
 }
 
@@ -439,8 +442,8 @@ static inline void gpio_set_interrupt_risc0(GPIO_PinTypeDef pin, GPIO_PolTypeDef
 	}else{
 		BM_CLR(reg_gpio_pol(pin), bit);
 	}
-/*clear gpio interrupt sorce (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
-	reg_irq_src |= FLD_IRQ_GPIO_RISC0_EN;
+/*clear gpio interrupt source (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
+	reg_irq_src = FLD_IRQ_GPIO_RISC0_EN;
 	reg_irq_mask |= FLD_IRQ_GPIO_RISC0_EN;
 }
 
@@ -479,8 +482,8 @@ static inline void gpio_set_interrupt_risc1(GPIO_PinTypeDef pin, GPIO_PolTypeDef
 	}else{
 		BM_CLR(reg_gpio_pol(pin), bit);
 	}
-/*clear gpio interrupt sorce (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
-	reg_irq_src |=FLD_IRQ_GPIO_RISC1_EN;
+/*clear gpio interrupt source (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
+	reg_irq_src =FLD_IRQ_GPIO_RISC1_EN;
 	reg_irq_mask |= FLD_IRQ_GPIO_RISC1_EN;
 }
 

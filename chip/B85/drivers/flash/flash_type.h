@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -29,8 +28,8 @@
 #include "flash_mid13325e.h"	// ZB25WD40B
 #include "flash_mid14325e.h"	// ZB25WD80B
 #include "flash_mid1060c8.h"	// GD25LD05C
-#include "flash_mid1360c8.h"	// GD25LD40C
-#include "flash_mid1460c8.h"	// GD25LD80C
+#include "flash_mid1360c8.h"	// GD25LD40C / GD25LD40E
+#include "flash_mid1460c8.h"	// GD25LD80C / GD25LD80E
 #include "flash_mid011460c8.h"	// GD25LE80C / GD25LQ80C
 #include "flash_mid134051.h"	// MD25D40D
 #include "flash_mid136085.h"	// P25Q40L

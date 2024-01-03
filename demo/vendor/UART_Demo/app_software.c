@@ -7,7 +7,6 @@
  * @date	2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -100,7 +99,7 @@ volatile soft_uart_rec_st  g_soft_uart_rec; // global variable
 // interrupt handlers must be placed in ram_code section
 _attribute_ram_code_sec_noinline_ void irq_handler(void){
 	if((reg_irq_src & FLD_IRQ_GPIO_EN)==FLD_IRQ_GPIO_EN){
-		reg_irq_src |= FLD_IRQ_GPIO_EN; // clear the relevant irq
+		reg_irq_src = FLD_IRQ_GPIO_EN; // clear the relevant irq
 		gpio_en_interrupt(g_soft_uart_rec.rx_pin,0);
 		// set the sampling period (the time to send 1bit at this baud rate + offset)
 		g_soft_uart_rec.rx_timer(TIMER_MODE_SYSCLK,0,g_soft_uart_rec.timer_period);

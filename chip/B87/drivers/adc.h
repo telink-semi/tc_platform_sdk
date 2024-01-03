@@ -7,7 +7,6 @@
  * @date	2019
  *
  * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -78,8 +77,8 @@ typedef enum {
 	C5N,
 	PGA0N,
 	PGA1N,
-	TEMSENSORN,
-	TEMSENSORN_EE,
+	TEMPERATURE_SENSOR_N,
+	TEMPERATURE_SENSOR_N_EE,
 	GND,
 }ADC_InputNchTypeDef;
 
@@ -100,8 +99,8 @@ typedef enum {
 	C5P,
 	PGA0P,
 	PGA1P,
-	TEMSENSORP,
-	TEMSENSORP_EE,
+	TEMPERATURE_SENSOR_P,
+	TEMPERATURE_SENSOR_P_EE,
 	VBAT,
 }ADC_InputPchTypeDef;
 

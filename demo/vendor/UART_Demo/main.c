@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -103,13 +102,21 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 	 {
 		 if(uart_rx_flag==0)
 		 {
-			 for(int i=0;i<uart_rx_trig_level;i++){
-				 rec_buff[uart_ndmairq_cnt++] = uart_ndma_read_byte();
+			 unsigned char fifo_cnt=reg_uart_buf_cnt&FLD_UART_RX_BUF_CNT;
+			 for(int i=0;i<fifo_cnt;i++){
+
 				 if((uart_ndmairq_cnt%trans_buff_Len==0)&&(uart_ndmairq_cnt!=0))
 				 {
-					 uart_rx_flag=1;
+					 uart_ndma_read_byte();
+				 }else{
+					 rec_buff[uart_ndmairq_cnt++] = uart_ndma_read_byte();
 				 }
 			 }
+			 if((uart_ndmairq_cnt%trans_buff_Len==0)&&(uart_ndmairq_cnt!=0))
+			 {
+				 uart_rx_flag=1;
+			 }
+
 		 }
 		 else
 		 {

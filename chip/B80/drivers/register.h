@@ -7,7 +7,6 @@
  * @date	2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -127,7 +126,7 @@ enum{
 /**
  * BIT[0]  set cmd format 0: single mode  1: the format of the cmd phase is the same as the data phase(Dual/Quad).master only
  * BIT[1]  set spi quad I/O mode. master only
- * BIT[2]  set the spi commnd phase enable.master only
+ * BIT[2]  set the spi command phase enable.master only
  * BIT[4:7]   the minimum time that SPI CS should stay HIGH.the actual duration is (SPI_CLK period_out / 2)*(csht+1).default=2,master only
  */
 #define reg_spi_mode2			REG_ADDR8(SPI_BASE_ADDR+0x02)
@@ -930,10 +929,10 @@ enum{
 	FLD_USB_EDP6_IRQ 		= 	BIT(6),
 	FLD_USB_EDP7_IRQ 		= 	BIT(7),
 };
-#define reg_usb_ep8_send_max	REG_ADDR8(0x13b)
-#define reg_usb_ep8_send_thre	REG_ADDR8(0x13c)
-#define reg_usb_ep8_fifo_mode	REG_ADDR8(0x13d)
-#define reg_usb_ep_max_size		REG_ADDR8(0x13e)
+#define reg_usb_ep8_send_max	    REG_ADDR8(0x13b)
+#define reg_usb_ep8_send_thres		REG_ADDR8(0x13c)
+#define reg_usb_ep8_fifo_mode		REG_ADDR8(0x13d)
+#define reg_usb_ep_max_size			REG_ADDR8(0x13e)
 
 enum{
 	FLD_USB_ENP8_FIFO_MODE =	BIT(0),
@@ -1049,7 +1048,7 @@ enum {
 
 #define reg_gpio_irq_risc0_en(i)  	REG_ADDR8(0x530 + (i >> 8))	  // reg_irq_mask: FLD_IRQ_GPIO_RISC0_EN
 #define reg_gpio_irq_risc1_en(i)  	REG_ADDR8(0x538 + (i >> 8))	  // reg_irq_mask: FLD_IRQ_GPIO_RISC1_EN
-#define reg_gpio_irq_risc2_en(i)  	REG_ADDR8(0x540 + (i >> 8))
+#define reg_gpio_irq_risc2_en(i)  	REG_ADDR8(0x540 + (i >> 8))   // reg_irq_mask: FLD_IRQ_GPIO_RISC2_EN
 
 #define reg_comb_irq				REG_ADDR8(0x56e)
 enum{
@@ -1068,7 +1067,7 @@ enum{
     FLD_GPIO_CORE_INTERRUPT_EN 	= BIT(2),
 };
 #define reg_gpio_irq_sel          REG_ADDR8(0x575)
-#define reg_gpio_irq_from_pad     REG_ADDR8(0x56f)
+#define reg_gpio_irq_from_pad     REG_ADDR8(0x56f)//W1C
 #define reg_gpio_irq_pad_mask     REG_ADDR8(0x576)
 #define reg_gpio_irq_lvl          REG_ADDR8(0x577)
 
@@ -1093,6 +1092,10 @@ enum{
 	FLD_CLR_WD =				BIT(27),
 };
 
+#define reg_wd_ctrl1            REG_ADDR8(0x622)
+enum{
+	FLD_WD_EN     = BIT(7),
+};
 #define reg_tmr_sta				REG_ADDR8(0x623)
 enum{
 	FLD_TMR_STA_TMR0 =			BIT(0),
@@ -1142,7 +1145,7 @@ typedef enum{
 	FLD_IRQ_SYSTEM_TIMER =		BIT(20),
 	FLD_IRQ_GPIO_RISC0_EN =		BIT(21),
 	FLD_IRQ_GPIO_RISC1_EN =		BIT(22),
-	//	RSVD		  	  = 	BIT(23),
+    FLD_IRQ_GPIO_RISC2_EN =     BIT(23),
 
 	FLD_IRQ_EN =				BIT_RNG(24,31),
 	FLD_IRQ_ALL           =     0XFFFFFFFF,
@@ -1171,9 +1174,9 @@ enum{
 enum{
 	FLD_SYSTEM_32K_TIMER_BUSY 			=   BIT(6),
 	FLD_SYSTEM_32K_TIMER_UPDATE_RD 		=   BIT(5),			FLD_SYSTEM_32K_TIMER_CLEAR_RD		=   BIT(5),
-	FLD_SYSTEM_STATE_MACHINE_STATUS		=   BIT_RNG(3,4),  	FLD_SYSTEM_32K_TIMER_SYCN_TRIG		=   BIT(3),
+	FLD_SYSTEM_STATE_MACHINE_STATUS		=   BIT_RNG(3,4),  	FLD_SYSTEM_32K_TIMER_SYNC_TRIG		=   BIT(3),
 	FLD_SYSTEM_CMD_SET_TRIG 			=   BIT(2),
-	FLD_SYSTEM_CMD_SYCN_TRIG 			=   BIT(1),
+	FLD_SYSTEM_CMD_SYNC_TRIG 			=   BIT(1),
 	FLD_SYSTEM_TIMER_STATUS 			=   BIT(0),
 };
 
@@ -1637,7 +1640,7 @@ enum{
 
 #define		CLEAR_ALL_RFIRQ_STATUS   ( reg_rf_irq_status = 0xffff )
 
-enum{
+typedef enum{
 	FLD_RF_IRQ_RX = 			BIT(0),
 	FLD_RF_IRQ_TX =				BIT(1),
 	FLD_RF_IRQ_RX_TIMEOUT =		BIT(2),
@@ -1652,7 +1655,7 @@ enum{
 	FLD_RF_IRQ_STX_TIMEOUT =    BIT(12),
 	FLD_RF_IRQ_WIFI_DENY   =    BIT(13),
 	FLD_RF_IRQ_ALL =            0X3FFF,
-};
+}rf_irq_e;
 #define reg_rf_ll_wifi_coex		REG_ADDR8(0xf30)
 
 enum{

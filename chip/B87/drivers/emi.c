@@ -22,7 +22,7 @@
  *          or alteration(s).
  *
  *          Licensees are granted free, non-transferable use of the information in this
- *          file under Mutual Non-Disclosure Agreement. NO WARRENTY of ANY KIND is provided.
+ *          file under Mutual Non-Disclosure Agreement. NO WARRANTY of ANY KIND is provided.
  *
  *******************************************************************************************************/
 #include "emi.h"
@@ -97,6 +97,7 @@ void rf_emi_stop(void)
 	rf_set_tx_rx_off();
 }
 
+static unsigned char rxpara_flag = 1;
 /**
  * @brief   This function serves to set rx mode and channel.
  * @param   mode - mode of RF
@@ -120,6 +121,20 @@ void rf_emi_rx(RF_ModeTypeDef mode,signed char rf_chn)
 	rf_set_tx_rx_off();
 	rf_set_rxmode();
 	sleep_us(150);
+	if(rxpara_flag == 1)
+	{
+		rf_set_rxpara();
+		rxpara_flag = 0;
+	}
+
+	if(rf_chn == 24 || rf_chn == 48 || rf_chn == 72)
+	{
+		rf_ldot_ldo_rxtxlf_bypass_en();
+	}
+	else
+	{
+		rf_ldot_ldo_rxtxlf_bypass_dis();
+	}
 	rssi = 0;
 	emi_rssibuf = 0;
 	emi_rx_cnt = 0;

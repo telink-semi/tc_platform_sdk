@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -27,6 +26,7 @@
 
 extern void user_init();
 extern void main_loop (void);
+extern _attribute_ram_code_sec_noinline_ void irq_rf_handler(void);
 extern unsigned int tx_state;
 extern unsigned int rx_state;
 extern unsigned int timeout_state;

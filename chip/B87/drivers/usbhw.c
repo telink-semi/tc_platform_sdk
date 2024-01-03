@@ -7,7 +7,6 @@
  * @date	2019
  *
  * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -27,7 +26,7 @@
 
 
 #include "usbhw.h"
-// Endpont8 is the alias of endpoint0
+// Endpoint8 is the alias of endpoint0
 void usbhw_disable_manual_interrupt(int m) {
 	BM_SET(reg_ctrl_ep_irq_mode, m);
 }

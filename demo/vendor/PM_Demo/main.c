@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -39,7 +38,7 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 {
 	if((reg_irq_src & FLD_IRQ_GPIO_EN) == FLD_IRQ_GPIO_EN)
 	{
-		reg_irq_src |= FLD_IRQ_GPIO_EN;
+		reg_irq_src = FLD_IRQ_GPIO_EN;
 		gpio_toggle(LED2);
 	}
 }

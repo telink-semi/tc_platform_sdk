@@ -7,7 +7,6 @@
  * @date	2019
  *
  * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -168,21 +167,21 @@ extern void timer1_set_mode(TIMER_ModeTypeDef mode,unsigned int init_tick, unsig
 extern void timer2_set_mode(TIMER_ModeTypeDef mode,unsigned int init_tick, unsigned int cap_tick);
 
 /**
- * @brief     the specifed timer start working.
+ * @brief     the specified timer start working.
  * @param[in] type - select the timer to start.
  * @return    none
  */
 extern void timer_start(TIMER_TypeDef type);
 
 /**
- * @brief     the specifed timer stop working.
+ * @brief     the specified timer stop working.
  * @param[in] type - select the timer to stop.
  * @return    none
  */
 extern void timer_stop(TIMER_TypeDef type);
 
 /**
- * @brief     This fuction servers to clear the timer interrupt status.
+ * @brief     This function servers to clear the timer interrupt status.
  * @param[in] status  - variable of enum to select the timer interrupt status source.
  * @return	  none.
  */
@@ -192,7 +191,7 @@ static inline void timer_clear_interrupt_status(tmr_sta_e status)
 }
 
 /**
- * @brief     This fuction servers to get the timer interrupt status.
+ * @brief     This function servers to get the timer interrupt status.
  * @param[in] status - variable of enum to select the timer interrupt status source.
  * @return	  none.
  */

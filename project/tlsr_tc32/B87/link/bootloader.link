@@ -7,7 +7,6 @@
  * @date	2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -128,4 +127,8 @@ SECTIONS
 		PROVIDE(_bin_size_div_16 = ( _bin_size_ + 15 ) / 16 );
 		PROVIDE(_ictag_start_ = 0x840000 + _ramcode_size_align_256_ );
 		PROVIDE(_ictag_end_ = 0x840000 + _ramcode_size_align_256_ + 0x100);
+		PROVIDE(_retention_use_size_div_16_ = (_retention_data_end_ - 0x840000  + 15 ) / 16);
 }
+
+ASSERT(_retention_use_size_div_16_ < 1024, "Error: Retention RAM size overflow.(Based on hardware characteristics and software requirements. The size of the retention SRAM can be selected as 16k, 32k. Here, the default configuration is based on the minimum 16k. If it does not match the actual usage, the corresponding judgment criteria in the link file can be modified.)");
+ASSERT(_end_bss_<(__SRAM_SIZE - 600), "Error: RAM size maybe overflow.(This is determined based on the stack size of 600 bytes. If this does not match the actual usage, the corresponding judgment criteria in the link file can be modified.)");

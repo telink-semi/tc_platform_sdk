@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -37,40 +36,40 @@ extern "C" {
 #define ADC_BASE_MODE			    1	//GPIO voltage
 #define ADC_VBAT_CHANNEL_MODE		2	//Vbat channel Battery Voltage
 #define ADC_TEMP_MODE_EE			3	//Temp test
-#define ADC_RNG_MODE			    4	//Random number Gernerator,to use this Random mode need set TRNG_MODE_ENABLE=0 in random.h file.(By lirui)
+#define ADC_RNG_MODE			    4	//Random number Generator,to use this Random mode need set TRNG_MODE_ENABLE=0 in random.h file.(By lirui)
 
 #define ADC_MODE				    ADC_BASE_MODE
 
-#define MANNUAL_MODE_GET_ADC_SAMPLE_RESULT		0	//Vbat channel Battery Voltage mannual mode
+#define MANUAL_MODE_GET_ADC_SAMPLE_RESULT		0	//Vbat channel Battery Voltage manual mode
 
 #elif (MCU_CORE_B87)
 #define ADC_BASE_MODE			    1	//GPIO voltage
 #define ADC_VBAT_MODE			    2	//Battery Voltage
 #define ADC_VBAT_CHANNEL_MODE		3	//Vbat channel Battery Voltage
 #define ADC_TEMP_MODE_EE			4	//Temp test
-#define ADC_RNG_MODE			    5	//Random number Gernerator,to use this Random mode need set TRNG_MODE_ENABLE=0 in random.h file.(By lirui)
+#define ADC_RNG_MODE			    5	//Random number Generator,to use this Random mode need set TRNG_MODE_ENABLE=0 in random.h file.(By lirui)
 
 #define ADC_MODE				    ADC_BASE_MODE
 
-#define MANNUAL_MODE_GET_ADC_SAMPLE_RESULT		0	//Vbat channel Battery Voltage mannual mode
+#define MANUAL_MODE_GET_ADC_SAMPLE_RESULT		0	//Vbat channel Battery Voltage manual mode
 
 #elif (MCU_CORE_B85)
 #define ADC_BASE_MODE			    1	//GPIO voltage
 #define ADC_VBAT_MODE			    2	//Battery Voltage
-#define ADC_RNG_MODE			    3	//Random number Gernerator,to use this Random mode need set TRNG_MODE_ENABLE=0 in random.h file.(By lirui)
+#define ADC_RNG_MODE			    3	//Random number Generator,to use this Random mode need set TRNG_MODE_ENABLE=0 in random.h file.(By lirui)
 
 #define ADC_MODE				    ADC_BASE_MODE
-#define MANNUAL_MODE_GET_ADC_SAMPLE_RESULT		0	// mannual mode
+#define MANUAL_MODE_GET_ADC_SAMPLE_RESULT		0	// manual mode
 #elif (MCU_CORE_B80)
 #define ADC_BASE_MODE			    1	//GPIO voltage
 #define ADC_VBAT_CHANNEL_MODE		2	//Vbat channel Battery Voltage
 #define ADC_TEMP_MODE_EE			3	//Temp test
-#define ADC_RNG_MODE			    4	//Random number Gernerator
+#define ADC_RNG_MODE			    4	//Random number Generator
 
 #define ADC_MODE				    ADC_BASE_MODE
 
 #define ADC_INTER_TEST				0
-#define MANNUAL_MODE_GET_ADC_SAMPLE_RESULT		0	//Vbat channel Battery Voltage mannual mode
+#define MANUAL_MODE_GET_ADC_SAMPLE_RESULT		0	//Vbat channel Battery Voltage manual mode
 #endif
 
 

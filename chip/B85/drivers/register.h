@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -572,10 +571,10 @@ enum{
 	FLD_USB_EDP6_IRQ 		= 	BIT(6),
 	FLD_USB_EDP7_IRQ 		= 	BIT(7),
 };
-#define reg_usb_ep8_send_max	REG_ADDR8(0x13b)
-#define reg_usb_ep8_send_thre	REG_ADDR8(0x13c)
-#define reg_usb_ep8_fifo_mode	REG_ADDR8(0x13d)
-#define reg_usb_ep_max_size		REG_ADDR8(0x13e)
+#define reg_usb_ep8_send_max		REG_ADDR8(0x13b)
+#define reg_usb_ep8_send_thres		REG_ADDR8(0x13c)
+#define reg_usb_ep8_fifo_mode		REG_ADDR8(0x13d)
+#define reg_usb_ep_max_size			REG_ADDR8(0x13e)
 
 enum{
 	FLD_USB_ENP8_FIFO_MODE =	BIT(0),
@@ -630,7 +629,7 @@ enum{
 	FLD_PWM_ENABLE				= BIT(1),
 	FLD_LINER_INTERPOLATE_EN	= BIT(2),
 	FLD_LEFT_SHAPING_EN 		= BIT(5),
-	FLD_RIGTH_SHAPING_EN 		= BIT(6)
+	FLD_RIGHT_SHAPING_EN 		= BIT(6)
 };
 
 #define reg_ascl_tune     REG_ADDR32(0x564)
@@ -787,6 +786,10 @@ enum{
 	FLD_CLR_WD =				BIT(27),
 };
 
+#define reg_wd_ctrl1            REG_ADDR8(0x622)
+enum{
+	FLD_WD_EN     = BIT(7),
+};
 #define reg_tmr_sta				REG_ADDR8(0x623)
 enum{
 	FLD_TMR_STA_TMR0 =			BIT(0),
@@ -1297,7 +1300,7 @@ enum{
 
 #define		CLEAR_ALL_RFIRQ_STATUS   ( reg_rf_irq_status = 0xffff )
 
-enum{
+typedef enum{
 	FLD_RF_IRQ_RX = 			BIT(0),
 	FLD_RF_IRQ_TX =				BIT(1),
 	FLD_RF_IRQ_RX_TIMEOUT =		BIT(2),
@@ -1311,7 +1314,7 @@ enum{
 	FLD_RF_IRQ_INVALID_PID =    BIT(11),
 	FLD_RF_IRQ_STX_TIMEOUT =    BIT(12),
 	FLD_RF_IRQ_ALL =            0X1FFF,
-};
+}rf_irq_e;
 /*******************************      aura registers: 0x1200      ******************************/
 
 #define REG_AURA_BASE            0x1200

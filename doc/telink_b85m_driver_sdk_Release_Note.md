@@ -1,8 +1,8 @@
-## V1.5.1
+## V1.6.0
 
 ### Version
 
-* SDK version: telink_b85m_driver_sdk V1.5.1.
+* SDK version: telink_b85m_driver_sdk V1.6.0.
 * This version of SDK supports B80(A1), B85, B87 chips.
 * The default configuration of LEDs and KEYs match the following hardware revisions:
 *	B80	 	C1T261A30_V1_1
@@ -10,21 +10,146 @@
 *	B87  	C1T197A30_V1_2
 
 ### BREAKING CHANGES
-* N/A
+
+* **sys**
+  * (B87)Delete the soft_start_dly_time interface and add the pm_set_wakeup_time_param interface instead.
+  * (B85/B87)Occupies DEEP_ANA_REG0[bit1] (0x3a[1]) to mark whether restart caused by abnormal start-up has occurred, the customer cannot use this bit.
+* **audio**
+  * (B85/B87/B89)Enumeration member FLD_RIGTH_SHAPING_EN is changed to FLD_RIGHT_SHAPING_EN.
+* **usb** 
+  * (B80/B85/B87/B89)Change the register reg_usb_ep8_send_thre to reg_usb_ep8_send_thres.
+* **system** 
+  * (B80/B85/B87/B89)Change the register member FLD_SYSTEM_32K_TIMER_SYCN_TRIG to FLD_SYSTEM_32K_TIMER_SYNC_TRIG.
+* **i2c** 
+  * (B80/B85/B87/B89)Function interface void reset_i2c_moudle() changed to void reset_i2c_module().
+* **spi** 
+  * (B80/B85/B87/B89)Function interface void reset_spi_moudle() changed to void reset_spi_module().
+* **pm** 
+  * (B85/B87)Delete the cpu_get_32k_tick interface.If you want to read a 32K tick value, use pm_get_32k_tick().
 
 ### Bug Fixes
-* N/A
+
+* **timer**
+  * (B80/B87/B85)timer0_set_mode/timer1_set_mode/timer2_set_mode/timer_start/timer_stop:in addition to the corresponding functions, the interrupt flags of time0/timer1/timer2 are also incorrectly cleared on the preceding interfaces. this problem occurs in the following application scenarios: when multiple timers work at the same time and the interrupt time is very close, the interrupt interface processes the timer that requests the interrupt first. if the above interface is called, the interrupt flag of other timers will be mistakenly cleared, resulting in no response to other timers' interruption. at present, it is modified to only set the corresponding function.([61b8a7d6](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/61b8a7d65d4bde9c28330e67c10eab5e4cd47888))
+* **watchdog**
+  * (B80/B87/B85)wd_set_interval_ms/wd_start/wd_stop:in addition to the corresponding functions, the interrupt flags of time0/timer1/timer2 are also mistakenly cleared on the above interfaces. At present, they are modified to set only corresponding functions.([61b8a7d6](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/61b8a7d65d4bde9c28330e67c10eab5e4cd47888))
+* **pm**
+  * (B87/B85)cpu_stall_wakeup_by_timer0/cpu_stall_wakeup_by_timer1/cpu_stall_wakeup_by_timer2:add setting timer0/timer1/timer2 mode0 to prevent these interfaces from working until timer0/timer1/timer2 is not mode0.([61b8a7d6](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/61b8a7d65d4bde9c28330e67c10eab5e4cd47888))
+  * (B80/B85/B87)Solved the problem that the sleep time is incorrect due to a small probability that the total interruption time of the shutdown is not timely.([30a5da29](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/30a5da29b2110d2660155548cdf6c70b4b99b248))
+  * (B80/B85/B87)Eliminates the risk that STATUS_GPIO_ERR_NO_ENTER_PM may be set to 1 in the return value of cpu_sleep_wakeup.([4d997596](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/4d997596184014af55b9bc83ad5ca046e2c29cc6))
+  * (B85/B87)Resolved the risk that cpu_sleep_wakeup_32k_rc()/cpu_sleep_wakeup_32k_xtal() could crash due to misread 32K tick. (The digital reading 32K tick inside these two functions has been replaced with reading using analog registers).([83c714db](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/83c714db82372a8ab0b7168636dc0094c7d863ab))
+  * (B85)Solved the problem of disconnection caused by 32k calibration value not being updated in time in high and low temperature environments.([84e212ff](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/84e212ff1c9280f0a7c1afc02d9fa2e9f8ebc9c2))
+* **systemclk**
+  * (B80)The problem that the definition of system_clk_type does not match the enumeration SYS_CLK_TypeDef is solved.([b71163f9](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/b71163f9911a57d83633813771ea82a9eb88c541))
+* **sys**
+  * (B85/B87)Solve the problem that the crystal oscillator stability flag fails to cause the crash. If the start-up is abnormal, it will restart. Use DEEP_ANA_REG0[bit1] to check whether the restart caused by the abnormal start-up has occurred. (It has been implemented in the driver layer, and does not require special calls from the application layer.)([be5dfc3d](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/be5dfc3dc8a7a2e42640b4ace745a5c1b5534b20))
+* **adc**
+  * (B80)Fixed bug that GPIO sampling was not calibrated.([af0484a0](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/af0484a02ae77832359974667e533228599f4201))
+* **gpio**
+  * (b80/b85/b87/b89)Fixed an issue in the gpio_set_interrupt()/gpio_set_interrupt_risc0()/gpio_set_interrupt_risc1() interface that could mistakenly clear other interrupt status bits.([04c2abff](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/04c2abff52e9e92e77598ccf93ba23677be0f57a))
+  * (b80)Fixed an issue in the gpio_set_src_irq() interface that could mistakenly clear other interrupt status bits.([04c2abff](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/04c2abff52e9e92e77598ccf93ba23677be0f57a))
+* **uart**
+  * (b80/b85/b87/b89)uart_clear_parity_error(): Fixed the problem that when clearing uart clear rx status, other uart status bits may be operated by mistake.([673a1f7f](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/673a1f7fb713ab971119e9ddad25378d36d29a74))
+* **irq**
+  * (b80/b85/b87/b89)irq_clr_src2(): Fixed the problem that when clearing the specified IRQ source, other IRQ source bits may be operated by mistake.([673a1f7f](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/673a1f7fb713ab971119e9ddad25378d36d29a74))
+* **usb**
+  * (b80/b85/b87)usb_handle_irq(): Fixed the problem that when clearing USB reset status, other status bits may be operated by mistake.([673a1f7f](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/673a1f7fb713ab971119e9ddad25378d36d29a74))
+* **printf**
+  * (b80/b85/b87/89)sprintf(): Modify the original default 8-byte printing using %x format to the adaptive number of bytes.([15943bbb](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/15943bbb8d9ca075c766711cdb7616d34339a2ea))
+* **adc**  
+  * (B80/B85/B87)Tighten the illegal value judgment in the function user_calib_adc_vref().([12d58177](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/12d58177a513e2a7c82bc808b23445552170123d))
+* **otp**
+  * (B80/B89)otp_set_deep_standby_mode():Fixed an issue where OTP power down may fail.([c1ce55a2](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/c1ce55a2ca3424ef12208a6371860d210cc9d744))
+* **clock**
+  * (B85)rc_24m_cal() is added to the clock_init() function to solve the problem of possible probabilistic crash.([d18cef73](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/d18cef73d6802343e6441f52ef138e0ed49cfdca))
+* **calibration**
+  * (B80)Fixed an issue where the adc calibration interface returned the wrong calibration value when the calibration value was a negative number.([650cd850](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/650cd850e3810ee4c8efadbb5e85288c3059dcfc))
+  * (B80)ADC calibration rule for flash has not been determined yet. Therefore, follow ADC calibration rule of OTP temporarily.([900171d5](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/900171d548ee33018c8a2bdc5cf05ba8616f28f9))
+* **adc**  
+  * (B85/B87)Fix the problem that the calibration value adc_gpio_calib_vref is overwritten when the vref voltage is 1.2V after calling adc_set_ref_voltage() to switch the vref voltage to 0.6V or 0.9V, and add a note to remind that switching back to 1.2V again, adc_vref and adc_vref_offset are not not be re-assigned.([c4929eba](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/c4929ebaea5e80e7ee2ae265aac32e9b1a151bde))
+* **EMI_Demo**
+  * (B80/B85/B87/B89)Fixed occasional packet sending anomaly in anti-noise test.([fdabadc7](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/fdabadc794c85bffad9e91f94873487c69a4c0b5))
+  * (B80/B85/B87/B89)Fixed RSSI value fetching exception issue in emi code.([3325c23e](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/3325c23eee0bc6f0500e8bd20b6e8774049de07f))
+* **AUDIO_Demo**
+  * (B85/B87)fix the problem that in AUDIO_AMIC_TO_BUF demo, the used fifo channel is inconsistent with the default enabled fifo channel in audio_amic_init().([b8a3ae3c](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/b8a3ae3ced67b1174ebfae07dd68f6ac93e8ee8b))
+* **DUT_Demo**
+  * (B80)Fixed the problem that DUT_Demo OTP program could not run in SRAM.([7d477457](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/7d477457c95826af9a8ee15615af581107a488ac))
 
 ### Refactoring
-* **rf**
-  * (B85/B87/B80)Normalizes the naming of content related to private schemas.
 
+* **swire**
+  * (B80/B85/B87) Removed Swire.h file.
+* **clock**
+  * (B85)Add a note explaining the limitations of the use of 48M calibration.
+* **license** 
+    * Adjusted APACHE License for files related
+* **adc**
+  * (B80/B85/B87/B89)Add comments to adc_vref.
+* **rf**
+  * (b80/b85/b87/b89):Clear rf_drv.h warnings in the project.
+  * (b80/b85/b87/b89):Simplified the implementation of rf_update_internal_cap.
+* **all**
+  * (B80/B85/B87/B89)Normalizes the naming of content related to private schemas.
+  * (b80/b85/b87/b89):Clear all typos and warnings in the project.
+* **flash**
+  * (B80/B85/B87)Add the comment "Location to be updated when adding a new flash" in flash.c to prevent incomplete updates when adding a flash.
+  * (B80/B85/B87)Change the flash_write_status interface to a weak definition. The application layer can redefine the interface according to its requirements.
+* **otp**
+  * (B80)Add the following comment to the otp related interface: chip version A0/A1/A2/A3 can't read/write OTP in RF RX state, A4 chip doesn't have this limitation. The value of the variable g_chip_version can be read after calling cpu_wakeup_init().
+* **calibration**
+  * (B80)There will be no 1V2 calibration values in the chip, so the user_calib_vdd_1v2() function interface is removed。
+ * **PM_Demo** 
+  * (B80/B85/B87/B89)Optimize and distinguish the flexible use process of functions in IDLE_TIMER_WAKEUP and similar modes by macros.
+* **GPIO_Demo**
+  * (b80/b85/b87/b89)Refactored gpio demo.
+  
 ### Features
-* N/A
+
+* **pm**
+  * (B85/B87)Added function interface pm_set_wakeup_time_param.
+* **clock**  
+  * (B85/B87) XTAL_TypeDef added EXTERNAL_XTAL_EXTERNAL_CAP_24M, deleted EXTERNAL_XTAL_48M.
+* **flash**
+  * (B87)add flash P25Q80U.
+* **usb**
+  * (B80/B85/B87)add set config and get config support when disable auto config
+* **uart**
+  * (B85/B87/B80)uart_gpio_set:tx and rx are configured at the same time, change it to be configurable independently.
+* **rf**
+  * (B80/B85/B87/B89):Added function interface rf_set_irq_mask/rf_clr_irq_mask/rf_get_irq_status/rf_clr_irq_status; Added enumeration definition rf_irq_e.
+* **flash**
+  * (B80/B85/B87/B89)In each flash, add the interface flash_get_lock_block_midxxx to return which area is currently locked in flash 
+  (also in midxxx_lock_block_e, Note When flash write protection is used, only the midxxx_lock_block_e enumeration value 
+  can be selected, so that the values returned by the flash_get_lock_block_midxxx interface are in midxxx_lock_block_e).
+  * (B80/B85/B87/B89)In flash.h, add a new enumeration flash_mid_e, which can be used instead of using flash mid directly, 
+  and change the return type of flash_read_mid() interface to flash_mid_e to increase readability.
+* **adc**
+  * (B80)Added interfaces adc_update_vref_calib_value_ft_cp() and adc_update_vref_calib_value_flash() for determining whether the range of ft/cp and flash calibration values are legal.
+* **pm**
+  * (B85/B87)Added lpc wakeuo function:support lpc wakeup function in interfaces of cpu_sleep_wakeup_32k_rc(),cpu_sleep_wakeup_32k_xtal(),cpu_long_sleep_wakeup_32k_rc(),cpu_long_sleep_wakeup_32k_xtal()
+* **flash**
+  * (b87)Add comments to support new flash GD25LD40E and new flash GD25LD80E.
+  (Comparison has been made between the same mid flash GD25LD40C and GD25LD80C that the driver already exists, and it is confirmed that the driver does not need to be updated.)
+* **gpio**
+  * (b80)Add a new gpio interrupt (gpio2risc2).
+* **clock**
+  * (B80/B85/B87)Provide clock_init_calib_24m_rc_cfg() and cpu_wakeup_init_calib_32k_rc_cfg() interfaces for users to configure whether or not to calibrate 24m and 32k rc.
+* **Audio_Demo**
+  * (B87/B85)Added SDM output 1Hz and 10Hz sine wave demo  
+* **Debug_Demo**
+  * (B80/B85/B87/B89)add the use of sprintf function. 
+* **FLASH_Demo**
+  * (B80/B85/B87/B89)Maintain two interfaces flash_lock/flash_unlock (determining whether a flash is locked or unlocked) for the application layer 
+  to enumerate all the flashes, so that the application layer does not miss any due to the subsequent addition of new flashes. 
+* **SDK VERSION**  
+  * (B80/B85/B87):Add sdk version at the end of bin file.
 
 ### Performance Improvements
 
-* N/A
+* **emi**
+  * (B87/B80/B85)Improve the sensitivity performance of emi programs at 24M multiple frequency points.
+* **bqb**
+  * (B87/B80/B85)Improve the sensitivity performance of bqb programs at 24M multiple frequency points.
 
 ### Note
 
@@ -32,9 +157,10 @@
 
 <hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
 
+
 ### 版本
 
-* SDK版本: telink_b85m_driver_sdk V1.5.1。
+* SDK版本: telink_b85m_driver_sdk V1.6.0。
 * 此版本SDK支持B80(A1)、B85、B87芯片。
 * LED和KEY的默认配置匹配以下硬件版本:
 *	B80	 	C1T261A30_V1_1
@@ -42,25 +168,152 @@
 *	B87  	C1T197A30_V1_2
 
 ### BREAKING CHANGES
-* N/A
+
+* **sys**
+  * (B87)删除soft_start_dly_time接口，添加pm_set_wakeup_time_param接口进行替代。
+  * (B85/B87)占用DEEP_ANA_REG0[bit1]（0x3a[1]）标志是否发生过起振异常导致的重启，客户不能使用这个bit。
+* **audio**
+  * (B85/B87/B89)枚举成员FLD_RIGTH_SHAPING_EN改为FLD_RIGHT_SHAPING_EN。
+* **usb** 
+  * (B80/B85/B87/B89)寄存器reg_usb_ep8_send_thre改为reg_usb_ep8_send_thres。
+* **system** 
+  * (B80/B85/B87/B89)寄存器成员FLD_SYSTEM_32K_TIMER_SYCN_TRIG改为FLD_SYSTEM_32K_TIMER_SYNC_TRIG。
+* **i2c** 
+  * (B80/B85/B87/B89)函数接口void reset_i2c_moudle()改为void reset_i2c_module()。
+* **spi** 
+  * (B80/B85/B87/B89)函数接口void reset_spi_moudle()改为void reset_spi_module()。
+* **pm** 
+  * (B85/B87)删除cpu_get_32k_tick接口，如果想要读32K的tick值，可以使用pm_get_32k_tick()。
 
 ### Bug Fixes
-* N/A
+
+* **timer**
+  * (B80/B87/B85)timer0_set_mode/timer1_set_mode/timer2_set_mode/timer_start/timer_stop::以上这些接口除了设置了对应的功能以外，还误清了timer0、timer1、timer2的中断标志位。在如下应用场景下会有问题：当使用多个timer同时工作，并且产生的中断时间很接近时，中断接口中先处理第一个请求中断的timer时，调用了以上接口的话，将其他timer的中断标志位误清，导致其他timer中断没有响应，目前将其进行修改为只设置对应功能。([61b8a7d6](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/61b8a7d65d4bde9c28330e67c10eab5e4cd47888))
+* **watchdog**
+  * (B80/B87/B85)wd_set_interval_ms/wd_start/wd_stop:以上这些接口除了设置了对应的功能以外，还误清了timer0、timer1、timer2的中断标志位，目前将其进行修改为只设置对应功能。([61b8a7d6](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/61b8a7d65d4bde9c28330e67c10eab5e4cd47888))
+* **pm**
+  * (B87/B85)cpu_stall_wakeup_by_timer0/cpu_stall_wakeup_by_timer1/cpu_stall_wakeup_by_timer2:添加设置timer0/timer1/timer2 mode0功能，避免在调用这些接口之前，timer0/timer1/timer2不是mode0，这些接口不能工作。([61b8a7d6](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/61b8a7d65d4bde9c28330e67c10eab5e4cd47888))
+  * (B80/B85/B87)解决了因关总中断时间不及时，小概率地导致的睡眠时间不对的问题。([30a5da29](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/30a5da29b2110d2660155548cdf6c70b4b99b248))
+  * (B80/B85/B87)规避了cpu_sleep_wakeup的返回值中STATUS_GPIO_ERR_NO_ENTER_PM 可能会被异常置为1的风险。([4d997596](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/4d997596184014af55b9bc83ad5ca046e2c29cc6))
+  * (B85/B87)解决了cpu_sleep_wakeup_32k_rc()/cpu_sleep_wakeup_32k_xtal()可能因为读错32K tick引发死机的风险（已将这两个函数内部，数字读32K tick的方式替换成模拟方式读32Ktick）。([83c714db](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/83c714db82372a8ab0b7168636dc0094c7d863ab))
+  * (B85)解决了在高温和低温环境下，因32k校准值没有及时更新，导致的断联的问题。([84e212ff](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/84e212ff1c9280f0a7c1afc02d9fa2e9f8ebc9c2))
+* **systemclk** 
+  * (B80)解决了system_clk_type的定义与枚举SYS_CLK_TypeDef不匹配的问题。([b71163f9](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/b71163f9911a57d83633813771ea82a9eb88c541))
+* **sys** 
+  * (B85/B87)解决晶振稳定标志位失灵导致死机的问题。 起振异常则重启，通过DEEP_ANA_REG0[bit1]查询是否发生过起振异常导致的重启。（已在驱动层实现，不需要应用层特殊调用。）([be5dfc3d](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/be5dfc3dc8a7a2e42640b4ace745a5c1b5534b20))
+* **adc**
+  * (B80)修复了GPIO采样未进行校准的问题。([af0484a0](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/af0484a02ae77832359974667e533228599f4201))
+* **gpio**
+  * (b80/b85/b87/b89)修复了gpio_set_interrupt()/gpio_set_interrupt_risc0()/gpio_set_interrupt_risc1()接口中可能误清其他中断状态位的问题。([04c2abff](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/04c2abff52e9e92e77598ccf93ba23677be0f57a))
+  * (b80)修复了gpio_set_src_irq()接口中可能误清其他中断状态位的问题。([04c2abff](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/04c2abff52e9e92e77598ccf93ba23677be0f57a))
+* **uart**
+  * (b80/b85/b87/b89)uart_clear_parity_error(): 修复了清除uart clear rx状态时，可能误操作其他uart状态位的问题。([673a1f7f](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/673a1f7fb713ab971119e9ddad25378d36d29a74))
+* **irq**
+  * (b80/b85/b87/b89)irq_clr_src2(): 修复了清除指定的中断源时，可能误操作其他中断源的状态位的问题。([673a1f7f](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/673a1f7fb713ab971119e9ddad25378d36d29a74))
+* **usb**
+  * (b80/b85/b87)usb_handle_irq(): 修复了清除usb reset状态位时，可能误操作其他状态位的问题。([673a1f7f](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/673a1f7fb713ab971119e9ddad25378d36d29a74))
+* **printf**
+  * (b80/b85/b87/89)sprintf(): 修改使用%x格式，将原先默认8字节打印设置为自适应字节数打印。([15943bbb](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/15943bbb8d9ca075c766711cdb7616d34339a2ea))
+* **adc**
+  * (B80/B85/B87)将函数user_calib_adc_vref()中的非法值判断加严。([12d58177](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/12d58177a513e2a7c82bc808b23445552170123d))
+* **otp**
+  * (B80/B89)otp_set_deep_standby_mode()：修复了 OTP power down 时可能会失败的问题。([c1ce55a2](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/c1ce55a2ca3424ef12208a6371860d210cc9d744))
+* **clock**
+  * (B85)在clock_init函数中加入rc_24m_cal()解决可能概率性死机的问题.([d18cef73](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/d18cef73d6802343e6441f52ef138e0ed49cfdca))
+* **calibration**
+  * (B80)修复了当校准值是负数时，adc校准接口返回错的校准值的问题。([650cd850](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/650cd850e3810ee4c8efadbb5e85288c3059dcfc))
+  * (B80)flash的ADC校准规则没有确定。因此，暂时遵循OTP的ADC校准规则。([900171d5](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/900171d548ee33018c8a2bdc5cf05ba8616f28f9))
+* **adc**  
+  * (B85/B87)修复调用adc_set_ref_voltage()切换vref电压为0.6V或0.9V后，vref电压为1.2V时的校准值adc_gpio_calib_vref被覆盖的问题，并添加注释提醒：再次切换回1.2V，adc_vref和adc_vref_offset并不会重新赋值。([c4929eba](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/c4929ebaea5e80e7ee2ae265aac32e9b1a151bde))
+* **EMI_Demo** 
+  * (B80/B85/B87/B89)解决了在抗干扰测试过程中概率性出现发包异常的问题。([fdabadc7](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/fdabadc794c85bffad9e91f94873487c69a4c0b5))
+  * (B80/B85/B87/B89)修复了emi代码中RSSI值获取异常问题。([3325c23e](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/3325c23eee0bc6f0500e8bd20b6e8774049de07f))
+* **AUDIO_Demo**
+  * (B85/B87)修复AUDIO_AMIC_TO_BUF demo中，使用的fifo通道和audio_amic_init()中默认使能的fifo通道不一致问题。([b8a3ae3c](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/b8a3ae3ced67b1174ebfae07dd68f6ac93e8ee8b))
+* **DUT_Demo**
+  * (B80)修复 DUT_Demo OTP 程序无法在 SRAM 运行的问题。([7d477457](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/7d477457c95826af9a8ee15615af581107a488ac))
 
 ### Refactoring
+
+* **swire**
+  * (B80/B85/B87)删除了Swire.h文件。
+* **clock**
+  * (B85)添加注释，说明48M校准的使用限制。
+* **license** 
+    * 调整了相关文件的APACHE许可。
+* **adc**
+* (B80/B85/B87/B89)对adc_vref添加注释。
+
 * **rf**
-  * (B85/B87/B80)规范化与私有模式相关内容的命名。
+* (b80/b85/b87/b89):清除工程里rf_drv.h宏定义警告。
+* (b80/b85/b87/b89):简化rf_update_internal_cap内部分实现。
+* **all**
+  * (B80/B85/B87/B89)规范化与私有模式相关内容的命名。
+  * (b80/b85/b87/b89):清除工程里的所有错别字和警告。
+* **flash** 
+  * (B80/B85/B87)在flash.c中添加"新增flash时需要更新的位置"注释 ，防止新增flash时更新不完整。
+  * (B80/B85/B87)将接口flash_write_status改为弱定义，应用层可以根据自己的需求重新定义该接口。
+* **otp**
+  * (B80)otp的相关接口添加如下注释：芯片版本A0/A1/A2/A3不能在RF RX状态下读写OTP, A4芯片没有这个限制。可调用cpu_wakeup_init()之后读g_chip_version变量的值。
+* **calibration**
+  * (B80)芯片中不会有1V2的校准值，所以删除了user_calib_vdd_1v2()函数接口。
+* **PM_Demo** 
+  * (B80/B85/B87/B89)通过宏定义优化区分不同芯片对IDLE_TIMER_WAKEUP及相似模式下的函数灵活使用过程。
+* **GPIO_Demo**
+  * (b80/b85/b87/b89)重构了gpio demo.
 
 ### Features
-* N/A
+
+* **pm**
+  * (B80/B85/B87)新增函数接口pm_set_wakeup_time_param。
+* **clock**
+  * (B80/B85/B87)XTAL_TypeDef新增EXTERNAL_XTAL_EXTERNAL_CAP_24M，删除EXTERNAL_XTAL_48M。
+* **flash**
+  * (B87)新增flash P25Q80U。
+* **usb**
+  * (B80/B85/B87)USB 手动配置模式下，支持获取配置命令和设置配置命令
+* **uart**
+  * (B80/B85/B87)uart_gpio_set:tx和rx会同时配置,修改为可以单独配置。
+* **rf**
+  * (B80/B85/B87/B89):新增函数接口rf_set_irq_mask/rf_clr_irq_mask/rf_get_irq_status/rf_clr_irq_status；新增枚举定义rf_irq_e。
+* **flash**
+  * (B80/B85/B87/B89)给所有flash驱动添加flash_get_lock_block_midxxx()接口，返回flash当前锁的是哪一块区域
+   （同时在midxxx_lock_block_e中，添加注释说明flash写保护时只能选择midxxx_lock_block_e的枚举值，
+    使得flash_get_lock_block_midxxx接口返回的值都在midxxx_lock_block_e中）。
+  * (B80/B85/B87/B89)在flash.h中，新增枚举flash_mid_e，可以使用枚举值代替直接使用flash mid，同时将flash_read_mid()接口的返回类型更改为flash_mid_e，增加可读性。
+* **adc**
+  * (B80)添加了判断ft/cp和flash校准值范围是否合法的接口adc_update_vref_calib_value_ft_cp()和adc_update_vref_calib_value_flash()。
+* **pm**
+  * (B85/B87)新增了lpc唤醒功能：在接口cpu_sleep_wakeup_32k_rc()，cpu_sleep_wakeup_32k_xtal()，cpu_long_sleep_wakeup_32k_rc()，cpu_long_sleep_wakeup_32k_xtal()中新增了lpc唤醒功能
+* **flash**
+  * (b87)添加注释以支持新增flash GD25LD40E和GD25LD80E。（已对比驱动已有的同mid flash GD25LD40C和GD25LD80C，确认驱动不需要更新。）
+* **flash**
+  * (b85)添加注释以支持新增flash GD25LD40E和GD25LD80E。（已对比驱动已有的同mid flash GD25LD40C和GD25LD80C，确认驱动不需要更新。）
+* **gpio**
+  * (b80)添加新增的一路gpio中断(gpio2risc2)
+* **clock**
+  * (B80/B85/B87)新增clock_init_calib_24m_rc_cfg()和cpu_wakeup_init_calib_32k_rc_cfg()接口供用户配置是否要校准24m及32k RC 。
+* **Audio_Demo**
+  * (B85/B87)增加了SDM输出1Hz和10Hz sine wave demo
+* **Debug_Demo**
+  * (B80/B85/B87/B89)增加对sprintf函数的使用方法。
+* **FLASH_Demo**
+  * (B80/B85/B87/B89)给应用层维护两个接口flash_lock/flash_unlock（判断flash是否上锁还是解锁），将所有的flash列举出来，避免由于后续新增flash，应用层有遗漏。
+* **SDK版本**  
+  * (B80/B85/B87):bin文件末尾添加SDK版本.
 
 ### Performance Improvements
 
-* N/A
+* **emi**
+  * (B87/B80/B85)提升emi程序在24M倍数频点的sensitivity性能。
+* **bqb**
+  * (B87/B80/B85)提升bqb程序在24M倍数频点的sensitivity性能。
 
 ### Note
 
 * N/A
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
 
 ## V1.5.0
 
@@ -141,7 +394,11 @@
   * (B85)Added the configuration of sampling rate 192KHz.
 * **SDK VERSION**  
   * (B80/B85/B87):Add sdk version at the end of bin file.
-  
+  * (B80/B85/B87/B89)：Added 'tl_Check_Fw.sh' script, print SDK version information after compiling the code.
+* **.S**
+  * (B85/B87):Add SRAM_ SIZE Macro Definition.
+* **.link**
+  * (B80/B85/B87/B89):Add assertions to determine the approximate range of RAM.
 ### Performance Improvements
 
 * N/A
@@ -230,7 +487,12 @@
   * (B85)增加了采样率192KHz的配置。
 * **SDK版本**  
   * (B80/B85/B87):bin文件末尾添加SDK版本.
+  * (B80/B85/B87/B89)：增加了'tl_check_fw.sh'脚本,编译完代码后打印sdk版本信息。
+* **.S**
+  * (B85/B87):增加SRAM_ SIZE宏定义。
 
+* **.link**
+  * (B80/B85/B87/B89):增加断言判断RAM大致范围。
 ### Performance Improvements
 
 * N/A
@@ -332,6 +594,7 @@
   *  		when deep/deep Retention is invoked, they can't maintain high/low level and an abnormal level will occur.
   *  		Therefore, these pins can't be used in applications where a certain level state needs to be maintained all the time.
 
+
 <hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
 
 
@@ -426,6 +689,7 @@
   *		   	   当调用 deep/deep Retention 时，它们无法保持高/低电平，会出现异常电平。因此，这些引脚不能用于需要一直保持某种电平状态的应用。
   
   
+
 ### Version
 
 * SDK version: telink_b85m_driver_sdk V1.3.0.
@@ -457,6 +721,8 @@
 	* Fixed the problem caused by error bit operation in the gpio_shutdown function, which will mistakenly shut down the input function of other pins in the same group of the selected pin. ([5597d497](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/5597d49790afb81a818281cff3dedd026c7e63fb))
 * **PRINTF(B85/B87)**
 	* Solved the problem that the printf function cannot print negative numbers. ([bc795e5a](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/bc795e5a9da97f8f2c13f5de60659f901b0760eb))
+* **EMI_Demo(B80/B85/B87/B89)**
+	* Added usb interface initialization after gpio_shutdown to solve the problem that some chips that only support Swire (through-usb) communication cannot communicate through Swire after downloading the EMI program.
 
 ### Features
 
@@ -492,7 +758,8 @@
 	* ATE test adds private 2M related test. ([a62929a7](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/a62929a7a0e6b69669c60231a0a414dd54fcb2c2))
 	* Added rf_set_rx_settle_time function to set the time as a parameter value. ([1ff99a4f](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/1ff99a4fb72836352f6b5e314032d787ad200577))
 	* The energy range between 3db and -5db in vbat mode is added for internal testing. These energies are forbidden to be used by customers when developing products.
-
+* **DUT_Demo(B80)(B85)(B87)(B89)**
+	* Users can develop fixture test programs according to their own needs.
 ### Known issues
 
 * N/A
@@ -530,6 +797,8 @@
 	* Rewrite AOA-related operations into functions and add them to the rf driver.
 * **vender/common(B87)**
 	* Adjusted the code structure for taking ADC calibration value to distinguish vbat calibration value from gpio calibration value.
+* **license**
+    * update license of related files from TELINK_BSD to TELINK_APACHE
 
 ### Performance Improvements
 
@@ -573,6 +842,8 @@
 	* 修正了gpio_shutdown函数中由于错误位运算而引起的问题,会错误关闭被选中pin的同组其他pin的输入功能。([5597d497](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/5597d49790afb81a818281cff3dedd026c7e63fb))
 * **PRINTF(B85/B87)**
 	* 解决了printf函数不能打印负数的问题。([bc795e5a](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/bc795e5a9da97f8f2c13f5de60659f901b0760eb))
+* **EMI_Demo(B80/B85/B87/B89)**
+	* 在gpio_shutdown之后添加了usb接口初始化的操作，以解决某些仅支持Swire(through-usb)通信方式的芯片在下载EMI程序之后无法进行Swire通信的问题。
 
 ### Features
 
@@ -608,7 +879,8 @@
 	* ATE测试新增private 2M相关的测试。([a62929a7](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/a62929a7a0e6b69669c60231a0a414dd54fcb2c2))	
 	* 新增rf_set_rx_settle_time函数，设置时间为参数值。([1ff99a4f](http://192.168.48.36/src/driver/telink_b85m_driver_src/commit/1ff99a4fb72836352f6b5e314032d787ad200577))	
 	* 增加了vbat模式3db到-5db之间的能量档位用于内部测试，这些能量禁止客户开发产品时使用。
-
+* **DUT_Demo(B80)(B85)(B87)(B89)**
+	* 用户可根据自身需要开发夹具测试程序。
 ### Known issues
 
 * N/A
@@ -644,6 +916,8 @@
 * **RF(B85/B87)**	
 	* 修改rf_wire3_init的实现方式。
 	* 将AOA相关的操作改写成函数，并添加到rf驱动中。
+* **license**
+    * 将相关文件的许可证从 TELINK_BSD 更新为 TELINK_APACHE
 	
 ### Performance Improvements
 

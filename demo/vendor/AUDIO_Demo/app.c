@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -57,7 +56,13 @@ volatile unsigned int m;
  volatile unsigned int remaining = 0;
 //*Number of half fifo length .
 unsigned short half_buff_length=0;
+#elif (AUDIO_MODE == AUDIO_SINE_WAVE_TO_SDM)
+const short *buffer = NULL;
+volatile  unsigned  int  sample_num=0;
+volatile  unsigned  int  block_16=0;
 #endif
+
+
 void user_init()
 {
 #if (AUDIO_MODE ==AUDIO_AMIC_TO_SDM)
@@ -131,8 +136,12 @@ void user_init()
 	gpio_set_output_en(AMIC_BIAS_PIN, 1); 		//enable output
 	gpio_set_input_en(AMIC_BIAS_PIN ,0);			//disable input
 	gpio_write(AMIC_BIAS_PIN, 1);              	//BIAS OUTPUT 1
-	/* set fifo0 as input */
-	dfifo_set_dfifo1((unsigned short*)MicBuf2,MIC_BUFFER_SIZE);
+	/*The used fifo should match the enabled
+	 fifo in audio_amic_init interface, you
+	 can modify the fifo enable channel by
+	 AUDIO_DBL_BUF_ENABLE.
+	 */
+	dfifo_set_dfifo0((unsigned short*)MicBuf2,MIC_BUFFER_SIZE);
 #if(MCU_CORE_B85)
 	audio_set_amic_mode(AUDIO_AMIC_MONO_MODE);
 	audio_amic_init(AUDIO_RATE_VAL);
@@ -200,7 +209,7 @@ void user_init()
 	audio_set_sdm_output(GPIO_PB6_PB7,BUF_IN,AUDIO_RATE_VAL,1);
 #endif
 	reg_dfifo_mode &= (~FLD_AUD_DFIFO0_OUT);
-#elif(AUDIO_CODEC_TO_CODEC&&(MCU_CORE_B85))
+#elif((AUDIO_MODE == AUDIO_CODEC_TO_CODEC)&&(MCU_CORE_B85))
 	audio_set_codec(I2C_GPIO_GROUP_A3A4, CODEC_MODE_LINE_IN_TO_LINEOUT_I2S,CLOCK_SYS_CLOCK_HZ);
 	audio_i2s_init();
 	dfifo_set_dfifo0((unsigned short*)MicBuf,MIC_BUFFER_SIZE);
@@ -227,10 +236,28 @@ void user_init()
 	remaining = sizeof(bump) / sizeof(bump[0]);
 	unsigned int block_len = (remaining <(MIC_BUFFER_SIZE>>2)) ? remaining :(MIC_BUFFER_SIZE>>2);
 	timer_start(TIMER1);//trigger timer.
-	audio_rx_data_from_sample_buff(buffer, block_len);////first write half number of dfifo0 depth( recommend set 4K),
+	dfifo_set_dfifo0((unsigned short*)MicBuf,MIC_BUFFER_SIZE);
+	audio_rx_data_from_sample_buff(buffer, block_len);//first write half number of dfifo0 depth
 	buffer += block_len;
-	remaining -= block_len;	write_reg8(0x40004,32);
+	remaining -= block_len;
 
+#elif ((AUDIO_MODE == AUDIO_SINE_WAVE_TO_SDM))
+	irq_enable();//enable global interrupt
+	sample_num = sizeof(sine_wave_1Hz_16k_sample)/ sizeof(sine_wave_1Hz_16k_sample[0]);
+	buffer=( short*)sine_wave_1Hz_16k_sample;
+	timer1_set_mode(TIMER_MODE_SYSCLK,0,CLOCK_SYS_CLOCK_1MS);
+	audio_buff_init(AUDIO_16K);
+	dfifo_set_dfifo0((unsigned short*)MicBuf,MIC_BUFFER_SIZE);
+	audio_rx_data_from_sample_buff(buffer+block_16, 16);//first write 16 sample data for 1ms.
+	block_16=16;
+	/* Note B85/B7:
+	 *The capacitance between SDMP and SDMN(C21 220nF default)needs to be set to 1uF */
+#if(MCU_CORE_B85)
+	audio_set_sdm_output(BUF_IN,AUDIO_16K,1);
+#elif(MCU_CORE_B87)
+	audio_set_sdm_output(GPIO_PB6_PB7,BUF_IN,AUDIO_16K,1);
+#endif
+	timer_start(TIMER1);//trigger timer.
 #endif
 }
 
@@ -258,14 +285,14 @@ void main_loop (void)
 	n=0;
 	while(n<read_reg8(0x40004))
 	{
-		while(reg_dfifo1_wptr < (0x800+rptr));
+		while(reg_dfifo0_wptr < (0x800+rptr));
 		rptr=0x800;
 		flash_erase_sector(FLASH_WRITE_ADDR + n*0x1000);
 		for(unsigned int i=0;i<((MIC_BUFFER_SIZE/2)/FLASH_BUFF_LEN);i++)
 		{
 			flash_write_page(FLASH_WRITE_ADDR + n*0x1000 +(FLASH_BUFF_LEN*i),FLASH_BUFF_LEN,(unsigned char *)(MicBuf2+((FLASH_BUFF_LEN*i)/2)));
 		}
-		while(reg_dfifo1_wptr > rptr);
+		while(reg_dfifo0_wptr > rptr);
 		rptr=0x00;
 		for(unsigned int j=0;j<((MIC_BUFFER_SIZE/2)/FLASH_BUFF_LEN);j++)
 		{

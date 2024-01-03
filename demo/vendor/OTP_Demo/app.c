@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -27,8 +26,8 @@ extern void otp_test_mode_dis(void);
 #include "app_config.h"
 unsigned char write_buff[16]  = {0x11,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff};
 unsigned char read_buff[16] = {0};
-unsigned char read_init_margain_buff[16] ={0};
-unsigned char read_pgm_margain_buff[16]={0};
+unsigned char read_init_margin_buff[16] ={0};
+unsigned char read_pgm_margin_buff[16]={0};
 unsigned char loop=0;
 extern unsigned char	otp_program_flag;
 volatile unsigned int flag = 0;
@@ -54,8 +53,8 @@ if(otp_program_flag==0){
 #if(MCU_CORE_B89)
 	pm_set_dcdc_output(DCDC_3P0V);
 #endif
-	otp_initial_margin_read(0x00, 4, (unsigned int *)read_init_margain_buff);
-	otp_pgm_margin_read(0x00, 4, (unsigned int *)read_pgm_margain_buff);
+	otp_initial_margin_read(0x00, 4, (unsigned int *)read_init_margin_buff);
+	otp_pgm_margin_read(0x00, 4, (unsigned int *)read_pgm_margin_buff);
 #if(MCU_CORE_B89)
 	pm_set_dcdc_output(DCDC_2P5V);
 #endif
@@ -66,8 +65,8 @@ if(otp_program_flag==0){
 #if(MCU_CORE_B89)
 	pm_set_dcdc_output(DCDC_3P0V);
 #endif
-	otp_initial_margin_read(0x3e00, 4, (unsigned int *)read_init_margain_buff);
-	otp_pgm_margin_read(0x3e00, 4, (unsigned int *)read_pgm_margain_buff);
+	otp_initial_margin_read(0x3e00, 4, (unsigned int *)read_init_margin_buff);
+	otp_pgm_margin_read(0x3e00, 4, (unsigned int *)read_pgm_margin_buff);
 #if(MCU_CORE_B89)
 	pm_set_dcdc_output(DCDC_2P5V);
 #endif
@@ -89,7 +88,7 @@ if(otp_program_flag==0){
 
 	for(unsigned int i = 0; i < 16; i++)
 	{
-		if(write_buff[i] != read_init_margain_buff[i])
+		if(write_buff[i] != read_init_margin_buff[i])
 		{
 			gpio_toggle(LED3);
 			flag_debug = 1;
@@ -98,7 +97,7 @@ if(otp_program_flag==0){
 	}
 	for(unsigned int i = 0; i < 16; i++)
 	{
-		if(write_buff[i] != read_pgm_margain_buff[i])
+		if(write_buff[i] != read_pgm_margin_buff[i])
 		{
 			gpio_toggle(LED4);
 			flag_debug = 1;

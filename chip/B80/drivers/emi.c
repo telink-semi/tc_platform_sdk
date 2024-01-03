@@ -6,23 +6,19 @@
  * @author	Driver Group
  * @date	2021
  *
- * @par		Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd.
- *			All rights reserved.
+ * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
- *          The information contained herein is confidential property of Telink
- *          Semiconductor (Shanghai) Co., Ltd. and is available under the terms
- *          of Commercial License Agreement between Telink Semiconductor (Shanghai)
- *          Co., Ltd. and the licensee or the terms described here-in. This heading
- *          MUST NOT be removed from this file.
+ *          Licensed under the Apache License, Version 2.0 (the "License");
+ *          you may not use this file except in compliance with the License.
+ *          You may obtain a copy of the License at
  *
- *          Licensee shall not delete, modify or alter (or permit any third party to delete, modify, or
- *          alter) any information contained herein in whole or in part except as expressly authorized
- *          by Telink semiconductor (shanghai) Co., Ltd. Otherwise, licensee shall be solely responsible
- *          for any claim to the extent arising out of or relating to such deletion(s), modification(s)
- *          or alteration(s).
+ *              http://www.apache.org/licenses/LICENSE-2.0
  *
- *          Licensees are granted free, non-transferable use of the information in this
- *          file under Mutual Non-Disclosure Agreement. NO WARRENTY of ANY KIND is provided.
+ *          Unless required by applicable law or agreed to in writing, software
+ *          distributed under the License is distributed on an "AS IS" BASIS,
+ *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *          See the License for the specific language governing permissions and
+ *          limitations under the License.
  *
  *******************************************************************************************************/
 #include "emi.h"
@@ -98,6 +94,7 @@ void rf_emi_stop(void)
 	rf_set_tx_rx_off();
 }
 
+static unsigned char rxpara_flag = 1;
 /**
  * @brief   This function serves to set rx mode and channel.
  * @param   mode - mode of RF
@@ -143,6 +140,20 @@ void rf_emi_rx(RF_ModeTypeDef mode,signed char rf_chn)
 	rf_set_tx_rx_off();
 	rf_set_rxmode();
 	sleep_us(150);
+	if(rxpara_flag == 1)
+	{
+		rf_set_rxpara();
+		rxpara_flag = 0;
+	}
+
+	if(rf_chn == 24 || rf_chn == 48 || rf_chn == 72)
+	{
+		rf_ldot_ldo_rxtxlf_bypass_en();
+	}
+	else
+	{
+		rf_ldot_ldo_rxtxlf_bypass_dis();
+	}
 	rssi = 0;
 	emi_rssibuf = 0;
 	emi_rx_cnt = 0;

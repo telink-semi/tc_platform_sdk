@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -47,7 +46,7 @@
  * @brief 	this macro definition serve to open the setting to deal with problem of zigbee mode 2480Mhz
  * 			band edge can't pass the spec.only use it at the time of certification.
  * */
-#define FIX_ZIGBEE_BANDEAGE_EN	0
+#define FIX_ZIGBEE_BANDAGE_EN	0
 
 /*
  * @brief 	This macro definition is used to open the CE test code.
@@ -69,12 +68,12 @@
 #endif
 
 
-#if CHN_DEFUALT_VALUE_SET_FLASH
+#if CHN_DEFAULT_VALUE_SET_FLASH
 #define CHN_SET_FLASH_ADDR				0x770e0
 #endif
 
 #if CE_ANTI_NOISE_TEST
-#define DEBUG				1
+#define DEBUG				0
 #define MAX_NOISE_VALUE		-70
 #define READ_RSSI_TIMES		100
 #define COPENSATION_VALUE   0
@@ -104,9 +103,15 @@ signed char get_noise_value()
 			rssi_noise = -110;
 			rssi_cnt = 0;
 		}
-		signed char rssi_temp = rf_rssi_get_154();
-		if (rssi_temp > rssi_noise)
-			rssi_noise = rssi_temp;
+
+		signed char rssi_temp;
+		for(int i = 0; i < 50; i++)
+		{
+			sleep_us(5);
+			rssi_temp = rf_rssi_get_154();
+			if (rssi_temp > rssi_noise)
+				rssi_noise = rssi_temp;
+		}
 		rssi_cnt++;
 #if DEBUG
 		if(debug_index >= 100)
@@ -116,8 +121,12 @@ signed char get_noise_value()
 		debug_index++;
 #endif
 	}
-	rtn = rssi_noise;// changed by Pengcheng 20201222, for calculating the energy value of white noise
+	else if(read_reg8(0xf20)&BIT(0))
+	{
+		rf_rx_finish_clear_flag();
+	}
 
+	rtn = rssi_noise;// changed by Pengcheng 20201222, for calculating the energy value of white noise
 	return rtn + COPENSATION_VALUE;
 }
 
@@ -429,6 +438,12 @@ void emi_init(void)
 	usb_dp_pullup_en(0);
 #endif
 	analog_write(0x33,0xff);
+    /*DP through sws*/
+#if(MCU_CORE_B85||MCU_CORE_B87)
+	usb_set_pin_en();
+	gpio_setup_up_down_resistor(GPIO_PA5, PM_PIN_PULLUP_10K);
+#endif
+
 }
 
 
@@ -536,7 +551,7 @@ void emi_con_prbs9(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 			&& ((read_reg8(RF_MODE_ADDR)) == mode ) && ((read_reg16(PA_TX_RX_SETTING)) == pa_setting ))
 	{
 
-#if FIX_ZIGBEE_BANDEAGE_EN
+#if FIX_ZIGBEE_BANDAGE_EN
 		if(rf_mode == RF_MODE_ZIGBEE_250K )
 		{
 			if(rf_chn == 80)

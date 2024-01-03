@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -136,7 +135,7 @@ void user_init()
 	il_wave_send_buff[15] = 120 * CLOCK_SYS_CLOCK_1US;
 
 	unsigned int length = index*2 - 4;//The first four bytes are data length bytes, not included in the actual length to be sent
-	unsigned char* buff = &ir_dma_send_buff[0];
+	unsigned char* buff = (unsigned char*)&ir_dma_send_buff[0];
 	buff[0]= length&0xff;
 	buff[1]= (length>>8)&0xff;
 	buff[2]= (length>>16)&0xff;

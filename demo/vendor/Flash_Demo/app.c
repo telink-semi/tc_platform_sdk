@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -29,6 +28,9 @@
 #define FLASH_ADDR				0x00d000
 #define FLASH_SECURITY_ADDR		0x001000
 #define FLASH_BUFF_LEN			256
+/*
+ * @attention  Once FLASH_OTP_LOCK is set to 1, the Security Registers will become read-only permanently.
+ */
 #define FLASH_OTP_LOCK			0
 
 volatile unsigned char Flash_Read_Buff[FLASH_BUFF_LEN]={0};
@@ -80,6 +82,8 @@ typedef struct{
 	unsigned char otp_write_err:1;
 	unsigned char otp_lock_err:1;
 	unsigned char flash_vendor_add_err:1;
+	unsigned char flash_lock_init_add_err:1;
+	unsigned char flash_unlock_init_add_err:1;
 }err_status_t;
 typedef struct{
 	unsigned char erase_check:1;
@@ -91,6 +95,8 @@ typedef struct{
 	unsigned char otp_lock_check:1;
 	unsigned char umid_check:1;
 	unsigned char flash_vendor_add_check:1;
+	unsigned char flash_lock_init_add_check:1;
+	unsigned char flash_unlock_init_add_check:1;
 }check_status_t;
 volatile err_status_t err_status;
 volatile check_status_t check_status;
@@ -102,6 +108,300 @@ volatile unsigned short status5=0;
 volatile unsigned int  mid=0;
 unsigned char uid[16]={0};
 
+
+/*
+ * the application has such requirements: in the flash demo, maintain two interface examples, flash_lock/flash_unlock, add all flash
+ * (since there are multiple flash models for each chip, and flash may be added later, avoid missing).
+ * flash_lock: judge whether the flash is locked, if the device is locked, it does not need to be locked again;
+ * flash_unlock: judge whether the device is unlocked,if it is unlocked, there is no need to unlock it again;
+ */
+unsigned char flash_lock(unsigned int flash_mid){
+	switch(flash_mid)
+	{
+#if(MCU_CORE_B80)
+	case  MID114485:
+		if(0 == flash_get_lock_block_mid114485()){
+			flash_lock_mid114485(FLASH_LOCK_LOW_64K_MID114485);
+		}
+		return 1;
+		break;
+	case MID1160C8:
+		if(0 == flash_get_lock_block_mid1160c8()){
+			flash_lock_mid1160c8(FLASH_LOCK_LOW_64K_MID1160C8);
+		}
+		return 1;
+		break;
+	case MID136085:
+		if(0 == flash_get_lock_block_mid136085()){
+			flash_lock_mid136085(FLASH_LOCK_LOW_64K_MID136085);
+		}
+	    return 1;
+		break;
+	case MID1360C8:
+		if(0 == flash_get_lock_block_mid1360c8()){
+			flash_lock_mid1360c8(FLASH_LOCK_LOW_256K_MID1360C8);
+		}
+		return 1;
+		break;
+#endif
+#if(MCU_CORE_B85)
+	case  MID011460C8:
+		if(0 == flash_get_lock_block_mid011460c8()){
+			flash_lock_mid011460c8(FLASH_LOCK_LOW_64K_MID011460C8);
+		}
+		return 1;
+		break;
+	case  MID1060C8:
+		if(0 == flash_get_lock_block_mid1060c8()){
+			flash_lock_mid1060c8(FLASH_LOCK_ALL_64K_MID1060C8);
+		}
+		return 1;
+		break;
+	case  MID13325E:
+		if(0 == flash_get_lock_block_mid13325e()){
+			flash_lock_mid13325e(FLASH_LOCK_LOW_256K_MID13325E);
+		}
+		return 1;
+		break;
+	case  MID134051:
+		if(0 == flash_get_lock_block_mid134051()){
+			flash_lock_mid134051(FLASH_LOCK_LOW_256K_MID134051);
+		}
+		return 1;
+		break;
+	case MID136085:
+		if(0 == flash_get_lock_block_mid136085()){
+			flash_lock_mid136085(FLASH_LOCK_LOW_64K_MID136085);
+		}
+	    return 1;
+		break;
+	case MID1360C8:
+		if(0 == flash_get_lock_block_mid1360c8()){
+			flash_lock_mid1360c8(FLASH_LOCK_LOW_256K_MID1360C8);
+		}
+		return 1;
+		break;
+	case  MID1360EB:
+		if(0 == flash_get_lock_block_mid1360eb()){
+			flash_lock_mid1360eb(FLASH_LOCK_LOW_64K_MID1360EB);
+		}
+		return 1;
+		break;
+	case  MID14325E:
+		if(0 == flash_get_lock_block_mid14325e()){
+			flash_lock_mid14325e(FLASH_LOCK_LOW_768K_MID14325E);
+		}
+		return 1;
+		break;
+	case  MID1460C8:
+		if(0 == flash_get_lock_block_mid1460c8()){
+			flash_lock_mid1460c8(FLASH_LOCK_LOW_768K_MID1460C8);
+		}
+		return 1;
+		break;
+#endif
+#if(MCU_CORE_B87)
+	case  MID11325E:
+		if(0 == flash_get_lock_block_mid11325e()){
+			flash_lock_mid11325e(FLASH_LOCK_LOW_64K_MID11325E);
+		}
+		return 1;
+		break;
+	case MID1160C8:
+		if(0 == flash_get_lock_block_mid1160c8()){
+			flash_lock_mid1160c8(FLASH_LOCK_LOW_64K_MID1160C8);
+		}
+		return 1;
+		break;
+	case  MID13325E:
+		if(0 == flash_get_lock_block_mid13325e()){
+			flash_lock_mid13325e(FLASH_LOCK_LOW_256K_MID13325E);
+		}
+		return 1;
+		break;
+	case MID1360C8:
+		if(0 == flash_get_lock_block_mid1360c8()){
+			flash_lock_mid1360c8(FLASH_LOCK_LOW_256K_MID1360C8);
+		}
+		return 1;
+		break;
+	case  MID14325E:
+		if(0 == flash_get_lock_block_mid14325e()){
+			flash_lock_mid14325e(FLASH_LOCK_LOW_768K_MID14325E);
+		}
+		return 1;
+		break;
+	case  MID146085:
+		if(0 == flash_get_lock_block_mid146085()){
+			flash_lock_mid146085(FLASH_LOCK_LOW_64K_MID146085);
+		}
+		return 1;
+		break;
+	case  MID1460C8:
+		if(0 == flash_get_lock_block_mid1460c8()){
+			flash_lock_mid1460c8(FLASH_LOCK_LOW_768K_MID1460C8);
+		}
+		return 1;
+		break;
+
+#endif
+#if(MCU_CORE_B89)
+	case MID1360C8:
+		if(0 == flash_get_lock_block_mid1360c8()){
+			flash_lock_mid1360c8(FLASH_LOCK_LOW_256K_MID1360C8);
+		}
+		return 1;
+		break;
+#endif
+	default:
+		   return 0;
+		break;
+	}
+}
+
+unsigned char flash_unlock(unsigned int flash_mid){
+	switch(flash_mid)
+	{
+#if(MCU_CORE_B80)
+	case  MID114485:
+		if(0 != flash_get_lock_block_mid114485()){
+			flash_unlock_mid114485();
+		}
+		return 1;
+		break;
+	case MID1160C8:
+		if(0 != flash_get_lock_block_mid1160c8()){
+			flash_unlock_mid1160c8();
+		}
+		return 1;
+		break;
+	case MID136085:
+		if(0 != flash_get_lock_block_mid136085()){
+			flash_unlock_mid136085();
+		}
+	    return 1;
+		break;
+	case MID1360C8:
+		if(0 != flash_get_lock_block_mid1360c8()){
+			flash_unlock_mid1360c8();
+		}
+		return 1;
+		break;
+#endif
+#if(MCU_CORE_B85)
+	case  MID011460C8:
+		if(0 != flash_get_lock_block_mid011460c8()){
+			flash_unlock_mid011460c8();
+		}
+		return 1;
+		break;
+	case  MID1060C8:
+		if(0 != flash_get_lock_block_mid1060c8()){
+			flash_unlock_mid1060c8();
+		}
+		return 1;
+		break;
+	case  MID13325E:
+		if(0 != flash_get_lock_block_mid13325e()){
+			flash_unlock_mid13325e();
+		}
+		return 1;
+		break;
+	case  MID134051:
+		if(0 != flash_get_lock_block_mid134051()){
+			flash_unlock_mid134051();
+		}
+		return 1;
+		break;
+	case MID136085:
+		if(0 != flash_get_lock_block_mid136085()){
+			flash_unlock_mid136085();
+		}
+	    return 1;
+		break;
+	case MID1360C8:
+		if(0 != flash_get_lock_block_mid1360c8()){
+			flash_unlock_mid1360c8();
+		}
+		return 1;
+		break;
+	case  MID1360EB:
+		if(0 != flash_get_lock_block_mid1360eb()){
+			flash_unlock_mid1360eb();
+		}
+		return 1;
+		break;
+	case  MID14325E:
+		if(0 != flash_get_lock_block_mid14325e()){
+			flash_unlock_mid14325e();
+		}
+		return 1;
+		break;
+	case  MID1460C8:
+		if(0 != flash_get_lock_block_mid1460c8()){
+			flash_unlock_mid1460c8();
+		}
+		return 1;
+		break;
+#endif
+#if(MCU_CORE_B87)
+	case  MID11325E:
+		if(0 != flash_get_lock_block_mid11325e()){
+			flash_unlock_mid11325e();
+		}
+		return 1;
+		break;
+	case MID1160C8:
+		if(0 != flash_get_lock_block_mid1160c8()){
+			flash_unlock_mid1160c8();
+		}
+		return 1;
+		break;
+	case  MID13325E:
+		if(0 != flash_get_lock_block_mid13325e()){
+			flash_unlock_mid13325e();
+		}
+		return 1;
+		break;
+	case MID1360C8:
+		if(0 != flash_get_lock_block_mid1360c8()){
+			flash_unlock_mid1360c8();
+		}
+		return 1;
+		break;
+	case  MID14325E:
+		if(0 != flash_get_lock_block_mid14325e()){
+			flash_unlock_mid14325e();
+		}
+		return 1;
+		break;
+	case  MID146085:
+		if(0 != flash_get_lock_block_mid146085()){
+			flash_unlock_mid146085();
+		}
+		return 1;
+		break;
+	case  MID1460C8:
+		if(0 != flash_get_lock_block_mid1460c8()){
+			flash_unlock_mid1460c8();
+		}
+		return 1;
+		break;
+
+#endif
+#if(MCU_CORE_B89)
+	case MID1360C8:
+		if(0 != flash_get_lock_block_mid1360c8()){
+			flash_unlock_mid1360c8();
+		}
+		return 1;
+		break;
+#endif
+	default:
+		   return 0;
+		break;
+	}
+}
 
 #if (MCU_CORE_B85)
 void flash_mid1060c8_test(void)
@@ -327,6 +627,70 @@ void flash_mid11325e_test(void)
 		}
 	}
 	check_status.unlock_check = 1;
+}
+void flash_mid146085_test(void)
+{
+	int i;
+
+	status1 = flash_read_status_mid146085();
+	flash_lock_mid146085(FLASH_LOCK_LOW_64K_MID146085);
+	status2 = flash_read_status_mid146085();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.lock_err = 1;
+			while(1);
+		}
+	}
+	check_status.lock_check = 1;
+
+	flash_unlock_mid146085();
+	status3 = flash_read_status_mid146085();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != 0xff){
+			err_status.unlock_err = 1;
+			while(1);
+		}
+	}
+	check_status.unlock_check = 1;
+
+	flash_erase_otp_mid146085(FLASH_SECURITY_ADDR);
+	flash_read_otp_mid146085(FLASH_SECURITY_ADDR,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != 0xff){
+			err_status.otp_erase_err = 1;
+			while(1);
+		}
+	}
+	check_status.otp_erase_check = 1;
+
+	flash_write_otp_mid146085(FLASH_SECURITY_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Write_Buff);
+	flash_read_otp_mid146085(FLASH_SECURITY_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.otp_write_err = 1;
+			while(1);
+		}
+	}
+	check_status.otp_write_check = 1;
+
+#if FLASH_OTP_LOCK
+	status4 = flash_read_status_mid146085();
+	flash_lock_otp_mid146085(FLASH_LOCK_OTP_0x001000_512B_MID146085);
+	status5 = flash_read_status_mid146085();
+	flash_erase_otp_mid146085(FLASH_SECURITY_ADDR);
+	flash_read_otp_mid146085(FLASH_SECURITY_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.otp_lock_err = 1;
+			while(1);
+		}
+	}
+	check_status.otp_lock_check = 1;
+#endif
 }
 #endif
 
@@ -756,6 +1120,9 @@ void user_init()
 	case 0x14325e:
 		flash_mid14325e_test();
 		break;
+	case 0x146085:
+		flash_mid146085_test();
+		break;
 	default:
 		break;
 	}
@@ -778,7 +1145,16 @@ void user_init()
 	}else{
 		err_status.flash_vendor_add_err =1;
 	}
-
+    if(flash_lock(mid)){
+		check_status.flash_lock_init_add_check =1;
+	}else{
+		err_status.flash_lock_init_add_err =1;
+	}
+	if(flash_unlock(mid)){
+		check_status.flash_unlock_init_add_check =1;
+	}else{
+		err_status.flash_unlock_init_add_err =1;
+	}
 
 
 }

@@ -7,7 +7,6 @@
  * @date	2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -34,6 +33,12 @@
 #define _attribute_no_inline_   			__attribute__((noinline))
 #define _inline_ 							inline
 
+/**********************************************************************************************************************
+ *   If you need to optimize the code size, you can modify the following configuration according to the situation.
+ *   Note:
+ *	 -Before modifying, please confirm whether the function is needed, in case the needed function is deleted by mistake.
+ *	 -If you modify the following configuration options, please regenerate the library file
+ *********************************************************************************************************************/
 #ifndef	BLC_PM_EN
 #define	BLC_PM_EN							0
 #endif

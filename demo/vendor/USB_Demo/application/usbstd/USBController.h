@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -32,7 +31,7 @@ extern "C" {
 
 /**If Isochronous endpoint,
 Bits 3..2 = Synchronisation Type (Iso Mode)
-00 = No Synchonisation
+00 = No Synchronisation
 01 = Asynchronous
 10 = Adaptive
 11 = Synchronous

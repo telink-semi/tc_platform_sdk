@@ -7,7 +7,6 @@
  * @date	2019
  *
  * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -139,7 +138,7 @@ void spi_master_init(unsigned char DivClock, SPI_ModeTypeDef Mode)
  * @param[in]  CmdLen - length in byte of the command bytes
  * @param[in]  Data - pointer to the data need to write
  * @param[in]  DataLen - length in byte of the data need to write
- * @param[in]  CSPin - the CS pin specifing the slave device
+ * @param[in]  CSPin - the CS pin specifying the slave device
  * @return     none
  */
 void spi_write(unsigned char *Cmd, int CmdLen, unsigned char *Data, int DataLen, GPIO_PinTypeDef CSPin)
@@ -174,7 +173,7 @@ void spi_write(unsigned char *Cmd, int CmdLen, unsigned char *Data, int DataLen,
  * @param[in]  CmdLen - length in byte of the command bytes
  * @param[out] Data - pointer to the buffer that will cache the reading out data
  * @param[in]  DataLen - length in byte of the data need to read
- * @param[in]  CSPin - the CS pin specifing the slave device
+ * @param[in]  CSPin - the CS pin specifying the slave device
  * @return     none
  */
 void spi_read(unsigned char *Cmd, int CmdLen, unsigned char *Data, int DataLen, GPIO_PinTypeDef CSPin)

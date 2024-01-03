@@ -7,7 +7,6 @@
  * @date	2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -26,12 +25,14 @@
 #define __MID136085_H__
 
 /*
- * @brief     MID = 0x1360c8 Flash include P25Q40SU.
+ * @brief     MID = 0x136085 Flash include P25Q40SU.
  */
 
 
 /**
- * @brief     define the section of the protected memory area which is read-only and unalterable.
+ * @brief   define the section of the protected memory area which is read-only and unalterable.
+ * @note    when data protection, only enumeration items in mid136085_lock_block_e can be selected,
+ *          to ensure that the values returned by the interface flash_get_lock_block_mid136085 are in the mid136085_lock_block_e.
  */
 typedef enum{
 	//---------WPS=0, CMP bit = 0-----------------//
@@ -165,6 +166,21 @@ void flash_lock_mid136085(mid136085_lock_block_e data);
  *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
  */
 void flash_unlock_mid136085(void);
+
+/**
+ * @brief 		This function serves to get the protection area of the flash.
+ * @return 		the protection area of the flash.
+ * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
+ *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
+ *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
+ *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
+ *              to the specific application and hardware circuit.
+ *
+ *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
+ *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
+ *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
+ */
+mid136085_lock_block_e flash_get_lock_block_mid136085(void);
 
 /**
  * @brief 		This function serves to read data from the Security Registers of the flash.

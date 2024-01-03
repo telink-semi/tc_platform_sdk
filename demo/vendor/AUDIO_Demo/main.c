@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -31,6 +30,10 @@ extern void main_loop (void);
 extern const short *buffer ;
 extern volatile unsigned int remaining;
 extern unsigned short half_buff_length;
+#elif (AUDIO_MODE == AUDIO_SINE_WAVE_TO_SDM)
+extern  volatile  unsigned  int  block_16;
+extern const short *buffer ;
+extern  volatile  unsigned  int  sample_num ;
 #endif
 /**
  * @brief		This function serves to handle the interrupt of MCU
@@ -61,6 +64,17 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 				timer_stop(TIMER1);
 			}
 		}
+#elif (AUDIO_MODE == AUDIO_SINE_WAVE_TO_SDM)
+	if(reg_tmr_sta & FLD_TMR_STA_TMR1)
+			{
+			   reg_tmr_sta |= FLD_TMR_STA_TMR1; //clear irq status
+			   audio_rx_data_from_sample_buff(buffer+block_16, 16);
+			   block_16=(block_16+16);
+			   if( block_16>( sample_num-16))
+			   {
+				 block_16=0;
+			   }
+			}
 #endif
 }
 

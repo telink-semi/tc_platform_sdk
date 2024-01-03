@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -31,7 +30,7 @@ usr_def_t usr_config;
 #endif
 
 
-
+static unsigned char rxpara_flag  = 1;
 static unsigned short pkt_cnt =0,cmd_pkt,l, h;
 static unsigned char chn, pkt_type,freq,uart_tx_index,uart_rx_index,para, ctrl;
 static unsigned char bb_mode;
@@ -131,7 +130,7 @@ unsigned int get_pkt_interval(unsigned char payload_len, unsigned char mode)
 
 
 /**
- * @brief   This function serves to read the usrt data and execute BQB program
+ * @brief   This function serves to read the uart data and execute BQB program
  * @param   Pointer to uart data
  * @return  1:  2 bytes data is received.
  * 			0:  no data is received.
@@ -207,7 +206,7 @@ static void rf_phy_test_prbs9 (unsigned char *p, int n)
 
 extern void read_bqb_calibration();
 /**
- * @brief   This function serves to read the usrt data and execute BQB program
+ * @brief   This function serves to read the uartdata and execute BQB program
  * @param   none.
  * @return  none.
  */
@@ -354,6 +353,23 @@ void bqb_serviceloop (void)
 
 				rf_set_ble_channel(freq);
 				rf_start_srx(reg_system_tick);
+
+				sleep_us(30);
+				if(rxpara_flag == 1)
+				{
+					rf_set_rxpara();
+					rxpara_flag = 0;
+				}
+
+				if(freq == 10 || freq == 21 || freq == 33)
+				{
+					rf_ldot_ldo_rxtxlf_bypass_en();
+				}
+				else
+				{
+					rf_ldot_ldo_rxtxlf_bypass_dis();
+				}
+
 				uart_ndma_send_byte((rsp>>8)&0xff);
 				uart_ndma_send_byte(rsp&0xff);
 				pkt_cnt = 0;

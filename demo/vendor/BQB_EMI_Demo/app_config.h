@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -33,8 +32,7 @@ extern "C" {
 
 #define BQB_DEMO				1
 #define EMI_DEMO				2
-#define AGING_DEMO				3
-#define TEST_DEMO			   BQB_DEMO
+#define TEST_DEMO			   EMI_DEMO
 
 /////////////////// Clock  /////////////////////////////////
 #if(TEST_DEMO==DUT_8278_FLASH)

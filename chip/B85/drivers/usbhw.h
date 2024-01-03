@@ -7,7 +7,6 @@
  * @date	2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
- *          All rights reserved.
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -25,7 +24,7 @@
 #pragma once
 #include "register.h"
 enum {
-	USB_EDP_PRINTER_IN = 8, // endpoint 8 is alias of enpoint 0,  becareful.  // default hw buf len = 64
+	USB_EDP_PRINTER_IN = 8, // endpoint 8 is alias of endpoint 0,  becareful.  // default hw buf len = 64
 	USB_EDP_MOUSE = 2,			// default hw buf len = 8
 	USB_EDP_KEYBOARD_IN = 1,	// default hw buf len = 8
 	USB_EDP_IN = 3,	            // default hw buf len = 16
@@ -51,7 +50,7 @@ enum {
 };
 
 static inline void usbhw_set_printer_threshold(unsigned char th) {
-	reg_usb_ep8_send_thre = th;
+	reg_usb_ep8_send_thres = th;
 }
 
 /**
