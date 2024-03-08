@@ -83,7 +83,12 @@ void clock_init(SYS_CLK_TypeDef SYS_CLK)
 	reg_clk_sel = (unsigned char)SYS_CLK;
 	system_clk_type = (unsigned int)SYS_CLK;
 	otp_set_clk(SYS_CLK);
+#if (MCU_CORE_B80)
 	otp_set_auto_pce_tcs(SYS_CLK);
+#elif (MCU_CORE_B80B)
+    otp_set_auto_mode_clk(SYS_CLK);
+#endif
+
 #if (SYSCLK_RC_CLOCK_EN)
 	if(SYS_CLK<SYS_CLK_RC_THRES)
 	{

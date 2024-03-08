@@ -30,9 +30,9 @@
  * @brief      This function serves to read data from OTP memory,belong to otp normal read.
  *             otp has three kinds of read mode,in general,just use OTP_READ normal read operation, when the execution of burning operation,
  *             need to use margin read(otp_pgm_margin_read,otp_initial_margin_read),check whether the write is successful.
- * @param[in]  addr - the otp address of the data,it has to be a multiple of 4,the otp memory that can access is from 0x0000-0x3ffc,can't access other address.
- * @param[in]  len  - the length of the data,the unit is word(4 bytes).
- * @param[in]  buff - data buff.
+ * @param[in]  addr     - the otp address of the data,it has to be a multiple of 4,the otp memory that can access is from 0x0000-0x3ffc,can't access other address.
+ * @param[in]  word_len - the length of the data,the unit is word(4 bytes).
+ * @param[in]  buff     - data buff.
  * @return     none
  *
  * Attention:
