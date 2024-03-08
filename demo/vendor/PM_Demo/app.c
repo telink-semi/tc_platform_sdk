@@ -42,8 +42,6 @@ unsigned short read_data_time_sustain[24] = {0};	//the size of the array can be 
 #define RF_POWER						RF_POWER_INDEX_P4p98dBm
 #elif(MCU_CORE_B80)
 #define RF_POWER						RF_POWER_P11p46dBm
-#elif(MCU_CORE_B80B)
-#define RF_POWER                        RF_POWER_P11p46dBm
 #endif
 #define RF_FREQ							17
 #define ACCESS_CODE						0x29417671
@@ -321,7 +319,7 @@ void main_loop (void)
 	stimer_disable();
 
 #elif(PM_MODE == IDLE_RF_WAKEUP)
-#if (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
+#if (MCU_CORE_B89 || MCU_CORE_B80)
 	rf_mode_init();
 	rf_set_ble_1M_mode();
 #endif

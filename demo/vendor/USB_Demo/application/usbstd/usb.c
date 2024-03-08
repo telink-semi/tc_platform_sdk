@@ -71,7 +71,7 @@ static u16 g_response_len = 0;
 static int g_stall = 0;
 u8 usb_mouse_report_proto = 0; //default 1 for report proto
 u8 g_rate = 0; //default 0 for all report
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80)
 static unsigned short usb_len_idx_0;
 static unsigned short usb_len_idx_s;
 static unsigned short usb_len_idx_h;
@@ -88,13 +88,13 @@ u8 usb_alt_intf[USB_INTF_MAX];
  */
 void usb_send_response(void) {
 	u16 n;
-	if (g_response_len < USB_CTR_ENDPOINT_SIZE) {
+	if (g_response_len < 8) {
 		n = g_response_len;
 	} else {
-		n = USB_CTR_ENDPOINT_SIZE;
+		n = 8;
 	}
 	g_response_len -= n;
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80)
 	usb_len_idx_0=n;
 #endif
 	usbhw_reset_ctrl_ep_ptr();
@@ -179,14 +179,12 @@ void usb_prepare_desc_data(void) {
 		break;
 
 	}
-
+#if(MCU_CORE_B80)	
+	usb_len_idx_s = g_response_len;
+#endif
 	if (control_request.Length < g_response_len) {
 		g_response_len = control_request.Length;
 	}
-
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
-	usb_len_idx_s = g_response_len;
-#endif
 
 	return;
 }
@@ -219,7 +217,7 @@ void usb_handle_std_intf_req() {
 		{
 			//mouse
 			g_response = usbdesc_get_mouse();
-			g_response_len = sizeof(USB_HID_Descriptor_HID_t);
+			g_response_len = sizeof(USB_HID_Descriptor_HID_Mouse_t);
 		}
   #endif
 #endif
@@ -234,7 +232,7 @@ void usb_handle_std_intf_req() {
 		if (index_l == USB_INTF_KEYBOARD) {
 			//keyboard
 			g_response = usbdesc_get_keyboard();
-			g_response_len = sizeof(USB_HID_Descriptor_HID_t);
+			g_response_len = sizeof(USB_HID_Descriptor_HID_Keyboard_t);
 		}
 #endif
 #endif
@@ -243,7 +241,7 @@ void usb_handle_std_intf_req() {
 		{
 			//SOMATIC
 			g_response = usbdesc_get_somatic();
-			g_response_len = sizeof(USB_HID_Descriptor_HID_t);
+			g_response_len = sizeof(USB_HID_Descriptor_HID_Somatic_t);
 		}
 #endif
 		break;
@@ -294,10 +292,6 @@ void usb_handle_std_intf_req() {
 	if (control_request.Length < g_response_len) {
 		g_response_len = control_request.Length;
 	}
-
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
-    usb_len_idx_s = g_response_len;
-#endif
 
 	return;
 }
@@ -739,7 +733,7 @@ void usb_handle_request(u8 data_request) {
 
 void usb_handle_ctl_ep_setup(void)
 {
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80)
 	reg_usb_sups_cyc_cali=0x38;
 #endif
 	usbhw_reset_ctrl_ep_ptr();
@@ -748,7 +742,7 @@ void usb_handle_ctl_ep_setup(void)
 	control_request.Value = usbhw_read_ctrl_ep_u16();
 	control_request.Index = usbhw_read_ctrl_ep_u16();
 	control_request.Length = usbhw_read_ctrl_ep_u16();
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80)
 	usb_len_idx_h = control_request.Length;
 #endif
 	g_stall = 0;
@@ -765,7 +759,7 @@ void usb_handle_ctl_ep_setup(void)
 
 
 void usb_handle_ctl_ep_data(void) {
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80)
 	reg_usb_sups_cyc_cali=0x38;
 #endif
 	usbhw_reset_ctrl_ep_ptr();
@@ -775,8 +769,8 @@ void usb_handle_ctl_ep_data(void) {
 	{
 		usbhw_write_ctrl_ep_ctrl(FLD_EP_DAT_STALL);
 	}
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
-	else if((usb_len_idx_s % USB_CTR_ENDPOINT_SIZE == 0) && (usb_len_idx_0 == 0) && (usb_len_idx_s != usb_len_idx_h))
+#if(MCU_CORE_B80)
+	else if((usb_len_idx_s % 8 == 0) && (usb_len_idx_0 == 0) && (usb_len_idx_s != usb_len_idx_h))
 	{
 		reg_usb_sups_cyc_cali=0x18;
 		usbhw_write_ctrl_ep_ctrl(FLD_EP_DAT_ACK);
@@ -792,7 +786,7 @@ void usb_handle_ctl_ep_data(void) {
 
 
 void usb_handle_ctl_ep_status() {
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80)
 	reg_usb_sups_cyc_cali=0x38;
 #endif
 	if (g_stall)
@@ -875,7 +869,7 @@ void usb_handle_irq(void) {
     #if (USB_CDC_ENABLE)
     //must add ,if endpoint is reset and ack is not set,CDC out_irq will not be generated.
     //The packet capture phenomenon of the USB analyzer is: device does not return ack.(kaixin modify,2020-01-15)
-    usbhw_data_ep_ack(USB_PHYSICAL_EDP_CDC_OUT);
+    usbhw_data_ep_ack(USB_EDP_CDC_OUT);
     #endif
     }
 
@@ -900,21 +894,19 @@ void usb_handle_irq(void) {
 void usb_init_interrupt(void)
 {
 	usbhw_enable_manual_interrupt(FLD_CTRL_EP_AUTO_STD | FLD_CTRL_EP_AUTO_DESC|FLD_CTRL_EP_AUTO_CFG);
-#if(MCU_CORE_B87||MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B87||MCU_CORE_B80)
 	usbhw_set_eps_en(FLD_USB_EDP8_EN|FLD_USB_EDP1_EN|FLD_USB_EDP2_EN|FLD_USB_EDP3_EN|FLD_USB_EDP4_EN|FLD_USB_EDP5_EN|FLD_USB_EDP6_EN|FLD_USB_EDP7_EN);
 #endif
+
 }
 
-void usb_init(void)
-{
-#if (MCU_CORE_B80B)
-    usbhw_set_irq_edge();
-    /* enable reset mask, otherwise, reg_irq_src does not detect the usb reset and suspend irq.*/
-    usbhw_set_irq_mask(FLD_USB_IRQ_RESET_MASK | FLD_USB_IRQ_SUSPEND_MASK);
-    /* set control endpoint size */
-    usbhw_set_ctrl_ep_size(USB_CTR_SIZE);
+void usb_init() {
+
+	usb_init_interrupt();
+#if FLOW_NO_OS
+#else
+	usb_handle_irq();
 #endif
-    usbhw_enable_manual_interrupt(FLD_CTRL_EP_AUTO_STD | FLD_CTRL_EP_AUTO_DESC|FLD_CTRL_EP_AUTO_CFG);
 }
 
 
@@ -924,24 +916,24 @@ void usb_cdc_irq_data_process(void)
 {
 	unsigned char irq = usbhw_get_eps_irq();
 
-	if(irq & BIT(USB_PHYSICAL_EDP_CDC_IN) ){
-		usbhw_clr_eps_irq(BIT(USB_PHYSICAL_EDP_CDC_IN));
-		usbhw_reset_ep_ptr(USB_PHYSICAL_EDP_CDC_IN);
+	if(irq & FLD_USB_EDP4_IRQ ){
+		usbhw_clr_eps_irq(FLD_USB_EDP4_IRQ);
+		usbhw_reset_ep_ptr(USB_EDP_CDC_IN);
 		usb_cdc_tx_cnt++;
 	}
 	//CDC host-to-device data Output IRQ
-	if(irq & BIT(USB_PHYSICAL_EDP_CDC_OUT)){
-		reg_usb_irq=BIT(USB_PHYSICAL_EDP_CDC_OUT);
+	if(irq & FLD_USB_EDP5_IRQ){
+		reg_usb_irq=FLD_USB_EDP5_IRQ;
 		g_stall = 0;
 		//receive data from usb host
 		usb_cdc_rx_data_from_host(usb_cdc_data);
 		if(g_stall)
 		{
-			usbhw_data_ep_stall(USB_PHYSICAL_EDP_CDC_OUT);
+			usbhw_data_ep_stall(USB_EDP_CDC_OUT);
 		}
 		else
 		{
-			usbhw_data_ep_ack(USB_PHYSICAL_EDP_CDC_OUT);
+			usbhw_data_ep_ack(USB_EDP_CDC_OUT);
 
 		}
 	}

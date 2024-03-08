@@ -96,51 +96,22 @@ extern "C" {
 #define KEY3           			GPIO_PF0
 #define KEY4           			GPIO_PF1
 #define IRQ_PIN           		KEY1
-#elif (MCU_CORE_B80B)
-#define LED1                    GPIO_PA4
-#define LED2                    GPIO_PA5
-#define LED3                    GPIO_PA6
-#define LED4                    GPIO_PA7
-/*
- * Button matrix table:
- *          KEY3    KEY4
- *  KEY1    SW2     SW3
- *  KEY2    SW4     SW5
- */
-#define KEY1                    GPIO_PA0
-#define KEY2                    GPIO_PD4
-#define KEY3                    GPIO_PF0
-#define KEY4                    GPIO_PF1
-#define IRQ_PIN                 KEY1
 #endif
 
-#define GPIO_DEMO_KEY			1	 //Short press SW2 intermittent trigger interrupts,short press KEY3 to generate an edge signal.
-#define GPIO_DEMO_SQUARE_WAVE	2	 //long presses SW2 to continuously trigger interrupts,IRQ_PIN connects to KEY3, toggle KEY3 to generate a square wave signal.
-#define GPIO_DEMO_MODE 			GPIO_DEMO_KEY
-
-#define GPIO_HIGH_RESISTOR		   1
-#define GPIO_IRQ				   2
-#define GPIO_IRQ_RSIC0			   3
-#define GPIO_IRQ_RSIC1			   4
-
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
-#define GPIO_IRQ_RSIC2             5//only B80_A and B80_B support
-#if (MCU_CORE_B80)
-#define GPIO_SEL_IRQ_GROUP         6//only  B80_A support
-#elif (MCU_CORE_B80B)
-#define GPIO_SEL_IRQ_NEW_RISC      6//only  B80_B support
-#define GPIO_IRQ_NEW_RISC_NUM      RISC3
+#define GPIO_IRQ				1
+#define GPIO_IRQ_RSIC0			2
+#define GPIO_IRQ_RSIC1			3
+#define GPIO_HIGH_RESISTOR		4
+#if(MCU_CORE_B80)
+#define GPIO_IRQ_RSIC2          5
+#define GPIO_SEL_IRQ_SRC        6
 #endif
-#endif
-
-#define AUTO_TEST_MODE 			   7 // For internal testing, users need not care
 
 #define GPIO_MODE 				GPIO_IRQ
 
 #define GPIO_DEMO_KEY			1	 //Short press SW2 intermittent trigger interrupts,short press KEY3 to generate an edge signal.
 #define GPIO_DEMO_SQUARE_WAVE	2	 //long presses SW2 to continuously trigger interrupts,IRQ_PIN connects to KEY3, toggle KEY3 to generate a square wave signal.
 #define GPIO_DEMO_MODE 			GPIO_DEMO_KEY
-
 
 
 /* Define system clock */

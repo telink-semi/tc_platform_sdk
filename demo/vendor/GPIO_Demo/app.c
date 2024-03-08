@@ -22,12 +22,14 @@
  *
  *******************************************************************************************************/
 #include "app_config.h"
-#if (GPIO_MODE != AUTO_TEST_MODE)
+
 void user_init()
 {
 	sleep_ms(2000);
+
 #if(GPIO_MODE == GPIO_HIGH_RESISTOR)
 	gpio_shutdown(GPIO_ALL);				//set all gpio as high resistor except sws and mspi
+
 #else
 	//0.init the LED pin,for indication
 	gpio_set_func(LED1,AS_GPIO);
@@ -79,12 +81,12 @@ void user_init()
 	gpio_setup_up_down_resistor(IRQ_PIN, PM_PIN_PULLUP_10K);
 	gpio_set_interrupt_risc1(IRQ_PIN, POL_FALLING);
 	irq_enable();
-#elif (GPIO_MODE == GPIO_IRQ_RSIC2)//only B80_A and B80_B support
+#elif (GPIO_MODE == GPIO_IRQ_RSIC2)
 	gpio_write(KEY3, 0);
     gpio_setup_up_down_resistor(IRQ_PIN, PM_PIN_PULLUP_10K);
     gpio_set_interrupt_risc2(IRQ_PIN, POL_FALLING);
     irq_enable();
-#elif(GPIO_MODE == GPIO_SEL_IRQ_GROUP)//only B80_A support
+#elif(GPIO_MODE == GPIO_SEL_IRQ_SRC)
 	/*Note : the use method of 8 new GPIO irq source :
 	 * First ,you can choose a gpio group,like gpio GPIO_GROUP_A,8 GPIO in all.
 	 * Second,the 8 gpio you choose corresponding to the 8 gpio irq source respectively.for example,irq source0-GPIO_PA0,irq source1-GPIO-PA1......
@@ -95,15 +97,8 @@ void user_init()
 	gpio_set_src_irq_group(IRQ_PIN>>8);             /*Set the group corresponding to IRQ_PIN*/
 	gpio_set_src_irq(IRQ_PIN, SRC_IRQ_FALLING_EDGE);/*IRQ_PIN is used as an example to configure up to 8 gpio.*/
 	irq_enable();
-#elif (GPIO_MODE == GPIO_SEL_IRQ_NEW_RISC)//only B80_B support
-	/*Note:
-	 * An IRQ_PIN  can be mapped to an NEW_RISK, and up to 5 new_risks(RISC3~RISC7) can be set up at the same time.
-	 */
-	gpio_write(KEY3, 0);
-	gpio_setup_up_down_resistor(IRQ_PIN, PM_PIN_PULLUP_10K);
-	gpio_set_interrupt_new_risc(IRQ_PIN, SRC_IRQ_RISING_EDGE, GPIO_IRQ_NEW_RISC_NUM);
-	irq_enable();
 #endif
+
 #endif
 }
 
@@ -119,65 +114,6 @@ void main_loop (void)
 #endif
 }
 
-volatile unsigned int gpio_irq_cnt;
-/**
- * @brief		This function serves to handle the interrupt of MCU
- * @param[in] 	none
- * @return 		none
- */
-_attribute_ram_code_sec_noinline_ void irq_handler(void)
-{
-    sleep_ms(1000);
-#if (GPIO_MODE == GPIO_IRQ )
 
-	if((reg_irq_src & FLD_IRQ_GPIO_EN)==FLD_IRQ_GPIO_EN){
-		reg_irq_src = FLD_IRQ_GPIO_EN; // clear the relevant irq
-			gpio_irq_cnt++;
-			gpio_toggle(LED1);
-	}
 
-#elif(GPIO_MODE == GPIO_IRQ_RSIC0)
 
-	if((reg_irq_src & FLD_IRQ_GPIO_RISC0_EN)==FLD_IRQ_GPIO_RISC0_EN){
-		reg_irq_src = FLD_IRQ_GPIO_RISC0_EN; // clear the relevant irq
-			gpio_irq_cnt++;
-			gpio_toggle(LED2);
-	}
-
-#elif(GPIO_MODE == GPIO_IRQ_RSIC1)
-
-	if((reg_irq_src & FLD_IRQ_GPIO_RISC1_EN)==FLD_IRQ_GPIO_RISC1_EN){
-		reg_irq_src = FLD_IRQ_GPIO_RISC1_EN; // clear the relevant irq
-
-			gpio_irq_cnt++;
-			gpio_toggle(LED3);
-	}
-#elif (GPIO_MODE == GPIO_IRQ_RSIC2)//only B80_A and B80_B support
-    if((reg_irq_src & FLD_IRQ_GPIO_RISC2_EN)==FLD_IRQ_GPIO_RISC2_EN){
-        reg_irq_src = FLD_IRQ_GPIO_RISC2_EN; // clear the relevant irq
-        gpio_irq_cnt++;
-    	gpio_toggle(LED4);
-    }
-
-#elif(GPIO_MODE == GPIO_SEL_IRQ_GROUP)//only B80_A support
-	volatile unsigned char gpio_irqsrc;
-	gpio_irqsrc = (reg_gpio_irq_from_pad & IRQ_PIN);
-	if(gpio_irqsrc)
-	{
-		reg_gpio_irq_from_pad = IRQ_PIN;
-		gpio_irq_cnt++;
-		gpio_toggle(LED1);
-	}
-#elif(GPIO_MODE == GPIO_SEL_IRQ_NEW_RISC)//only B80_B support
-	/*Note:
-	  * When multiple new risc are set up at the same time, the corresponding bit in reg_irq_src (FLD_IRQ_GPIO_NEW_EN) is automatically cleared to 0 after all irq states are cleared.
-	 */
-	if(gpio_get_new_risk_irq_status(BIT(GPIO_IRQ_NEW_RISC_NUM)))
-	{
-		gpio_clr_new_risk_irq_status(BIT(GPIO_IRQ_NEW_RISC_NUM));
-	}
-
-#endif
-
-}
-#endif

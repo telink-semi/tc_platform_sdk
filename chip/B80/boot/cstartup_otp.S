@@ -221,12 +221,9 @@ __reset:
 	 * When running the otp program, after the retention sleep wakes up, the otp ack enablement will be lost, causing the program to freeze,
 	 * and you need to re-enable otp ack, add by junhui.hu, confirmed by jianzhi 20211021.
 	 */
-    @B80_B is handled in the boot program.
-#if (MCU_CORE_B80)
 	tloadr		r1, MC_ICCT1
 	tmovs		r0, #1		  	  @0b 00000001
 	tstorerb	r0, [r1, #0]	  @otp ack = 1
-#endif
 
 
 @********************************************************************************************************
@@ -406,11 +403,7 @@ DAT0:
 	.word	0x13			    		@4		SVC
 	.word	(irq_stk + IRQ_STK_SIZE)	@8
 
-#if (MCU_CORE_B80)
 	.word	(0x844000)		    		@12  	stack end
-#elif (MCU_CORE_B80B)
-    .word	(0x845000)		    		@12  	stack end
-#endif
 
 	.word	(_start_bss_)               @16
 	.word	(_end_bss_)                 @20
@@ -449,11 +442,7 @@ FLL_D:
 	.word	0xffffffff                	@0
 	.word	(_start_data_)    			@4
 
-#if (MCU_CORE_B80)
 	.word	(0x844000)		    		@12  	stack end
-#elif (MCU_CORE_B80B)
-    .word	(0x845000)		    		@12  	stack end
-#endif
 
 	.word   _ramcode_size_div_256_      @12
 

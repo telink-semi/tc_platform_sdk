@@ -45,20 +45,6 @@
 #define ID_PRODUCT	   			0x8727
 #endif
 
-#if (MCU_CORE_B80B)
-/* control endpoint size config. */
-#define USB_CTR_ENDPOINT_SIZE       8 /* 8/16/32/64 */
-#define USB_CTR_SIZE                (USB_CTR_ENDPOINT_SIZE == 64) ? SIZE_64_BYTE :                 \
-                                    ((USB_CTR_ENDPOINT_SIZE == 32) ? SIZE_32_BYTE :                \
-                                    ((USB_CTR_ENDPOINT_SIZE == 16) ? SIZE_16_BYTE :                \
-                                    ((USB_CTR_ENDPOINT_SIZE == 8) ? SIZE_8_BYTE : SIZE_64_BYTE)))
-#endif
-
-/* control endpoint size default is 8 bytes. */
-#ifndef USB_CTR_ENDPOINT_SIZE
-#define USB_CTR_ENDPOINT_SIZE       8
-#endif
-
 #else
 	#include "app_config.h"
 //////////// product  Information  //////////////////////////////
@@ -98,36 +84,6 @@
 	#endif
 #endif
 
-#if (MCU_CORE_B80 || MCU_CORE_B85 || MCU_CORE_B87 || MCU_CORE_B89)
-#define USB_PHYSICAL_EDP_CDC_IN     USB_EDP_CDC_IN  /* physical in endpoint */
-#define USB_PHYSICAL_EDP_CDC_OUT    USB_EDP_CDC_OUT /* physical out endpoint */
-#elif (MCU_CORE_B80B)
-/* control endpoint size config. */
-#define USB_CTR_ENDPOINT_SIZE       8 /* 8/16/32/64 */
-#define USB_CTR_SIZE                (USB_CTR_ENDPOINT_SIZE == 64) ? SIZE_64_BYTE :                 \
-                                    ((USB_CTR_ENDPOINT_SIZE == 32) ? SIZE_32_BYTE :                \
-                                    ((USB_CTR_ENDPOINT_SIZE == 16) ? SIZE_16_BYTE :                \
-                                    ((USB_CTR_ENDPOINT_SIZE == 8) ? SIZE_8_BYTE : SIZE_64_BYTE)))
-
-#define USB_MAP_EN                  0 /* 1:usb map function enable, 0:usb map function disable. */
-
-#define USB_PHYSICAL_EDP_CDC_IN     USB_EDP_CDC_IN  /* physical in endpoint */
-#define USB_PHYSICAL_EDP_CDC_OUT    USB_EDP_CDC_OUT /* physical out endpoint */
-
-#if (USB_MAP_EN == 1)
-#define CDC_RX_EPNUM                USB_EDP_CDC_OUT /* logical in endpoint */
-#define CDC_TX_EPNUM                USB_EDP_CDC_OUT /* logical out endpoint */
-#else
-#define CDC_RX_EPNUM                USB_PHYSICAL_EDP_CDC_OUT /* USB_MAP_EN = 0, logical endpoint is the same as the physical endpoint */
-#define CDC_TX_EPNUM                USB_PHYSICAL_EDP_CDC_IN /* USB_MAP_EN = 0, logical endpoint is the same as the physical endpoint*/
-#endif
-
-#endif
-
-/* control endpoint size default is 8 bytes. */
-#ifndef USB_CTR_ENDPOINT_SIZE
-#define USB_CTR_ENDPOINT_SIZE       8
-#endif
 
 //////////////////// Audio /////////////////////////////////////
 #define MIC_RESOLUTION_BIT		16

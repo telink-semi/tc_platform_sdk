@@ -39,7 +39,7 @@ void user_init()
 	adc_init();
 
 	#if(ADC_MODE==ADC_BASE_MODE)
-#if (MCU_CORE_B80 || MCU_CORE_B80B)
+#if (MCU_CORE_B80)
 		adc_base_init(ADC_GPIO_PB0);
 #else
 		adc_base_init(GPIO_PB0);

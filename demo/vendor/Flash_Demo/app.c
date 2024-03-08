@@ -118,7 +118,7 @@ unsigned char uid[16]={0};
 unsigned char flash_lock(unsigned int flash_mid){
 	switch(flash_mid)
 	{
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80)
 	case  MID114485:
 		if(0 == flash_get_lock_block_mid114485()){
 			flash_lock_mid114485(FLASH_LOCK_LOW_64K_MID114485);
@@ -262,7 +262,7 @@ unsigned char flash_lock(unsigned int flash_mid){
 unsigned char flash_unlock(unsigned int flash_mid){
 	switch(flash_mid)
 	{
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80)
 	case  MID114485:
 		if(0 != flash_get_lock_block_mid114485()){
 			flash_unlock_mid114485();
@@ -435,7 +435,7 @@ void flash_mid1060c8_test(void)
 }
 #endif
 
-#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B87)
+#if (MCU_CORE_B80) || (MCU_CORE_B87)
 void flash_mid1160c8_test(void)
 {
 	int i;
@@ -467,7 +467,7 @@ void flash_mid1160c8_test(void)
 }
 #endif
 
-#if (MCU_CORE_B80) || (MCU_CORE_B80B) || (MCU_CORE_B85) || (MCU_CORE_B87) || (MCU_CORE_B89)
+#if (MCU_CORE_B80) || (MCU_CORE_B85) || (MCU_CORE_B87) || (MCU_CORE_B89)
 void flash_mid1360c8_test(void)
 {
 	int i;
@@ -924,7 +924,7 @@ void flash_mid1360eb_test(void)
 }
 #endif
 
-#if (MCU_CORE_B80 || MCU_CORE_B80B)
+#if (MCU_CORE_B80)
 void flash_mid136085_test(void)
 {
 	int i;
@@ -1047,7 +1047,7 @@ void user_init()
 	}
 	check_status.write_check = 1;
 
-#if (MCU_CORE_B80 || MCU_CORE_B80B)
+#if (MCU_CORE_B80)
 	switch(mid)
 	{
 	case 0x1160c8:

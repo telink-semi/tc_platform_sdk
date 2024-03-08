@@ -62,15 +62,9 @@ _attribute_ram_code_sec_noinline_  void io_putchar(unsigned char byte){
 		init_flag = 0;
 	}
 
-#if (MCU_CORE_B80)
 	unsigned char tmp_bit0 = read_reg8(TX_PIN_OUTPUT_REG) & (~(DEBUG_INFO_TX_PIN & 0xff));
 	unsigned char tmp_bit1 = read_reg8(TX_PIN_OUTPUT_REG) | (DEBUG_INFO_TX_PIN & 0xff);
 	unsigned char bit[10] = {0};
-#elif (MCU_CORE_B80B)
-    unsigned short tmp_bit0 = (DEBUG_INFO_TX_PIN & 0xff) << 8;
-    unsigned short tmp_bit1 = DEBUG_INFO_TX_PIN & 0xff;
-    unsigned short bit[10] = {0};
-#endif
 
 	bit[0] = tmp_bit0;
 	bit[1] = (byte & 0x01)? tmp_bit1 : tmp_bit0;
@@ -90,11 +84,7 @@ _attribute_ram_code_sec_noinline_  void io_putchar(unsigned char byte){
 		while(t1 - t2 < BIT_INTERVAL){
 			t1  = read_reg32(0x740);
 		}
-#if (MCU_CORE_B80)
 		write_reg8(TX_PIN_OUTPUT_REG,bit[j]);        //send bit0
-#elif (MCU_CORE_B80B)
-        TX_PIN_OUTPUT_REG = bit[j]; // send bit0
-#endif
 	}
 }
 
