@@ -393,12 +393,17 @@ enum
 #define		OTP_BASE_ADDR		0x10
 #define		reg_otp_ctrl0		read_reg8(OTP_BASE_ADDR+0x0)
 enum{
+#if (MCU_CORE_B80)
 	FLD_OTP_PCLK_EN             = BIT(0),//clock input
+#endif
 	FLD_OTP_PCE		            = BIT(1),//IP enabling
 	FLD_OTP_PPROG	            = BIT(2),//program mode enabling
 	FLD_OTP_PWE		            = BIT(3),//define program cycle
 	FLD_OTP_PAS		            = BIT(4),//program redundancy
 	FLD_OTP_PTR		            = BIT(5),//test row enable
+#if (MCU_CORE_B80B)
+    FLD_OTP_AUTO_PROGRAM        = BIT(6), /**< auto program mode 0:disable 1:enable */
+#endif
 };
 #define		reg_otp_ctrl1		read_reg8(OTP_BASE_ADDR+0x01)
 enum{
@@ -412,24 +417,54 @@ enum{
 	FLD_OTP_AUTO_PCE_MODE      = BIT(4),
 	FLD_OTP_TCS_CONFIG         = BIT_RNG(5,7),
 };
+
+#if (MCU_CORE_B80B)
+#define reg_otp_ctrl3           read_reg8(OTP_BASE_ADDR+0x03)
+enum
+{
+    FLD_OTP_SAMPLE_POINT       = BIT_RNG(0, 3),
+    FLD_OTP_CLK_DIV            = BIT_RNG(4, 6),
+    FLD_OTP_PADR_AUTO          = BIT(7),
+};
+#endif
+
 #define		reg_otp_pa			read_reg16(OTP_BASE_ADDR+0x04)//PA[11:0],address input
 
 #define		reg_otp_paio		read_reg8(OTP_BASE_ADDR+0x06)//PAIO[5:0]address input programming operation
 enum{
 	FLD_OTP_PAIO             	= BIT_RNG(0,5),
+#if (MCU_CORE_B80)
 	FLD_OTP_CLK_DIV             = BIT(6),
 	FLD_OTP_PADR_AUTO           = BIT(7),
+#endif
 };
 
 #define		reg_otp_dat			read_reg8(OTP_BASE_ADDR+0x07)//OTP state
 enum{
 	FLD_OTP_BUSY             	= BIT(0),
 	FLD_OTP_READY		        = BIT(1),
+#if (MCU_CORE_B80B)
+    FLD_OTP_AUTO_EN             = BIT(2),
+#endif
 };
 
 #define		reg_otp_wr_dat		read_reg32(OTP_BASE_ADDR+0x08)// data input PDIN[31:0]
 
 #define		reg_otp_rd_dat		read_reg32(OTP_BASE_ADDR+0x0c)// data output[31:0]
+
+#if (MCU_CORE_B80B)
+#define     reg_otp_timing_cfg0 read_reg8(0x500 + 0xd8)
+enum
+{
+    FLD_OTP_TIMING_CFG0         = BIT_RNG(0, 6),
+};
+
+#define     reg_otp_timing_cfg1 read_reg8(0x500 + 0xd9)
+enum
+{
+    FLD_OTP_TIMING_CFG1         = BIT_RNG(0, 4),
+};
+#endif
 
 /*******************************      reset registers: 0x60      ******************************/
 
@@ -466,6 +501,12 @@ enum{
 	FLD_RST2_MCIC1 = 			BIT(7),
 };
 
+#if(MCU_CORE_B80B)
+#define reg_rst3                REG_ADDR8(0x5e)
+enum{
+	FLD_RST3_UART1  =   BIT(0),
+};
+#endif
 
 #define reg_clk_en0				REG_ADDR8(0x63)
 enum{
@@ -500,6 +541,12 @@ enum{
 	FLD_CLK2_MCIC_EN = 			BIT(5),
 };
 
+#if (MCU_CORE_B80B)
+#define reg_clk_en3             REG_ADDR8(0x5f)
+enum{
+	FLD_CLK3_UART1_EN       =  BIT(0),
+};
+#endif
 
 #define reg_clk_sel				REG_ADDR8(0x66)
 enum{
@@ -546,6 +593,112 @@ enum
 
 #define reg_7816_clk_div		REG_ADDR8(0x7b)
 
+#if(MCU_CORE_B80B)
+
+/*******************************      uart0 registers: 0x90      ******************************/
+/*******************************      uart1 registers: 0xc0      ******************************/
+
+#define reg_uart_data_buf0(i)		REG_ADDR8(0x90+0x30*(i))
+#define reg_uart_data_buf1(i)		REG_ADDR8(0x91+0x30*(i))
+#define reg_uart_data_buf2(i)		REG_ADDR8(0x92+0x30*(i))
+#define reg_uart_data_buf3(i)		REG_ADDR8(0x93+0x30*(i))
+
+#define reg_uart_data_buf(i,j)    REG_ADDR8(0x90 + 0x30*(i)+j)  //i = 0~3
+#define reg_uart_clk_div(i)		REG_ADDR16(0x94 +  0x30*(i))
+enum{
+	FLD_UART_CLK_DIV = 			BIT_RNG(0,14),
+	FLD_UART_CLK_DIV_EN = 		BIT(15)
+};
+
+#define reg_uart_ctrl0(i)			REG_ADDR8(0x96 + 0x30*(i))
+enum{
+	FLD_UART_BPWC = 			BIT_RNG(0,3),
+	FLD_UART_RX_DMA_EN = 		BIT(4),
+	FLD_UART_TX_DMA_EN =		BIT(5),
+	FLD_UART_RX_IRQ_EN = 		BIT(6),
+	FLD_UART_TX_IRQ_EN =		BIT(7),
+};
+
+#define reg_uart_ctrl1(i)         		REG_ADDR8(0x97 +0x30*(i))
+enum {
+    FLD_UART_CTRL1_CTS_SELECT	   = BIT(0),
+    FLD_UART_CTRL1_CTS_EN 		   = BIT(1),
+    FLD_UART_CTRL1_PARITY_EN 	   = BIT(2),
+    FLD_UART_CTRL1_PARITY_POLARITY = BIT(3),       //1:odd parity   0:even parity
+    FLD_UART_CTRL1_STOP_BIT 	   = BIT_RNG(4,5),
+    FLD_UART_CTRL1_TTL 			   = BIT(6),
+    FLD_UART_CTRL1_LOOPBACK 	   = BIT(7),
+};
+
+#define reg_uart_ctrl2(i)			REG_ADDR8(0x98 + 0x30*(i))
+enum {
+    FLD_UART_CTRL2_RTS_TRIG_LVL   	 = BIT_RNG(0,3),
+    FLD_UART_CTRL2_RTS_PARITY 		 = BIT(4),
+    FLD_UART_CTRL2_RTS_MANUAL_VAL 	 = BIT(5),
+    FLD_UART_CTRL2_RTS_MANUAL_EN 	 = BIT(6),
+    FLD_UART_CTRL2_RTS_EN 			 = BIT(7),
+};
+
+
+#define reg_uart_ctrl3(i)        	REG_ADDR8(0x99 + 0x30*(i))
+enum {
+	FLD_UART_RX_IRQ_TRIG_LEV = BIT_RNG(0,3),
+	FLD_UART_TX_IRQ_TRIG_LEV = BIT_RNG(4,7),
+};
+
+#define reg_uart_rx_timeout0(i)	REG_ADDR8(0x9a + 0x30*(i))
+enum{
+	FLD_UART_TIMEOUT_BW		 = 	BIT_RNG(0,7),
+};
+
+#define reg_uart_rx_timeout1(i)    REG_ADDR8(0x9b + 0x30*(i))
+enum{
+	FLD_UART_TIMEOUT_MUL	      =  BIT_RNG(0,1),
+	FLD_URAT_RXDONE_RTS_EN        =  BIT(2),
+	FLD_URAT_RXTIMEOUT_RTS_EN     =  BIT(3),
+	FLD_UART_MASK_RXDONE_IRQ      =  BIT(4),
+	FLD_UART_P7816_EN	 	      =  BIT(5),
+	FLD_UART_MASK_TXDONE_IRQ      =  BIT(6),
+	FLD_UART_MASK_ERR_IRQ 	      =  BIT(7),
+};
+
+
+#define reg_uart_buf_cnt(i)       REG_ADDR8(0x9c + 0x30*(i))
+
+enum{
+	FLD_UART_RX_BUF_CNT		=  BIT_RNG(0,3),
+	FLD_UART_TX_BUF_CNT		=  BIT_RNG(4,7),
+};
+
+#define reg_uart_status0(i)       REG_ADDR8(0x9d + 0x30*(i))
+enum{
+	FLD_UART_RBCNT 	     	=  BIT_RNG(0,2),
+	FLD_UART_IRQ_FLAG    	=  BIT(3),
+	FLD_UART_WBCNT 	     	=  BIT_RNG(4,6),
+	FLD_URAT_CLEAR_RXDONE_FLAG = BIT(4),
+	FLD_UART_CLEAR_RX_FLAG 	=  BIT(6),
+	FLD_UART_RX_ERR_FLAG 	=  BIT(7),
+};
+
+#define reg_uart_status1(i)       REG_ADDR8(0x9e + 0x30*(i))
+enum{
+	FLD_UART_TX_DONE   	  =  BIT(0),
+	FLD_UART_TX_BUF_IRQ   =  BIT(1),
+	FLD_UART_RX_DONE   	  =  BIT(2),
+	FLD_UART_RX_BUF_IRQ   =  BIT(3),
+	FLD_UART_RXDONE_IRQ   =  BIT(4),
+	FLD_UART_TIMEOUT_EN   =  BIT(5),
+	FLD_UART_AUTO_RXCLR_EN = BIT(6),
+	FLD_UART_NDMA_RXDONE_EN=BIT(7),
+};
+
+
+#define reg_uart_state(i)       REG_ADDR8(0x9f + 0x30*(i))
+enum{
+	FLD_UART_TSTATE_I 	     =  BIT_RNG(0,2),
+	FLD_UART_RSTATE_I	     =  BIT_RNG(4,7),
+};
+#else
 /*******************************      uart registers: 0x90      ******************************/
 
 #define reg_uart_data_buf0		REG_ADDR8(0x90)
@@ -649,6 +802,7 @@ enum{
 	FLD_UART_TSTATE_I 	     =  BIT_RNG(0,2),
 	FLD_UART_RSTATE_I	     =  BIT_RNG(4,7),
 };
+#endif
 /*******************************  (il) ir learn registers: 0xa0      ****************************/
 
 #define reg_il_run           	REG_ADDR8(0xa0)
@@ -802,6 +956,7 @@ enum{
 };
 
 #define reg_ctrl_ep_irq_sta		REG_ADDR8(0x103)
+#if (MCU_CORE_B80)
 enum{
 	FLD_CTRL_EP_IRQ_TRANS  = 	BIT_RNG(0,3),
 	FLD_CTRL_EP_IRQ_SETUP  =	BIT(4),
@@ -809,6 +964,19 @@ enum{
 	FLD_CTRL_EP_IRQ_STA  = 		BIT(6),
 	FLD_CTRL_EP_IRQ_INTF  = 	BIT(7),
 };
+#else
+enum
+{
+    FLD_USB_IRQ_RESET_STATUS    = BIT(0),
+    FLD_USB_IRQ_250US_STATUS    = BIT(1),
+    FLD_USB_IRQ_SUSPEND_STATUS  = BIT(2),
+    FLD_USB_IRQ_SOF_STATUS      = BIT(3),
+    FLD_CTRL_EP_IRQ_SETUP       = BIT(4),
+    FLD_CTRL_EP_IRQ_DATA        = BIT(5),
+    FLD_CTRL_EP_IRQ_STA         = BIT(6),
+    FLD_CTRL_EP_IRQ_INTF        = BIT(7),
+};
+#endif
 
 #define reg_ctrl_ep_irq_mode	REG_ADDR8(0x104)
 enum{
@@ -831,6 +999,17 @@ enum{
 };
 
 #define reg_usb_cyc_cali		REG_ADDR16(0x106)
+#if (MCU_CORE_B80B)
+#define reg_usb_edp0_size       REG_ADDR8(0x109) /* the size of edp0 */
+enum
+{
+    FLD_USB_CTR_EP_SIZE         = BIT_RNG(0, 1), /**< 0-8bytes,1-16bytes,2-32bytes,3-64bytes, */
+    FLD_USB_CTR_EP_LENS         = BIT_RNG(2, 3),
+    FLD_USB_IRQ_RESET_LVL       = BIT(4),/**< lvl[0]:0-->irq_reset_edge; 1-->usb_reset_i */
+    FLD_USB_IRQ_250US_LVL       = BIT(5),/**< lvl[1]:0-->irq_250us_edge; 1-->usb_250us_i */
+    FLD_USB_IRQ_SOF_LVL         = BIT(7),/**< lvl[3]:0-->irq_sof_edge; 1-->usb_sof_i */
+};
+#endif
 #define reg_usb_mdev			REG_ADDR8(0x10a)
 #define reg_usb_host_conn		REG_ADDR8(0x10b)
 enum{
@@ -851,6 +1030,21 @@ typedef enum{
 	FLD_USB_EDP6_EN 		= 	BIT(6),	// audio
 	FLD_USB_EDP7_EN 		= 	BIT(7),	// audio
 }usb_ep_en_e;
+#if (MCU_CORE_B80B)
+#define reg_usb_irq_mask        REG_ADDR8(0x10f)
+typedef enum 
+{
+    FLD_USB_IRQ_RESET_MASK      = BIT(0),
+    FLD_USB_IRQ_250US_MASK      = BIT(1),
+    FLD_USB_IRQ_SUSPEND_MASK    = BIT(2),
+    FLD_USB_IRQ_SOF_MASK        = BIT(3),
+    FLD_USB_IRQ_SETUP_MASK      = BIT(4),
+    FLD_USB_IRQ_DATA_MASK       = BIT(5),
+    FLD_USB_IRQ_STATUS_MASK     = BIT(6),
+    FLD_USB_IRQ_SETINF_MASK     = BIT(7),
+} usb_irq_mask;
+
+#endif
 #define reg_usb_ep8123_ptr		REG_ADDR32(0x110)
 #define reg_usb_ep8_ptr			REG_ADDR8(0x110)
 #define reg_usb_ep1_ptr			REG_ADDR8(0x111)
@@ -916,19 +1110,38 @@ enum{
 	FLD_USB_CEN_FUNC =			BIT(4),
 };
 
+#if (MCU_CORE_B80B)
+#define reg_usb_map             REG_ADDR8(0x131)
+enum
+{
+    FLD_CTRL_EP8_SEND_THRES_H   = BIT_RNG(0, 2),
+    FLD_USB_EDP_MAP_MANUAL_EN   = BIT(3),
+    FLD_USB_EDP_MAP_AUTO_EN     = BIT(4),
+    FLD_USB_EDPS_SM_MAP_EN      = BIT(5),
+    FLD_USB_EDPS_MAP_TGL_EN     = BIT(6),
+    FLD_USB_GET_STA_MAP_EN      = BIT(7),
+};
+#define reg_usb_edps_map_en     REG_ADDR8(0x132)
+#define reg_usb_edps_logic_en   REG_ADDR8(0x133)
+
+#define reg_usb_rdps_map(i)     REG_ADDR8(0x134 + (((i)&0x07) >> 1))
+#endif
+
 #define reg_usb_iso_mode		REG_ADDR8(0x138)
 #define reg_usb_irq				REG_ADDR8(0x139)
 #define reg_usb_mask			REG_ADDR8(0x13a)
-enum{
-	FLD_USB_EDP8_IRQ 		= 	BIT(0),
-	FLD_USB_EDP1_IRQ 		= 	BIT(1),
-	FLD_USB_EDP2_IRQ 		= 	BIT(2),
-	FLD_USB_EDP3_IRQ 		= 	BIT(3),
-	FLD_USB_EDP4_IRQ 		= 	BIT(4),
-	FLD_USB_EDP5_IRQ 		= 	BIT(5),
-	FLD_USB_EDP6_IRQ 		= 	BIT(6),
-	FLD_USB_EDP7_IRQ 		= 	BIT(7),
-};
+typedef enum
+{
+    FLD_USB_EDP8_IRQ        = BIT(0),
+    FLD_USB_EDP1_IRQ        = BIT(1),
+    FLD_USB_EDP2_IRQ        = BIT(2),
+    FLD_USB_EDP3_IRQ        = BIT(3),
+    FLD_USB_EDP4_IRQ        = BIT(4),
+    FLD_USB_EDP5_IRQ        = BIT(5),
+    FLD_USB_EDP6_IRQ        = BIT(6),
+    FLD_USB_EDP7_IRQ        = BIT(7),
+} usb_eps_irq_e;
+
 #define reg_usb_ep8_send_max	    REG_ADDR8(0x13b)
 #define reg_usb_ep8_send_thres		REG_ADDR8(0x13c)
 #define reg_usb_ep8_fifo_mode		REG_ADDR8(0x13d)
@@ -938,6 +1151,18 @@ enum{
 	FLD_USB_ENP8_FIFO_MODE =	BIT(0),
 	FLD_USB_ENP8_FULL_FLAG =	BIT(1),
 };
+
+#if (MCU_CORE_B80B)
+#define reg_usb_edps_eptrl          REG_ADDR8(0x142)
+#define reg_usb_edps_eptrh          REG_ADDR8(0x143)
+#define reg_usb_tstamp0             REG_ADDR8(0x144)
+#define reg_usb_tstamp1             REG_ADDR8(0x145)
+#define reg_usb_tstamp2             REG_ADDR8(0x146)
+#define reg_usb_tstamp3             REG_ADDR8(0x147)
+#define reg_usb_sof_frame0          REG_ADDR8(0x148)
+#define reg_usb_sof_frame1          REG_ADDR8(0x149)
+#define reg_usb_edps_full_thrd      REG_ADDR8(0x14a)/* zero package flag */
+#endif
 
 #define reg_rf_acc_len			REG_ADDR8(0x405)
 enum{
@@ -966,90 +1191,105 @@ enum {
 #define reg_aes_key(v)     		REG_ADDR8(0x710+v)
 
 /*******************************      gpio registers: 0x500      ******************************/
+#define GPIO_BASE_ADDR          0x500
+#define reg_gpio_pa_in			REG_ADDR8(GPIO_BASE_ADDR)
+#define reg_gpio_pa_ie			REG_ADDR8(GPIO_BASE_ADDR+0x01)
+#define reg_gpio_pa_oen			REG_ADDR8(GPIO_BASE_ADDR+0x02)
+#define reg_gpio_pa_out			REG_ADDR8(GPIO_BASE_ADDR+0x03)
+#define reg_gpio_pa_pol			REG_ADDR8(GPIO_BASE_ADDR+0x04)
+#define reg_gpio_pa_ds			REG_ADDR8(GPIO_BASE_ADDR+0x05)
+#define reg_gpio_pa_gpio		REG_ADDR8(GPIO_BASE_ADDR+0x06)
+#define reg_gpio_pa_irq_en		REG_ADDR8(GPIO_BASE_ADDR+0x07)
 
-#define reg_gpio_pa_in			REG_ADDR8(0x500)
-#define reg_gpio_pa_ie			REG_ADDR8(0x501)
-#define reg_gpio_pa_oen			REG_ADDR8(0x502)
-#define reg_gpio_pa_out			REG_ADDR8(0x503)
-#define reg_gpio_pa_pol			REG_ADDR8(0x504)
-#define reg_gpio_pa_ds			REG_ADDR8(0x505)
-#define reg_gpio_pa_gpio		REG_ADDR8(0x506)
-#define reg_gpio_pa_irq_en		REG_ADDR8(0x507)
+#define reg_gpio_pb_in			REG_ADDR8(GPIO_BASE_ADDR+0x08)
+#define reg_gpio_pb_ie			REG_ADDR8(GPIO_BASE_ADDR+0x09)
+#define reg_gpio_pb_oen			REG_ADDR8(GPIO_BASE_ADDR+0x0a)
+#define reg_gpio_pb_out			REG_ADDR8(GPIO_BASE_ADDR+0x0b)
+#define reg_gpio_pb_pol			REG_ADDR8(GPIO_BASE_ADDR+0x0c)
+#define reg_gpio_pb_ds			REG_ADDR8(GPIO_BASE_ADDR+0x0d)
+#define reg_gpio_pb_gpio		REG_ADDR8(GPIO_BASE_ADDR+0x0e)
+#define reg_gpio_pb_irq_en		REG_ADDR8(GPIO_BASE_ADDR+0x0f)
 
-#define reg_gpio_pb_in			REG_ADDR8(0x508)
-#define reg_gpio_pb_ie			REG_ADDR8(0x509)
-#define reg_gpio_pb_oen			REG_ADDR8(0x50a)
-#define reg_gpio_pb_out			REG_ADDR8(0x50b)
-#define reg_gpio_pb_pol			REG_ADDR8(0x50c)
-#define reg_gpio_pb_ds			REG_ADDR8(0x50d)
-#define reg_gpio_pb_gpio		REG_ADDR8(0x50e)
-#define reg_gpio_pb_irq_en		REG_ADDR8(0x50f)
-
-#define reg_gpio_pc_in			REG_ADDR8(0x510)
+#define reg_gpio_pc_in			REG_ADDR8(GPIO_BASE_ADDR+0x10)
 #define areg_gpio_pc_ie			0xc0
-#define reg_gpio_pc_oen			REG_ADDR8(0x512)
-#define reg_gpio_pc_out			REG_ADDR8(0x513)
-#define reg_gpio_pc_pol			REG_ADDR8(0x514)
+#define reg_gpio_pc_oen			REG_ADDR8(GPIO_BASE_ADDR+0x12)
+#define reg_gpio_pc_out			REG_ADDR8(GPIO_BASE_ADDR+0x13)
+#define reg_gpio_pc_pol			REG_ADDR8(GPIO_BASE_ADDR+0x14)
 #define areg_gpio_pc_pe         0xc1
 #define areg_gpio_pc_ds			0xc2
-#define reg_gpio_pc_gpio		REG_ADDR8(0x516)
-#define reg_gpio_pc_irq_en		REG_ADDR8(0x517)
+#define reg_gpio_pc_gpio		REG_ADDR8(GPIO_BASE_ADDR+0x16)
+#define reg_gpio_pc_irq_en		REG_ADDR8(GPIO_BASE_ADDR+0x17)
 
-#define reg_gpio_pd_in			REG_ADDR8(0x518)
-#define reg_gpio_pd_ie			REG_ADDR8(0x519)
-#define reg_gpio_pd_oen			REG_ADDR8(0x51a)
-#define reg_gpio_pd_out			REG_ADDR8(0x51b)
-#define reg_gpio_pd_pol			REG_ADDR8(0x51c)
-#define reg_gpio_pd_ds			REG_ADDR8(0x51d)
-#define reg_gpio_pd_gpio		REG_ADDR8(0x51e)
-#define reg_gpio_pd_irq_en		REG_ADDR8(0x51f)
+#define reg_gpio_pd_in			REG_ADDR8(GPIO_BASE_ADDR+0x18)
+#define reg_gpio_pd_ie			REG_ADDR8(GPIO_BASE_ADDR+0x19)
+#define reg_gpio_pd_oen			REG_ADDR8(GPIO_BASE_ADDR+0x1a)
+#define reg_gpio_pd_out			REG_ADDR8(GPIO_BASE_ADDR+0x1b)
+#define reg_gpio_pd_pol			REG_ADDR8(GPIO_BASE_ADDR+0x1c)
+#define reg_gpio_pd_ds			REG_ADDR8(GPIO_BASE_ADDR+0x1d)
+#define reg_gpio_pd_gpio		REG_ADDR8(GPIO_BASE_ADDR+0x1e)
+#define reg_gpio_pd_irq_en		REG_ADDR8(GPIO_BASE_ADDR+0x1f)
 
-#define reg_gpio_pe_in			REG_ADDR8(0x520)
-#define reg_gpio_pe_ie			REG_ADDR8(0x521)
-#define reg_gpio_pe_oen			REG_ADDR8(0x522)
-#define reg_gpio_pe_out			REG_ADDR8(0x523)
-#define reg_gpio_pe_pol			REG_ADDR8(0x524)
-#define reg_gpio_pe_ds			REG_ADDR8(0x525)
-#define reg_gpio_pe_gpio		REG_ADDR8(0x526)
-#define reg_gpio_pe_irq_en		REG_ADDR8(0x527)
+#define reg_gpio_pe_in			REG_ADDR8(GPIO_BASE_ADDR+0x20)
+#define reg_gpio_pe_ie			REG_ADDR8(GPIO_BASE_ADDR+0x21)
+#define reg_gpio_pe_oen			REG_ADDR8(GPIO_BASE_ADDR+0x22)
+#define reg_gpio_pe_out			REG_ADDR8(GPIO_BASE_ADDR+0x23)
+#define reg_gpio_pe_pol			REG_ADDR8(GPIO_BASE_ADDR+0x24)
+#define reg_gpio_pe_ds			REG_ADDR8(GPIO_BASE_ADDR+0x25)
+#define reg_gpio_pe_gpio		REG_ADDR8(GPIO_BASE_ADDR+0x26)
+#define reg_gpio_pe_irq_en		REG_ADDR8(GPIO_BASE_ADDR+0x27)
 
-#define reg_gpio_pf_in			REG_ADDR8(0x528)
-#define reg_gpio_pf_ie			REG_ADDR8(0x529)
-#define reg_gpio_pf_oen			REG_ADDR8(0x52a)
-#define reg_gpio_pf_out			REG_ADDR8(0x52b)
-#define reg_gpio_pf_pol			REG_ADDR8(0x52c)
-#define reg_gpio_pf_ds			REG_ADDR8(0x52d)
-#define reg_gpio_pf_gpio		REG_ADDR8(0x52e)
-#define reg_gpio_pf_irq_en		REG_ADDR8(0x52f)
+#define reg_gpio_pf_in			REG_ADDR8(GPIO_BASE_ADDR+0x28)
+#define reg_gpio_pf_ie			REG_ADDR8(GPIO_BASE_ADDR+0x29)
+#define reg_gpio_pf_oen			REG_ADDR8(GPIO_BASE_ADDR+0x2a)
+#define reg_gpio_pf_out			REG_ADDR8(GPIO_BASE_ADDR+0x2b)
+#define reg_gpio_pf_pol			REG_ADDR8(GPIO_BASE_ADDR+0x2c)
+#define reg_gpio_pf_ds			REG_ADDR8(GPIO_BASE_ADDR+0x2d)
+#define reg_gpio_pf_gpio		REG_ADDR8(GPIO_BASE_ADDR+0x2e)
+#define reg_gpio_pf_irq_en		REG_ADDR8(GPIO_BASE_ADDR+0x2f)
 
-#define reg_gpio_pa_setting1	REG_ADDR32(0x500)
-#define reg_gpio_pa_setting2	REG_ADDR32(0x504)
-#define reg_gpio_pb_setting1	REG_ADDR32(0x508)
-#define reg_gpio_pb_setting2	REG_ADDR32(0x50c)
-#define reg_gpio_pc_setting1	REG_ADDR32(0x510)
-#define reg_gpio_pc_setting2	REG_ADDR32(0x514)
-#define reg_gpio_pd_setting1	REG_ADDR32(0x518)
-#define reg_gpio_pd_setting2	REG_ADDR32(0x51c)
-#define reg_gpio_pf_setting1	REG_ADDR32(0x528)
-#define reg_gpio_pf_setting2	REG_ADDR32(0x52c)
+#define reg_gpio_pa_setting1	REG_ADDR32(GPIO_BASE_ADDR)
+#define reg_gpio_pa_setting2	REG_ADDR32(GPIO_BASE_ADDR+0x04)
+#define reg_gpio_pb_setting1	REG_ADDR32(GPIO_BASE_ADDR+0x08)
+#define reg_gpio_pb_setting2	REG_ADDR32(GPIO_BASE_ADDR+0x0c)
+#define reg_gpio_pc_setting1	REG_ADDR32(GPIO_BASE_ADDR+0x10)
+#define reg_gpio_pc_setting2	REG_ADDR32(GPIO_BASE_ADDR+0x14)
+#define reg_gpio_pd_setting1	REG_ADDR32(GPIO_BASE_ADDR+0x18)
+#define reg_gpio_pd_setting2	REG_ADDR32(GPIO_BASE_ADDR+0x1c)
+#define reg_gpio_pf_setting1	REG_ADDR32(GPIO_BASE_ADDR+0x28)
+#define reg_gpio_pf_setting2	REG_ADDR32(GPIO_BASE_ADDR+0x2c)
 
-#define reg_gpio_in(i)				REG_ADDR8(0x500+((i>>8)<<3))
-#define reg_gpio_ie(i)				REG_ADDR8(0x501+((i>>8)<<3))
-#define reg_gpio_oen(i)				REG_ADDR8(0x502+((i>>8)<<3))
-#define reg_gpio_out(i)				REG_ADDR8(0x503+((i>>8)<<3))
-#define reg_gpio_pol(i)				REG_ADDR8(0x504+((i>>8)<<3))
-#define reg_gpio_ds(i)				REG_ADDR8(0x505+((i>>8)<<3))
-#define reg_gpio_func(i)			REG_ADDR8(0x506+((i>>8)<<3))
-#define reg_gpio_irq_wakeup_en(i)	REG_ADDR8(0x507+((i>>8)<<3))  // reg_irq_mask: FLD_IRQ_GPIO_EN
+#define reg_gpio_in(i)				REG_ADDR8(GPIO_BASE_ADDR+((i>>8)<<3))
+#define reg_gpio_ie(i)				REG_ADDR8(GPIO_BASE_ADDR+0x01+((i>>8)<<3))
+#define reg_gpio_oen(i)				REG_ADDR8(GPIO_BASE_ADDR+0x02+((i>>8)<<3))
+#define reg_gpio_pol(i)				REG_ADDR8(GPIO_BASE_ADDR+0x04+((i>>8)<<3))
+#define reg_gpio_ds(i)				REG_ADDR8(GPIO_BASE_ADDR+0x05+((i>>8)<<3))
+#define reg_gpio_func(i)			REG_ADDR8(GPIO_BASE_ADDR+0x06+((i>>8)<<3))
+#define reg_gpio_irq_wakeup_en(i)	REG_ADDR8(GPIO_BASE_ADDR+0x07+((i>>8)<<3))  // reg_irq_mask: FLD_IRQ_GPIO_EN
+#if(MCU_CORE_B80)
+#define reg_gpio_out(i)				REG_ADDR8(GPIO_BASE_ADDR+0x03+((i>>8)<<3))
+#elif (MCU_CORE_B80B)
+#define reg_gpio_out_set_clear(i)   REG_ADDR16(GPIO_BASE_ADDR+0xc0+(((i)>>8)<<2))
+#define reg_gpio_out_set(i)         REG_ADDR8(GPIO_BASE_ADDR+0xc0+(((i)>>8)<<2))
+#define reg_gpio_out_clear(i)       REG_ADDR8(GPIO_BASE_ADDR+0xc1+(((i)>>8)<<2))
+#define reg_gpio_out_toggle(i)      REG_ADDR8(GPIO_BASE_ADDR+0xc2+(((i)>>8)<<2))
+#endif
+#define reg_gpio_pe(i)              REG_ADDR8(GPIO_BASE_ADDR+0xc3+(((i)>>8)<<2))
 
-#define reg_gpio_func_mux(i)        REG_ADDR8(0x548+(((i&0x500) == 0x500) ? ((((i>>8)-1)<<3)+4) : ((i>>8)<<3))+((i&0x80) ? 7 : 0)+((i&0x40) ? 6 : 0)+((i&0x20) ? 5 : 0)+((i&0x10) ? 4 : 0) +((i&0x8) ? 3 : 0)+((i&0x4) ? 2 : 0)+((i&0x2) ? 1 : 0))
 
+#define reg_gpio_func_mux(i)        REG_ADDR8(GPIO_BASE_ADDR+0x48+(((i&0x500) == 0x500) ? ((((i>>8)-1)<<3)+4) : ((i>>8)<<3))+((i&0x80) ? 7 : 0)+((i&0x40) ? 6 : 0)+((i&0x20) ? 5 : 0)+((i&0x10) ? 4 : 0) +((i&0x8) ? 3 : 0)+((i&0x4) ? 2 : 0)+((i&0x2) ? 1 : 0))
 
+#define reg_gpio_irq_risc0_en(i)  	REG_ADDR8(GPIO_BASE_ADDR+0x30 + (i >> 8))	  // reg_irq_mask: FLD_IRQ_GPIO_RISC0_EN
+#define reg_gpio_irq_risc1_en(i)  	REG_ADDR8(GPIO_BASE_ADDR+0x38 + (i >> 8))	  // reg_irq_mask: FLD_IRQ_GPIO_RISC1_EN
+#define reg_gpio_irq_risc2_en(i)  	REG_ADDR8(GPIO_BASE_ADDR+0x40 + (i >> 8))
 
-#define reg_gpio_irq_risc0_en(i)  	REG_ADDR8(0x530 + (i >> 8))	  // reg_irq_mask: FLD_IRQ_GPIO_RISC0_EN
-#define reg_gpio_irq_risc1_en(i)  	REG_ADDR8(0x538 + (i >> 8))	  // reg_irq_mask: FLD_IRQ_GPIO_RISC1_EN
-#define reg_gpio_irq_risc2_en(i)  	REG_ADDR8(0x540 + (i >> 8))   // reg_irq_mask: FLD_IRQ_GPIO_RISC2_EN
-
+#if(MCU_CORE_B80B)
+#define reg_gpio_irq_risc3_risc7_en(i,j)    REG_ADDR8(0x598 + ((i)>>8)+((j)<<3))
+#define reg_gpio_irq_risc3_en(i)            REG_ADDR8(0x598 + (i >> 8))
+#define reg_gpio_irq_risc4_en(i)            REG_ADDR8(0x5a0 + (i >> 8))
+#define reg_gpio_irq_risc5_en(i)            REG_ADDR8(0x5a8 + (i >> 8))
+#define reg_gpio_irq_risc6_en(i)            REG_ADDR8(0x5b0 + (i >> 8))
+#define reg_gpio_irq_risc7_en(i)            REG_ADDR8(0x5b8 + (i >> 8))
+#endif
 #define reg_comb_irq				REG_ADDR8(0x56e)
 enum{
 	FLD_IRQ_STMER_LEV					= BIT(0),
@@ -1066,10 +1306,25 @@ enum{
     FLD_GPIO_CORE_WAKEUP_EN  	= BIT(1),
     FLD_GPIO_CORE_INTERRUPT_EN 	= BIT(2),
 };
+#if(MCU_CORE_B80)
 #define reg_gpio_irq_sel          REG_ADDR8(0x575)
-#define reg_gpio_irq_from_pad     REG_ADDR8(0x56f)//W1C
+#elif (MCU_CORE_B80B)
+#define reg_gpio_irq_ctrl_mux     REG_ADDR8(0x575)
+enum{
+	FLD_IRQ_MUX_EN0                      = BIT(0),
+	FLD_IRQ_MUX_EN1                      = BIT(1),
+	FLD_IRQ_MUX_EN2                      = BIT(2),
+};
+#endif
+#define reg_gpio_irq_from_pad     REG_ADDR8(0x56f)
 #define reg_gpio_irq_pad_mask     REG_ADDR8(0x576)
 #define reg_gpio_irq_lvl          REG_ADDR8(0x577)
+
+
+
+
+
+
 
 
 /*******************************      timer registers: 0x620      ******************************/
@@ -1132,13 +1387,21 @@ typedef enum{
 	FLD_IRQ_EP0_SETUP_EN =		BIT(8),
 	FLD_IRQ_EP0_DAT_EN =		BIT(9),
 	FLD_IRQ_EP0_STA_EN =		BIT(10),
+#if(MCU_CORE_B80B)
+	FLD_IRQ_SET_INTF_EN =		BIT(11),  FLD_IRQ_UART1_EN = BIT(11),
+#else
 	FLD_IRQ_SET_INTF_EN =		BIT(11),
+#endif
 	FLD_IRQ_EP_DATA_EN =		BIT(12),  FLD_IRQ_IRQ4_EN = BIT(12),
 	FLD_IRQ_ZB_RT_EN =			BIT(13),
 	FLD_IRQ_SW_PWM_EN =			BIT(14),  //irq_software | irq_pwm
 	FLD_IRQ_GPIO_NEW_EN =		BIT(15),//	RSVD 		=			BIT(15),
 
+#if (MCU_CORE_B80)
 	FLD_IRQ_USB_250US_EN =		BIT(16),
+#else
+	FLD_IRQ_USB_250US_OR_SOF_EN = BIT(16),
+#endif
 	FLD_IRQ_USB_RST_EN =		BIT(17),
 	FLD_IRQ_GPIO_EN =			BIT(18),
 	FLD_IRQ_PM_EN =				BIT(19),
@@ -1540,6 +1803,10 @@ enum{
 	FLD_DMA_CHN4 =	BIT(4),		FLD_DMA_CHN_AES_OUT =  BIT(4),
 	FLD_DMA_CHN5 =	BIT(5),     FLD_DMA_CHN_AES_IN =  BIT(5),
 	FLD_DMA_CHN7 =	BIT(7),		FLD_DMA_CHN_PWM  	 =	BIT(7),
+#if(MCU_CORE_B80B)
+	FLD_DMA_CHN10 = BIT(8)|BIT(2), FLD_DMA_CHN_UART1_RX = BIT(8)|BIT(2),
+	FLD_DMA_CHN11 = BIT(8)|BIT(3), FLD_DMA_CHN_UART1_TX = BIT(8)|BIT(3),
+#endif
 };
 
 typedef enum {
@@ -1566,6 +1833,12 @@ enum{
 	FLD_DMA_RPTR_SET =			BIT(6),
 };
 
+#if(MCU_CORE_B80B)
+#define reg_rf_multi_dma_tx_wptr(i)			REG_ADDR8(0xc30+i)
+#define reg_rf_multi_dma_tx_rptr(i)			REG_ADDR8(0xc38+i)//This definition is used for the multiceiver function of RF.
+															  //The "i" is represent different pipe id.
+#endif
+
 #define reg_dma0_addrHi			REG_ADDR8(0xc40)
 #define reg_dma1_addrHi			REG_ADDR8(0xc41)
 #define reg_dma2_addrHi			REG_ADDR8(0xc42)
@@ -1587,14 +1860,39 @@ enum{
 #define reg_dma9_addrl			REG_ADDR8(0xc50)
 #define reg_dma9_mode			REG_ADDR8(0xc53)
 #define reg_dma9_size			REG_ADDR8(0xc66)
+#if(MCU_CORE_B80B)
+#define reg_dma10_addrhh		REG_ADDR8(0xc68)
+#define reg_dma10_addrh			REG_ADDR8(0xc6d)
+#define reg_dma10_addrl			REG_ADDR8(0xc6c)
+#define reg_dma10_mode			REG_ADDR8(0xc6f)
+#define reg_dma10_size			REG_ADDR8(0xc6e)
 
+#define reg_dma11_addrhh		REG_ADDR8(0xc69)
+#define reg_dma11_addrh			REG_ADDR8(0xc71)
+#define reg_dma11_addrl			REG_ADDR8(0xc70)
+#define reg_dma11_mode			REG_ADDR8(0xc73)
+#define reg_dma11_size			REG_ADDR8(0xc72)
+
+#endif
 #define reg_dma9_burst_size		REG_ADDR8(0xc5c)
 enum{
 	FLD_DMA_SRB_BURST_SIZE_CH7 =	BIT_RNG(2,3)
 };
+#if(MCU_CORE_B80B)
+#define reg_dma_chn_en_h			REG_ADDR8(0xc54)
+#define reg_dma_chn_irq_msk_h		REG_ADDR8(0xc55)
 
+#define reg_dma_rdy0_h		  REG_ADDR8(0xc56)
+#define reg_dma_rdy1_h		  REG_ADDR8(0xc57)
+#define reg_dma_rx_rdy0_h	  REG_ADDR8(0xc58)
+#define reg_dma_rx_rdy1_h	  REG_ADDR8(0xc59)
+
+#define reg_dma_irq_status_h		reg_dma_rx_rdy0_h
+
+#else
 #define reg_dma_rdy0_h		REG_ADDR8(0xc56)
 #define reg_dma_rdy1_h		REG_ADDR8(0xc57)
+#endif
 enum{
 	FLD_DMA_READY_9 		=   BIT(1),
 };
@@ -1624,6 +1922,14 @@ enum{
 #define reg_rf_rx_timeout		REG_ADDR16(0xf0a)
 
 #define reg_rf_ll_ctrl_2		REG_ADDR8(0xf15)
+enum{
+	FLD_RF_R_TXCHN_MAN            =	BIT_RNG(0,2),
+	FLD_RF_R_NOACK_RECENT_EN      =	BIT(3),
+	FLD_RF_R_TXCHN_MAN_EN         =	BIT(4),
+	FLD_RF_R_NOACK_REV_EN         =	BIT(5),
+	FLD_RF_R_RXIRQ_REPORT_ALL     =	BIT(6),
+	FLD_RF_R_REP_SN_PID_EN        =	BIT(7),
+};
 
 #define reg_rf_ll_ctrl_3		REG_ADDR8(0xf16)
 enum{
@@ -1644,10 +1950,11 @@ typedef enum{
 	FLD_RF_IRQ_RX = 			BIT(0),
 	FLD_RF_IRQ_TX =				BIT(1),
 	FLD_RF_IRQ_RX_TIMEOUT =		BIT(2),
+	FLD_RF_IRQ_RX_FIFO_FULL =	BIT(3),
 	FLD_RF_IRQ_RX_CRC_2 =		BIT(4),
 	FLD_RF_IRQ_CMD_DONE  =		BIT(5),
 	FLD_RF_IRQ_FSM_TIMEOUT  =	BIT(6),
-	FLD_RF_IRQ_RETRY_HIT =		BIT(7),
+	FLD_RF_IRQ_TX_RETRYCNT  =	BIT(7),
 	FLD_RF_IRQ_TX_DS =          BIT(8),
     FLD_RF_IRQ_RX_DR =          BIT(9),
 	FLD_RF_IRQ_FIRST_TIMEOUT =	BIT(10),

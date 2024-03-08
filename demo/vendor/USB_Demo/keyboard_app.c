@@ -31,12 +31,15 @@ unsigned char  kb_data[6];
 // BYTE1: reserved;
 // BYTE2~BYTE7: normal key
 
-void user_init()
+void user_init(void)
 {
-	//1.enable USB DP pull up 1.5k
+    usb_init();
+#if (MCU_CORE_B87 || MCU_CORE_B80 || MCU_CORE_B80B)
+    usbhw_set_eps_en(BIT(USB_EDP_KEYBOARD_IN)); /* enable endpoint. */
+#endif
+	//enable USB DP pull up 1.5k
 	usb_set_pin_en();
-	//2.enable USB manual interrupt(in auto interrupt mode,USB device would be USB printer device)
-	usb_init_interrupt();
+
 	//initiate LED for indication
 	gpio_set_output_en(LED1,1);
 	gpio_set_func(LED1,AS_GPIO);

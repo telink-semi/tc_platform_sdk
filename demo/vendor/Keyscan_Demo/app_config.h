@@ -34,7 +34,7 @@ extern "C" {
 #define LED4     		        GPIO_PA7
 
 
-#if (MCU_CORE_B80)
+#if (MCU_CORE_B80 || MCU_CORE_B80B)
 #define KEYSCAN_TEST_SUSPEND 		0
 
 #define	SOURCE_32K_RC 				0

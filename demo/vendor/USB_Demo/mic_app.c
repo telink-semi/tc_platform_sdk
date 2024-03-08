@@ -21,7 +21,7 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-#if (!MCU_CORE_B80)
+#if (!MCU_CORE_B80 && !MCU_CORE_B80B)
 #include "app_config.h"
 #if(USB_DEMO_TYPE==USB_MICROPHONE)
 #include "application/usb_app/usbaud.h"
@@ -46,11 +46,14 @@ void user_init(void)
 	gpio_set_func(LED3,AS_GPIO);
 	gpio_set_output_en(LED4,1);
 	gpio_set_func(LED4,AS_GPIO);
-	//1.enable USB DP pull up 1.5k
+
+    usb_init();
+#if (MCU_CORE_B87)
+    usbhw_set_eps_en(BIT(USB_EDP_MIC)); /* enable endpoint. */
+#endif
+	//enable USB DP pull up 1.5k
 	usb_set_pin_en();
-	//2.enable USB manual interrupt(in auto interrupt mode,USB device would be USB printer device)
-	usb_init_interrupt();
-	//3.enable global interrupt
+	//enable global interrupt
 	irq_enable();
 
 	reg_usb_ep6_buf_addr =0x80;

@@ -41,6 +41,8 @@
 #define BQB_TX_POWER					RF_POWER_INDEX_P4p98dBm
 #elif(MCU_CORE_B80)
 #define BQB_TX_POWER					RF_POWER_P6p97dBm
+#elif MCU_CORE_B80B
+#define BQB_TX_POWER                    RF_POWER_P6p97dBm
 #endif
 
 #define ACCESS_CODE        	0x29417671
@@ -62,7 +64,7 @@
 #define CAP_SET_FLASH_ADDR_128K 		0x1e000
 #define CAP_SET_FLASH_ADDR_64K			0xe000
 
-#if MCU_CORE_B80
+#if (MCU_CORE_B80 || MCU_CORE_B80B)
 #define CAP_SET_OTP_16K					0x3fc8 //0x3fc8-0x3fcb,32bit
 #endif
 
@@ -82,7 +84,7 @@
 #elif(MCU_CORE_B89)
 #define BQB_UART_TX_PORT   				UART_TX_PB4
 #define BQB_UART_RX_PORT   				UART_RX_PB3
-#elif(MCU_CORE_B80)
+#elif(MCU_CORE_B80 || MCU_CORE_B80B)
 #define BQB_UART_TX_PORT   				GPIO_PA7
 #define BQB_UART_RX_PORT   				GPIO_PA6
 #endif

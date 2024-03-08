@@ -428,6 +428,17 @@ static inline void blc_pm_select_external_32k_crystal(void)
  */
 void pm_set_vdd_f(Flash_VoltageDef voltage_ldo);
 
+#if 0
+/*
+ * Eaglet A0~A3 have the following issues (eaglet A4 and eaglet-b do not have): Operating OTP in RF rx state may result in errors. 
+ * The initial solution was:
+ * 1. All programs running in OTP can avoid this issue
+ * 2. If the program is relatively large and still need to run the OTP program, then need to open 32K wd and trim the calibration value from 1.2V to ATE (calibrated according to 1.15V)
+ * So in the driver SDK v1.5.0, it was processed according to the above scheme.
+ * Subsequently, it was discovered that lowering the voltage by 1.2V actually carries risks, as the digital function may not work properly. 
+ * Therefore, the final conclusion is that this interface is not allowed to be called in any usage scenario, so it has been removed here.
+ * (added by jilong.liu, confirmed by kaixin.chen at 20240307)
+ */
 /**
  * @brief		This function serves to set dig_ldo vdd_1v2.
  *              for otp products, if all codes cannot be executed in ram code, there is a risk of crash. need to enable 32K watchdog and trim vDD1V2 voltage to reduce the risk.
@@ -435,6 +446,7 @@ void pm_set_vdd_f(Flash_VoltageDef voltage_ldo);
  * @return		none.
  */
 void pm_set_vdd_1v2(pm_vdd_1v2_voltage_e vdd_1v2_voltage);
+#endif
 
 /**
  * @brief		This function is used to configure the early wake-up time.

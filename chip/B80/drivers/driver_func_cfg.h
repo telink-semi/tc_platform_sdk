@@ -23,7 +23,6 @@
  *******************************************************************************************************/
 #ifndef DRIVER_FUNCTION_CONFIG_H_
 #define DRIVER_FUNCTION_CONFIG_H_
-
 /**
  * @brief	The program is not burned into OTP/Flash, but is directly downloaded into sram through the tool for execution (that is, the scene that the jig and BDT tool will use).
  * 			The reasons are as follows:

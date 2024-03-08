@@ -21,7 +21,7 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-#if (!MCU_CORE_B80)
+#if (!MCU_CORE_B80 && !MCU_CORE_B80B)
 #pragma once
 #include "usbaud.h"
 #include "../usbstd/AudioClassCommon.h"

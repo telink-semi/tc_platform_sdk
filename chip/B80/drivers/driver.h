@@ -45,7 +45,11 @@
 #include "adc.h"
 #include "i2c.h"
 #include "spi.h"
+#if (MCU_CORE_B80B)
+#include "uart_b80b.h"
+#else
 #include "uart.h"
+#endif
 #include "register.h"
 #include "watchdog.h"
 #include "register.h"

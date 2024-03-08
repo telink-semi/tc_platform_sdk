@@ -33,7 +33,7 @@ void user_init()
 	gpio_write(LED1|LED2|LED3|LED4, 0);              	//LED On
 
 	//Only B80 B85 and B87 has support USB, B89 has not USB module, not support USB printf.
-#if ((DEBUG_BUS == DEBUG_USB) && (MCU_CORE_B80||MCU_CORE_B85 || MCU_CORE_B87))
+#if ((DEBUG_BUS == DEBUG_USB) && (MCU_CORE_B80 || MCU_CORE_B80B ||MCU_CORE_B85 || MCU_CORE_B87))
 	usb_set_pin_en();
 	sleep_ms(1000);
 	printf("\n Driver version: %2x \n Copyright (c) %d Telink semiconductor (%s) Ltd, Co \n",0xa001,2019,"shanghai");

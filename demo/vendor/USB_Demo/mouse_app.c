@@ -33,7 +33,10 @@ void user_init(void)
 	//1.enable global interrupt
 	irq_enable();
 	//2.enable USB manual interrupt(in auto interrupt mode,USB device would be USB printer device)
-	 usb_init_interrupt();
+    usb_init();
+#if (MCU_CORE_B87 || MCU_CORE_B80 || MCU_CORE_B80B)
+    usbhw_set_eps_en(BIT(USB_EDP_MOUSE)); /* enable endpoint. */
+#endif
 	//3.enable USB DP pull up 1.5k
 	 usb_set_pin_en();
 
