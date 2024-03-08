@@ -71,7 +71,7 @@ void main_loop (void)
 	}
 
 
-#elif(RF_TX_RX_MODE==RX && !MCU_CORE_B89 && !MCU_CORE_B80 && !MCU_CORE_B80B)
+#elif(RF_TX_RX_MODE==RX && !MCU_CORE_B89 && !MCU_CORE_B80)
 	rf_rx_buffer_set(rx_packet,64, 0);
 	rf_start_srx(clock_time() + 100*16);
 
@@ -123,7 +123,7 @@ void main_loop (void)
 	}
 
 
-#elif(RF_TX_RX_MODE==RX && !MCU_CORE_B89 && !MCU_CORE_B80 && !MCU_CORE_B80B)
+#elif(RF_TX_RX_MODE==RX && !MCU_CORE_B89 && !MCU_CORE_B80)
 	rf_rx_buffer_set(rx_packet,64, 0);
 	rf_set_rxmode ();
 

@@ -1,5 +1,5 @@
 [release_sdk_S0]
-TAG_NAME            V1.6.0
+TAG_NAME            V1.7.0
 PACKAGE_NAME        telink_b85m_driver_sdk_B80_S0
 SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
 
@@ -17,7 +17,7 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
 
 
 [release_sdk_S1]
-TAG_NAME            V1.6.0
+TAG_NAME            V1.7.0
 PACKAGE_NAME        telink_b85m_driver_sdk_B80_S1
 SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
 
@@ -37,7 +37,7 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
 
 
 [release_sdk_S2]
-TAG_NAME            V1.6.0
+TAG_NAME            V1.7.0
 PACKAGE_NAME        telink_b85m_driver_sdk_B80_S2
 SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
 
@@ -55,7 +55,7 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
 
 
 [release_sdk_S3]
-TAG_NAME            V1.6.0
+TAG_NAME            V1.7.0
 PACKAGE_NAME        telink_b85m_driver_sdk_B80_S3
 SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
 
@@ -74,7 +74,7 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
 
 
 [release_sdk_otp_S0]
-TAG_NAME            V1.6.0
+TAG_NAME            V1.7.0
 PACKAGE_NAME        telink_b85m_driver_sdk_B80_S0_OTP_NO_RET_NO_EXT32K
 SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
 
@@ -102,7 +102,7 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
 
 
 [release_sdk_otp_S1]
-TAG_NAME            V1.6.0
+TAG_NAME            V1.7.0
 PACKAGE_NAME        telink_b85m_driver_sdk_B80_S1_OTP_NO_RET_NO_EXT32K
 SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
 
@@ -129,7 +129,7 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
 
 
 [release_sdk_otp_S2]
-TAG_NAME            V1.6.0
+TAG_NAME            V1.7.0
 PACKAGE_NAME        telink_b85m_driver_sdk_B80_S2_OTP_NO_RET_NO_EXT32K
 SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
 
@@ -157,7 +157,7 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
 
 
 [release_sdk_otp_S3]
-TAG_NAME            V1.6.0
+TAG_NAME            V1.7.0
 PACKAGE_NAME        telink_b85m_driver_sdk_B80_S3_OTP_NO_RET_NO_EXT32K
 SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
 

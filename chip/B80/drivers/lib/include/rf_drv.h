@@ -34,25 +34,6 @@
  */
 #define		OTP_SPACE_OPTIMIZATION			1
 
-#if(0)
-/**
- *  Some notice for timing sequence.
- *  1:The timing sequence can be configured once during initialization.
- *  2:The timing sequence of tx and rx can be configured separately.
- *  3:Call the enable function rf_tx_fast_settle_en or rf_rx_fast_settle_en when using the configured timing sequence.
- *    To close it, call rf_tx_fast_settle_dis or rf_rx_fast_settle_dis.
- *  4:According to the different parameters, a normal calibration should be done regularly, such as parameter notes.
- */
-typedef enum{
-RX_SETTLE_TIME_77US		 = 0, /**<  disable rx_ldo_trim calibration,reduce 8.5us of rx settle time. Do a normal calibration at the beginning.*/
-RX_SETTLE_TIME_44US		 = 1, /**<  disable rx_ldo_trim and rx_dcoc calibration,reduce 48.5us of rx settle time.Receive for a period of time and then do a normal calibration. */
-}rf_rx_fast_settle_time_e;
-
-typedef enum{
-TX_SETTLE_TIME_101US	 	= 0, /**<  disable tx_ldo_trim function,reduce 8.5us of tx settle time. Do a normal calibration at the beginning.*/
-TX_SETTLE_TIME_53US		= 1, /**<  disable tx_ldo_trim function and tx_hpmc,reduce 61.5us of tx settle time.After frequency hopping, a normal calibration must be done.*/
-}rf_tx_fast_settle_time_e;
-#endif
 
 /**
  *  @brief  Define RF mode
@@ -486,35 +467,34 @@ static inline void rf_longrange_access_code_comm (unsigned int acc)
 	write_reg8 (0x800405, read_reg8(0x405)|0x80);//setting access code needs to writ 0x405 access code trigger bit to enable in long range mode,,and the mode of  BLE1M and BLE2M need not.
 }
 
-#if(MCU_CORE_B80B)
+
 /**
- * @brief		This function is to enable/disable each access_code channel for
- *				RF Rx terminal.
- * @param[in]	pipe  	- Bit0~bit5 correspond to channel 0~5, respectively.
- *					  	- #0:Disable.
- *					  	- #1:Enable.
- *						  If "enable" is set as 0x3f (i.e. 00111111),
- *						  all access_code channels (0~5) are enabled.
- * @return	 	none
- */
+*	@brief		this function is to enable/disable each access_code channel for
+*				RF Rx terminal.
+*	@param[in]	pipe  	Bit0~bit5 correspond to channel 0~5, respectively.
+*						0:Disable 1:Enable
+*						If "enable" is set as 0x3f (i.e. 00111111),
+*						all access_code channels (0~5) are enabled.
+*	@return	 	none
+*/
 static inline void rf_rx_acc_code_enable(unsigned char pipe)
 {
-    write_reg8(0x407, (read_reg8(0x407)&0xc0) | pipe); //Rx_Channel_man[5:0]
+    write_reg8(0x407, (read_reg8(0x407)&0xc0) | pipe); //rx_access_code_chn_en
 }
 
 /**
- * @brief		This function is to select access_code channel for RF tx terminal.
- * @param[in]	pipe  	- tx access code channel,The pipe range is from 0 to 5.
- *						  And only 1 channel can be selected every time.
- *						  If "pipe" is set as 0x05,the access_code channel (5) is enabled.
- * @return	 	none
- */
+*	@brief		this function is to select access_code channel for RF Rx terminal.
+*	@param[in]	pipe  	Bit0~bit5 correspond to channel 0~5, respectively.
+*						0:Disable 1:Enable
+*						If "enable" is set as 0x3f (i.e. 00111111),
+*						all access_code channels (0~5) are enabled.
+*	@return	 	none
+*/
 static inline void rf_tx_acc_code_select(unsigned char pipe)
 {
-    write_reg8(0xf15, ((read_reg8(0xf15)&0xf8) | pipe)|BIT(4)); //Tx_Channel_man[2:0]
-
+    write_reg8(0xf15, (read_reg8(0xf15)&0xf8) | pipe); //Tx_Channel_man[2:0]
 }
-#endif
+
 
 /**
  * @brief   This function serves to reset RF Tx/Rx mode.
@@ -568,12 +548,20 @@ static inline void rf_set_txmode (void)
  * @return  none.
  * @note	   Attention:It is not necessary to call this function to adjust the settling time in the normal sending state.
  */
-static inline void 	rf_set_tx_settle_time(unsigned short tx_stl_us)
+static inline void 	tx_settle_adjust(unsigned short txstl_us)
 {
-	 tx_stl_us &= 0x0fff;
-	 write_reg16(0xf04,(tx_stl_us - 1));
+	REG_ADDR16(0xf04) = (txstl_us - 1);
 }
 
+/**
+ * @brief   This function serves to set pipe for RF Tx.
+ * @param   pipe - RF Optional range .
+ * @return  none
+ */
+static inline void rf_set_tx_pipe (unsigned char pipe)
+{
+	write_reg8 (0x800f15, 0xf0 | pipe);
+}
 /**
 *	@brief	  	This function serves to set RF Tx packet.
 *	@param[in]	rf_txaddr - the address RF to send packet.
@@ -1227,248 +1215,5 @@ void rf_set_preamble_len(unsigned char len);
  {
       reg_rf_irq_status = status;
  }
-
- /**
-  * @brief	This function to set rf rx sync threshold
-  * @param[in] 	threshold	- rx sync threshold,This unit is in bits.
-  * 						  The bit length of the access code matched during rx sync;
-  * @return		none.
-  */
- void rf_set_rx_sync_threshold(unsigned char threshold);
-
- /**
-  * @brief   This function serves to set RF wait time between RX to TX switching.
-  * @param[in] tx_wait_us  Wait time between RX to TX switching,the unit is us.
-  * 			  The max value of this param is 0xfff;
-  * @return  none.
-  * @note	Attention:It is not necessary to call this function to adjust the waiting time in the normal sending state.
-  */
- static inline void rf_set_tx_wait_time(unsigned short tx_wait_us)
- {
- 	tx_wait_us &= 0x0fff;
- 	write_reg16(0xf0e, (read_reg8(0xf0e) & 0xf000) | tx_wait_us);
- }
-
- /**
-  * @brief   This function serves to set RF wait time between RX to TX switching.
-  * @param[in]  rx_wait_us  Wait time between TX to RX switching,the unit is us.
-  * 			   The max value of this param is 0xfff;
-  * @return  none.
-  * @note	Attention:It is not necessary to call this function to adjust the waiting time in the normal packet receiving state.
-  */
- static inline void rf_set_rx_wait_time( unsigned short rx_wait_us)
- {
- 	 rx_wait_us &= 0x0fff;
- 	 write_reg16(0xf06, (read_reg8(0xf06)& 0xf000) | rx_wait_us);
- }
-
-#if(0)
- /**
-   *	@brief	  	this function serve to adjust rx settle timing sequence.
-   *	@param[in]	rx_settle_us  	After adjusting the timing sequence, the time required for rx to settle.
-   *	@return	 	none
-   *	@note		RX_SETTLE_TIME_77US :Do a normal calibration at the beginning.
-   *				RX_SETTLE_TIME_44US :Receive for a period of time and then do a normal calibration.
-   *
-  */
-#if(MCU_CORE_B80B)
- /**
-   *				Attention:
-   *				The fast settle initialization configuration of the B80B chip has been set to RX_SETTLE_TIME_44US mode by default,
-   *				When using fast settle and the rx settle time is set to RX_SETTLE_TIME_44US, there is no need to call this interface.
-  */
-#endif
-  void rf_rx_fast_settle_init(rf_rx_fast_settle_time_e rx_settle_us);
-
-  /**
-   *	@brief	  	this function serve to adjust tx settle timing sequence.
-   *	@param[in]	tx_settle_us  	After adjusting the timing sequence, the time required for tx to settle.
-   *	@return	 	none
-   *	@note		TX_SETTLE_TIME_101US : After frequency hopping, a normal calibration must be done.
-   *				TX_SETTLE_TIME_53US  : Do a normal calibration at the beginning.
-  */
-#if(MCU_CORE_B80B)
-  /**
-   *				Attention:
-   *				The fast settle initialization configuration of the B80B chip has been set to TX_SETTLE_TIME_53US mode by default,
-   *				When using fast settle and the tx settle time is set to TX_SETTLE_TIME_53US, there is no need to call this interface.
-  */
-#endif
-  void rf_tx_fast_settle_init(rf_tx_fast_settle_time_e tx_settle_us);
-
- /**
-  *	@brief	  	this function serve to enable the tx timing sequence adjusted.
-  *	@param[in]	none
-  *	@return	 	none
- */
- static inline void rf_tx_fast_settle_en(void)
- {
- 	write_reg8(0x1229,read_reg8(0x1229)|0x02);
- }
-
- /**
-  *	@brief	  	this function serve to disable the tx timing sequence adjusted.
-  *	@param[in]	none
-  *	@return	 	none
- */
- static inline void rf_tx_fast_settle_dis(void)
- {
- 	write_reg8(0x1229,read_reg8(0x1229)&0xfd);
- }
-
- /**
-  *	@brief	  	this function serve to enable the rx timing sequence adjusted.
-  *	@param[in]	none
-  *	@return	 	none
- */
- static inline void rf_rx_fast_settle_en(void)
- {
- 	write_reg8(0x1229,read_reg8(0x1229)|0x01);
- }
-
- /**
-  *	@brief	  	this function serve to disable the rx timing sequence adjusted.
-  *	@param[in]	none
-  *	@return	 	none
- */
- static inline void rf_rx_fast_settle_dis(void)
- {
- 	write_reg8(0x1229,read_reg8(0x1229)&0xfe);
- }
-#endif
-
-
- /**
-  * @brief	This function serve to set the ptx pid init value.
-  * @param[in]	tx_pid -Initial value of pid for PTX. (PID range:0~3)
-  * @return	none
-  */
- static inline void rf_set_ptx_init_pid(unsigned char tx_pid)
- {
- 	reg_rf_ll_ctrl_1 |= (tx_pid << 6);
- }
-
- /**
-  * @brief	This function serve to set the prx pid init value.
-  * @param[in] rx_pid -Initial value of pid for PRX. (PID range:0~3)
-  * @return	none
-  */
- static inline void rf_set_prx_init_pid(unsigned char rx_pid)
- {
- 	reg_rf_ll_ctrl_1 |= (rx_pid << 4);
- }
-
- /**
- * @brief	This function serve to enable the ack in ptx and prx modes.
- * @param[in]	none
- * @return		none
- */
- void rf_set_ptx_prx_ack_en(void);
-
- /**
- * @brief	This function serve to disable the ack in ptx and prx modes.
- * @param[in]	none
- * @return		none
- */
- void rf_set_ptx_prx_ack_dis(void);
-
- /**
- * @brief	This function serve to initial the ptx/prx setting.
- * @param   none.
- * @return	none.
- */
- void rf_ptx_prx_config(void);
-
- /**
- * @brief   This function serves to set RF ptx trigger.
- * @param[in]	addr	-	The address of tx_packet.
- * @param[in]	tick	-	Trigger ptx after (tick-current tick),If the difference is less than 0, trigger immediately.
- * @return  none.
- */
- void rf_start_ptx  (unsigned char* addr ,unsigned int tick);
-
- /**
- * @brief   This function serves to set RF prx trigger.
- * @param[in]	tick	-	Trigger prx after (tick-current tick),If the difference is less than 0, trigger immediately.
- * @return  none.
- */
- void rf_start_prx(unsigned char* addr ,unsigned int tick);
-
- /**
- * @brief	This function serves to set retransmit and retransmit delay.
- * @param[in] 	retry_count	- Number of retransmit, 0: retransmit OFF
- * @param[in] 	retry_delay	- Retransmit delay time.
- * @return		none.
- */
- void rf_set_ptx_retry(unsigned char retry_count, unsigned short retry_delay);
-
-
-
-#if(MCU_CORE_B80B)
-/**
-* @brief	This function serves to update the wptr of tx terminal.
-* @param[in]	pipe_id	-	The number of pipe which need to update wptr.
-* @param[in]	wptr	-	The pointer of write in tx terminal.
-* @return		none
-*/
-static inline void rf_set_tx_wptr(unsigned char pipe_id,unsigned char wptr)
-{
-  reg_rf_multi_dma_tx_wptr(pipe_id) = wptr;
-}
-
-/**
-* @brief	This function serves to get the write pointer of tx terminal.
-* @param[in]	pipe_id	-	The number of tx pipe.0<= pipe_id <=5.
-* @return		The write pointer of the tx.
-*/
-static inline unsigned char rf_get_tx_wptr(unsigned char pipe_id)
-{
- return reg_rf_multi_dma_tx_wptr(pipe_id);
-}
-
-/**
-* @brief	This function serves to get the read pointer of tx terminal.
-* @param[in]	pipe_id	-	The number of tx pipe.0<= pipe_id <=5.
-* @return	none.
-*/
-static inline unsigned char rf_get_tx_rptr(unsigned char pipe_id)
-{
- return reg_rf_multi_dma_tx_rptr(pipe_id);
-}
-
-/**
-  * @brief	This function serves to clear the writer pointer of tx terminal.
-  * @param[in]	pipe_id	-	The number of tx pipe.0<= pipe_id <=5.
-  * @return	none.
-  * @note   Pipe0 corresponds to write pointer dma address 0x30, pipe1 corresponds to 0x31, and so on.
-  */
- static inline void rf_clr_tx_wptr(unsigned char pipe_id)
- {
-	 reg_rf_multi_dma_tx_wptr(pipe_id) = 0;
- }
-
- /**
-  * @brief	This function serves to clear read pointer of tx terminal.
-  * @param[in]	pipe_id	-	The number of tx pipe.0<= pipe_id <=5.
-  * @return	none.
-  * @note   Pipe0 corresponds to read pointer dma address 0x38, pipe1 corresponds to 0x39, and so on.
-  */
- static inline void rf_clr_tx_rptr(unsigned char pipe_id)
- {
-	 reg_rf_multi_dma_tx_rptr(pipe_id) = 0x40;
- }
-
-/**
-* @brief	This function serves to get the pid of different pipes.
-* @param[in] 	pipe_id	- The number of pipe.0<= pipe_id <=5.
-* @return		The pid of different pipe.
-*/
-static inline unsigned char rf_get_pipe_pid(unsigned char pipe_id)
-{
-	return((unsigned char)(read_reg16(0xf22)>>(pipe_id*2))&0x03);
-}
-
-
-#endif
 
 #endif

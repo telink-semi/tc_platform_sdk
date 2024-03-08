@@ -88,10 +88,10 @@ int main (void) {
 	cpu_wakeup_init();
 #elif (MCU_CORE_B87)
 	cpu_wakeup_init(LDO_MODE, EXTERNAL_XTAL_24M);
-#elif (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
+#elif (MCU_CORE_B89 || MCU_CORE_B80)
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
 #endif
-#if(MCU_CORE_B80 || MCU_CORE_B80B ||MCU_CORE_B89)
+#if(MCU_CORE_B80||MCU_CORE_B89)
 	wd_32k_stop();
 #endif
 #if (MCU_CORE_B85) || (MCU_CORE_B87)
@@ -102,7 +102,7 @@ int main (void) {
 	//Note: This function must be called, otherwise an abnormal situation may occur.
 	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
 	user_read_otp_value_calib();
-#elif (MCU_CORE_B80 || MCU_CORE_B80B)
+#elif (MCU_CORE_B80)
 	//Note: This function must be called, otherwise an abnormal situation may occur.
 	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
 #if(PACKAGE_TYPE == OTP_PACKAGE)
@@ -112,11 +112,11 @@ int main (void) {
 #endif
 #endif
 
-#if (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
+#if (MCU_CORE_B89 || MCU_CORE_B80)
 	rf_mode_init();
 #endif
 
-#if (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
+#if (MCU_CORE_B89 || MCU_CORE_B80)
 #if(RF_MODE==RF_BLE_1M)//1
 	 rf_set_ble_1M_mode();
 #elif(RF_MODE==RF_BLE_1M_NO_PN)//2

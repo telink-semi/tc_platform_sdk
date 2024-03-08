@@ -76,7 +76,7 @@ void user_init()
 	blc_pm_select_internal_32k_crystal();
 	wd_32k_set_interval_ms(1000);
 	wd_32k_start();
-#elif(TIMER_MODE==STIMER_MODE && (MCU_CORE_B80 || MCU_CORE_B80B))
+#elif(TIMER_MODE==STIMER_MODE && MCU_CORE_B80)
 	stimer_set_irq_mask();
 	stimer_set_capture_tick(clock_time() + CLOCK_16M_SYS_TIMER_CLK_1S);
 	stimer_enable();
@@ -109,7 +109,7 @@ void main_loop (void)
 	gpio_toggle(LED1);
 
 #elif(TIMER_MODE == TIMER_32K_WATCHDOG_MODE)
-#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89)
+#if(MCU_CORE_B80 || MCU_CORE_B89)
 	sleep_ms(990);
 	//32K watchdog capture time settings: program run time and sleep time to leave some margin.
 	wd_32k_stop();

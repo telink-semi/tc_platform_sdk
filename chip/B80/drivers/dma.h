@@ -103,70 +103,7 @@ static inline void dma_chn_enable(unsigned char chn, unsigned int en)
 		reg_dma_chn_en &= ~chn;
 	}
 }
-#if(MCU_CORE_B80B)
 
-/**
- * @brief     This function performs to enable DMA interrupt.
- * @param[in] chn - variable to config the DMA interrupt channel.
- * @param[in] en - en: 1 enable. 0 disable.
- * @return    none.
- */
-
-static inline void dma_chn_irq_enable(unsigned short chn, unsigned int en)
-{
-	reg_dma_irq_status = chn;
-
-	if(en){
-		if(chn<BIT(8)){
-			reg_dma_chn_irq_msk |= chn;
-		}else{
-			reg_dma_chn_irq_msk_h |= (chn&0xff);
-		}
-
-	}
-	else{
-		if(chn<BIT(8)){
-			reg_dma_chn_irq_msk &= ~chn;
-		}else{
-			reg_dma_chn_irq_msk_h &= ~(chn&0xff);
-		}
-
-	}
-}
-
-/**
- * @brief      Clear IRQ status of uart.
- * @param[in]  irq_src - select tx or rx irq.
- * @return     none
- */
-
-static inline void dma_chn_irq_status_clr(unsigned short chn)
-{
-	if(chn<BIT(8)){
-		reg_dma_irq_status = chn;
-	}else{
-		reg_dma_irq_status_h = (chn&0xff);
-	}
-
-}
-
-
-/**
- * @brief      Get IRQ status of uart.
- * @param[in]  irq_src - select tx or rx irq.
- * @return     none
- */
-
-static inline unsigned char dma_chn_irq_status_get(unsigned short chn)
-{
-	if(chn<BIT(8)){
-	    return reg_dma_irq_status&chn;
-	}else{
-		return reg_dma_irq_status_h&(chn&0xff);
-	}
-
-}
-#else
 /**
  * @brief     This function performs to enable DMA interrupt.
  * @param[in] chn - variable to config the DMA interrupt channel.
@@ -208,7 +145,7 @@ static inline unsigned char dma_chn_irq_status_get(void)
 {
     return reg_dma_irq_status;
 }
-#endif
+
 /**
  * @brief      This function serves to set the size of dma buffer
  * @param[in]  size - select tx or rx irq. caution: max size = 2048

@@ -29,32 +29,22 @@
 	extern "C" {
 #endif
 
-typedef enum
-{
-    USB_EDP8_IN         = 8,
-    USB_EDP1_IN         = 1,
-    USB_EDP2_IN         = 2,
-    USB_EDP3_IN         = 3,
-    USB_EDP4_IN         = 4,
-    USB_EDP5_OUT        = 5,
-    USB_EDP6_OUT        = 6,
-    USB_EDP7_IN         = 7,
-
-    USB_EDP_PRINTER_IN  = USB_EDP8_IN,
-    USB_EDP_KEYBOARD_IN = USB_EDP1_IN,
-    USB_EDP_MOUSE       = USB_EDP2_IN,
-    USB_EDP3_UNUSED_IN  = USB_EDP3_IN,
-    USB_EDP_AUDIO_IN    = USB_EDP4_IN,
-    USB_EDP_PRINTER_OUT = USB_EDP5_OUT,
-    USB_EDP_SPEAKER     = USB_EDP6_OUT,
-    USB_EDP_MIC         = USB_EDP7_IN,
-    USB_EDP_MS_IN       = USB_EDP8_IN,
-    USB_EDP_MS_OUT      = USB_EDP5_OUT,
-    USB_EDP_SOMATIC_IN  = USB_EDP4_IN,
-    USB_EDP_SOMATIC_OUT = USB_EDP5_OUT,
-    USB_EDP_CDC_IN      = USB_EDP4_IN,
-    USB_EDP_CDC_OUT     = USB_EDP5_OUT,
-} usb_ep_index;
+enum {
+	USB_EDP_PRINTER_IN = 8, // endpoint 8 is alias of endpoint 0,  becareful.  // default hw buf len = 64
+	USB_EDP_MOUSE = 2,			// default hw buf len = 8
+	USB_EDP_KEYBOARD_IN = 1,	// default hw buf len = 8
+	USB_EDP_IN = 3,	// default hw buf len = 16
+	USB_EDP_AUDIO_IN = 4,		// default hw buf len = 64
+	USB_EDP_PRINTER_OUT = 5,	// default hw buf len = 64
+	USB_EDP_SPEAKER = 6,		// default hw buf len = 16
+	USB_EDP_MIC = 7,			// default hw buf len = 16
+	USB_EDP_MS_IN = USB_EDP_PRINTER_IN,		// mass storage
+	USB_EDP_MS_OUT = USB_EDP_PRINTER_OUT,
+	USB_EDP_SOMATIC_IN = USB_EDP_AUDIO_IN,		//  when USB_SOMATIC_ENABLE, USB_EDP_PRINTER_OUT disable
+	USB_EDP_SOMATIC_OUT = USB_EDP_PRINTER_OUT,
+    USB_EDP_CDC_IN = 4,
+    USB_EDP_CDC_OUT = 5,
+};
 
 // #defined in the standard spec
 enum {
@@ -65,170 +55,11 @@ enum {
 	USB_HID_SOMATIC			= 5,// somatic sensor,  may have many report ids
 };
 
-#if (MCU_CORE_B80B)
-typedef enum
-{
-    USB_IRQ_RESET_STATUS    = BIT(0),
-    USB_IRQ_250US_STATUS    = BIT(1),
-    USB_IRQ_SUSPEND_STATUS  = BIT(2),
-    USB_IRQ_SOF_STATUS      = BIT(3),
-    USB_IRQ_EP_SETUP_STATUS = BIT(4),
-    USB_IRQ_EP_DATA_STATUS  = BIT(5),
-    USB_IRQ_EP_STA_STATUS   = BIT(6),
-    USB_IRQ_EP_INTF_STATUS  = BIT(7),
-} usb_irq_status_e;
 
-typedef enum
-{
-    EP_MAP_DIS,
-    EP_MAP_AUTO_EN,
-} usb_ep_map_sel_e;
-
-typedef enum
-{
-    SIZE_8_BYTE,
-    SIZE_16_BYTE,
-    SIZE_32_BYTE,
-    SIZE_64_BYTE,
-} usb_ctrl_ep_sel_e;
-
-/**
- * @brief     This function servers to change usb control endpoint reset, 250us and sof trigger type level to edge.
- * @return    none.
- * @note
- *            - This function must be called when the usb is initialized, otherwise the corresponding flags will not be set.
- */
-static inline void usbhw_set_irq_edge(void)
-{
-    reg_usb_edp0_size &= ~(FLD_USB_IRQ_RESET_LVL | FLD_USB_IRQ_250US_LVL | FLD_USB_IRQ_SOF_LVL);
-}
-
-/**
- * @brief     This function servers to set the size of control endpoint.
- * @param[in] size - the size of control endpoint.
- * @return    none.
- */
-static inline void usbhw_set_ctrl_ep_size(usb_ctrl_ep_sel_e size)
-{
-    reg_usb_edp0_size = ((reg_usb_edp0_size & ~(FLD_USB_CTR_EP_SIZE)) | size);
-}
-
-/**
- * @brief     This function servers to set the buffer address of data endpoint.
- * @param[in] ep - select the data endpoint.
- * @param[in] addr - data endpoint buffer address.
- * @return    none.
- */
-static inline void usbhw_set_ep_addr(usb_ep_index ep, unsigned short addr)
-{
-    reg_usb_ep_buf_addr(ep) = addr & 0xff;
-}
-
-/**
- * @brief     This function servers to set usb irq mask.
- * @param[in]  mask -the irq mask of usb.
- * @return    none.
- */
-static inline void usbhw_set_irq_mask(usb_irq_mask mask)
-{
-    reg_usb_irq_mask |= mask;
-}
-
-/**
- * @brief     This function servers to set the irq mask of data endpoint.
- * @param[in]  mask -the irq mask of data endpoint.
- * @return    none.
- */
-static inline void usbhw_set_eps_irq_mask(usb_eps_irq_e mask)
-{
-    reg_usb_mask |= mask;
-}
-
-/**
- * @brief     This function servers to clr the irq mask of data endpoint.
- * @param[in]  mask -the irq mask of data endpoint.
- * @return    none.
- */
-static inline void usbhw_clr_eps_irq_mask(usb_eps_irq_e mask)
-{
-    reg_usb_mask &= (~mask);
-}
-
-/**
- * @brief     This function servers to get usb irq status.
- * @param[in]  status -the irq status of usb.
- * @return    The status of irq.
- */
-static inline unsigned char usbhw_get_irq_status(usb_irq_status_e status)
-{
-    return reg_ctrl_ep_irq_sta & status;
-}
-
-/**
- * @brief     This function servers to clr usb irq status.
- * @param[in]  status -the irq status of usb.
- * @return    none.
- */
-static inline void usbhw_clr_irq_status(usb_irq_status_e status)
-{
-    reg_ctrl_ep_irq_sta = status;
-}
-
-/**
- * @brief     This function servers to get time stamp.
- * @return    the time stamp.
- */
-static inline unsigned int usbhw_get_timer_stamp(void)
-{
-    return (reg_usb_tstamp0 | (reg_usb_tstamp1 << 8) | (reg_usb_tstamp2 << 16) | (reg_usb_tstamp3 << 24));
-}
-
-/**
- * @brief     This function servers to set in endpoint buffer max size(except 7 aiso mode).
- * @param[in] max_size - in endpoint max size.
- * @return    none.
- */
-static inline void usbhw_set_eps_max_size(unsigned int max_size)
-{
-    reg_usb_ep_max_size = max_size >> 3;
-}
-
-/**
- * @brief     This function servers to enable mapping logical data endpoint.
- * @param[in] ep - select the data endpoint mask.
- * @return    none.
- */
-static inline void usbhw_set_eps_map_en(usb_ep_en_e ep)
-{
-    reg_usb_edps_map_en = ep;
-}
-
-/**
- * @brief   This function serves to set data endpoint mapping.
- * @param   source_ep - The source endpoint of the mapping.
- * @param   target_ep - The target endpoint of the mapping.
- * @return    none.
- */
-void usbhw_set_ep_map(usb_ep_index source_ep, usb_ep_index target_ep);
-
-/**
- * @brief   This function serves to set data endpoint mapping.
- * @param   map_en - mapping enable or disable.
- * @return    none.
- */
-void usbhw_ep_map_en(usb_ep_map_sel_e map_en);
-#endif
-
-/**
- * @brief     This function servers to set the threshold of printer.
- * @param[in] th - set the threshold for printer.
- * @return    none.
- */
 static inline void usbhw_set_printer_threshold(unsigned char th) {
 	reg_usb_ep8_send_thres = th;
 }
 
-#if (MCU_CORE_B80)
 /**
  * @brief     This function servers to enable Endpoint.
  * @param[in] ep - selected  the Endpoint Bit.
@@ -238,27 +69,7 @@ static inline void  usbhw_set_eps_en(usb_ep_en_e ep)
 {
 	reg_usb_ep_en= ep ;
 }
-#else
-/**
- * @brief     This function servers to enable data endpoint.
- * @param[in] ep - select the data endpoint.
- * @return    none.
- * @note
- *            - when usb map en, reg_usb_edps_logic_en reg enable data endpoint.
- *            - when usb map dis, reg_usb_edp_en reg enable data endpoint.
- */
-static inline void usbhw_set_eps_en(usb_ep_en_e ep)
-{
-    if (reg_usb_map & FLD_USB_EDPS_SM_MAP_EN)
-    {
-        reg_usb_edps_logic_en = ep;
-    }
-    else
-    {
-        reg_usb_ep_en = ep;
-    }
-}
-#endif
+
 
 /**
  * @brief     This function servers to reset the pointer of control Endpoint.
@@ -428,3 +239,6 @@ void usbhw_write_ctrl_ep_u16(unsigned short v);
  * @return  the two bytes data read from the control endpoint
  */
 unsigned short usbhw_read_ctrl_ep_u16(void);
+
+
+

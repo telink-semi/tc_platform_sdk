@@ -29,7 +29,7 @@
 #elif (MCU_CORE_B87||MCU_CORE_B85)
 #define PWM_PIN		GPIO_PC1
 #define GPIO_Type			AS_PWM0
-#elif (MCU_CORE_B80 || MCU_CORE_B80B)
+#elif (MCU_CORE_B80)
 #define PWM_PIN		GPIO_PC1
 #define GPIO_Type         PWM0
 #endif

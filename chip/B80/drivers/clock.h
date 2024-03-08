@@ -70,8 +70,6 @@ typedef enum{
 	EXTERNAL_XTAL_24M	= 0,			//Use an external 24M crystal and internal capacitors.
 	EXTERNAL_XTAL_EXTERNAL_CAP_24M	= 2,//Use an external 24M crystal and external capacitors.
 }XTAL_TypeDef;
-
-#if (MCU_CORE_B80)
 /**
  * @brief system clock type, to optimize the code and reduce the code size, add bit8-bit10 and bit11,
  * |                 |                  |               |
@@ -91,27 +89,6 @@ typedef enum{
 //	SYS_CLK_32M_RC 	 = 0x01,
 //	SYS_CLK_48M_RC 	 = 0x02,
 }SYS_CLK_TypeDef;
-#elif (MCU_CORE_B80B)
-/**
- * @brief system clock type, to optimize the code and reduce the code size, add bit8-bit10, bit11, bit18-bit24 and bit25-bit29.
- * |                  |                  |                  |                  |               |
- * | :--------------- | :--------------- | :--------------- | :--------------- | :------------ |
- * |     <29:25>      |     <24:18>      |     <13:11>      |     <10:8>       |     <7:0>     |
- * |     pgm_cfg1     |     pgm_cfg0     |     clk_div      |    timing_config |      clk      |
- */
-typedef enum
-{
-    SYS_CLK_12M_Crystal = 0x07 << 25 | 0x12 << 18 | 0x00 << 11 | 0x01 << 8 | 0x44,
-    SYS_CLK_16M_Crystal = 0x09 << 25 | 0x18 << 18 | 0x00 << 11 | 0x02 << 8 | 0x43,
-    SYS_CLK_24M_Crystal = 0x0c << 25 | 0x21 << 18 | 0x00 << 11 | 0x02 << 8 | 0x42,
-    SYS_CLK_32M_Crystal = 0x14 << 25 | 0x31 << 18 | 0x01 << 11 | 0x03 << 8 | 0x60,
-    SYS_CLK_48M_Crystal = 0x1f << 25 | 0x4a << 18 | 0x01 << 11 | 0x03 << 8 | 0x20,
-
-    SYS_CLK_24M_RC = 0x0c << 25 | 0x21 << 18 | 0x00 << 16 | 0x00 << 11 | 0x02 << 8 | 0x00,
-    // SYS_CLK_32M_RC      = 0x01,
-    // SYS_CLK_48M_RC      = 0x02,
-} SYS_CLK_TypeDef;
-#endif
 
 /**
  * @brief 32K clock type.

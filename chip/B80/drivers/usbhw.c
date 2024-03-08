@@ -58,32 +58,3 @@ unsigned short usbhw_read_ctrl_ep_u16(void){
 	return (usbhw_read_ctrl_ep_data() << 8) | v;
 } 
 
-#if (MCU_CORE_B80B)
-/**
- * @brief   This function serves to set data endpoint mapping.
- * @param   source_ep - The source endpoint of the mapping.
- * @param   target_ep - The target endpoint of the mapping.
- * @return    none.
- */
-void usbhw_set_ep_map(usb_ep_index source_ep, usb_ep_index target_ep)
-{
-    reg_usb_rdps_map(source_ep) = (source_ep & 1) == 0 ? (reg_usb_rdps_map(source_ep) & (~BIT_RNG(0, 3))) | (target_ep) : (reg_usb_rdps_map(source_ep) & (~BIT_RNG(4, 7))) | ((target_ep) << 4);
-}
-
-/**
- * @brief   This function serves to set data endpoint mapping.
- * @param   map_en - mapping enable or disable.
- * @return    none.
- */
-void usbhw_ep_map_en(usb_ep_map_sel_e map_en)
-{
-    if (map_en == EP_MAP_AUTO_EN)
-    {
-        reg_usb_map |= FLD_USB_EDP_MAP_AUTO_EN | FLD_USB_EDPS_SM_MAP_EN | FLD_USB_EDPS_MAP_TGL_EN | FLD_USB_GET_STA_MAP_EN;
-    }
-    else
-    {
-        reg_usb_map &= ~(FLD_USB_EDP_MAP_AUTO_EN | FLD_USB_EDP_MAP_MANUAL_EN);
-    }
-}
-#endif

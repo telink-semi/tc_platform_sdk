@@ -51,7 +51,7 @@ void rd_usr_definition(unsigned char _s)
 		usr_config.flash = (flash_read_mid() >> 16) & 0xff;
 	}
 }
-#if (MCU_CORE_B80 || MCU_CORE_B80B)
+#if (MCU_CORE_B80)
 void get_uart_port(GPIO_PinTypeDef* bqb_uart_tx_port, GPIO_PinTypeDef* bqb_uart_rx_port)
 #else
 void get_uart_port(UART_TxPinDef* bqb_uart_tx_port, UART_RxPinDef* bqb_uart_rx_port)
@@ -75,7 +75,7 @@ void read_bqb_calibration()
 	{
 		if(usr_config.cal_pos == 1)//OTP
 		{
-#if (MCU_CORE_B80 || MCU_CORE_B80B|| MCU_CORE_B89)
+#if MCU_CORE_B80 || MCU_CORE_B89
 			extern unsigned char otp_program_flag;
 			unsigned int temp;
 			if(otp_program_flag != 1)
@@ -152,7 +152,7 @@ void user_init(void)
 	gpio_write(LED1, 0);         //LED On
 #endif
 
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80)
 	GPIO_PinTypeDef bqb_uart_tx_port = BQB_UART_TX_PORT;
 	GPIO_PinTypeDef bqb_uart_rx_port = BQB_UART_RX_PORT;
 #else

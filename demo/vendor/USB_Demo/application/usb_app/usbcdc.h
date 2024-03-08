@@ -26,9 +26,7 @@
 #if USB_CDC_ENABLE
 #include "usbhw.h"
 /** Endpoint number of the CDC device-to-host notification IN endpoint. */
-#ifndef CDC_NOTIFICATION_EPNUM
 #define CDC_NOTIFICATION_EPNUM         2
-#endif
 
 /** Endpoint number of the CDC device-to-host data IN endpoint. */
 #ifndef		CDC_TX_EPNUM
@@ -36,19 +34,13 @@
 #endif
 
 /** Endpoint number of the CDC host-to-device data OUT endpoint. */
-#ifndef CDC_RX_EPNUM
 #define CDC_RX_EPNUM                   5
-#endif
 
 /** Size in bytes of the CDC device-to-host notification IN endpoint. */
-#ifndef CDC_NOTIFICATION_EPSIZE
 #define CDC_NOTIFICATION_EPSIZE        8
-#endif
 
 /** Size in bytes of the CDC data IN and OUT endpoints.*/
-#ifndef CDC_TXRX_EPSIZE
 #define CDC_TXRX_EPSIZE                64
-#endif
 
 extern unsigned char  usb_cdc_data[CDC_TXRX_EPSIZE];
 extern unsigned short usb_cdc_data_len;

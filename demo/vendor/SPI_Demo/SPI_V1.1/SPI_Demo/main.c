@@ -35,7 +35,7 @@ extern void main_loop (void);
 int main (void)   //must on ramcode
 {
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80)
 	wd_32k_stop();
 #endif
 	//Note: This function must be called, otherwise an abnormal situation may occur.

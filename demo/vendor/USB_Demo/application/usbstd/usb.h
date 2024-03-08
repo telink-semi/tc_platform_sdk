@@ -59,7 +59,7 @@ extern u8 usb_just_wakeup_from_suspend;
 extern u8 usb_has_suspend_irq;
 extern u8 edp_toggle[8];
 
-void usb_init(void);
+void usb_init();
 
 #ifndef		USB_SOFTWARE_CRC_CHECK
 #define		USB_SOFTWARE_CRC_CHECK		0
