@@ -32,7 +32,7 @@
  * the replace rules is: "$$$B85m_driver_sdk_"#sdk_version_num"$$$", The "#sdk_version_num"
  * will replace with this macro value.
  */
-#define B80_SDK_VERSION_NUM				V1.6.0
+#define B80_SDK_VERSION_NUM				V1.7.0
 
 #define SDK_VERSION_NUM					B80_SDK_VERSION_NUM
 #elif(MCU_CORE_B85)
@@ -41,7 +41,7 @@
  * the replace rules is: "$$$B85m_driver_sdk_"#sdk_version_num"$$$", The "#sdk_version_num"
  * will replace with this macro value.
  */
-#define B85_SDK_VERSION_NUM				V1.6.0
+#define B85_SDK_VERSION_NUM				V1.7.0
 #define SDK_VERSION_NUM					B85_SDK_VERSION_NUM
 #elif(MCU_CORE_B87)
 /*
@@ -49,7 +49,7 @@
  * the replace rules is: "$$$B85m_driver_sdk_"#sdk_version_num"$$$", The "#sdk_version_num"
  * will replace with this macro value.
  */
-#define B87_SDK_VERSION_NUM				V1.6.0
+#define B87_SDK_VERSION_NUM				V1.7.0
 #define SDK_VERSION_NUM					B87_SDK_VERSION_NUM
 #endif
 
