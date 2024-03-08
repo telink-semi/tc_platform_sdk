@@ -1,3 +1,4 @@
+#if (MCU_CORE_B80)
 /********************************************************************************************************
  * @file	uart.c
  *
@@ -406,7 +407,7 @@ volatile unsigned char uart_send_byte(unsigned char byte)
 {
 	unsigned int addr;
 
-	unsigned char b[5] = {1, 0,0,0,0};
+	static unsigned char b[5] = {1, 0,0,0,0};
 
 	addr = (unsigned int)b;
 
@@ -657,3 +658,4 @@ void uart_rxdone_irq_dis(void)
 	reg_uart_rx_timeout1&= ~FLD_UART_MASK_RXDONE_IRQ;
 }
 
+#endif

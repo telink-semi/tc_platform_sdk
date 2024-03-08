@@ -234,7 +234,7 @@ const USB_Descriptor_Device_t device_desc = { {
         USB_CSCP_NoDeviceProtocol, // Protocol
 #endif
 
-		8, // Endpoint0Size, Maximum Packet Size for Zero Endpoint. Valid Sizes are 8, 16, 32, 64
+		USB_CTR_ENDPOINT_SIZE, // Endpoint0Size, Maximum Packet Size for Zero Endpoint. Valid Sizes are 8, 16, 32, 64
 		ID_VENDOR, // VendorID
         ID_PRODUCT, // ProductID
 

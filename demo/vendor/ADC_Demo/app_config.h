@@ -70,6 +70,16 @@ extern "C" {
 
 #define ADC_INTER_TEST				0
 #define MANUAL_MODE_GET_ADC_SAMPLE_RESULT		0	//Vbat channel Battery Voltage manual mode
+#elif (MCU_CORE_B80B)
+#define ADC_BASE_MODE               1 //GPIO voltage
+#define ADC_VBAT_CHANNEL_MODE       2 //Vbat channel Battery Voltage
+#define ADC_TEMP_MODE_EE            3 //Temp test
+#define ADC_RNG_MODE                4 //Random number Generator
+
+#define ADC_MODE                    ADC_BASE_MODE
+
+#define ADC_INTER_TEST              0
+#define MANUAL_MODE_GET_ADC_SAMPLE_RESULT       0 //Vbat channel Battery Voltage manual mode
 #endif
 
 

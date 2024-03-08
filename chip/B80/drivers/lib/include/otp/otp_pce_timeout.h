@@ -25,7 +25,7 @@
 #define _OTP_PCE_TIMEOUT_H_
 
 #include "bsp.h"
-
+#if (MCU_CORE_B80)
 /**
  * @brief     This function servers to set otp pce timeout time, the optimal time cannot be set according to the system clock,
  *            because the time between two otp fetch commands cannot be determined,otp fetch commands will only be sent when the cache miss occurs,
@@ -34,6 +34,6 @@
  * @return	  none.
  */
 _attribute_ram_code_sec_noinline_ void otp_set_auto_pce_timeout(unsigned char timeout_config);
-
+#endif
 
 #endif /* _OTP_H_ */

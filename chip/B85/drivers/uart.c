@@ -391,7 +391,7 @@ volatile unsigned char uart_send_byte(unsigned char byte)
 {
 	unsigned int addr;
 
-	unsigned char b[5] = {1, 0,0,0,0};
+	static unsigned char b[5] = {1, 0,0,0,0};
 
 	addr = (unsigned int)b;
 

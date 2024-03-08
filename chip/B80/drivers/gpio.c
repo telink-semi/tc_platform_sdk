@@ -403,15 +403,33 @@ void gpio_shutdown(GPIO_PinTypeDef pin)
  * @return    none.
  * @attention This function sets the digital pull-up, it will not work after entering low power consumption.
  */
+#if (MCU_CORE_B80)
 void gpio_set_pullup_res_30k(GPIO_PinTypeDef pin){
 	unsigned char	bit = pin & 0xff;
 	unsigned short group = pin & 0xf00;
 
-	if(group==GPIO_GROUPC){
+	if(group==GPIO_GROUPC)
+	{
 		analog_write(areg_gpio_pc_pe, analog_read(areg_gpio_pc_pe) | bit);
 	}
-	else{
+	else
+	{
 		BM_SET(reg_gpio_oen(pin),bit);
 		BM_SET(reg_gpio_out(pin),bit);
 	}
 }
+#elif (MCU_CORE_B80B)
+void gpio_set_pullup_res_30k(GPIO_PinTypeDef pin){
+    unsigned char	bit = pin & 0xff;
+    unsigned short group = pin & 0xf00;
+
+    if(group==GPIO_GROUPC){
+        analog_write(areg_gpio_pc_pe, analog_read(areg_gpio_pc_pe) | bit);
+    }
+    else
+    {
+        BM_SET(reg_gpio_pe(pin),bit);
+    }
+}
+#endif
+

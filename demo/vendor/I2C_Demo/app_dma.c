@@ -55,7 +55,7 @@ void user_init()
 	gpio_set_input_en(LED2 ,0);			//disable input
 	gpio_write(LED2, 1);              	//LED On
 
-#if(MCU_CORE_B87||MCU_CORE_B89||MCU_CORE_B80)
+#if(MCU_CORE_B87||MCU_CORE_B89||MCU_CORE_B80 || MCU_CORE_B80B)
 	i2c_gpio_set(I2C_GPIO_SDA,I2C_GPIO_SCL);
 #elif(MCU_CORE_B85)
 	i2c_gpio_set(I2C_GPIO_SDA_SCL);
