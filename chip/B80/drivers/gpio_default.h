@@ -280,7 +280,7 @@
 #define PB2_FUNC	AS_GPIO
 #endif
 #ifndef PB3_FUNC
-#define PB3_FUNC	SPI_WP_IO2
+#define PB3_FUNC	AS_GPIO
 #endif
 #ifndef PB4_FUNC
 #define PB4_FUNC	AS_GPIO
@@ -575,7 +575,7 @@
 #define PD3_FUNC	AS_GPIO
 #endif
 #ifndef PD4_FUNC
-#define PD4_FUNC	SPI_HOLD_IO3
+#define PD4_FUNC	AS_GPIO
 #endif
 #ifndef PD5_FUNC
 #define PD5_FUNC	AS_GPIO

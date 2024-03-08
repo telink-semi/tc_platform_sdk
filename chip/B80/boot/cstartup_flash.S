@@ -24,6 +24,7 @@
 #ifdef MCU_STARTUP_FLASH
 
 #include "compiler.h"
+
 /**
  * @brief	1. If your usage is as follows, you need to set ALL_SRAM_CODE = 1:
  * 			The program is burned in flash, you want to power up and move all code to sram for execution.
@@ -235,6 +236,8 @@ __reset:
 	tstorerb	r0, [r1, #1]	@0x800583  PB output
 #endif
 
+    @B80_B is handled in the boot program.
+#if (MCU_CORE_B80)
 	@when running the flash program, let the otp enter the deep standby mode to reduce the power consumption of the chip.
 	tloadr		r3, OTP_CTRL	  @0x800010	otp ctrl
 	tloadrb		r1, [r3, #0]
@@ -246,6 +249,7 @@ __reset:
 	tmovs		r0, #207		  @0b 11001111 mc icct1
 	tand		r1, r0
  	tstorerb	r1, [r3, #1]	  @pdstb = 0  pldo = 0
+#endif
 
 @The design of the eaglet chip is to power off the flash when the chip goes to sleep,
 @and then power on the flash again after waking up, so there is no need to perform the flash wake-up action.
@@ -451,7 +455,11 @@ DAT0:
 	.word	0x13			    		@4		SVC
 	.word	(irq_stk + IRQ_STK_SIZE)	@8
 
+#if (MCU_CORE_B80)
 	.word	(0x844000)		    		@12  	stack end
+#elif (MCU_CORE_B80B)
+    .word	(0x845000)		    		@12  	stack end
+#endif
 
 	.word	(_start_bss_)               @16
 	.word	(_end_bss_)                 @20
@@ -490,7 +498,11 @@ FLL_D:
 	.word	0xffffffff                	@0
 	.word	(_start_data_)    			@4
 
+#if (MCU_CORE_B80)
 	.word	(0x844000)		    		@12  	stack end
+#elif (MCU_CORE_B80B)
+    .word	(0x845000)		    		@12  	stack end
+#endif
 
 	.word   _ramcode_size_div_256_      @12
 
