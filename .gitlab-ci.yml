@@ -7,8 +7,25 @@ stages:
   stage: release_customize_sdk	
   tags:
     - windows_tc32_test
+  before_script:
+    - echo "get ci release sdk shell"
+    - >
+      if [ ${#PRIVATE_TOKEN_SELF} != 0 ]; then
+        clone_url="http://oauth2:${PRIVATE_TOKEN_SELF}@192.168.48.36/training_zone/ci_common_shell"
+      elif [ ${#PRIVATE_TOKEN} != 0 ]; then
+        clone_url="http://oauth2:${PRIVATE_TOKEN}@192.168.48.36/training_zone/ci_common_shell"
+      else
+        echo "have no find token."
+        exit 1
+      fi
+
+    - git clone $clone_url
+    - ls ci_common_shell
+    - cp ci_common_shell/sdk_release_customize-2.0.sh ./
+    - ls
   script:
-    - sdk_release_customize.sh ./release_sdk_config
+    - chmod +x ./sdk_release_customize-2.0.sh
+    - ./sdk_release_customize-2.0.sh ./release_sdk_config
   artifacts:
     name: "$PACK_NAME"
     expire_in: '3 yrs'
