@@ -1,4 +1,5 @@
 [release_sdk_S0]
+CI_FUNC             V1.0
 TAG_NAME            V1.7.0
 PACKAGE_NAME        telink_b85m_driver_sdk_B80_S0
 SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
@@ -9,7 +10,7 @@ CPROJECT            ./project/tlsr_tc32/B80/.cproject                   B80_Driv
 #                          path                                                  macro                                                  macro_val
 MACRO               ./chip/B80/drivers/lib/src/pm.c        OTP_PROTECTION_CODE_SELECT        OTP_PROTECTION_CODE_S0
 MACRO               ./common/sdk_version.h                  B80_SDK_VERSION_NUM                        B80_S0_V1.6.0
-MACRO               ./../common/sdk_version.h                  B80_SDK_VERSION_NUM                        B80_S0_V1.6.0
+MACRO               ./../common/sdk_version.h                  B80_SDK_VERSION_NUM                        B80_S0_V1.7.0
 
 LIB_OBJ             ./project/tlsr_tc32/B80/PM_Demo/drivers/lib/src
 REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
@@ -17,6 +18,7 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
 
 
 [release_sdk_S1]
+CI_FUNC             V1.0
 TAG_NAME            V1.7.0
 PACKAGE_NAME        telink_b85m_driver_sdk_B80_S1
 SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
@@ -26,8 +28,8 @@ CPROJECT            ./project/tlsr_tc32/B80/.cproject                   B80_Driv
 
 #                          path                                                  macro                                                  macro_val
 MACRO               ./chip/B80/drivers/lib/src/pm.c        OTP_PROTECTION_CODE_SELECT        OTP_PROTECTION_CODE_S1
-MACRO               ./common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S1_V1.6.0
-MACRO               ./../common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S1_V1.6.0
+MACRO               ./common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S1_V1.7.0
+MACRO               ./../common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S1_V1.7.0
 
 
 
@@ -37,6 +39,7 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
 
 
 [release_sdk_S2]
+CI_FUNC             V1.0
 TAG_NAME            V1.7.0
 PACKAGE_NAME        telink_b85m_driver_sdk_B80_S2
 SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
@@ -46,8 +49,8 @@ CPROJECT            ./project/tlsr_tc32/B80/.cproject                   B80_Driv
 
 #                          path                                                  macro                                                  macro_val
 MACRO               ./chip/B80/drivers/lib/src/pm.c        OTP_PROTECTION_CODE_SELECT        OTP_PROTECTION_CODE_S2
-MACRO               ./common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S2_V1.6.0
-MACRO               ./../common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S2_V1.6.0
+MACRO               ./common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S2_V1.7.0
+MACRO               ./../common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S2_V1.7.0
 
 LIB_OBJ             ./project/tlsr_tc32/B80/PM_Demo/drivers/lib/src
 REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
@@ -55,6 +58,7 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
 
 
 [release_sdk_S3]
+CI_FUNC             V1.0
 TAG_NAME            V1.7.0
 PACKAGE_NAME        telink_b85m_driver_sdk_B80_S3
 SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
@@ -64,8 +68,8 @@ CPROJECT            ./project/tlsr_tc32/B80/.cproject                   B80_Driv
 
 #                          path                                                  macro                                                  macro_val
 MACRO               ./chip/B80/drivers/lib/src/pm.c        OTP_PROTECTION_CODE_SELECT        OTP_PROTECTION_CODE_S3
-MACRO               ./common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S3_V1.6.0
-MACRO               ./../common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S3_V1.6.0
+MACRO               ./common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S3_V1.7.0
+MACRO               ./../common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S3_V1.7.0
 
 LIB_OBJ             ./project/tlsr_tc32/B80/PM_Demo/drivers/lib/src
 REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
@@ -74,6 +78,7 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
 
 
 [release_sdk_otp_S0]
+CI_FUNC             V1.0
 TAG_NAME            V1.7.0
 PACKAGE_NAME        telink_b85m_driver_sdk_B80_S0_OTP_NO_RET_NO_EXT32K
 SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
@@ -88,12 +93,12 @@ MACRO               ./chip/B80/drivers/lib/src/pm.c                OTP_PROTECTIO
 MACRO               ./chip/B80/drivers/driver_func_cfg.h        ONLY_SUPPORT_OTP_PROGRAM             1
 MACRO               ./chip/B80/drivers/driver_func_cfg.h        PM_32K_EXTERNAL_XTAL_EN                   0
 MACRO               ./common/compiler.h                              BLC_PM_DEEP_RETENTION_MODE_EN      0
-MACRO               ./common/sdk_version.h                           B80_SDK_VERSION_NUM                        B80_S0_OTP_NO_RET_NO_EXT32K_V1.6.0
+MACRO               ./common/sdk_version.h                           B80_SDK_VERSION_NUM                        B80_S0_OTP_NO_RET_NO_EXT32K_V1.7.0
 
 MACRO               ./../chip/B80/drivers/driver_func_cfg.h        ONLY_SUPPORT_OTP_PROGRAM             1
 MACRO               ./../chip/B80/drivers/driver_func_cfg.h        PM_32K_EXTERNAL_XTAL_EN                   0
 MACRO               ./../common/compiler.h                              BLC_PM_DEEP_RETENTION_MODE_EN      0
-MACRO               ./../common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S0_OTP_NO_RET_NO_EXT32K_V1.6.0
+MACRO               ./../common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S0_OTP_NO_RET_NO_EXT32K_V1.7.0
 
 LIB_OBJ             ./project/tlsr_tc32/B80/PM_Demo/drivers/lib/src
 REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
@@ -102,6 +107,7 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
 
 
 [release_sdk_otp_S1]
+CI_FUNC             V1.0
 TAG_NAME            V1.7.0
 PACKAGE_NAME        telink_b85m_driver_sdk_B80_S1_OTP_NO_RET_NO_EXT32K
 SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
@@ -116,12 +122,12 @@ MACRO               ./chip/B80/drivers/lib/src/pm.c                OTP_PROTECTIO
 MACRO               ./chip/B80/drivers/driver_func_cfg.h        ONLY_SUPPORT_OTP_PROGRAM             1
 MACRO               ./chip/B80/drivers/driver_func_cfg.h        PM_32K_EXTERNAL_XTAL_EN                   0
 MACRO               ./common/compiler.h                              BLC_PM_DEEP_RETENTION_MODE_EN      0
-MACRO               ./common/sdk_version.h                           B80_SDK_VERSION_NUM                        B80_S1_OTP_NO_RET_NO_EXT32K_V1.6.0
+MACRO               ./common/sdk_version.h                           B80_SDK_VERSION_NUM                        B80_S1_OTP_NO_RET_NO_EXT32K_V1.7.0
 
 MACRO               ./../chip/B80/drivers/driver_func_cfg.h        ONLY_SUPPORT_OTP_PROGRAM             1
 MACRO               ./../chip/B80/drivers/driver_func_cfg.h        PM_32K_EXTERNAL_XTAL_EN                   0
 MACRO               ./../common/compiler.h                              BLC_PM_DEEP_RETENTION_MODE_EN      0
-MACRO               ./../common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S1_OTP_NO_RET_NO_EXT32K_V1.6.0
+MACRO               ./../common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S1_OTP_NO_RET_NO_EXT32K_V1.7.0
 
 LIB_OBJ             ./project/tlsr_tc32/B80/PM_Demo/drivers/lib/src
 REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
@@ -129,6 +135,7 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
 
 
 [release_sdk_otp_S2]
+CI_FUNC             V1.0
 TAG_NAME            V1.7.0
 PACKAGE_NAME        telink_b85m_driver_sdk_B80_S2_OTP_NO_RET_NO_EXT32K
 SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
@@ -143,12 +150,12 @@ MACRO               ./chip/B80/drivers/lib/src/pm.c                OTP_PROTECTIO
 MACRO               ./chip/B80/drivers/driver_func_cfg.h        ONLY_SUPPORT_OTP_PROGRAM             1
 MACRO               ./chip/B80/drivers/driver_func_cfg.h        PM_32K_EXTERNAL_XTAL_EN                   0
 MACRO               ./common/compiler.h                              BLC_PM_DEEP_RETENTION_MODE_EN      0
-MACRO               ./common/sdk_version.h                           B80_SDK_VERSION_NUM                        B80_S2_OTP_NO_RET_NO_EXT32K_V1.6.0
+MACRO               ./common/sdk_version.h                           B80_SDK_VERSION_NUM                        B80_S2_OTP_NO_RET_NO_EXT32K_V1.7.0
 
 MACRO               ./../chip/B80/drivers/driver_func_cfg.h        ONLY_SUPPORT_OTP_PROGRAM             1
 MACRO               ./../chip/B80/drivers/driver_func_cfg.h        PM_32K_EXTERNAL_XTAL_EN                   0
 MACRO               ./../common/compiler.h                              BLC_PM_DEEP_RETENTION_MODE_EN      0
-MACRO               ./../common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S2_OTP_NO_RET_NO_EXT32K_V1.6.0
+MACRO               ./../common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S2_OTP_NO_RET_NO_EXT32K_V1.7.0
 
 LIB_OBJ             ./project/tlsr_tc32/B80/PM_Demo/drivers/lib/src
 REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
@@ -157,6 +164,7 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
 
 
 [release_sdk_otp_S3]
+CI_FUNC             V1.0
 TAG_NAME            V1.7.0
 PACKAGE_NAME        telink_b85m_driver_sdk_B80_S3_OTP_NO_RET_NO_EXT32K
 SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
@@ -171,12 +179,12 @@ MACRO               ./chip/B80/drivers/lib/src/pm.c                OTP_PROTECTIO
 MACRO               ./chip/B80/drivers/driver_func_cfg.h        ONLY_SUPPORT_OTP_PROGRAM             1
 MACRO               ./chip/B80/drivers/driver_func_cfg.h        PM_32K_EXTERNAL_XTAL_EN                   0
 MACRO               ./common/compiler.h                              BLC_PM_DEEP_RETENTION_MODE_EN      0
-MACRO               ./common/sdk_version.h                           B80_SDK_VERSION_NUM                        B80_S3_OTP_NO_RET_NO_EXT32K_V1.6.0
+MACRO               ./common/sdk_version.h                           B80_SDK_VERSION_NUM                        B80_S3_OTP_NO_RET_NO_EXT32K_V1.7.0
 
 MACRO               ./../chip/B80/drivers/driver_func_cfg.h        ONLY_SUPPORT_OTP_PROGRAM             1
 MACRO               ./../chip/B80/drivers/driver_func_cfg.h        PM_32K_EXTERNAL_XTAL_EN                   0
 MACRO               ./../common/compiler.h                              BLC_PM_DEEP_RETENTION_MODE_EN      0
-MACRO               ./../common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S3_OTP_NO_RET_NO_EXT32K_V1.6.0
+MACRO               ./../common/sdk_version.h                   B80_SDK_VERSION_NUM                        B80_S3_OTP_NO_RET_NO_EXT32K_V1.7.0
 
 LIB_OBJ             ./project/tlsr_tc32/B80/PM_Demo/drivers/lib/src
 REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver.a
