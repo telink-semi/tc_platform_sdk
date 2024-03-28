@@ -147,11 +147,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/I2C_Demo</locationURI>
 		</link>
 		<link>
-			<name>vendor/IO_Swire_Demo</name>
-			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/IO_Swire_Demo</locationURI>
-		</link>
-		<link>
 			<name>vendor/LPC_Demo</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/LPC_Demo</locationURI>
@@ -194,7 +189,7 @@
 		<link>
 			<name>vendor/UART_Demo</name>
 			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/UART_Demo/UART_V1.0/UART_Demo</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/UART_Demo</locationURI>
 		</link>
 		<link>
 			<name>vendor/USB_Demo</name>
@@ -209,7 +204,7 @@
 		<link>
 			<name>vendor/s7816_Demo</name>
 			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/s7816_Demo/s7816_V1.0/s7816_Demo</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/s7816_Demo</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
