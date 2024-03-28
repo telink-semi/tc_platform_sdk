@@ -9,7 +9,7 @@ CPROJECT            ./project/tlsr_tc32/B80/.cproject                   B80_Driv
 
 #                          path                                                  macro                                                  macro_val
 MACRO               ./chip/B80/drivers/lib/src/pm.c        OTP_PROTECTION_CODE_SELECT        OTP_PROTECTION_CODE_S0
-MACRO               ./common/sdk_version.h                  B80_SDK_VERSION_NUM                        B80_S0_V1.6.0
+MACRO               ./common/sdk_version.h                  B80_SDK_VERSION_NUM                        B80_S0_V1.7.0
 MACRO               ./../common/sdk_version.h                  B80_SDK_VERSION_NUM                        B80_S0_V1.7.0
 
 LIB_OBJ             ./project/tlsr_tc32/B80/PM_Demo/drivers/lib/src
