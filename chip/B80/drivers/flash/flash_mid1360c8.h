@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	flash_mid1360c8.h
+ * @file    flash_mid1360c8.h
  *
- * @brief	This is the header file for B80
+ * @brief   This is the header file for B80
  *
- * @author	Driver Group
- * @date	2022
+ * @author  Driver Group
+ * @date    2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -21,6 +21,7 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
+#if(MCU_CORE_B80)
 #ifndef __MID1360C8_H__
 #define __MID1360C8_H__
 
@@ -131,4 +132,4 @@ void flash_unlock_mid1360c8(void);
  */
 mid1360c8_lock_block_e flash_get_lock_block_mid1360c8(void);
 #endif
-
+#endif

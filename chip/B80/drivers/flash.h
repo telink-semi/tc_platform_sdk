@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	flash.h
+ * @file    flash.h
  *
- * @brief	This is the header file for B80
+ * @brief   This is the header file for B80
  *
- * @author	Driver Group
- * @date	2021
+ * @author  Driver Group
+ * @date    2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -33,10 +33,12 @@
  * @brief     flash mid definition
  */
 typedef enum{
-	MID114485   =   0x11448,//P25D09U
+#if(MCU_CORE_B80)
     MID1160C8   =   0x1160C8,//GD25LD10C
-	MID136085   =   0x136085,//P25Q40SU
 	MID1360C8   =   0x1360c8,//GD25LD40C
+#endif
+	MID114485   =   0x11448,//P25D09U
+	MID136085   =   0x136085,//P25Q40SU
 }flash_mid_e;
 
 /**

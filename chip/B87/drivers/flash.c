@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	flash.c
+ * @file    flash.c
  *
- * @brief	This is the source file for B87
+ * @brief   This is the source file for B87
  *
- * @author	Driver Group
- * @date	2019
+ * @author  Driver Group
+ * @date    2019
  *
  * @par     Copyright (c) 2019, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *

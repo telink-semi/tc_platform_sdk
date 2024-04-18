@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	spk_app.c
+ * @file    spk_app.c
  *
- * @brief	This is the source file for B85m
+ * @brief   This is the source file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -21,7 +21,7 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-#if (!MCU_CORE_B80)
+#if (!MCU_CORE_B80 && !MCU_CORE_B80B)
 #include "app_config.h"
 #if(USB_DEMO_TYPE==USB_SPEAKER)
 #include "application/usb_app/usbaud.h"
@@ -35,10 +35,12 @@ volatile signed short MicBuf[MIC_BUFFER_SIZE>>1];
 void user_init(void)
 {
 #if(AUDIO_SPK_MODE == AUDIO_USB_TO_SDM)
-	//1.enable USB DP pull up 1.5k
+    usb_init();
+#if (MCU_CORE_B87)
+    usbhw_set_eps_en(BIT(USB_EDP_SPEAKER)); /* enable endpoint. */
+#endif
+	//enable USB DP pull up 1.5k
 	usb_set_pin_en();
-	//2.enable USB manual interrupt(in auto interrupt mode,USB device would be USB printer device)
-	usb_init_interrupt();
 	//3.enable global interrupt
 	irq_enable();
 

@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	usbmouse.h
+ * @file    usbmouse.h
  *
- * @brief	This is the header file for B85m
+ * @brief   This is the header file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *

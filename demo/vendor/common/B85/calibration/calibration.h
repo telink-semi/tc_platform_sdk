@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	calibration.h
+ * @file    calibration.h
  *
- * @brief	This is the header file for B85m
+ * @brief   This is the header file for B85m
  *
- * @author	Driver Group
- * @date	2021
+ * @author  Driver Group
+ * @date    2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *

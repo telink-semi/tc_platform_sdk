@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app_config.h
+ * @file    app_config.h
  *
- * @brief	This is the header file for B85m
+ * @brief   This is the header file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -70,6 +70,16 @@ extern "C" {
 
 #define ADC_INTER_TEST				0
 #define MANUAL_MODE_GET_ADC_SAMPLE_RESULT		0	//Vbat channel Battery Voltage manual mode
+#elif (MCU_CORE_B80B)
+#define ADC_BASE_MODE               1 //GPIO voltage
+#define ADC_VBAT_CHANNEL_MODE       2 //Vbat channel Battery Voltage
+#define ADC_TEMP_MODE_EE            3 //Temp test
+#define ADC_RNG_MODE                4 //Random number Generator
+
+#define ADC_MODE                    ADC_BASE_MODE
+
+#define ADC_INTER_TEST              0
+#define MANUAL_MODE_GET_ADC_SAMPLE_RESULT       0 //Vbat channel Battery Voltage manual mode
 #endif
 
 

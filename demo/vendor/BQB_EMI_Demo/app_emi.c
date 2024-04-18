@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app_emi.c
+ * @file    app_emi.c
  *
- * @brief	This is the source file for B85m
+ * @brief   This is the source file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -60,7 +60,7 @@
  * */
 #define CLOSE_INTERNAL_CAP		0
 
-#if MCU_CORE_B80 || MCU_CORE_B89
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89)
 /*
  * @brief 	This macro definition is used to select whether to read offset calibration from OTP.
  * */
@@ -144,7 +144,7 @@ signed char get_noise_value()
 #define EMI_TEST_MODE  				     0x04
 #define EMI_TEST_CD_MODE_HOPPING_CHN     0x05
 #define CAP_CLOSE_EN                     0x06
-#if MCU_CORE_B80
+#if (MCU_CORE_B80 || MCU_CORE_B80B)
 #define CAP_VALUE_FLASH				 	 0x07
 #define CAP_VALUE_OTP					 0x3fc8 //0x3fc8-0x3fcb,32bit
 #endif
@@ -268,7 +268,7 @@ const GPIO_PinTypeDef gpio_map[48] = {
 	GPIO_PD4,//45
 	GPIO_PD5,//46
 	GPIO_PD6,//47
-#if	(ALL_PIN_WAKEUP && MCU_CORE_B80)
+#if	(ALL_PIN_WAKEUP && (MCU_CORE_B80 || MCU_CORE_B80B))
 	GPIO_PF0,
 	GPIO_PF1
 #endif
@@ -838,7 +838,7 @@ void emi_deepio_ren(RF_ModeTypeDef rf_mode,unsigned char pin,signed char rf_chn)
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW32K , PM_WAKEUP_PAD,0);
 #elif(MCU_CORE_B85)
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K , PM_WAKEUP_PAD,0);
-#elif(ALL_PIN_WAKEUP && MCU_CORE_B80)
+#elif(ALL_PIN_WAKEUP && (MCU_CORE_B80 || MCU_CORE_B80B))
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K , PM_WAKEUP_PAD,0);
 #endif
 }
@@ -936,7 +936,7 @@ void read_flash_para(void)
 	   hop = temp;
 	   write_reg8(CD_MODE_HOPPING_CHN,hop);
 	}
-#if MCU_CORE_B80
+#if (MCU_CORE_B80 || MCU_CORE_B80B)
 	flash_read_page(calib_flash_base_addr+CAP_VALUE_FLASH,1,&temp);
 	if( temp!= 0xff )
 	{
@@ -945,7 +945,7 @@ void read_flash_para(void)
 #endif
 }
 
-#if MCU_CORE_B80 || MCU_CORE_B89
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89)
 extern unsigned char otp_program_flag;
 /**
  * @brief		This function serves to read calibration from otp
@@ -1022,7 +1022,7 @@ void user_init(void)
 {
 	emi_init();
 
-#if MCU_CORE_B80 || MCU_CORE_B89
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89)
 #if READ_OFFSET_CLIBRATION_OTP
 	read_calibration_otp();
 #else

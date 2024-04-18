@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	usbaud.c
+ * @file    usbaud.c
  *
- * @brief	This is the source file for B85m
+ * @brief   This is the source file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -21,7 +21,7 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-#if (!MCU_CORE_B80)
+#if (!MCU_CORE_B80 && !MCU_CORE_B80B)
 #include "usbaud.h"
 #include "../usbstd/usb.h"
 #include "../usbstd/audioClassCommon.h"

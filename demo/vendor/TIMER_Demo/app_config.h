@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app_config.h
+ * @file    app_config.h
  *
- * @brief	This is the header file for B85m
+ * @brief   This is the header file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -34,6 +34,12 @@ extern "C" {
 #define LED3     		        GPIO_PA6
 #define LED4     		        GPIO_PA7
 #define TIMER_GPIO      		GPIO_PB3
+#elif (MCU_CORE_B80B)
+#define LED1                    GPIO_PA4
+#define LED2                    GPIO_PA5
+#define LED3                    GPIO_PA6
+#define LED4                    GPIO_PA7
+#define TIMER_GPIO              GPIO_PB3
 #elif (MCU_CORE_B85)
 #define LED1     		        GPIO_PD2
 #define LED2     		        GPIO_PD3
@@ -59,10 +65,10 @@ extern "C" {
 #define TIMER_GPIO_WIDTH_MODE 	3
 #define TIMER_TICK_MODE 		4
 #define TIMER_WATCHDOG_MODE 	5  /* ONLY TIMER2 SUPPORT THIS MODE*/
-#if (MCU_CORE_B80)
+#if (MCU_CORE_B80 || MCU_CORE_B80B)
 #define STIMER_MODE				6
 #endif
-#if(MCU_CORE_B80 || MCU_CORE_B89)
+#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89)
 #define TIMER_32K_WATCHDOG_MODE 7
 #endif
 

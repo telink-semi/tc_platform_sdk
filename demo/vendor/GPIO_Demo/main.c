@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	main.c
+ * @file    main.c
  *
- * @brief	This is the source file for B85m
+ * @brief   This is the source file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -24,61 +24,8 @@
 #include "app_config.h"
 #include "calibration.h"
 
-
 extern void user_init();
 extern void main_loop (void);
-volatile unsigned int gpio_irq_cnt;
-volatile unsigned int gpio_set_irq_cnt;
-/**
- * @brief		This function serves to handle the interrupt of MCU
- * @param[in] 	none
- * @return 		none
- */
-_attribute_ram_code_sec_noinline_ void irq_handler(void)
-{
-#if (GPIO_MODE == GPIO_IRQ )
-
-	if((reg_irq_src & FLD_IRQ_GPIO_EN)==FLD_IRQ_GPIO_EN){
-		reg_irq_src = FLD_IRQ_GPIO_EN; // clear the relevant irq
-			gpio_irq_cnt++;
-			gpio_toggle(LED1);
-	}
-
-#elif(GPIO_MODE == GPIO_IRQ_RSIC0)
-
-	if((reg_irq_src & FLD_IRQ_GPIO_RISC0_EN)==FLD_IRQ_GPIO_RISC0_EN){
-		reg_irq_src = FLD_IRQ_GPIO_RISC0_EN; // clear the relevant irq
-			gpio_irq_cnt++;
-			gpio_toggle(LED2);
-	}
-
-#elif(GPIO_MODE == GPIO_IRQ_RSIC1)
-
-	if((reg_irq_src & FLD_IRQ_GPIO_RISC1_EN)==FLD_IRQ_GPIO_RISC1_EN){
-		reg_irq_src = FLD_IRQ_GPIO_RISC1_EN; // clear the relevant irq
-
-			gpio_irq_cnt++;
-			gpio_toggle(LED3);
-	}
-#elif (GPIO_MODE == GPIO_IRQ_RSIC2)
-    if((reg_irq_src & FLD_IRQ_GPIO_RISC2_EN)==FLD_IRQ_GPIO_RISC2_EN){
-        reg_irq_src = FLD_IRQ_GPIO_RISC2_EN; // clear the relevant irq
-        gpio_irq_cnt++;
-    	gpio_toggle(LED4);
-    }
-#elif(GPIO_MODE == GPIO_SEL_IRQ_SRC)
-    /* reg_gpio_irq_from_pad [7:0 ] corresponding to 8 gpio irq status, write 1 clear 0*/
-	if(reg_gpio_irq_from_pad & IRQ_PIN)
-	{
-		reg_gpio_irq_from_pad = (unsigned char)IRQ_PIN;
-		gpio_irq_cnt++;
-		gpio_toggle(LED1);
-		gpio_toggle(LED2);
-	}
-#endif
-
-}
-
 /**
  * @brief		This is main function
  * @param[in]	none
@@ -87,7 +34,7 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 int main (void)   //must on ramcode
 {
 
-#if(MCU_CORE_B80||MCU_CORE_B89)
+#if(MCU_CORE_B80 || MCU_CORE_B80B ||MCU_CORE_B89)
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
 #elif (MCU_CORE_B85)
 	cpu_wakeup_init();
@@ -95,7 +42,7 @@ int main (void)   //must on ramcode
 	cpu_wakeup_init(LDO_MODE, EXTERNAL_XTAL_24M);
 
 #endif
-#if(MCU_CORE_B80||MCU_CORE_B89)
+#if(MCU_CORE_B80 || MCU_CORE_B80B ||MCU_CORE_B89)
 	wd_32k_stop();
 #endif
 #if (MCU_CORE_B85) || (MCU_CORE_B87)
@@ -106,7 +53,7 @@ int main (void)   //must on ramcode
 	//Note: This function must be called, otherwise an abnormal situation may occur.
 	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
 	user_read_otp_value_calib();
-#elif (MCU_CORE_B80)
+#elif (MCU_CORE_B80 || MCU_CORE_B80B)
 	//Note: This function must be called, otherwise an abnormal situation may occur.
 	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
 #if(PACKAGE_TYPE == OTP_PACKAGE)

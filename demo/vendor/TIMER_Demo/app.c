@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app.c
+ * @file    app.c
  *
- * @brief	This is the source file for B85m
+ * @brief   This is the source file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -76,7 +76,7 @@ void user_init()
 	blc_pm_select_internal_32k_crystal();
 	wd_32k_set_interval_ms(1000);
 	wd_32k_start();
-#elif(TIMER_MODE==STIMER_MODE && MCU_CORE_B80)
+#elif(TIMER_MODE==STIMER_MODE && (MCU_CORE_B80 || MCU_CORE_B80B))
 	stimer_set_irq_mask();
 	stimer_set_capture_tick(clock_time() + CLOCK_16M_SYS_TIMER_CLK_1S);
 	stimer_enable();
@@ -109,7 +109,7 @@ void main_loop (void)
 	gpio_toggle(LED1);
 
 #elif(TIMER_MODE == TIMER_32K_WATCHDOG_MODE)
-#if(MCU_CORE_B80 || MCU_CORE_B89)
+#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89)
 	sleep_ms(990);
 	//32K watchdog capture time settings: program run time and sleep time to leave some margin.
 	wd_32k_stop();

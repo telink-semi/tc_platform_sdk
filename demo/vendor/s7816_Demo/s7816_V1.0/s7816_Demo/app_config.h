@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app_config.h
+ * @file    app_config.h
  *
- * @brief	This is the header file for B85m
+ * @brief   This is the header file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -37,6 +37,15 @@ extern "C" {
 #define S7816_VCC_PIN			GPIO_PB3
 #define S7816_RST_PIN			GPIO_PB4
 #define S7816_CLK_PIN			GPIO_PB5
+#elif (MCU_CORE_B80B)
+#define LED1                    GPIO_PA4
+#define LED2                    GPIO_PA5
+#define LED3                    GPIO_PA6
+#define LED4                    GPIO_PA7
+#define S7816_TRX_PIN           GPIO_PB2
+#define S7816_VCC_PIN           GPIO_PB3
+#define S7816_RST_PIN           GPIO_PB4
+#define S7816_CLK_PIN           GPIO_PB5
 #elif (MCU_CORE_B85)
 #define LED1     		        GPIO_PD2
 #define LED2     		        GPIO_PD3

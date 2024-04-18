@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	usbaud.h
+ * @file    usbaud.h
  *
- * @brief	This is the header file for B85m
+ * @brief   This is the header file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -21,7 +21,7 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-#if (!MCU_CORE_B80)
+#if (!MCU_CORE_B80 && !MCU_CORE_B80B)
 #pragma once
 #include "driver.h"
 #include "../usbstd/HIDClassCommon.h"

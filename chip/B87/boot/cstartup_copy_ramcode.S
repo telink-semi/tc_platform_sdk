@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	cstartup_copy_ramcode.S
+ * @file    cstartup_copy_ramcode.S
  *
- * @brief	This is the boot file for B87
+ * @brief   This is the boot file for B87
  *
- * @author	Driver Group
- * @date	2022
+ * @author  Driver Group
+ * @date    2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *

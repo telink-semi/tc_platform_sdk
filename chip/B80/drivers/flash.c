@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	flash.c
+ * @file    flash.c
  *
- * @brief	This is the source file for B80
+ * @brief   This is the source file for B80
  *
- * @author	Driver Group
- * @date	2021
+ * @author  Driver Group
+ * @date    2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -45,7 +45,11 @@
 	P25Q40SU    0x4b        0x136085    PUYA        30ms
 	P25D09U		0x4b		0x114485	PUYA		20ms
  */
+#if(MCU_CORE_B80)
 unsigned int flash_support_mid[] = {0x1160c8,0x1360c8,0x136085,0x114485};
+#elif(MCU_CORE_B80B)
+unsigned int flash_support_mid[] = {0x136085,0x114485};
+#endif
 const unsigned int FLASH_CNT = sizeof(flash_support_mid)/sizeof(*flash_support_mid);
 
 flash_handler_t flash_read_page = flash_read_data;

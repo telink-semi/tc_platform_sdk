@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	cstartup_sram.S
+ * @file    cstartup_sram.S
  *
- * @brief	This is the boot file for B85
+ * @brief   This is the boot file for B85
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *

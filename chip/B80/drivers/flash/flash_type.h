@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	flash_type.h
+ * @file    flash_type.h
  *
- * @brief	This is the header file for B80
+ * @brief   This is the header file for B80
  *
- * @author	Driver Group
- * @date	2021
+ * @author  Driver Group
+ * @date    2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -25,8 +25,10 @@
 #define __FLASH_TYPE_H__
 
 #include "flash.h"
+#if(MCU_CORE_B80)
 #include "flash_mid1160c8.h"	// GD25LD10C
 #include "flash_mid1360c8.h"	// GD25LD40C
+#endif
 #include "flash_mid136085.h"	// P25Q40SU
 #include "flash_mid114485.h"	// P25D09U
 

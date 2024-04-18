@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	flash_mid146085.c
+ * @file    flash_mid146085.c
  *
- * @brief	This is the source file for B87
+ * @brief   This is the source file for B87
  *
- * @author	Driver Group
- * @date	2022
+ * @author  Driver Group
+ * @date    2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *

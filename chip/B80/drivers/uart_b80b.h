@@ -1,11 +1,9 @@
-
-#if (MCU_CORE_B80B)
 /********************************************************************************************************
  * @file    uart_b80b.h
  *
- * @brief    This is the header file for B80B
+ * @brief   This is the header file for B80B
  *
- * @author    Driver Group
+ * @author  Driver Group
  * @date    2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
@@ -39,7 +37,7 @@
  *  shortcoming:dma maximum receive length (4079-4) bytes, if this length is reached, excess data will overwrite the previously received data.
  *
  */
-
+#if (MCU_CORE_B80B)
 #include "register.h"
 #include "gpio.h"
 #include "compiler.h"

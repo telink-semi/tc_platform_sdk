@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	flash.c
+ * @file    flash.c
  *
- * @brief	This is the source file for B85
+ * @brief   This is the source file for B85
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -51,6 +51,7 @@
 	GD25LQ80C	0x4b		0x1460C8	GD			300ms
 	MD25D40D	0x4b(AN)	0x134051	GD			400ms
 	P25Q40L		0x4b		0x136085	PUYA		12ms
+	P25D40SU    0x4b        0x136085    PUYA        12ms
 	TH25D40LA	0x4b		0x1360EB	TH			12ms
 	TH25D40UA	0x4b		0x1360EB	TH			12ms
 

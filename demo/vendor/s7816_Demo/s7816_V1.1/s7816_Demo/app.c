@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app.c
+ * @file    app.c
  *
- * @brief	This is the source file for B85m
+ * @brief   This is the source file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -27,32 +27,32 @@ volatile __attribute__((aligned(4))) unsigned char s7816_tx_buff_byte[5] = {0x00
 
 void user_init()
 {
-    s7816_set_pin(S7816_RST_PIN,S7816_VCC_PIN,S7816_CLK_PIN,S7816_TRX_PIN);
-    s7816_init(S7816_4MHZ,F,D);
+    s7816_set_pin(UART_MODULE_SEL,S7816_RST_PIN,S7816_VCC_PIN,S7816_CLK_PIN,S7816_TRX_PIN);
+    s7816_init(UART_MODULE_SEL,S7816_4MHZ,F,D);
 
     irq_enable();
 
-    uart_irq_enable(1,0);   //uart RX irq enable
+    uart_irq_enable(UART_MODULE_SEL,1,0);   //uart RX irq enable
 
-    uart_ndma_irq_triglevel(1,0);	//set the trig level. 1 indicate one byte will occur interrupt
+    uart_ndma_irq_triglevel(UART_MODULE_SEL,1,0);	//set the trig level. 1 indicate one byte will occur interrupt
 
-    s7816_mode(S7816_RX);
+    s7816_mode(UART_MODULE_SEL,S7816_RX);
 }
 
 void main_loop (void)
 {
 	/*********************activate and coldReset and set trx pin***************/
-	s7816_coldreset();// the coldreset accompanied by IC-CARD activate.
+	s7816_coldreset(UART_MODULE_SEL);// the coldreset accompanied by IC-CARD activate.
 	sleep_ms(50);//wait for the return atr.
 	//s7816_warmreset(); //the warmreset is required after the IC-CARD activate.
 	/*******************************TX*****************************/
-	s7816_mode(S7816_TX);
+	s7816_mode(UART_MODULE_SEL,S7816_TX);
 	for(int i=0;i<5;i++)
 	{
-		uart_ndma_send_byte(s7816_tx_buff_byte[i]);
+		uart_ndma_send_byte(UART_MODULE_SEL,s7816_tx_buff_byte[i]);
 	    //delay_ms(0.5);//extra protect time
 	}
-	s7816_mode(S7816_RX);
+	s7816_mode(UART_MODULE_SEL,S7816_RX);
 	/******************************RX****************************/
 }
 

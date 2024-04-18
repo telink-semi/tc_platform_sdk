@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	flash_mid136085.h
+ * @file    flash_mid136085.h
  *
- * @brief	This is the header file for B85
+ * @brief   This is the header file for B85
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -25,7 +25,7 @@
 #define __MID136085_H__
 
 /*
- * @brief	MID = 0x136085 Flash include P25Q40L.
+ * @brief	MID = 0x136085 Flash include P25Q40L/P25D40SU.
  */
 
 

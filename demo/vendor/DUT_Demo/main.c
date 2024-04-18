@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	main.c
+ * @file    main.c
  *
- * @brief	This is the source file for B85m
+ * @brief   This is the source file for B85m
  *
- * @author	Driver Group
- * @date	2022
+ * @author  Driver Group
+ * @date    2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -44,14 +44,14 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
  */
 int main (void) {
 
-#if(MCU_CORE_B80||MCU_CORE_B89)
+#if(MCU_CORE_B80 || MCU_CORE_B80B ||MCU_CORE_B89)
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
 #elif (MCU_CORE_B85)
 	cpu_wakeup_init();
 #elif (MCU_CORE_B87)
 	cpu_wakeup_init(LDO_MODE, EXTERNAL_XTAL_24M);
 #endif
-#if(MCU_CORE_B80||MCU_CORE_B89)
+#if(MCU_CORE_B80 || MCU_CORE_B80B ||MCU_CORE_B89)
 	wd_32k_stop();
 #endif
 #if (MCU_CORE_B85) || (MCU_CORE_B87)

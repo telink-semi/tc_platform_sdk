@@ -1,10 +1,9 @@
-#if (MCU_CORE_B80B)
 /********************************************************************************************************
  * @file    uart_b80b.c
  *
- * @brief    This is the source file for B80B
+ * @brief   This is the source file for B80B
  *
- * @author    Driver Group
+ * @author  Driver Group
  * @date    2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
@@ -22,12 +21,8 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-
 #if (MCU_CORE_B80B)
 #include "uart_b80b.h"
-#else
-#include "uart.h"
-#endif
 #include "gpio.h"
 #include "compiler.h"
 
@@ -747,4 +742,5 @@ void uart_rxdone_irq_dis(uart_num_e uart_num)
 {
     reg_uart_rx_timeout1(uart_num)&= ~FLD_UART_MASK_RXDONE_IRQ;
 }
+
 #endif

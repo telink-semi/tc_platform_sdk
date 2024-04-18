@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app_ble_1m_stx2rx.c
+ * @file    app_ble_1m_stx2rx.c
  *
- * @brief	This is the source file for B85m
+ * @brief   This is the source file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -52,7 +52,7 @@
 #define BLE_ACTIVE_PIN			PTA_BLE_ACTIVE_PA3
 #define BLE_STATUS_PIN			PTA_BLE_STATUS_PA4
 #define WLAN_DENY_PIN			PTA_WLAN_DENY_PA6
-#elif(MCU_CORE_B80)
+#elif(MCU_CORE_B80 || MCU_CORE_B80B)
 #define	BLE_PRIORITY_PIN		GPIO_PA3
 #define BLE_ACTIVE_PIN			GPIO_PA3
 #define BLE_STATUS_PIN			GPIO_PA4

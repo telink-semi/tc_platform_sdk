@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app_config.h
+ * @file    app_config.h
  *
- * @brief	This is the header file for B85m
+ * @brief   This is the header file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -33,78 +33,59 @@ extern "C" {
 #define LED2     		        GPIO_PA5
 #define LED3     		        GPIO_PA6
 #define LED4     		        GPIO_PA7
-#define UART_TX_PIN				GPIO_PD0
-#define UART_RX_PIN				GPIO_PD1
-#define UART_CTS_PIN			GPIO_PD2
-#define UART_RTS_PIN			GPIO_PD3
-#define UART_RTX_PIN			GPIO_PC7
+#define S7816_TRX_PIN			GPIO_PB2
+#define S7816_VCC_PIN			GPIO_PB3
+#define S7816_RST_PIN			GPIO_PB4
+#define S7816_CLK_PIN			GPIO_PB5
+#elif (MCU_CORE_B80B)
+#define LED1                    GPIO_PA4
+#define LED2                    GPIO_PA5
+#define LED3                    GPIO_PA6
+#define LED4                    GPIO_PA7
+#define S7816_TRX_PIN           GPIO_PB2
+#define S7816_VCC_PIN           GPIO_PB3
+#define S7816_RST_PIN           GPIO_PB4
+#define S7816_CLK_PIN           GPIO_PB5
 #elif (MCU_CORE_B85)
 #define LED1     		        GPIO_PD2
 #define LED2     		        GPIO_PD3
 #define LED3     		        GPIO_PD4
 #define LED4     		        GPIO_PD5
-#define UART_TX_PIN				UART_TX_PA2
-#define UART_RX_PIN				UART_RX_PA0
-#define UART_CTS_PIN			UART_CTS_PA3
-#define UART_RTS_PIN			UART_RTS_PB3
-#define UART_RTX_PIN			UART_RTX_PD3//The RTX can be used as UART-TX,but only some of the UART-TX can be used as RTX.
+#define S7816_TRX_PIN			S7816_TRX_D0
+#define S7816_VCC_PIN			GPIO_PB0
+#define S7816_RST_PIN			GPIO_PB1
+#define S7816_CLK_PIN			S7817_CLK_PA1 //the clk-source of s7816 is 24M.
 #elif (MCU_CORE_B87)
 #define LED1     		        GPIO_PD2
 #define LED2     		        GPIO_PD3
 #define LED3     		        GPIO_PD4
 #define LED4     		        GPIO_PD5
-#define UART_TX_PIN				UART_TX_PA2
-#define UART_RX_PIN				UART_RX_PA0
-#define UART_CTS_PIN			UART_CTS_PA3
-#define UART_RTS_PIN			UART_RTS_PA4
-#define UART_RTX_PIN			UART_RTX_PD3//The RTX can be used as UART-TX,but only some of the UART-TX can be used as RTX.
+#define S7816_TRX_PIN			S7816_TRX_D0
+#define S7816_VCC_PIN			GPIO_PB0
+#define S7816_RST_PIN			GPIO_PB1
+#define S7816_CLK_PIN			S7817_CLK_PA1
 #elif (MCU_CORE_B89)
 #define LED1     		        GPIO_PD0
 #define LED2     		        GPIO_PD1
 #define LED3     		        GPIO_PD2
 #define LED4     		        GPIO_PD3
-#define UART_TX_PIN				UART_TX_PA1
-#define UART_RX_PIN				UART_RX_PA0
-#define UART_CTS_PIN			UART_CTS_PA3
-#define UART_RTS_PIN			UART_RTS_PA2
-#define UART_RTX_PIN			UART_RTX_PD3  //The RTX can be used as UART-RX,but only some of the UART-RX can be used as RTX.
+#define S7816_TRX_PIN			S7816_TRX_PD3
+#define S7816_VCC_PIN			GPIO_PB5
+#define S7816_RST_PIN			GPIO_PB6
+#define S7816_CLK_PIN			S7817_CLK_PB2
 #endif
 
+#define UART0_MODULE            0 /* UART0 */
+#define UART1_MODULE            1 /* UART1 */
 
-/******************set mode**********************/
-#define UART_DMA  		 1     //uart use dma
-#define UART_NDMA  		 2     //uart not use dma
-#define UART_SOFTWARE_RX 3     //software simulates the UART receiving function,occupy an GPIO interrupt and a hardware timer
-#define UART_MODE	 	UART_DMA
+/* uart select */
+#define UART_MODULE_SEL         UART1_MODULE
 
-
-/***********set uart_dma interrupt type*************/
-#define UART_RXDMA_IRQ   1
-#if(MCU_CORE_B80)
-#define UART_RXDONE_IRQ  2
-#endif
-#define UART_DMA_INT_TYPE UART_RXDMA_IRQ
+#define F   372      //clock frequency regulator ,372 is the initialized  value.
+#define D    1       //bitrate regulator,1 is the initialized value.
 
 
-
-
-#define NONE            0
-#define USE_CTS    		1
-#define USE_RTS    		2
-
-#define FLOW_CTR  		NONE
-
-#define UART_1WIRE_MODE       0  //tx and rx is a same line
-#define UART_2WIRE_MODE       1  //tx and rx are two lines
-#define UART_WIRE_MODE        UART_2WIRE_MODE
-#if( FLOW_CTR==USE_CTS)
-	#define STOP_VOLT   	1			//0 :Low level stops TX.  1 :High level stops TX.
-#elif (FLOW_CTR==USE_RTS)
-	#define RTS_MODE		UART_RTS_MODE_AUTO 		    //It can be UART_RTS_MODE_AUTO/UART_RTS_MODE_MANUAL.
-	#define RTS_THRESH		5			//UART_RTS_MODE_AUTO need.It indicates RTS trigger threshold.
-	#define RTS_INVERT		1			//UART_RTS_MODE_AUTO need.0 indicates RTS_pin will change from low to high.
-	#define RTS_POLARITY	0			//UART_RTS_MODE_MANUAL need. It indicates RTS_POLARITY .
-#endif
+#define S7816_RX_BUFF_LEN   48
 
 /* Define system clock */
 #define CLOCK_SYS_CLOCK_HZ  	24000000
@@ -131,11 +112,23 @@ extern "C" {
 #endif
 #endif
 
+
 enum{
 	CLOCK_SYS_CLOCK_1S = CLOCK_SYS_CLOCK_HZ,
 	CLOCK_SYS_CLOCK_1MS = (CLOCK_SYS_CLOCK_1S / 1000),
 	CLOCK_SYS_CLOCK_1US = (CLOCK_SYS_CLOCK_1S / 1000000),
 };
+
+
+
+
+
+
+
+
+
+
+
 
 /* Disable C linkage for C++ Compilers: */
 #if defined(__cplusplus)
