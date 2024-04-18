@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app.c
+ * @file    app.c
  *
- * @brief	This is the source file for B85m
+ * @brief   This is the source file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -142,6 +142,20 @@ unsigned char flash_lock(unsigned int flash_mid){
 			flash_lock_mid1360c8(FLASH_LOCK_LOW_256K_MID1360C8);
 		}
 		return 1;
+		break;
+#endif
+#if(MCU_CORE_B80B)
+	case  MID114485:
+		if(0 == flash_get_lock_block_mid114485()){
+			flash_lock_mid114485(FLASH_LOCK_LOW_64K_MID114485);
+		}
+		return 1;
+		break;
+	case MID136085:
+		if(0 == flash_get_lock_block_mid136085()){
+			flash_lock_mid136085(FLASH_LOCK_LOW_64K_MID136085);
+		}
+	    return 1;
 		break;
 #endif
 #if(MCU_CORE_B85)
@@ -286,6 +300,20 @@ unsigned char flash_unlock(unsigned int flash_mid){
 			flash_unlock_mid1360c8();
 		}
 		return 1;
+		break;
+#endif
+#if(MCU_CORE_B80B)
+	case  MID114485:
+		if(0 != flash_get_lock_block_mid114485()){
+			flash_unlock_mid114485();
+		}
+		return 1;
+		break;
+	case MID136085:
+		if(0 != flash_get_lock_block_mid136085()){
+			flash_unlock_mid136085();
+		}
+	    return 1;
 		break;
 #endif
 #if(MCU_CORE_B85)
@@ -435,7 +463,7 @@ void flash_mid1060c8_test(void)
 }
 #endif
 
-#if (MCU_CORE_B80) || (MCU_CORE_B87)
+#if (MCU_CORE_B80 || MCU_CORE_B87)
 void flash_mid1160c8_test(void)
 {
 	int i;
@@ -924,7 +952,7 @@ void flash_mid1360eb_test(void)
 }
 #endif
 
-#if (MCU_CORE_B80)
+#if (MCU_CORE_B80 || MCU_CORE_B80B)
 void flash_mid136085_test(void)
 {
 	int i;
@@ -1056,6 +1084,18 @@ void user_init()
 	case 0x1360c8:
 		flash_mid1360c8_test();
 		break;
+	case 0x136085:
+		flash_mid136085_test();
+		break;
+	case 0x114485:
+		flash_mid114485_test();
+		break;
+	default:
+		break;
+	}
+#elif (MCU_CORE_B80B)
+	switch(mid)
+	{
 	case 0x136085:
 		flash_mid136085_test();
 		break;

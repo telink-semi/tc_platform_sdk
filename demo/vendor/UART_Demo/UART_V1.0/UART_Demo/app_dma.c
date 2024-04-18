@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app_dma.c
+ * @file    app_dma.c
  *
- * @brief	This is the source file for B85m
+ * @brief   This is the source file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -64,8 +64,8 @@ void user_init()
 
 	//baud rate: 115200
 	uart_init_baudrate(115200,CLOCK_SYS_CLOCK_HZ,PARITY_NONE, STOP_BIT_ONE);
-	uart_dma_enable(1, 1); 	//uart data in hardware buffer moved by dma, so we need enable them first
 
+	uart_dma_enable(1, 1); 	//uart data in hardware buffer moved by dma, so we need enable them first
 #if(UART_DMA_INT_TYPE == UART_RXDMA_IRQ)
 	irq_enable_type(FLD_IRQ_DMA_EN);// uart_rx use dma_rx irq
 

@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app_config.h
+ * @file    app_config.h
  *
- * @brief	This is the header file for B85m
+ * @brief   This is the header file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -33,6 +33,11 @@ extern "C" {
 #define LED2     		        GPIO_PA5
 #define LED3     		        GPIO_PA6
 #define LED4     		        GPIO_PA7
+#elif (MCU_CORE_B80B)
+#define LED1                    GPIO_PA4
+#define LED2                    GPIO_PA5
+#define LED3                    GPIO_PA6
+#define LED4                    GPIO_PA7
 #elif (MCU_CORE_B85)
 #define LED1     		        GPIO_PD2
 #define LED2     		        GPIO_PD3
@@ -52,7 +57,7 @@ extern "C" {
 
 
 /* IDLE MODE */
-#if(MCU_CORE_B80)
+#if(MCU_CORE_B80 || MCU_CORE_B80B)
 #define IDLE_TIMER_WAKEUP				1
 #define IDLE_STIMER_WAKEUP				2
 #define IDLE_RF_WAKEUP					3
@@ -68,7 +73,7 @@ extern "C" {
 #define SUSPEND_PAD_WAKEUP   			11
 #define SUSPEND_32K_RC_WAKEUP   		12
 #define SUSPEND_32K_XTAL_WAKEUP			13
-#if(MCU_CORE_B80)
+#if(MCU_CORE_B80 || MCU_CORE_B80B)
 #define SUSPEND_LONG_32K_RC_WAKEUP   	14
 #define SUSPEND_LONG_32K_XTAL_WAKEUP   	15
 #elif(MCU_CORE_B87)
@@ -83,7 +88,7 @@ extern "C" {
 #define DEEP_PAD_WAKEUP		 			21
 #define DEEP_32K_RC_WAKEUP      		22
 #define DEEP_32K_XTAL_WAKEUP      		23
-#if(MCU_CORE_B80)
+#if(MCU_CORE_B80 || MCU_CORE_B80B)
 #define DEEP_LONG_32K_RC_WAKEUP   		24
 #define DEEP_LONG_32K_XTAL_WAKEUP   	25
 #elif(MCU_CORE_B89)
@@ -99,7 +104,7 @@ extern "C" {
 #define DEEP_RET_PAD_WAKEUP     		31
 #define DEEP_RET_32K_RC_WAKEUP     		32
 #define DEEP_RET_32K_XTAL_WAKEUP     	33
-#if(MCU_CORE_B80)
+#if(MCU_CORE_B80 || MCU_CORE_B80B)
 #define DEEP_RET_LONG_32K_RC_WAKEUP   	34
 #define DEEP_RET_LONG_32K_XTAL_WAKEUP   35
 #elif(MCU_CORE_B89)

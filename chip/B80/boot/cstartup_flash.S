@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	cstartup_flash.S
+ * @file    cstartup_flash.S
  *
- * @brief	This is the boot file for B80
+ * @brief   This is the boot file for B80
  *
- * @author	Driver Group
- * @date	2021
+ * @author  Driver Group
+ * @date    2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -228,12 +228,13 @@ __reset:
 
 #if 0
 	@ add debug, PB4 output 1
-	tloadr     	r1, DEBUG_GPIO    @0x80058a  PB oen
-	tmov		r0, #239      @0b 11101111
+	tloadr     	r1, DEBUG_GPIO_OEN    @0x80050a  PB oen
+	tmov		r0, #239		@0b 11101111
 	tstorerb	r0, [r1, #0]
 
+	tloadr     	r1, DEBUG_GPIO_OUTPUT
 	tmov		r0, #16			@0b 00010000
-	tstorerb	r0, [r1, #1]	@0x800583  PB output
+	tstorerb	r0, [r1, #0]	@0x8005c4  PB output set
 #endif
 
     @B80_B is handled in the boot program.
@@ -485,8 +486,11 @@ DATA_I:
     .word	(0x000000f7)                @40
 	.word	(0x0080000c)                @44
 
-DEBUG_GPIO:
+DEBUG_GPIO_OEN:
 	.word	(0x80050a)                  @  PBx oen
+
+DEBUG_GPIO_OUTPUT:
+	.word	(0x8005c4)                  @  PBx output set
 
 OTP_CTRL:
 	.word	(0x800010)                  @  otp control

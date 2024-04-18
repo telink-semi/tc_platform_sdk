@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app_normal.c
+ * @file    app_normal.c
  *
- * @brief	This is the source file for B85m
+ * @brief   This is the source file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -50,7 +50,7 @@
 #elif (MCU_CORE_B87||MCU_CORE_B85)
 #define PWM_PIN		GPIO_PC1
 #define AS_PWMx			AS_PWM0	
-#elif (MCU_CORE_B80)
+#elif (MCU_CORE_B80 || MCU_CORE_B80B)
 #define PWM_PIN		GPIO_PC1
 #define AS_PWMx         PWM0
 #endif

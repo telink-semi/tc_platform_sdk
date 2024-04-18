@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	zb_flash_ctrl.c
+ * @file    zb_flash_ctrl.c
  *
- * @brief	This is the source file for B85
+ * @brief   This is the source file for B85
  *
- * @author	Driver Group
- * @date	2022
+ * @author  Driver Group
+ * @date    2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *

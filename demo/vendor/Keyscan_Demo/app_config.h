@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app_config.h
+ * @file    app_config.h
  *
- * @brief	This is the header file for B85m
+ * @brief   This is the header file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -34,7 +34,7 @@ extern "C" {
 #define LED4     		        GPIO_PA7
 
 
-#if (MCU_CORE_B80)
+#if (MCU_CORE_B80 || MCU_CORE_B80B)
 #define KEYSCAN_TEST_SUSPEND 		0
 
 #define	SOURCE_32K_RC 				0

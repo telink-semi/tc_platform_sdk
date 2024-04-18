@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	app.c
+ * @file    app.c
  *
- * @brief	This is the source file for B85m
+ * @brief   This is the source file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -39,7 +39,7 @@ void user_init()
 	adc_init();
 
 	#if(ADC_MODE==ADC_BASE_MODE)
-#if (MCU_CORE_B80)
+#if (MCU_CORE_B80 || MCU_CORE_B80B)
 		adc_base_init(ADC_GPIO_PB0);
 #else
 		adc_base_init(GPIO_PB0);

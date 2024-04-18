@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	flash.h
+ * @file    flash.h
  *
- * @brief	This is the header file for B85
+ * @brief   This is the header file for B85
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -37,7 +37,7 @@ typedef enum{
 	MID1060C8     =   0x1060c8,//GD25LD05C
 	MID13325E     =   0x13325e,//ZB25WD40B
 	MID134051     =   0x134051,//MD25D40D
-	MID136085     =   0x136085,//P25Q40L
+	MID136085     =   0x136085,//P25Q40L / P25D40SU
 	MID1360C8     =   0x1360c8,//GD25LD40C / GD25LD40E
 	MID1360EB     =   0x1360eb,//TH25D40UA / TH25D40LA
 	MID14325E     =   0x14325e,//ZB25WD80B

@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	emi.c
+ * @file    emi.c
  *
- * @brief	This is the source file for B80
+ * @brief   This is the source file for B80
  *
- * @author	Driver Group
- * @date	2021
+ * @author  Driver Group
+ * @date    2021
  *
  * @par     Copyright (c) 2021, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -31,10 +31,12 @@
 #define STATE2		0xabcd
 #define STATE3		0xef01
 
-static unsigned char  emi_rx_packet[64] __attribute__ ((aligned (4)));
-static unsigned char  emi_zigbee_tx_packet[48]  __attribute__ ((aligned (4))) = {19,0,0,0,20,0,0};
-static unsigned char  emi_ble_tx_packet [48]  __attribute__ ((aligned (4))) = {39, 0, 0, 0,0, 37};
-static unsigned char  Private_TPLL_tx_packet[48] __attribute__ ((aligned (4))) = {0x21,0x00,0x00,0x00,0x20};
+#define EMI_TX_PKT_PAYLOAD   37
+
+static unsigned char  emi_rx_packet[280] __attribute__ ((aligned (4)));
+static unsigned char  emi_zigbee_tx_packet[280]  __attribute__ ((aligned (4))) = {EMI_TX_PKT_PAYLOAD-1,0,0,0,EMI_TX_PKT_PAYLOAD,0,0};
+static unsigned char  emi_ble_tx_packet [280]  __attribute__ ((aligned (4))) = {EMI_TX_PKT_PAYLOAD+2, 0, 0, 0,0, EMI_TX_PKT_PAYLOAD};
+static unsigned char  Private_TPLL_tx_packet[280] __attribute__ ((aligned (4))) = {EMI_TX_PKT_PAYLOAD+1,0x00,0x00,0x00,EMI_TX_PKT_PAYLOAD};
 static unsigned int   emi_rx_cnt=0,emi_rssibuf=0;
 static signed  char   rssi=0;
 static unsigned int   state0,state1;
@@ -408,7 +410,7 @@ void rf_emi_tx_burst_setup(RF_ModeTypeDef rf_mode,RF_PowerTypeDef power_level,si
 		case RF_MODE_BLE_1M_NO_PN:
 		case RF_MODE_BLE_2M:
 			emi_ble_tx_packet[4] = pkt_type;//type
-			for( i=0;i<37;i++)
+			for( i=0;i<EMI_TX_PKT_PAYLOAD;i++)
 			{
 				emi_ble_tx_packet[6+i]=tx_data;
 			}
@@ -416,7 +418,7 @@ void rf_emi_tx_burst_setup(RF_ModeTypeDef rf_mode,RF_PowerTypeDef power_level,si
 
 		case RF_MODE_ZIGBEE_250K:
 			emi_zigbee_tx_packet[5] = pkt_type;//type
-			for( i=0;i<37;i++)
+			for( i=0;i<EMI_TX_PKT_PAYLOAD;i++)
 			{
 				emi_zigbee_tx_packet[5+i]=tx_data;
 			}
@@ -425,7 +427,7 @@ void rf_emi_tx_burst_setup(RF_ModeTypeDef rf_mode,RF_PowerTypeDef power_level,si
 		case RF_MODE_PRIVATE_2M:
 		case RF_MODE_PRIVATE_1M:
 			Private_TPLL_tx_packet[5] = pkt_type;
-			for( i=0;i<37;i++)
+			for( i=0;i<EMI_TX_PKT_PAYLOAD;i++)
 			{
 				Private_TPLL_tx_packet[5+i]=tx_data;
 			}
@@ -497,7 +499,7 @@ void rf_emi_tx_brust_setup_ramp(RF_ModeTypeDef rf_mode,RF_PowerTypeDef power_lev
 		case RF_MODE_BLE_1M_NO_PN:
 		case RF_MODE_BLE_2M:
 			emi_ble_tx_packet[4] = pkt_type;//type
-			for( i=0;i<37;i++)
+			for( i=0;i<EMI_TX_PKT_PAYLOAD;i++)
 			{
 				emi_ble_tx_packet[6+i]=tx_data;
 			}
@@ -505,7 +507,7 @@ void rf_emi_tx_brust_setup_ramp(RF_ModeTypeDef rf_mode,RF_PowerTypeDef power_lev
 
 		case RF_MODE_ZIGBEE_250K:
 			emi_zigbee_tx_packet[5] = pkt_type;//type
-			for( i=0;i<37;i++)
+			for( i=0;i<EMI_TX_PKT_PAYLOAD;i++)
 			{
 				emi_zigbee_tx_packet[5+i]=tx_data;
 			}
@@ -513,7 +515,7 @@ void rf_emi_tx_brust_setup_ramp(RF_ModeTypeDef rf_mode,RF_PowerTypeDef power_lev
 		case RF_MODE_PRIVATE_2M:
 		case RF_MODE_PRIVATE_1M:
 			Private_TPLL_tx_packet[5] = pkt_type;
-			for( i=0;i<37;i++)
+			for( i=0;i<EMI_TX_PKT_PAYLOAD;i++)
 			{
 				Private_TPLL_tx_packet[5+i]=tx_data;
 			}
@@ -555,7 +557,7 @@ void rf_emi_tx_burst_loop_ramp(RF_ModeTypeDef rf_mode,unsigned char pkt_type)
 		}
 		sleep_ms(2);
 		if(pkt_type==0)
-			rf_phy_test_prbs9(&emi_ble_tx_packet[6],37);
+			rf_phy_test_prbs9(&emi_ble_tx_packet[6],EMI_TX_PKT_PAYLOAD);
 	}
 	else if(rf_mode==RF_MODE_ZIGBEE_250K)//zigbee
 	{
@@ -571,7 +573,7 @@ void rf_emi_tx_burst_loop_ramp(RF_ModeTypeDef rf_mode,unsigned char pkt_type)
 			sub_wr(0x137c, i , 6, 1);
 		sleep_ms(4);
 		if(pkt_type==0)
-			rf_phy_test_prbs9(&emi_zigbee_tx_packet[5],37);
+			rf_phy_test_prbs9(&emi_zigbee_tx_packet[5],EMI_TX_PKT_PAYLOAD);
 	}
 	else if((rf_mode==RF_MODE_PRIVATE_2M)||(rf_mode==RF_MODE_PRIVATE_1M))
 	{
@@ -588,7 +590,7 @@ void rf_emi_tx_burst_loop_ramp(RF_ModeTypeDef rf_mode,unsigned char pkt_type)
 		}
 		sleep_ms(2);
 		if(pkt_type==0)
-			rf_phy_test_prbs9(&Private_TPLL_tx_packet[5],37);
+			rf_phy_test_prbs9(&Private_TPLL_tx_packet[5],EMI_TX_PKT_PAYLOAD);
 	}
 }
 
@@ -615,7 +617,7 @@ void rf_emi_tx_burst_loop(RF_ModeTypeDef rf_mode,unsigned char pkt_type)
 		sleep_ms(2);//
 //		delay_us(625);//
 		if(pkt_type==0)
-			rf_phy_test_prbs9(&emi_ble_tx_packet[6],37);
+			rf_phy_test_prbs9(&emi_ble_tx_packet[6],EMI_TX_PKT_PAYLOAD);
 	}
 	else if(rf_mode==RF_MODE_LR_S8_125K)//ble
 	{
@@ -624,7 +626,7 @@ void rf_emi_tx_burst_loop(RF_ModeTypeDef rf_mode,unsigned char pkt_type)
 		rf_tx_finish_clear_flag();
 		sleep_ms(2);//
 		if(pkt_type==0)
-			rf_phy_test_prbs9(&emi_ble_tx_packet[6],37);
+			rf_phy_test_prbs9(&emi_ble_tx_packet[6],EMI_TX_PKT_PAYLOAD);
 	}
 	else if(rf_mode==RF_MODE_LR_S2_500K)//ble
 	{
@@ -633,7 +635,7 @@ void rf_emi_tx_burst_loop(RF_ModeTypeDef rf_mode,unsigned char pkt_type)
 		rf_tx_finish_clear_flag();
 		sleep_ms(2);//625*1.5
 		if(pkt_type==0)
-			rf_phy_test_prbs9(&emi_ble_tx_packet[6],37);
+			rf_phy_test_prbs9(&emi_ble_tx_packet[6],EMI_TX_PKT_PAYLOAD);
 	}
 	else if(rf_mode==RF_MODE_ZIGBEE_250K)//zigbee
 	{
@@ -643,7 +645,7 @@ void rf_emi_tx_burst_loop(RF_ModeTypeDef rf_mode,unsigned char pkt_type)
 		rf_tx_finish_clear_flag();
 		sleep_us(625*2);//
 		if(pkt_type==0)
-			rf_phy_test_prbs9(&emi_zigbee_tx_packet[5],37);
+			rf_phy_test_prbs9(&emi_zigbee_tx_packet[5],EMI_TX_PKT_PAYLOAD);
 	}
 	else if((rf_mode==RF_MODE_PRIVATE_2M)||(rf_mode==RF_MODE_PRIVATE_1M))
 	{
@@ -652,7 +654,7 @@ void rf_emi_tx_burst_loop(RF_ModeTypeDef rf_mode,unsigned char pkt_type)
 		rf_tx_finish_clear_flag();
 		sleep_us(625);//
 		if(pkt_type==0)
-			rf_phy_test_prbs9(&Private_TPLL_tx_packet[5],37);
+			rf_phy_test_prbs9(&Private_TPLL_tx_packet[5],EMI_TX_PKT_PAYLOAD);
 	}
 }
 

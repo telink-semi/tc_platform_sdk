@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	bqb.h
+ * @file    bqb.h
  *
- * @brief	This is the header file for B85m
+ * @brief   This is the header file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -41,6 +41,8 @@
 #define BQB_TX_POWER					RF_POWER_INDEX_P4p98dBm
 #elif(MCU_CORE_B80)
 #define BQB_TX_POWER					RF_POWER_P6p97dBm
+#elif MCU_CORE_B80B
+#define BQB_TX_POWER                    RF_POWER_P6p97dBm
 #endif
 
 #define ACCESS_CODE        	0x29417671
@@ -62,7 +64,7 @@
 #define CAP_SET_FLASH_ADDR_128K 		0x1e000
 #define CAP_SET_FLASH_ADDR_64K			0xe000
 
-#if MCU_CORE_B80
+#if (MCU_CORE_B80 || MCU_CORE_B80B)
 #define CAP_SET_OTP_16K					0x3fc8 //0x3fc8-0x3fcb,32bit
 #endif
 
@@ -85,8 +87,27 @@
 #elif(MCU_CORE_B80)
 #define BQB_UART_TX_PORT   				GPIO_PA7
 #define BQB_UART_RX_PORT   				GPIO_PA6
+#elif(MCU_CORE_B80B)
+#define BQB_UART_TX_PORT   				GPIO_PD0
+#define BQB_UART_RX_PORT   				GPIO_PD1
 #endif
 #define BQB_UART_BAUD	   	115200
+
+#if(MCU_CORE_B80B)
+#define UART0_MODULE            0 /* UART0 */
+#define UART1_MODULE            1 /* UART1 */
+/* uart select */
+#define UART_MODULE_SEL         UART0_MODULE
+
+/* set uart config */
+#define REG_UART_BUF_CNT           reg_uart_buf_cnt(UART_MODULE_SEL)
+#define REG_UART_DATA_BUF(i)       reg_uart_data_buf(UART_MODULE_SEL,i)
+#define UART_NDMA_SENT_BYTE(i)     uart_ndma_send_byte(UART_MODULE_SEL,i)
+#else
+#define REG_UART_BUF_CNT           reg_uart_buf_cnt
+#define REG_UART_DATA_BUF(i)       reg_uart_data_buf(i)
+#define UART_NDMA_SENT_BYTE(i)     uart_ndma_send_byte(i)
+#endif
 
 /* set pa port */
 #if !SUPPORT_CONFIGURATION

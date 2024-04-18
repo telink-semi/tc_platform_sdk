@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	boot_copy_ramcode.link
+ * @file    boot_copy_ramcode.link
  *
- * @brief	This is the link file for B87
+ * @brief   This is the link file for B87
  *
- * @author	Driver Group
- * @date	2022
+ * @author  Driver Group
+ * @date    2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *

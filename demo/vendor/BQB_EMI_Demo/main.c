@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	main.c
+ * @file    main.c
  *
- * @brief	This is the source file for B85m
+ * @brief   This is the source file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -70,7 +70,7 @@ int main (void) {
 #if TEST_DEMO==BQB_DEMO && SUPPORT_CONFIGURATION
 
 	rd_usr_definition(1);
-#if (MCU_CORE_B89 || MCU_CORE_B80)
+#if (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
 #elif (MCU_CORE_B87)
 	if(usr_config.power_mode == 0)
@@ -97,13 +97,13 @@ int main (void) {
 #elif POWER_MODE_SELECT == POWER_MODE_DCDC_LDO
 	cpu_wakeup_init(DCDC_LDO_MODE, EXTERNAL_XTAL_24M);
 #endif
-#elif (MCU_CORE_B89 || MCU_CORE_B80)
+#elif (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
 #endif
 
 #endif
 
-#if(MCU_CORE_B80||MCU_CORE_B89)
+#if(MCU_CORE_B80 || MCU_CORE_B80B ||MCU_CORE_B89)
 	wd_32k_stop();
 #endif
 #if (MCU_CORE_B85) || (MCU_CORE_B87)
@@ -120,7 +120,7 @@ int main (void) {
 	rf_drv_init(RF_MODE_BLE_1M_NO_PN);
 
 	gpio_init(!deepRetWakeUp);
-#elif(MCU_CORE_B89 || MCU_CORE_B80)
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
 	rf_mode_init();
 	rf_set_ble_1M_NO_PN_mode();
 #endif

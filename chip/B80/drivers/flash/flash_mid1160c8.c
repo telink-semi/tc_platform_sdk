@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	flash_mid1160c8.c
+ * @file    flash_mid1160c8.c
  *
- * @brief	This is the source file for B80
+ * @brief   This is the source file for B80
  *
- * @author	Driver Group
- * @date	2022
+ * @author  Driver Group
+ * @date    2022
  *
  * @par     Copyright (c) 2022, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -21,6 +21,7 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
+#if(MCU_CORE_B80)
 #include "flash_type.h"
 
 
@@ -118,3 +119,4 @@ mid1160c8_lock_block_e flash_get_lock_block_mid1160c8(void)
 {
 	return flash_read_status_mid1160c8()&FLASH_WRITE_STATUS_BP_MID1160C8;
 }
+#endif

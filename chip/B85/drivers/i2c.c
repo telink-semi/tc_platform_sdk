@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	i2c.c
+ * @file    i2c.c
  *
- * @brief	This is the source file for B85
+ * @brief   This is the source file for B85
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *

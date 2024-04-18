@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	bqb.c
+ * @file    bqb.c
  *
- * @brief	This is the source file for B85m
+ * @brief   This is the source file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -137,16 +137,16 @@ unsigned int get_pkt_interval(unsigned char payload_len, unsigned char mode)
  */
 unsigned short uart_bqbtest_get(unsigned short* cmd)
 {
-	if (!tick_rx && ((reg_uart_buf_cnt&FLD_UART_RX_BUF_CNT) == 1))
+	if (!tick_rx && ((REG_UART_BUF_CNT&FLD_UART_RX_BUF_CNT) == 1))
 	{
 		tick_rx = reg_system_tick;
 	}
-	else if ((reg_uart_buf_cnt&FLD_UART_RX_BUF_CNT) == 2)
+	else if ((REG_UART_BUF_CNT&FLD_UART_RX_BUF_CNT) == 2)
 	{
-		h = reg_uart_data_buf(uart_rx_index)&0xff;
+		h = REG_UART_DATA_BUF(uart_rx_index)&0xff;
 		uart_rx_index++;
 		uart_rx_index &= 0x03;
-		l = reg_uart_data_buf(uart_rx_index)&0xff;
+		l = REG_UART_DATA_BUF(uart_rx_index)&0xff;
 		uart_rx_index++;
 		uart_rx_index &= 0x03;
 
@@ -158,18 +158,18 @@ unsigned short uart_bqbtest_get(unsigned short* cmd)
 	else if (tick_rx && clock_time_exceed(tick_rx, 5000))
 	{
 		tick_rx = 0;
-		reg_uart_data_buf(uart_rx_index);
+		REG_UART_DATA_BUF(uart_rx_index);
 		uart_rx_index++;
 		uart_rx_index &= 0x03;
 	}
-	else if((reg_uart_buf_cnt&FLD_UART_RX_BUF_CNT)>2)
+	else if((REG_UART_BUF_CNT&FLD_UART_RX_BUF_CNT)>2)
 	{
 		unsigned char i;
 
 		unsigned char l = REG_ADDR8(0x9c)&0x0f;
 		for(i=0; i<l; i++)
 		{
-			reg_uart_data_buf(uart_rx_index);
+			REG_UART_DATA_BUF(uart_rx_index);
 			uart_rx_index++;
 			uart_rx_index &= 0x03;
 		}
@@ -239,7 +239,7 @@ void bqb_serviceloop (void)
 					}
 #if (MCU_CORE_B85 || MCU_CORE_B87)
 					rf_drv_init(RF_MODE_BLE_1M_NO_PN);
-#elif(MCU_CORE_B89 || MCU_CORE_B80)
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
 					rf_set_ble_1M_NO_PN_mode();
 #endif
 					rf_set_preamble_len(BQB_PREAMBLE_LEN+0x40); //add by junwei
@@ -261,7 +261,7 @@ void bqb_serviceloop (void)
 					{
 #if (MCU_CORE_B85 || MCU_CORE_B87)
 						rf_drv_init(RF_MODE_BLE_1M_NO_PN);
-#elif(MCU_CORE_B89 || MCU_CORE_B80)
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
 						rf_set_ble_1M_NO_PN_mode();
 #endif
 						rsp = 0;
@@ -270,7 +270,7 @@ void bqb_serviceloop (void)
 					{
 #if (MCU_CORE_B85 || MCU_CORE_B87)
 						rf_drv_init(RF_MODE_BLE_2M);
-#elif(MCU_CORE_B89 || MCU_CORE_B80)
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
 						rf_set_ble_2M_mode();
 #endif
 
@@ -280,7 +280,7 @@ void bqb_serviceloop (void)
 					{
 #if (MCU_CORE_B85 || MCU_CORE_B87)
 						rf_drv_init(RF_MODE_LR_S8_125K);
-#elif(MCU_CORE_B89 || MCU_CORE_B80)
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
 						rf_set_ble_125K_mode();
 #endif
 
@@ -290,7 +290,7 @@ void bqb_serviceloop (void)
 					{
 #if (MCU_CORE_B85 || MCU_CORE_B87)
 						rf_drv_init(RF_MODE_LR_S2_500K);
-#elif(MCU_CORE_B89 || MCU_CORE_B80)
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
 						rf_set_ble_500K_mode();
 #endif
 
@@ -337,8 +337,8 @@ void bqb_serviceloop (void)
 				}
 				pkt_cnt = 0;
 				test_state = SETUP_STATE;
-				uart_ndma_send_byte((rsp>>8)&0x7f);
-				uart_ndma_send_byte(rsp&0xff);
+				UART_NDMA_SENT_BYTE((rsp>>8)&0x7f);
+				UART_NDMA_SENT_BYTE(rsp&0xff);
 				break;
 			}
 			case CMD_RX_TEST:
@@ -370,8 +370,8 @@ void bqb_serviceloop (void)
 					rf_ldot_ldo_rxtxlf_bypass_dis();
 				}
 
-				uart_ndma_send_byte((rsp>>8)&0xff);
-				uart_ndma_send_byte(rsp&0xff);
+				UART_NDMA_SENT_BYTE((rsp>>8)&0xff);
+				UART_NDMA_SENT_BYTE(rsp&0xff);
 				pkt_cnt = 0;
 				test_state = RX_STATE;
 				break;
@@ -440,7 +440,7 @@ void bqb_serviceloop (void)
 				rf_set_tx_rx_off_auto_mode();
 				rf_set_ble_channel(freq);
 #if SUPPORT_CONFIGURATION
-#if(MCU_CORE_B85||MCU_CORE_B87||MCU_CORE_B80)
+#if(MCU_CORE_B85||MCU_CORE_B87||MCU_CORE_B80 || MCU_CORE_B80B)
 				rf_set_power_level_index((usr_config.power == 0)?BQB_TX_POWER:rf_power_Level_list[usr_config.power-1]);
 #elif(MCU_CORE_B89)
 				rf_set_power_level_index((usr_config.power == 0)?BQB_TX_POWER:(usr_config.power-1));
@@ -450,8 +450,8 @@ void bqb_serviceloop (void)
 #endif
 				test_state = TX_STATE;
 
-				uart_ndma_send_byte((rsp>>8)&0xff);
-				uart_ndma_send_byte(rsp&0xff);
+				UART_NDMA_SENT_BYTE((rsp>>8)&0xff);
+				UART_NDMA_SENT_BYTE(rsp&0xff);
 
 				pkt_cnt = 0;
 				break;
@@ -476,8 +476,8 @@ void bqb_serviceloop (void)
 					while(is_rf_receiving_pkt());
 
 					rf_set_tx_rx_off_auto_mode();
-					uart_ndma_send_byte((BIT(7))|((pkt_cnt>>8)&0x7f));
-					uart_ndma_send_byte(pkt_cnt&0xff);
+					UART_NDMA_SENT_BYTE((BIT(7))|((pkt_cnt>>8)&0x7f));
+					UART_NDMA_SENT_BYTE(pkt_cnt&0xff);
 
 				}
 
@@ -527,7 +527,7 @@ void  bqbtest_init(void)
 	FSM_RX_FIRST_TIMEOUT_DISABLE;
 #if (MCU_CORE_B85 || MCU_CORE_B87)
 	rf_drv_init(RF_MODE_BLE_1M_NO_PN);
-#elif(MCU_CORE_B89 || MCU_CORE_B80)
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
 	rf_mode_init();
 	rf_set_ble_1M_NO_PN_mode();
 #endif
@@ -538,7 +538,7 @@ void  bqbtest_init(void)
 }
 
 
-#if MCU_CORE_B85 || MCU_CORE_B87 || MCU_CORE_B80
+#if (MCU_CORE_B85 || MCU_CORE_B87 || MCU_CORE_B80 || MCU_CORE_B80B)
 #define gpio_function_en(pin)			gpio_set_func((pin), AS_GPIO)
 #define gpio_output_en(pin)				gpio_set_output_en((pin), 1)
 #define gpio_output_dis(pin)			gpio_set_output_en((pin), 0)

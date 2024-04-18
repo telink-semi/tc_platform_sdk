@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	main.c
+ * @file    main.c
  *
- * @brief	This is the source file for B85m
+ * @brief   This is the source file for B85m
  *
- * @author	Driver Group
- * @date	2018
+ * @author  Driver Group
+ * @date    2018
  *
  * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -35,7 +35,7 @@ extern void main_loop (void);
 int main (void)   //must on ramcode
 {
 	cpu_wakeup_init(EXTERNAL_XTAL_24M);
-#if(MCU_CORE_B80)
+#if(MCU_CORE_B80 || MCU_CORE_B80B)
 	wd_32k_stop();
 #endif
 	//Note: This function must be called, otherwise an abnormal situation may occur.
