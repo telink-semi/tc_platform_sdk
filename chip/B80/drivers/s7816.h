@@ -39,29 +39,12 @@ typedef enum {
 	S7816_12MHZ = 12,
 }S7816_ClkTypeDef;
 
-/**
- *  @brief  Define 7816 clk pin.
- */
-typedef enum{
-	S7817_CLK_PB2 = GPIO_PB2,
-	S7817_CLK_PB6 = GPIO_PB6,
-}S7816_Clk_PinDef;
-
 
 typedef enum {
 	S7816_TX,
 	S7816_RX,
 }S7816_ModeDef;
 
-/**
- * @brief      	This function is used to set the s7816 clock.
- * @param[in]  	div	- set the divider of clock of 7816 module.
- * @return     	none.
- * @note        the clk-source of s7816 is 24M,the clk of clk-pin can be divided as follow.
- * 				div:        0x06-4Mhz     0x04-6Mhz   0x02-12Mhz
- * 				baudrate:   0x06-10752    0x04-16194  0x02-32388
- */
-void s7816_set_clk(unsigned char Div);
 
 /**
  * @brief      	This function is used to set the rst-wait time of the s7816 module.
@@ -86,12 +69,23 @@ void s7816_set_vcc_pin(GPIO_PinTypeDef pin_7816_vcc);
 #if(MCU_CORE_B80B)
 
 /**
+ * @brief      	This function is used to set the s7816 clock.
+ * @param[in]   uart_num - UART0 or UART1.
+ * @param[in]  	div	- set the divider of clock of 7816 module.
+ * @return     	none.
+ * @note        the clk-source of s7816 is 24M,the clk of clk-pin can be divided as follow.
+ * 				div:        0x06-4Mhz     0x04-6Mhz   0x02-12Mhz
+ * 				baudrate:   0x06-10752    0x04-16194  0x02-32388
+ */
+void s7816_set_clk(uart_num_e uart_num,unsigned char Div);
+
+/**
  * @brief      	This function is used to set the clk pin of s7816.
  * @param[in]   uart_num - UART0 or UART1.
- * @param[in]   pin_7816_vcc - the clk pin of s7816.
+ * @param[in]   pin_7816_clk - the clk pin of s7816.
  * @return     	none.
  */
-void s7816_set_clk_pin(uart_num_e uart_num,S7816_Clk_PinDef pin_7816_clk);
+void s7816_set_clk_pin(uart_num_e uart_num,GPIO_PinTypeDef pin_7816_clk);
 
 /**
  * @brief       This function is used to set the trx pin of s7816.
@@ -139,15 +133,31 @@ void s7816_coldreset(uart_num_e uart_num);
  */
 void s7816_mode(uart_num_e uart_num,S7816_ModeDef mode);
 
-
-
-#else
 /**
- * @brief      	This function is used to set the clk pin of s7816.
- * @param[in]   pin_7816_vcc - the clk pin of s7816.
+ * @brief      	This function is used to release the trigger.
+ * @param[in]   uart_num - UART0 or UART1.
  * @return     	none.
  */
-void s7816_set_clk_pin(S7816_Clk_PinDef pin_7816_clk);
+void s7816_release_trig(uart_num_e uart_num);
+
+#else
+
+/**
+ * @brief      	This function is used to set the s7816 clock.
+ * @param[in]  	div	- set the divider of clock of 7816 module.
+ * @return     	none.
+ * @note        the clk-source of s7816 is 24M,the clk of clk-pin can be divided as follow.
+ * 				div:        0x06-4Mhz     0x04-6Mhz   0x02-12Mhz
+ * 				baudrate:   0x06-10752    0x04-16194  0x02-32388
+ */
+void s7816_set_clk(unsigned char Div);
+
+/**
+ * @brief      	This function is used to set the clk pin of s7816.
+ * @param[in]   pin_7816_clk - the clk pin of s7816.
+ * @return     	none.
+ */
+void s7816_set_clk_pin(GPIO_PinTypeDef pin_7816_clk);
 
 /**
  * @brief       This function is used to set the trx pin of s7816.
@@ -181,7 +191,7 @@ void s7816_init(S7816_ClkTypeDef clock,int f,int d);
  * @return     	none.
  * @note        extra time is needed for initial-atr after the function.
  */
-void s7816_coldreset();
+void s7816_coldreset(void);
 
 /**
  * @brief      	This function is used to transform half duplex mode of 7816
@@ -190,14 +200,16 @@ void s7816_coldreset();
  * @return     	none
  */
 void s7816_mode(S7816_ModeDef mode);
-#endif
 
 /**
  * @brief      	This function is used to release the trigger.
  * @param[in]  	none.
  * @return     	none.
  */
-void s7816_release_trig();
+void s7816_release_trig(void);
+#endif
+
+
 
 /**
  * @brief      	This function is used to warmreset.
@@ -205,5 +217,5 @@ void s7816_release_trig();
  * @return     	none.
  * @note        the warmreset is required after the IC-CARD active,extra time is needed for initial-atr after the function.
  */
-void s7816_warmreset();
+void s7816_warmreset(void);
 #endif /* S7816_H_ */

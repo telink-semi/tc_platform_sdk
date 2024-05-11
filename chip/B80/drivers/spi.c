@@ -557,7 +557,6 @@ void spi_master_write_dma_plus( unsigned char cmd, unsigned int addr, unsigned c
     reg_dma9_addrl =  (unsigned char)((unsigned int)data);
 
     reg_dma9_size = 0xff;
-    reg_dma_rdy0_h |= FLD_DMA_READY_9;
     if(addr)
   	{
   		spi_set_address(addr);

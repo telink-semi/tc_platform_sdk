@@ -589,11 +589,11 @@ enum
 
 #define reg_mcu_wakeup_mask		REG_ADDR32(0x78)
 
-/*******************************      7816 registers: 0x7b      ******************************/
-
-#define reg_7816_clk_div		REG_ADDR8(0x7b)
-
 #if(MCU_CORE_B80B)
+/*******************************      7816 registers: 0x7b      ******************************/
+/*******************************      78161 registers: 0x5d      ******************************/
+#define reg_7816_clk_div(i)		REG_ADDR8((i==0) ? (0x7b):(0x5d))
+
 
 /*******************************      uart0 registers: 0x90      ******************************/
 /*******************************      uart1 registers: 0xc0      ******************************/
@@ -699,6 +699,12 @@ enum{
 	FLD_UART_RSTATE_I	     =  BIT_RNG(4,7),
 };
 #else
+
+/*******************************      7816 registers: 0x7b      ******************************/
+
+#define reg_7816_clk_div	REG_ADDR8(0x7b)
+
+
 /*******************************      uart registers: 0x90      ******************************/
 
 #define reg_uart_data_buf0		REG_ADDR8(0x90)
@@ -1803,6 +1809,8 @@ enum{
 	FLD_DMA_CHN4 =	BIT(4),		FLD_DMA_CHN_AES_OUT =  BIT(4),
 	FLD_DMA_CHN5 =	BIT(5),     FLD_DMA_CHN_AES_IN =  BIT(5),
 	FLD_DMA_CHN7 =	BIT(7),		FLD_DMA_CHN_PWM  	 =	BIT(7),
+	FLD_DMA_CHN8 =  BIT(8)|BIT(0),FLD_DMA_CHN_SPI_RX = BIT(8)|BIT(0),
+	FLD_DMA_CHN9 =  BIT(8)|BIT(1),FLD_DMA_CHN_SPI_TX = BIT(8)|BIT(1),
 #if(MCU_CORE_B80B)
 	FLD_DMA_CHN10 = BIT(8)|BIT(2), FLD_DMA_CHN_UART1_RX = BIT(8)|BIT(2),
 	FLD_DMA_CHN11 = BIT(8)|BIT(3), FLD_DMA_CHN_UART1_TX = BIT(8)|BIT(3),
@@ -1878,7 +1886,7 @@ enum{
 enum{
 	FLD_DMA_SRB_BURST_SIZE_CH7 =	BIT_RNG(2,3)
 };
-#if(MCU_CORE_B80B)
+
 #define reg_dma_chn_en_h			REG_ADDR8(0xc54)
 #define reg_dma_chn_irq_msk_h		REG_ADDR8(0xc55)
 
@@ -1888,11 +1896,6 @@ enum{
 #define reg_dma_rx_rdy1_h	  REG_ADDR8(0xc59)
 
 #define reg_dma_irq_status_h		reg_dma_rx_rdy0_h
-
-#else
-#define reg_dma_rdy0_h		REG_ADDR8(0xc56)
-#define reg_dma_rdy1_h		REG_ADDR8(0xc57)
-#endif
 enum{
 	FLD_DMA_READY_9 		=   BIT(1),
 };
