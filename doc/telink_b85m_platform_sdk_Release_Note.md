@@ -10,6 +10,9 @@
 *	B85	 	C1T139A30_V1_2
 *	B87  	C1T197A30_V1_2
 
+### BREAKING CHANGES
+* N/A
+
 ### Bug Fixes
 
 * **s7816**
@@ -17,11 +20,25 @@
   * (B80B/B80)s7816_set_clk_pin: the pin_7816_clk enumeration type is changed to GPIO_PinTypeDef.([a2ae92ec](http://192.168.48.36/src/driver/telink_b85m_platform_src/commit/a2ae92ec769d53850dbc591c485fdb55370996da))
 * **spi**
   * (B80B)Fix the problem that dma read/write function can't be used because the dma channel of spi is not enabled, related interfaces involved: spi_tx_dma_en(), spi_rx_dma_en(), spi_tx_dma_dis(), spi_rx_dma_dis().([0716672d](http://192.168.48.36/src/driver/telink_b85m_platform_src/commit/0716672d5554046395af11bcb7bff054d0ec385f))
-  
+
+### Features
+* N/A
   
 ### Refactoring
 * **spi**
    * (B80/B80B)Remove duplicate software operation (reg_dma_rdy0_h |= FLD_DMA_READY_9) in spi_master_write_dma_plus() interface.
+
+### Performance Improvements
+
+* N/A
+
+### Note
+
+* N/A
+
+
+### BREAKING CHANGES
+* N/A
 
 ### Bug Fixes
 
@@ -31,9 +48,21 @@
 * **spi**
   * (B80B) 修复spi的dma通道未使能导致dma读写函数不能使用问题，涉及的相关接口：spi_tx_dma_en()，spi_rx_dma_en()，spi_tx_dma_dis()，spi_rx_dma_dis()。([0716672d](http://192.168.48.36/src/driver/telink_b85m_platform_src/commit/0716672d5554046395af11bcb7bff054d0ec385f))
 
+### Features
+* N/A
+  
 ### Refactoring
 * **spi**
    * (B80/B80B)删除spi_master_write_dma_plus()接口里的重复软件操作(reg_dma_rdy0_h |= FLD_DMA_READY_9)。
+
+### Performance Improvements
+
+* N/A
+
+### Note
+
+* N/A
+
 ## V1.8.0
 
 ### Version
