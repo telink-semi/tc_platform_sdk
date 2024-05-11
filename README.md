@@ -1,3 +1,3 @@
-# telink_b85m_driver_sdk 1.8.0
+# telink_b85m_driver_sdk
 
 This project supports kite、vulture、eaglet、eagletB
