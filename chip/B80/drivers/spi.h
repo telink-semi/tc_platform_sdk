@@ -488,6 +488,7 @@ static inline unsigned char spi_get_rxfifo_num(void)
  */
 static inline void spi_tx_dma_en(void)
 {
+	BM_SET(reg_dma_chn_en_h,FLD_DMA_CHN_SPI_TX);
 	reg_dma_rdy0_h |= FLD_DMA_READY_9;
 	BM_SET(reg_spi_trans2, FLD_SPI_TX_DMA_EN);
 }
@@ -499,6 +500,7 @@ static inline void spi_tx_dma_en(void)
  */
 static inline void spi_tx_dma_dis(void)
 {
+	BM_CLR(reg_dma_chn_en_h,FLD_DMA_CHN_SPI_TX);
 	BM_CLR(reg_spi_trans2, FLD_SPI_TX_DMA_EN);
 }
 
@@ -508,6 +510,7 @@ static inline void spi_tx_dma_dis(void)
  */
 static inline void spi_rx_dma_en(void)
 {
+	BM_SET(reg_dma_chn_en_h,FLD_DMA_CHN_SPI_RX);
 	BM_SET(reg_spi_trans2, FLD_SPI_RX_DMA_EN);
 }
 
@@ -517,6 +520,7 @@ static inline void spi_rx_dma_en(void)
  */
 static inline void spi_rx_dma_dis(void)
 {
+	BM_CLR(reg_dma_chn_en_h,FLD_DMA_CHN_SPI_RX);
 	BM_CLR(reg_spi_trans2, FLD_SPI_RX_DMA_EN);
 }
 /**

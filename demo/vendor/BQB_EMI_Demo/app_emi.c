@@ -33,20 +33,7 @@
 
 //#define ATE_SW_TEST		//for ate test when it use single wire to send cmd;then close this define for normal EMI
 
-/*
- * @brief 	This macro definition is mainly used to fix the problem of RX_LEAKAGE exceeding the standard during the
- * 			certification test.Since this setting will cause the package not to be received in the rx state, it is
- * 			only used for authentication.This setting is suitable for rx_leakage certification test for B85 series
- * 			chips.This problem does not exist in the certification of the own development board, so it can be given
- * 			to customers as a special version.Confirmed by wenfeng,modified by zhiwei.20210615.
- * */
-#define FIX_RX_LEAKAGE			0
-
-/*
- * @brief 	this macro definition serve to open the setting to deal with problem of zigbee mode 2480Mhz
- * 			band edge can't pass the spec.only use it at the time of certification.
- * */
-#define FIX_ZIGBEE_BANDAGE_EN	0
+#define EMI_IMPROVE_RX_SPURIOUS               0
 
 /*
  * @brief 	This macro definition is used to open the CE test code.
@@ -67,6 +54,7 @@
 #define READ_OFFSET_CLIBRATION_OTP		0
 #endif
 
+extern void rf_emi_rx_spurious(void);
 
 #if CHN_DEFAULT_VALUE_SET_FLASH
 #define CHN_SET_FLASH_ADDR				0x770e0
@@ -551,19 +539,6 @@ void emi_con_prbs9(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 			&& ((read_reg8(RF_MODE_ADDR)) == mode ) && ((read_reg16(PA_TX_RX_SETTING)) == pa_setting ))
 	{
 
-#if FIX_ZIGBEE_BANDAGE_EN
-		if(rf_mode == RF_MODE_ZIGBEE_250K )
-		{
-			if(rf_chn == 80)
-			{
-				write_reg8(0x1223,read_reg8(0x1223)&0x7f);
-			}
-			else
-			{
-				write_reg8(0x1223,0x86);
-			}
-		}
-#endif
 		rf_continue_mode_run();
 
 		if(hop)
@@ -592,10 +567,8 @@ void emirx(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 	rf_emi_rx(rf_mode,rf_chn);
 	write_reg8(RSSI_ADDR,0);
 	write_reg32(RX_PACKET_NUM_ADDR,0);
-//Solve the problem that the customer's development board cannot pass rx_leakage authentication.Confirmed by wenfeng,modified by zhiwei.20210615
-#if(FIX_RX_LEAKAGE)
-	write_reg8(0x1360,(read_reg8(0x1360)|BIT(4)));//LDO_VCO_PUP auto to manual
-	write_reg8(0x1362,(read_reg8(0x1362)&0xef));//LDO_VCO_PUP close.
+#if(EMI_IMPROVE_RX_SPURIOUS)
+	rf_emi_rx_spurious();
 #endif
 
 	cmd_now = 0;//Those two sentences for dealing with the problem that click RxTest again the value of emi_rx_cnt not be cleared in emi rx test

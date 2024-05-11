@@ -26,7 +26,7 @@
 
 
 #include "lib/include/aoa.h"
-#include "emi.h"
+#include "lib/include/emi.h"
 #include "lib/include/pm.h"
 #include "lib/include/random.h"
 #include "lib/include/rf_drv.h"
