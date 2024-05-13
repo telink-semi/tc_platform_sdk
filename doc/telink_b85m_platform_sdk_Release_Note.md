@@ -36,6 +36,15 @@
 
 * N/A
 
+### 版本
+
+* SDK版本: telink_b85m_platform_sdk V1.9.0。
+* 此版本SDK支持B80(A1)、 B80B、 B85、B87芯片。
+* LED和KEY的默认配置匹配以下硬件版本:
+*	B80	 	C1T261A30_V1_1
+*	B80B	C1T321A30_V1_0
+*	B85	 	C1T139A30_V1_2
+*	B87  	C1T197A30_V1_2
 
 ### BREAKING CHANGES
 * N/A
