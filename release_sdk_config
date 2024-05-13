@@ -1,8 +1,8 @@
 [release_sdk_S0_B80]
 CI_FUNC             V1.0
 TAG_NAME            V1.9.0
-PACKAGE_NAME        telink_b85m_driver_sdk_B80_S0
-SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
+PACKAGE_NAME        telink_b85m_platform_sdk_B80_S0
+SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_platform_src.git
 
 #                          .cproject                                                        project_name                         module
 CPROJECT            ./project/tlsr_tc32/B80/.cproject                   B80_Driver_Demo                  PM_Demo
@@ -20,8 +20,8 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver_b80.a
 [release_sdk_S1_B80]
 CI_FUNC             V1.0
 TAG_NAME            V1.9.0
-PACKAGE_NAME        telink_b85m_driver_sdk_B80_S1
-SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
+PACKAGE_NAME        telink_b85m_platform_sdk_B80_S1
+SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_platform_src.git
 
 #                          .cproject                                                        project_name                         module
 CPROJECT            ./project/tlsr_tc32/B80/.cproject                   B80_Driver_Demo                  PM_Demo
@@ -41,8 +41,8 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver_b80.a
 [release_sdk_S2_B80]
 CI_FUNC             V1.0
 TAG_NAME            V1.9.0
-PACKAGE_NAME        telink_b85m_driver_sdk_B80_S2
-SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
+PACKAGE_NAME        telink_b85m_platform_sdk_B80_S2
+SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_platform_src.git
 
 #                          .cproject                                                        project_name                         module
 CPROJECT            ./project/tlsr_tc32/B80/.cproject                   B80_Driver_Demo                  PM_Demo
@@ -60,8 +60,8 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver_b80.a
 [release_sdk_S3_B80]
 CI_FUNC             V1.0
 TAG_NAME            V1.9.0
-PACKAGE_NAME        telink_b85m_driver_sdk_B80_S3
-SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
+PACKAGE_NAME        telink_b85m_platform_sdk_B80_S3
+SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_platform_src.git
 
 #                          .cproject                                                        project_name                         module
 CPROJECT            ./project/tlsr_tc32/B80/.cproject                   B80_Driver_Demo                  PM_Demo
@@ -80,8 +80,8 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver_b80.a
 [release_sdk_otp_S0_B80]
 CI_FUNC             V1.0
 TAG_NAME            V1.9.0
-PACKAGE_NAME        telink_b85m_driver_sdk_B80_S0_OTP_NO_RET_NO_EXT32K
-SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
+PACKAGE_NAME        telink_b85m_platform_sdk_B80_S0_OTP_NO_RET_NO_EXT32K
+SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_platform_src.git
 
 #                          .cproject                                                        project_name                         module
 CPROJECT            ./project/tlsr_tc32/B80/.cproject                   B80_Driver_Demo                  PM_Demo
@@ -109,8 +109,8 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver_b80.a
 [release_sdk_otp_S1_B80]
 CI_FUNC             V1.0
 TAG_NAME            V1.9.0
-PACKAGE_NAME        telink_b85m_driver_sdk_B80_S1_OTP_NO_RET_NO_EXT32K
-SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
+PACKAGE_NAME        telink_b85m_platform_sdk_B80_S1_OTP_NO_RET_NO_EXT32K
+SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_platform_src.git
 
 #                          .cproject                                                        project_name                         module
 CPROJECT            ./project/tlsr_tc32/B80/.cproject                   B80_Driver_Demo                  PM_Demo
@@ -137,8 +137,8 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver_b80.a
 [release_sdk_otp_S2_B80]
 CI_FUNC             V1.0
 TAG_NAME            V1.9.0
-PACKAGE_NAME        telink_b85m_driver_sdk_B80_S2_OTP_NO_RET_NO_EXT32K
-SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
+PACKAGE_NAME        telink_b85m_platform_sdk_B80_S2_OTP_NO_RET_NO_EXT32K
+SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_platform_src.git
 
 #                          .cproject                                                        project_name                         module
 CPROJECT            ./project/tlsr_tc32/B80/.cproject                   B80_Driver_Demo                  PM_Demo
@@ -166,8 +166,8 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver_b80.a
 [release_sdk_otp_S3_B80]
 CI_FUNC             V1.0
 TAG_NAME            V1.9.0
-PACKAGE_NAME        telink_b85m_driver_sdk_B80_S3_OTP_NO_RET_NO_EXT32K
-SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
+PACKAGE_NAME        telink_b85m_platform_sdk_B80_S3_OTP_NO_RET_NO_EXT32K
+SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_platform_src.git
 
 #                          .cproject                                                        project_name                         module
 CPROJECT            ./project/tlsr_tc32/B80/.cproject                   B80_Driver_Demo                  PM_Demo
@@ -194,8 +194,8 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver_b80.a
 [release_sdk_S0_B80B]
 CI_FUNC             V1.0
 TAG_NAME            V1.9.0
-PACKAGE_NAME        telink_b85m_driver_sdk_B80B_S0
-SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
+PACKAGE_NAME        telink_b85m_platform_sdk_B80B_S0
+SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_platform_src.git
 
 #                          .cproject                                                        project_name                         module
 CPROJECT            ./project/tlsr_tc32/B80B/.cproject                   B80B_Driver_Demo                  PM_Demo
@@ -213,8 +213,8 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver_b80b.a
 [release_sdk_S1_B80B]
 CI_FUNC             V1.0
 TAG_NAME            V1.9.0
-PACKAGE_NAME        telink_b85m_driver_sdk_B80B_S1
-SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
+PACKAGE_NAME        telink_b85m_platform_sdk_B80B_S1
+SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_platform_src.git
 
 #                          .cproject                                                        project_name                         module
 CPROJECT            ./project/tlsr_tc32/B80B/.cproject                   B80B_Driver_Demo                  PM_Demo
@@ -234,8 +234,8 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver_b80b.a
 [release_sdk_S2_B80B]
 CI_FUNC             V1.0
 TAG_NAME            V1.9.0
-PACKAGE_NAME        telink_b85m_driver_sdk_B80B_S2
-SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
+PACKAGE_NAME        telink_b85m_platform_sdk_B80B_S2
+SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_platform_src.git
 
 #                          .cproject                                                        project_name                         module
 CPROJECT            ./project/tlsr_tc32/B80B/.cproject                   B80B_Driver_Demo                  PM_Demo
@@ -253,8 +253,8 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver_b80b.a
 [release_sdk_S3_B80B]
 CI_FUNC             V1.0
 TAG_NAME            V1.9.0
-PACKAGE_NAME        telink_b85m_driver_sdk_B80B_S3
-SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
+PACKAGE_NAME        telink_b85m_platform_sdk_B80B_S3
+SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_platform_src.git
 
 #                          .cproject                                                        project_name                         module
 CPROJECT            ./project/tlsr_tc32/B80B/.cproject                   B80B_Driver_Demo                  PM_Demo
@@ -273,8 +273,8 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver_b80b.a
 [release_sdk_otp_S0_B80B]
 CI_FUNC             V1.0
 TAG_NAME            V1.9.0
-PACKAGE_NAME        telink_b85m_driver_sdk_B80B_S0_OTP_NO_RET_NO_EXT32K
-SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
+PACKAGE_NAME        telink_b85m_platform_sdk_B80B_S0_OTP_NO_RET_NO_EXT32K
+SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_platform_src.git
 
 #                          .cproject                                                        project_name                         module
 CPROJECT            ./project/tlsr_tc32/B80B/.cproject                   B80B_Driver_Demo                  PM_Demo
@@ -302,8 +302,8 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver_b80b.a
 [release_sdk_otp_S1_B80B]
 CI_FUNC             V1.0
 TAG_NAME            V1.9.0
-PACKAGE_NAME        telink_b85m_driver_sdk_B80B_S1_OTP_NO_RET_NO_EXT32K
-SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
+PACKAGE_NAME        telink_b85m_platform_sdk_B80B_S1_OTP_NO_RET_NO_EXT32K
+SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_platform_src.git
 
 #                          .cproject                                                        project_name                         module
 CPROJECT            ./project/tlsr_tc32/B80B/.cproject                   B80B_Driver_Demo                  PM_Demo
@@ -330,8 +330,8 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver_b80b.a
 [release_sdk_otp_S2_B80B]
 CI_FUNC             V1.0
 TAG_NAME            V1.9.0
-PACKAGE_NAME        telink_b85m_driver_sdk_B80B_S2_OTP_NO_RET_NO_EXT32K
-SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
+PACKAGE_NAME        telink_b85m_platform_sdk_B80B_S2_OTP_NO_RET_NO_EXT32K
+SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_platform_src.git
 
 #                          .cproject                                                        project_name                         module
 CPROJECT            ./project/tlsr_tc32/B80B/.cproject                   B80B_Driver_Demo                  PM_Demo
@@ -359,8 +359,8 @@ REPLACED_LIB_PATH   ./chip/B80/drivers/lib/libdriver_b80b.a
 [release_sdk_otp_S3_B80B]
 CI_FUNC             V1.0
 TAG_NAME            V1.9.0
-PACKAGE_NAME        telink_b85m_driver_sdk_B80B_S3_OTP_NO_RET_NO_EXT32K
-SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_driver_src.git
+PACKAGE_NAME        telink_b85m_platform_sdk_B80B_S3_OTP_NO_RET_NO_EXT32K
+SRC_GIT_URL         http://192.168.48.36/src/driver/telink_b85m_platform_src.git
 
 #                          .cproject                                                        project_name                         module
 CPROJECT            ./project/tlsr_tc32/B80B/.cproject                   B80B_Driver_Demo                  PM_Demo

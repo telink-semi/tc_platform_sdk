@@ -41,79 +41,79 @@ stages:
 release_sdk_S0_B80:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_driver_sdk_B80_S0"
+    PACK_NAME: "telink_b85m_platform_sdk_B80_S0"
     
 release_sdk_S1_B80:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_driver_sdk_B80_S1"
+    PACK_NAME: "telink_b85m_platform_sdk_B80_S1"
 
 release_sdk_S2_B80:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_driver_sdk_B80_S2"
+    PACK_NAME: "telink_b85m_platform_sdk_B80_S2"
 
 release_sdk_S3_B80:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_driver_sdk_B80_S3"
+    PACK_NAME: "telink_b85m_platform_sdk_B80_S3"
 
 release_sdk_otp_S0_B80:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_driver_sdk_B80_S0_OTP_NO_RET_NO_EXT32K"
+    PACK_NAME: "telink_b85m_platform_sdk_B80_S0_OTP_NO_RET_NO_EXT32K"
 
 release_sdk_otp_S1_B80:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_driver_sdk_B80_S1_OTP_NO_RET_NO_EXT32K"
+    PACK_NAME: "telink_b85m_platform_sdk_B80_S1_OTP_NO_RET_NO_EXT32K"
 
 release_sdk_otp_S2_B80:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_driver_sdk_B80_S2_OTP_NO_RET_NO_EXT32K"
+    PACK_NAME: "telink_b85m_platform_sdk_B80_S2_OTP_NO_RET_NO_EXT32K"
 
 release_sdk_otp_S3_B80:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_driver_sdk_B80_S3_OTP_NO_RET_NO_EXT32K"
+    PACK_NAME: "telink_b85m_platform_sdk_B80_S3_OTP_NO_RET_NO_EXT32K"
 
 release_sdk_S0_B80B:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_driver_sdk_B80B_S0"
+    PACK_NAME: "telink_b85m_platform_sdk_B80B_S0"
     
 release_sdk_S1_B80B:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_driver_sdk_B80B_S1"
+    PACK_NAME: "telink_b85m_platform_sdk_B80B_S1"
 
 release_sdk_S2_B80B:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_driver_sdk_B80B_S2"
+    PACK_NAME: "telink_b85m_platform_sdk_B80B_S2"
 
 release_sdk_S3_B80B:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_driver_sdk_B80B_S3"
+    PACK_NAME: "telink_b85m_platform_sdk_B80B_S3"
 
 release_sdk_otp_S0_B80B:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_driver_sdk_B80B_S0_OTP_NO_RET_NO_EXT32K"
+    PACK_NAME: "telink_b85m_platform_sdk_B80B_S0_OTP_NO_RET_NO_EXT32K"
 
 release_sdk_otp_S1_B80B:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_driver_sdk_B80B_S1_OTP_NO_RET_NO_EXT32K"
+    PACK_NAME: "telink_b85m_platform_sdk_B80B_S1_OTP_NO_RET_NO_EXT32K"
 
 release_sdk_otp_S2_B80B:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_driver_sdk_B80B_S2_OTP_NO_RET_NO_EXT32K"
+    PACK_NAME: "telink_b85m_platform_sdk_B80B_S2_OTP_NO_RET_NO_EXT32K"
 
 release_sdk_otp_S3_B80B:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_driver_sdk_B80B_S3_OTP_NO_RET_NO_EXT32K"
+    PACK_NAME: "telink_b85m_platform_sdk_B80B_S3_OTP_NO_RET_NO_EXT32K"
