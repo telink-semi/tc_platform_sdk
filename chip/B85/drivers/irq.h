@@ -105,13 +105,13 @@ static inline unsigned long irq_get_src(){
 }
 
 /**
- * @brief      This function servers to clear the specified IRQ source.
- * @param[in]  msk - variable of msk.
+ * @brief      This function servers to clear the selected IRQ source.
+ * @param[in]  status - variable of status.
  * @return     none.
  */
-static inline void irq_clr_src2(unsigned long msk)
+static inline void irq_clr_sel_src(unsigned long status)
 {
-    reg_irq_src = msk;
+    reg_irq_src = status;
 }
 
 /**

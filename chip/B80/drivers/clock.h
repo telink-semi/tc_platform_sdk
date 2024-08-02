@@ -64,12 +64,18 @@ extern unsigned int system_clk_type;
 #define  VULTURE_A0   				0
 
 /**
- * @brief 	crystal for different application
+ * @brief:	External 24M crystal using internal or external capacitors
+ * @note:	If the software configuration and hardware board does not match,
+ *          it may lead to the following problems:
+ *          crystal clock frequency is not allowed,  slow crystal vibration caused by the chip reset, etc.
  */
 typedef enum{
-	EXTERNAL_XTAL_24M	= 0,			//Use an external 24M crystal and internal capacitors.
-	EXTERNAL_XTAL_EXTERNAL_CAP_24M	= 2,//Use an external 24M crystal and external capacitors.
-}XTAL_TypeDef;
+	INTERNAL_CAP_XTAL24M = 0, /**<    Use the chip's internal crystal capacitors,
+	                             <p>  hardware boards can not have 24M crystal matching capacitors */
+	EXTERNAL_CAP_XTAL24M = 1, /**<    Use an external crystal capacitor,
+	                             <p>  the hardware board needs to have a matching capacitor for the 24M crystal,
+	                             <p>  the program will turn off the chip's internal capacitor */
+}cap_typedef_e;
 
 #if (MCU_CORE_B80)
 /**

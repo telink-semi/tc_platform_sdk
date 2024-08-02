@@ -25,7 +25,7 @@
 
 volatile unsigned int t0;
 
-void user_init()
+void user_init(void)
 {
 	sleep_ms(2000);  //leave enough time for SWS_reset when power on
 	//1.init the LED pin,for indication
@@ -89,14 +89,16 @@ void main_loop (void)
 {
 #if(TIMER_MODE == TIMER_GPIO_TRIGGER_MODE)
 
-	gpio_toggle(LED3|LED4);
+	gpio_toggle(LED3);
+	gpio_toggle(LED4);
 
 #elif(TIMER_MODE == TIMER_TICK_MODE)
 
 	if(reg_tmr0_tick > 500 * CLOCK_SYS_CLOCK_1US*1000)
 	{
 		reg_tmr0_tick = 0;
-		gpio_toggle(LED3|LED4);
+		gpio_toggle(LED3);
+		gpio_toggle(LED4);
 	}
 
 #endif

@@ -105,7 +105,7 @@ int phase_rx_angle_cali_angle[8] = {0,-41,82,163,41,-122,122,122};
  * so the data in the table corresponds to adding 1 to the antenna number marked on the hardware.
  */
 unsigned char antenna_switch_seq[8] = {0,1,2,3,4,5,6,7};
-void user_init()
+void user_init(void)
 {
 	gpio_init(1);
 

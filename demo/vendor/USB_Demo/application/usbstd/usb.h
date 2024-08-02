@@ -71,7 +71,6 @@ void usb_init(void);
 #define MS_OS_DESCRIPTOR_ENABLE        0//1.1or 2.0
 
 
-
 void usb_init_interrupt(void);
 void usb_handle_irq(void);
 

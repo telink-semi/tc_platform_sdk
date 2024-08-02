@@ -63,7 +63,7 @@ volatile  unsigned  int  block_16=0;
 #endif
 
 
-void user_init()
+void user_init(void)
 {
 #if (AUDIO_MODE ==AUDIO_AMIC_TO_SDM)
 	//PC0 for BIAS setting.

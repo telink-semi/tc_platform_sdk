@@ -23,7 +23,7 @@
  *******************************************************************************************************/
 #include "app_config.h"
 #if (GPIO_MODE != AUTO_TEST_MODE)
-void user_init()
+void user_init(void)
 {
 	sleep_ms(2000);
 #if(GPIO_MODE == GPIO_HIGH_RESISTOR)

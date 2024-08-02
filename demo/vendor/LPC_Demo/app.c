@@ -29,7 +29,7 @@
 unsigned char result=0;
 
 
-void user_init()
+void user_init(void)
 {
 	sleep_ms(2000);  //leave enough time for SWS_reset when power on
 	gpio_set_func(OUTPUT_PIN,AS_GPIO);

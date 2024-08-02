@@ -31,12 +31,16 @@ volatile unsigned char g_key_value[256] = {0};
 volatile unsigned char g_key_value_rptr = 0;
 volatile unsigned char g_key_value_wptr = 0;
 volatile unsigned char g_keyscan_error_flag = 0;//1 indicates that the data stored in the interrupt is abnormal.
-void user_init()
+void user_init(void)
 {
-	gpio_set_func(LED1|LED2 ,AS_GPIO);
-	gpio_set_output_en(LED1|LED2 , 1); 		//enable output
-	gpio_set_input_en(LED1|LED2 ,0);			//disable input
+    gpio_set_func(LED1, AS_GPIO);
+    gpio_set_func(LED2, AS_GPIO);
 
+    gpio_set_output_en(LED1, 1); //enable output
+    gpio_set_output_en(LED2, 1); //enable output
+
+    gpio_set_input_en(LED1, 0); //disable input
+    gpio_set_input_en(LED2, 0); //disable input
 
 	//set gpio as to keyscan.
 	keyscan_set_martix((unsigned char*)g_ks_row, ROW_CNT, (unsigned char*)g_ks_col, COL_CNT, KS_INT_PIN_PULLDOWN);
@@ -63,7 +67,8 @@ void main_loop (void)
 		}
 		g_key_value_rptr = (g_key_value_rptr + 1)&0xff;
 	}
-	gpio_toggle(LED1|LED2);
+	gpio_toggle(LED1);
+	gpio_toggle(LED2);
 	sleep_ms(200);
 #if(KEYSCAN_TEST_SUSPEND)
 	cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_CORE_KEY_SCAN, 0);

@@ -27,40 +27,6 @@
 #include "timer.h"
 #include "string.h"
 
-/**
- *	If you add a new flash, you need to check the following location and add the corresponding flash model:
-	#1 need to add flash_midxxx.c and flash_midxxx.h to the driver/flash directory, and introduce the header file flash_midxxx.h into flash_type.h.
-	#2 need to add the corresponding mid to flash_mid_e in flash.h to check if Flash_CapacityDef contains the size of the added flash.
-	#3 Check that flash_get_vendor() in flash.c and flash_vendor_e in flash.h already contain the added flash model.
-	#4 need to add the corresponding mid in flash_support_mid[], and the Flash Type/uid CMD/MID/Company/Sector Erase Time(MAX) in the following table.
-	#5 need to add a flash test area of corresponding size in Test_Demo/app_flash_test.c.
-	#6 need to add the corresponding new flash to Flash_Deno/app.c in flash_lock()/flash_unlock(), as well as add the implementation of flash_midxxx_test()
-	and add the case of flash_midxxx_test() in user_init().
-	#7 If add ZB flash type,need to change the API zb_cam_modify(),and need to confirm the time sequence with ZB.
-
- 	If add flash type, need pay attention to the read uid command and the bit number of status register.
-	Flash Type	uid CMD			MID		Company		Sector Erase Time(MAX)
-	ZB25WD40B	0x4b		0x13325E	ZB			500ms
-	ZB25WD80B	0x4b		0x14325E	ZB			500ms
-	GD25LD05C	0x4b(AN)	0x1060C8	GD			500ms
-	GD25LD40C	0x4b		0x1360C8	GD			500ms
-	GD25LD40E	0x4b		0x1360C8	GD			500ms
-	GD25LD80C	0x4b(AN)	0x1460C8	GD			500ms
-	GD25LD80E	0x4b(AN)	0x1460C8	GD			500ms
-	GD25LE80C	0x4b		0x1460C8	GD			300ms
-	GD25LQ80C	0x4b		0x1460C8	GD			300ms
-	MD25D40D	0x4b(AN)	0x134051	GD			400ms
-	P25Q40L		0x4b		0x136085	PUYA		12ms
-	P25D40SU    0x4b        0x136085    PUYA        12ms
-	TH25D40LA	0x4b		0x1360EB	TH			12ms
-	TH25D40UA	0x4b		0x1360EB	TH			12ms
-
-	The uid of the early ZB25WD40B (mid is 0x13325E) is 8 bytes. If you read 16 bytes of uid,
-	the next 8 bytes will be read as 0xff. Later, the uid of ZB25WD40B has been switched to 16 bytes.
- */
-unsigned int flash_support_mid[] = {0x13325E, 0x14325E, 0x1060C8, 0x1360C8, 0x1460C8, 0x011460C8, 0x134051, 0x136085, 0x1360EB};
-const unsigned int FLASH_CNT = sizeof(flash_support_mid)/sizeof(*flash_support_mid);
-
 flash_handler_t flash_read_page = flash_read_data;
 flash_handler_t flash_write_page = flash_page_program;
 
@@ -476,50 +442,6 @@ void flash_read_uid(unsigned char idcmd, unsigned char *buf)
 /*******************************************************************************************************************
  *												Secondary interface
  ******************************************************************************************************************/
-
-/**
- * @brief		This function serves to read flash mid and uid,and check the correctness of mid and uid.
- * @param[out]	flash_mid	- Flash Manufacturer ID.
- * @param[out]	flash_uid	- Flash Unique ID.
- * @return		0: flash no uid or not a known flash model 	 1:the flash model is known and the uid is read.
- * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
- *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
- *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
- *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
- *              to the specific application and hardware circuit.
- *
- *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
- *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
- *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
- */
-int flash_read_mid_uid_with_check(unsigned int *flash_mid, unsigned char *flash_uid)
-{
-	unsigned char no_uid[16]={0x51,0x01,0x51,0x01,0x51,0x01,0x51,0x01,0x51,0x01,0x51,0x01,0x51,0x01,0x51,0x01};
-	int i,f_cnt=0;
-	*flash_mid = flash_read_mid();
-
-	for(i=0; i<FLASH_CNT; i++){
-		if(flash_support_mid[i] == *flash_mid){
-			flash_read_uid(FLASH_READ_UID_CMD_GD_PUYA_ZB_TH, (unsigned char *)flash_uid);
-			break;
-		}
-	}
-	if(i == FLASH_CNT){
-		return 0;
-	}
-
-	for(i=0; i<16; i++){
-		if(flash_uid[i] == no_uid[i]){
-			f_cnt++;
-		}
-	}
-
-	if(f_cnt == 16){	//no uid flash
-		return 0;
-	}else{
-		return 1;
-	}
-}
 
 /**
  * @brief		This function serves to get flash vendor.

@@ -25,7 +25,7 @@
 
 unsigned char dat[5]={0};
 
-void user_init()
+void user_init(void)
 {
 
 	sleep_ms(2000);

@@ -61,7 +61,7 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 
 }
 
-void user_init()
+void user_init(void)
 {
 	sleep_ms(2000);
 	pwm_set_clk(CLOCK_SYS_CLOCK_HZ, CLOCK_SYS_CLOCK_HZ);

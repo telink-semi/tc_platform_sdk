@@ -23,16 +23,22 @@
  *******************************************************************************************************/
 #pragma once
 #include "driver.h"
+#include "common.h"
 /* Enable C linkage for C++ Compilers: */
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
+/**
+ * @brief Define system clock
+ */
+#define CLOCK_SYS_CLOCK_HZ 24000000
 
-#define LED1     		        GPIO_PB3
-#define LED2     		        GPIO_PB4
-#define LED3     		        GPIO_PB5
-#define LED4     		        GPIO_PB6
+/**
+ * @note The sys_clock.h file depends on the definition of CLOCK_SYS_CLOCK_HZ so CLOCK_SYS_CLOCK_HZ must be placed before #include "sys_clock.h" without reversing the order.
+ */
+#include "sys_clock.h"
+
 #define UART_TX_PIN				GPIO_PD0
 #define UART_RX_PIN				GPIO_PD1
 #define UART_CTS_PIN			GPIO_PD2
@@ -78,29 +84,6 @@ extern "C" {
 	#define RTS_INVERT		0			//UART_RTS_MODE_AUTO need.1 indicates RTS_pin will change from low to high.
 	#define RTS_POLARITY	0			//UART_RTS_MODE_MANUAL need. It indicates RTS_POLARITY .
 #endif
-
-/* Define system clock */
-#define CLOCK_SYS_CLOCK_HZ  	24000000
-
-
-#if(CLOCK_SYS_CLOCK_HZ==12000000)
-	#define SYS_CLK  	SYS_CLK_12M_Crystal
-#elif (CLOCK_SYS_CLOCK_HZ==16000000)
-	#define SYS_CLK  	SYS_CLK_16M_Crystal
-#elif (CLOCK_SYS_CLOCK_HZ==24000000)
-	#define SYS_CLK  	SYS_CLK_24M_Crystal
-#elif (CLOCK_SYS_CLOCK_HZ==32000000)
-	#define SYS_CLK  	SYS_CLK_32M_Crystal
-#elif (CLOCK_SYS_CLOCK_HZ==48000000)
-	#define SYS_CLK  	SYS_CLK_48M_Crystal
-#endif
-
-
-enum{
-	CLOCK_SYS_CLOCK_1S = CLOCK_SYS_CLOCK_HZ,
-	CLOCK_SYS_CLOCK_1MS = (CLOCK_SYS_CLOCK_1S / 1000),
-	CLOCK_SYS_CLOCK_1US = (CLOCK_SYS_CLOCK_1S / 1000000),
-};
 
 /* Disable C linkage for C++ Compilers: */
 #if defined(__cplusplus)

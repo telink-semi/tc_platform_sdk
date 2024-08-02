@@ -24,7 +24,7 @@
 #include "app_config.h"
 #include "calibration.h"
 
-extern void user_init();
+extern void user_init(void);
 extern void main_loop (void);
 
 /**
@@ -34,22 +34,8 @@ extern void main_loop (void);
  */
 int main (void)   //must on ramcode
 {
-	cpu_wakeup_init(EXTERNAL_XTAL_24M);
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
-	wd_32k_stop();
-#endif
-	//Note: This function must be called, otherwise an abnormal situation may occur.
-	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
-#if(PACKAGE_TYPE == OTP_PACKAGE)
-	user_read_otp_value_calib();
-#elif(PACKAGE_TYPE == FLASH_PACKAGE)
-	user_read_flash_value_calib();
-#endif
-
-
-	clock_init(SYS_CLK);
-
-	gpio_init(0);
+    PLATFORM_INIT;
+    CLOCK_INIT;
 
 	user_init();
 

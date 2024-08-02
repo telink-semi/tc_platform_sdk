@@ -863,10 +863,13 @@ void usb_handle_irq(void) {
 	}
 #endif
 
-	if (reg_irq_src & FLD_IRQ_USB_RST_EN)
+	if (irq_get_src() & FLD_IRQ_USB_RST_EN)
 	{		//USB reset
 			usb_mouse_report_proto = 1;                   //1: report protocol; 0: start protocol
-			reg_irq_src = FLD_IRQ_USB_RST_EN;					//Clear USB reset flag
+#if (MCU_CORE_B80B)
+            usbhw_clr_ctrl_ep_irq(FLD_USB_IRQ_RESET_STATUS); /* Clear USB reset status */
+#endif
+			irq_clr_sel_src(FLD_IRQ_USB_RST_EN);					//Clear USB reset flag
 			for (int i=0; i<8; i++) {
 				reg_usb_ep_ctrl(i) = 0;
 				edp_toggle[i]=0;
@@ -879,14 +882,14 @@ void usb_handle_irq(void) {
     #endif
     }
 
-   if(IRQ_USB_PWDN_ENABLE && (reg_irq_src & FLD_IRQ_USB_PWDN_EN)){
+   if(IRQ_USB_PWDN_ENABLE && (irq_get_src() & FLD_IRQ_USB_PWDN_EN)){
 		usb_has_suspend_irq = 1;
 	}else{
 		usb_has_suspend_irq = 0;
 	}
 
 #if (!USB_DESCRIPTOR_CONFIGURATION_FOR_KM_DONGLE)
-	if ((reg_irq_src & FLD_IRQ_USB_PWDN_EN))
+	if ((irq_get_src() & FLD_IRQ_USB_PWDN_EN))
 	{
 		return;
 	}
@@ -907,6 +910,11 @@ void usb_init_interrupt(void)
 
 void usb_init(void)
 {
+#if (SWIRE_THROUGH_USB_DP_ENABLE)
+    swire_through_usb_dp_en();
+#else
+    swire_through_usb_dp_dis();
+#endif
 #if (MCU_CORE_B80B)
     usbhw_set_irq_edge();
     /* enable reset mask, otherwise, reg_irq_src does not detect the usb reset and suspend irq.*/

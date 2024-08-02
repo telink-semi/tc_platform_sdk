@@ -25,7 +25,7 @@
 
 volatile __attribute__((aligned(4))) unsigned char s7816_tx_buff_byte[5] = {0x00,0x84,0x00,0x00,0x04};
 
-void user_init()
+void user_init(void)
 {
     s7816_set_pin(UART_MODULE_SEL,S7816_RST_PIN,S7816_VCC_PIN,S7816_CLK_PIN,S7816_TRX_PIN);
     s7816_init(UART_MODULE_SEL,S7816_4MHZ,F,D);

@@ -127,6 +127,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/DUT_Demo</locationURI>
 		</link>
 		<link>
+			<name>vendor/DUT_Test</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
 			<name>vendor/Debug_Demo</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/Debug_Demo</locationURI>
@@ -204,12 +209,27 @@
 		<link>
 			<name>vendor/common</name>
 			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/common/B85</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC../demo/vendor/common/common</locationURI>
 		</link>
 		<link>
 			<name>vendor/s7816_Demo</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/s7816_Demo/s7816_V1.0/s7816_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/DUT_Test/DUT</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>vendor/common/calibration</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC../demo/vendor/common/B85/calibration</locationURI>
+		</link>
+		<link>
+			<name>vendor/common/flash_internal_private_func</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC../demo/vendor/common/B85/flash_internal_private_func</locationURI>
 		</link>
 		<link>
 			<name>vendor/DUT_Test/DUT/boot_copy_data</name>

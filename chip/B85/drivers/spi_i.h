@@ -21,6 +21,9 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
+#ifndef __SPI_I_H__
+#define __SPI_I_H__
+
 #include "register.h"
 
  /**
@@ -88,7 +91,7 @@ _attribute_ram_code_sec_ static inline unsigned char mspi_read(void){
 	return mspi_get();
 }
 
-
+#endif
 
 
 

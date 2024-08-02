@@ -30,7 +30,7 @@ volatile unsigned short vbat_channel_val;
 volatile unsigned short adc_manual_val;
 volatile unsigned int rns_val;
 
-void user_init()
+void user_init(void)
 {
 
 #if(ADC_MODE==ADC_RNG_MODE)

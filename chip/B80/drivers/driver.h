@@ -63,5 +63,6 @@
 #include "qdec.h"
 #include "keyscan.h"
 #include "flash/flash_type.h"
+#include "flash/flash_common.h"
 #include "stimer.h"
 #include "sdk_version.h"

@@ -28,9 +28,11 @@
 #if(MCU_CORE_B80)
 #include "flash_mid1160c8.h"	// GD25LD10C
 #include "flash_mid1360c8.h"	// GD25LD40C
+#include "flash_mid13325e.h"	// ZG25WD40B
 #endif
 #include "flash_mid136085.h"	// P25Q40SU
 #include "flash_mid114485.h"	// P25D09U
+#include "flash_mid1164c8.h"	// GD25WD10EGIG
 
 
 /**

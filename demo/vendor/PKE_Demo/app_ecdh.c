@@ -627,12 +627,27 @@ unsigned char ECDH_all_test(void)
 	return 0;
 }
 
-void user_init()
+void user_init(void)
 {
-	gpio_set_func(LED1|LED2|LED3|LED4, AS_GPIO);
-	gpio_set_output_en(LED1|LED2|LED3|LED4, 1);
-	gpio_set_input_en(LED1|LED2|LED3|LED4, 0);
-	gpio_write(LED1|LED2|LED3|LED4, 1);
+    gpio_set_func(LED1, AS_GPIO);
+    gpio_set_func(LED2, AS_GPIO);
+    gpio_set_func(LED3, AS_GPIO);
+    gpio_set_func(LED4, AS_GPIO);
+
+    gpio_set_output_en(LED1, 1);
+    gpio_set_output_en(LED2, 1);
+    gpio_set_output_en(LED3, 1);
+    gpio_set_output_en(LED4, 1);
+
+    gpio_set_input_en(LED1, 0);
+    gpio_set_input_en(LED2, 0);
+    gpio_set_input_en(LED3, 0);
+    gpio_set_input_en(LED4, 0);
+
+    gpio_write(LED1, 1);
+    gpio_write(LED2, 1);
+    gpio_write(LED3, 1);
+    gpio_write(LED4, 1);
 
 	ECDH_all_test();
 }
@@ -641,7 +656,10 @@ void main_loop (void)
 {
 	sleep_ms(500);
 
-	gpio_toggle(LED1|LED2|LED3|LED4);
+    gpio_toggle(LED1);
+    gpio_toggle(LED2);
+    gpio_toggle(LED3);
+    gpio_toggle(LED4);
 }
 
 #endif

@@ -30,7 +30,7 @@ volatile signed int total_count;
 volatile signed char qdec_count = 0;
 volatile unsigned int pol = 0x100;
 
-void user_init()
+void user_init(void)
 {
 	gpio_set_func(QDEC_CHA, AS_GPIO);
 	gpio_set_output_en(QDEC_CHA,0);

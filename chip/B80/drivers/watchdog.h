@@ -58,7 +58,7 @@
  * @brief     This function set the feed dog capture value (capture_tick), the clock source is the system clock.
  * 			  When this capture value is reached, the chip will restart. The actual capture value is only high 14Bits will work,
  * 			  so there will be some deviation from the set value, the deviation can be calculated by the following principle,
- * 			  the actual capture value is: capture_tick = (period_ms*tick_per_ms) & 0xfff30000.
+ * 			  the actual capture value is: capture_tick = (period_ms*tick_per_ms) & 0xfffc0000.
  * @param[in] period_ms - feeding period time, the unit is ms
  * @param[in] tick_per_ms - tick value required for 1ms under system clock timing
  * @return    none

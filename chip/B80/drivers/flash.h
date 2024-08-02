@@ -36,9 +36,11 @@ typedef enum{
 #if(MCU_CORE_B80)
     MID1160C8   =   0x1160C8,//GD25LD10C
 	MID1360C8   =   0x1360c8,//GD25LD40C
+	MID13325E   =   0x13325e,//ZG25WD40B (Untested)
 #endif
-	MID114485   =   0x11448,//P25D09U
+	MID114485   =   0x114485,//P25D09U
 	MID136085   =   0x136085,//P25Q40SU
+	MID1164C8   =   0x1164c8,//GD25WD10EGIG
 }flash_mid_e;
 
 /**
@@ -113,17 +115,17 @@ typedef enum {
 } Flash_CapacityDef;
 
 /**
- * @brief	flash voltage definition
+ * @brief	flash voltage definition(when VDD_F voltage with no load).
  */
 typedef enum {
-    FLASH_VOLTAGE_1V95     = 0x07,
-    FLASH_VOLTAGE_1V9      = 0x06,
-    FLASH_VOLTAGE_1V85     = 0x05,
-    FLASH_VOLTAGE_1V8      = 0x04,
-    FLASH_VOLTAGE_1V75     = 0x03,
-    FLASH_VOLTAGE_1V7      = 0x02,
-    FLASH_VOLTAGE_1V65     = 0x01,
-    FLASH_VOLTAGE_1V6      = 0x00,
+	FLASH_VOLTAGE_2V25     = 0x07,
+	FLASH_VOLTAGE_2V2      = 0x06,
+	FLASH_VOLTAGE_2V15     = 0x05,
+	FLASH_VOLTAGE_2V1      = 0x04,
+	FLASH_VOLTAGE_2V05     = 0x03,
+	FLASH_VOLTAGE_2V0      = 0x02,
+	FLASH_VOLTAGE_1V95     = 0x01,
+	FLASH_VOLTAGE_1V9      = 0x00,
 } Flash_VoltageDef;
 
 typedef void (*flash_handler_t)(unsigned long, unsigned long, unsigned char*);
@@ -241,23 +243,6 @@ void flash_read_uid(unsigned char idcmd, unsigned char *buf);
 /*******************************************************************************************************************
  *												Secondary interface
  ******************************************************************************************************************/
-
-/**
- * @brief		This function serves to read flash mid and uid,and check the correctness of mid and uid.
- * @param[out]	flash_mid	- Flash Manufacturer ID.
- * @param[out]	flash_uid	- Flash Unique ID.
- * @return		0: flash no uid or not a known flash model 	 1:the flash model is known and the uid is read.
- * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
- *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
- *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
- *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
- *              to the specific application and hardware circuit.
- *
- *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
- *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
- *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
- */
-int flash_read_mid_uid_with_check( unsigned int *flash_mid, unsigned char *flash_uid);
 
 /**
  * @brief		This function serves to get flash vendor.

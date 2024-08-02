@@ -23,54 +23,21 @@
  *******************************************************************************************************/
 #pragma once
 #include "driver.h"
+#include "common.h"
 /* Enable C linkage for C++ Compilers: */
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
+/**
+ * @brief Define system clock
+ */
+#define CLOCK_SYS_CLOCK_HZ 24000000
 
-
-/* Define system clock */
-#define CLOCK_SYS_CLOCK_HZ  	24000000
-
-#if(MCU_CORE_B89)
-#if(CLOCK_SYS_CLOCK_HZ==12000000)
-	#define SYS_CLK  	SYS_CLK_12M_Crystal
-#elif (CLOCK_SYS_CLOCK_HZ==16000000)
-	#define SYS_CLK  	SYS_CLK_16M_Crystal
-#elif (CLOCK_SYS_CLOCK_HZ==24000000)
-	#define SYS_CLK  	SYS_CLK_24M_Crystal
-#endif
-#else
-#if(CLOCK_SYS_CLOCK_HZ==12000000)
-	#define SYS_CLK  	SYS_CLK_12M_Crystal
-#elif (CLOCK_SYS_CLOCK_HZ==16000000)
-	#define SYS_CLK  	SYS_CLK_16M_Crystal
-#elif (CLOCK_SYS_CLOCK_HZ==24000000)
-	#define SYS_CLK  	SYS_CLK_24M_Crystal
-#elif (CLOCK_SYS_CLOCK_HZ==32000000)
-	#define SYS_CLK  	SYS_CLK_32M_Crystal
-#elif (CLOCK_SYS_CLOCK_HZ==48000000)
-	#define SYS_CLK  	SYS_CLK_48M_Crystal
-#endif
-#endif
-
-
-enum{
-	CLOCK_SYS_CLOCK_1S = CLOCK_SYS_CLOCK_HZ,
-	CLOCK_SYS_CLOCK_1MS = (CLOCK_SYS_CLOCK_1S / 1000),
-	CLOCK_SYS_CLOCK_1US = (CLOCK_SYS_CLOCK_1S / 1000000),
-};
-
-
-
-
-
-
-
-
-
-
+/**
+ * @note The sys_clock.h file depends on the definition of CLOCK_SYS_CLOCK_HZ so CLOCK_SYS_CLOCK_HZ must be placed before #include "sys_clock.h" without reversing the order.
+ */
+#include "sys_clock.h"
 
 /* Disable C linkage for C++ Compilers: */
 #if defined(__cplusplus)

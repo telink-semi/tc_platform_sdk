@@ -79,7 +79,7 @@ typedef struct{
  * @brief  Define the SPI command & translate mode.
  */
 typedef enum{
-	SPI_MODE_WRITE_AND_READ = 0,//write and read at the same.must enable CmdEn
+	SPI_MODE_WRITE_AND_READ = 0,//write and read at the same.
 	SPI_MODE_WRITE_ONLY,//write
 	SPI_MODE_READ_ONLY,// read must enable CmdEn
 	SPI_MODE_WRITE_READ,//write_ read
@@ -863,6 +863,15 @@ void spi_master_write_dma( unsigned char *data, unsigned int data_len);
  * @return  	none
  */
 void spi_master_write_read_dma( unsigned char *tx_data, unsigned int tx_len, unsigned char *rx_data, unsigned int rx_len);
+
+/**
+ * @brief     	This function serves to write and read data simultaneously by dma.
+ * @param[in] 	tx_data     - the pointer to the data for write.
+ * @param[in] 	rx_data 	- the pointer to the data for read.
+ * @param[in] 	len 	    - data length.
+ * @return  	none
+ */
+void spi_master_write_read_dma_full_duplex(unsigned char* tx_data,unsigned char* rx_data,unsigned int len);
 
 /**
  * @brief      	This function serves to single/dual/quad  write to the SPI slave by dma.

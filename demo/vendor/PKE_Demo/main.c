@@ -24,7 +24,7 @@
 #include "app_config.h"
 
 
-extern void user_init();
+extern void user_init(void);
 extern void main_loop(void);
 
 /**
@@ -44,15 +44,8 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
  */
 int main (void)   //must on ramcode
 {
-#if (MCU_CORE_B87)
-	cpu_wakeup_init(LDO_MODE, EXTERNAL_XTAL_24M);
-#elif (MCU_CORE_B89)
-	cpu_wakeup_init(EXTERNAL_XTAL_24M);
-#endif
-#if(MCU_CORE_B89)
-	wd_32k_stop();
-#endif
-	clock_init(SYS_CLK);
+    PLATFORM_INIT;
+    CLOCK_INIT;
 
 #if (MCU_CORE_B87)
 	irq_enable_type(FLD_IRQ_PKE_EN);

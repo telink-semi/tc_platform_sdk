@@ -391,7 +391,7 @@ void lcd_show_picture(unsigned short x, unsigned short x_delta, unsigned short y
 
 }
 
-void user_init()
+void user_init(void)
 {
 	gpio_set_output_en(LCD_RESET_PIN,1);
 	gpio_set_input_en(LCD_RESET_PIN,0);

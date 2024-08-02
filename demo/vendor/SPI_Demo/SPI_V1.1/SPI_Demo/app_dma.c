@@ -159,11 +159,17 @@
 	unsigned char spi_rx_buff[DATA_BYTE_LEN+4] __attribute__((aligned(4))) = {0x00};
 #endif
 
-void user_init()
+void user_init(void)
 {
-	gpio_set_func(LED1|LED2,AS_GPIO);
-	gpio_set_output_en(LED1|LED2, 1); 		//enable output
-	gpio_set_input_en(LED1|LED2,0);			//disable input
+    gpio_set_func(LED1, AS_GPIO);
+    gpio_set_func(LED2, AS_GPIO);
+
+    gpio_set_output_en(LED1, 1); //enable output
+    gpio_set_output_en(LED2, 1); //enable output
+
+    gpio_set_input_en(LED1, 0); //disable input
+    gpio_set_input_en(LED2, 0); //disable input
+
 	/*if you not use spi pin default,should disable it.*/
 	gpio_set_func(GPIO_SPI_MOSI,AS_GPIO);
 	gpio_set_func( GPIO_SPI_MISO,AS_GPIO);
@@ -282,12 +288,17 @@ unsigned char spi_tx_buff[20] __attribute__((aligned(4))) = {0x10,0x00,0x00,0x00
 #define DATA_BYTE_LEN    	16
 #define DATA_BYTE_OFFSET    8 //must be a multiple 4
 unsigned char spi_rx_buff[SPI_RX_BUFF_LEN] __attribute__((aligned(4))) = {0x00};
-void user_init()
+void user_init(void)
 {
 	//1.init the LED pin,for indication
-	gpio_set_func(LED1|LED2 ,AS_GPIO);
-	gpio_set_output_en(LED1|LED2, 1); //enable output
-	gpio_set_input_en(LED1|LED2,0);	//disable input
+    gpio_set_func(LED1, AS_GPIO);
+    gpio_set_func(LED2, AS_GPIO);
+
+    gpio_set_output_en(LED1, 1); //enable output
+    gpio_set_output_en(LED2, 1); //enable output
+
+    gpio_set_input_en(LED1,0);	//disable input
+    gpio_set_input_en(LED2,0);	//disable input
 
 	gpio_set_func(GPIO_SPI_MOSI,AS_GPIO);
 	gpio_set_func( GPIO_SPI_MISO,AS_GPIO);

@@ -203,7 +203,6 @@
 #define	IRQ_USB_PWDN_ENABLE  	0
 #endif
 
-
 #ifndef USB_PRINTER_ENABLE
 #define	USB_PRINTER_ENABLE 		0
 #endif
@@ -259,7 +258,10 @@
 #define USB_MOUSE_RELEASE_TIMEOUT       (200000) // in us
 #define USB_SOMATIC_RELEASE_TIMEOUT     (200000) // in us
 
-
+/*config for swire through USB DP, it requires a call to usb_set_pin_en() at the same time to enable this function*/
+#ifndef SWIRE_THROUGH_USB_DP_ENABLE
+#define SWIRE_THROUGH_USB_DP_ENABLE     1
+#endif
 
 
 

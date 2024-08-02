@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    zb_flash_ctrl.c
  *
- * @brief   This is the source file for B87
+ * @brief   This is the source file for B85
  *
  * @author  Driver Group
  * @date    2022
@@ -21,10 +21,10 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-#include "zb_flash_ctrl.h"
+#include "../flash_internal_private_func/zb_flash_ctrl.h"
 
 static unsigned char cmd_list[5] = {0x00,0x00,0x00,0x00,0x00};
-static unsigned int zb_cam_modify_support_type[] = {0x11325E, 0x12325E, 0x13325E, 0x14325E};
+static unsigned int zb_cam_modify_support_type[] = {0x13325E, 0x14325E};
 static const unsigned int zb_cam_modify_support_cnt = sizeof(zb_cam_modify_support_type)/sizeof(*zb_cam_modify_support_type);
 
 /**

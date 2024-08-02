@@ -52,7 +52,7 @@ unsigned char cmd_buf[4];
 volatile unsigned char spi_tx_buff[BUFF_DATA_LEN]={0xAA,0x10,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xBB};
 volatile unsigned char spi_rx_buff[BUFF_DATA_LEN]={0x00};
 
-void user_init()
+void user_init(void)
 {
 	sleep_ms(2000);
 	//1.init the LED pin,for indication
@@ -92,7 +92,7 @@ void main_loop (void)
 
 #elif(SPI_DEVICE== SPI_SLAVE_DEVICE)
 
-void user_init()
+void user_init(void)
 {
 	sleep_ms(2000);
 

@@ -329,7 +329,7 @@ extern unsigned int pm_get_32k_tick(void);
  * 			3. When this function called after power on or deep sleep wakeup, it will cost about 6~7ms for perform 32k RC calibration. 
  * 				If do not want this logic, you can check the usage and precautions of cpu_wakeup_init_calib_32k_rc_cfg().
  */
-void cpu_wakeup_init(XTAL_TypeDef xtal) ;
+void cpu_wakeup_init(cap_typedef_e cap);
 
 /**
  * @brief 	  This function performs to configure whether to calibrate the 32k rc in the cpu_wakeup_init() when power-on or wakeup from deep sleep mode.If wakeup from deep retention sleep mode will not calibrate.

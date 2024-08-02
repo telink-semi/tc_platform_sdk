@@ -1455,8 +1455,18 @@ enum{
 
 /*******************************      pwm registers: 0x780      ******************************/
 
+#define reg_pwm_m_enable		REG_ADDR16(0x780)
 #define reg_pwm_enable			REG_ADDR8(0x780)
 #define reg_pwm0_enable			REG_ADDR8(0x781)
+typedef enum{
+	FLD_PWM1_EN = BIT(1),
+	FLD_PWM2_EN = BIT(2),
+	FLD_PWM3_EN = BIT(3),
+	FLD_PWM4_EN = BIT(4),
+	FLD_PWM5_EN = BIT(5),
+	FLD_PWM0_EN = BIT(8),
+}pwm_en_e;
+
 #define reg_pwm_clk				REG_ADDR8(0x782)
 
 #define reg_pwm0_mode			REG_ADDR8(0x783)

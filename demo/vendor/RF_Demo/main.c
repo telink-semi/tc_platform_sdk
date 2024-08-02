@@ -24,7 +24,7 @@
 #include "app_config.h"
 #include "calibration.h"
 
-extern void user_init();
+extern void user_init(void);
 extern void main_loop (void);
 extern _attribute_ram_code_sec_noinline_ void irq_rf_handler(void);
 extern unsigned int tx_state;
@@ -84,33 +84,7 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
  */
 int main (void) {
 
-#if (MCU_CORE_B85)
-	cpu_wakeup_init();
-#elif (MCU_CORE_B87)
-	cpu_wakeup_init(LDO_MODE, EXTERNAL_XTAL_24M);
-#elif (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
-	cpu_wakeup_init(EXTERNAL_XTAL_24M);
-#endif
-#if(MCU_CORE_B80 || MCU_CORE_B80B ||MCU_CORE_B89)
-	wd_32k_stop();
-#endif
-#if (MCU_CORE_B85) || (MCU_CORE_B87)
-	//Note: This function must be called, otherwise an abnormal situation may occur.
-	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
-	user_read_flash_value_calib();
-#elif (MCU_CORE_B89)
-	//Note: This function must be called, otherwise an abnormal situation may occur.
-	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
-	user_read_otp_value_calib();
-#elif (MCU_CORE_B80 || MCU_CORE_B80B)
-	//Note: This function must be called, otherwise an abnormal situation may occur.
-	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
-#if(PACKAGE_TYPE == OTP_PACKAGE)
-	user_read_otp_value_calib();
-#elif(PACKAGE_TYPE == FLASH_PACKAGE)
-	user_read_flash_value_calib();
-#endif
-#endif
+	PLATFORM_INIT;
 
 #if (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
 	rf_mode_init();
@@ -186,7 +160,7 @@ int main (void) {
 	gpio_init(0);
 #endif
 
-	clock_init(SYS_CLK);
+    CLOCK_INIT;
 
 	user_init();
 

@@ -23,14 +23,29 @@
  *******************************************************************************************************/
 #include "app_config.h"
 
-void user_init()
+void user_init(void)
 {
 	sleep_ms(1000);
 	//1.init the LED pin,for indication
-	gpio_set_func(LED1|LED2|LED3|LED4 ,AS_GPIO);
-	gpio_set_output_en(LED1|LED2|LED3|LED4, 1); 		//enable output
-	gpio_set_input_en(LED1|LED2|LED3|LED4 ,0);			//disable input
-	gpio_write(LED1|LED2|LED3|LED4, 0);              	//LED On
+    gpio_set_func(LED1, AS_GPIO);
+    gpio_set_func(LED2, AS_GPIO);
+    gpio_set_func(LED3, AS_GPIO);
+    gpio_set_func(LED4, AS_GPIO);
+
+    gpio_set_output_en(LED1, 1); //enable output
+    gpio_set_output_en(LED2, 1); //enable output
+    gpio_set_output_en(LED3, 1); //enable output
+    gpio_set_output_en(LED4, 1); //enable output
+
+    gpio_set_input_en(LED1, 0); //disable input
+    gpio_set_input_en(LED2, 0); //disable input
+    gpio_set_input_en(LED3, 0); //disable input
+    gpio_set_input_en(LED4, 0); //disable input
+
+    gpio_write(LED1, 0); //LED OFF
+    gpio_write(LED2, 0); //LED OFF
+    gpio_write(LED3, 0); //LED OFF
+    gpio_write(LED4, 0); //LED OFF
 
 	//Only B80 B85 and B87 has support USB, B89 has not USB module, not support USB printf.
 #if ((DEBUG_BUS == DEBUG_USB) && (MCU_CORE_B80 || MCU_CORE_B80B ||MCU_CORE_B85 || MCU_CORE_B87))
@@ -50,7 +65,11 @@ void user_init()
 void main_loop (void)
 {
 	sleep_ms(1000);
-	gpio_toggle(LED1|LED2|LED3|LED4);
+    gpio_toggle(LED1);
+    gpio_toggle(LED2);
+    gpio_toggle(LED3);
+    gpio_toggle(LED4);
+
 	printf(" Hello world! \n");
 
     // test sprintf 
