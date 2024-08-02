@@ -3,7 +3,7 @@
 ### Version
 
 * SDK version: tc_platform_sdk V2.0.0
-* This version of SDK supports B80(A1), B80B, B85, B87 chips.
+* This version of SDK supports TLSR8208 (B80) (A1/A4), TLSR8208 B version (B80B) (A0/A1), B85, B87 chips.
 * The default configuration of LEDs and KEYs match the following hardware revisions:
 *	B80	 	C1T261A30_V1_1
 *	B80B	C1T321A30_V1_0
