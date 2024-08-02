@@ -166,7 +166,7 @@ static inline void pwm_set_pulse_num(pwm_id id, unsigned short pulse_num){
 }
 
 /**
- * @brief     This function servers to start the pwm.
+ * @brief     This function servers to start one channel of pwm.
  * @param[in] pwm_id - variable of enum to select the pwm number.
  * @return	  none.
  */
@@ -180,6 +180,16 @@ static inline void pwm_start(pwm_id id)
 	else{
 		BM_SET(reg_pwm_enable, BIT(id));
 	}
+}
+
+/**
+ * @brief     This function is used to enable one or more channels of pwm.
+ * @param[in] pwm_en_e - variable of enum to select the pwm.
+ * @return	  none.
+ */
+static inline void pwm_multi_start(pwm_en_e en)
+{
+	reg_pwm_m_enable|=en;
 }
 
 /**

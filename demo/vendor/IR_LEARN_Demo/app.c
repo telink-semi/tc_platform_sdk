@@ -66,11 +66,22 @@ volatile unsigned int ir_falling_cnt = 0;
 #endif
 
 
-void user_init()
+void user_init(void)
 {
-	gpio_set_func(LED1|LED2|LED3|LED4,AS_GPIO);
-	gpio_set_output_en(LED1|LED2|LED3|LED4,1);
-	gpio_set_input_en(LED1|LED2|LED3|LED4,0);
+    gpio_set_func(LED1, AS_GPIO);
+    gpio_set_func(LED2, AS_GPIO);
+    gpio_set_func(LED3, AS_GPIO);
+    gpio_set_func(LED4, AS_GPIO);
+
+    gpio_set_output_en(LED1, 1);
+    gpio_set_output_en(LED2, 1);
+    gpio_set_output_en(LED3, 1);
+    gpio_set_output_en(LED4, 1);
+
+    gpio_set_input_en(LED1, 0);
+    gpio_set_input_en(LED2, 0);
+    gpio_set_input_en(LED3, 0);
+    gpio_set_input_en(LED4, 0);
 
 	ir_learn_set_pin(IRLEARN_RX_PIN);
 	ir_learn_set_timeout(TICK_VALUE_65535);

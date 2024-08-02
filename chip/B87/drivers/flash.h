@@ -34,12 +34,13 @@
  */
 typedef enum{
 	MID11325E   =   0x11325e,//ZB25WD10A
-	MID1160C8   =   0x1160c8,//GD25LD10C
+	MID1160C8   =   0x1160c8,//GD25LD10C/GD25LD10E
 	MID13325E   =   0x13325e,//ZB25WD40B
 	MID1360C8   =   0x1360c8,//GD25LD40C/GD25LD40E
 	MID14325E   =   0x14325e,//ZB25WD80B
 	MID146085   =   0x146085,//P25Q80U
-	MID1460C8   =   0x1460c8,//GD25LD80C
+	MID1460C8   =   0x1460c8,//GD25LD80C/GD25LD80E
+	MID1570CD   =   0x1570cd,//TH25Q16UB
 }flash_mid_e;
 
 /**
@@ -55,7 +56,7 @@ enum{
 	FLASH_SECT_ERASE_CMD				=	0x20,
 	FLASH_ERASE_SECURITY_REGISTERS_CMD	=	0x44,
 
-	FLASH_READ_UID_CMD_GD_PUYA_ZB_TH	=	0x4B,	//Flash Type = GD/PUYA/ZB/TH
+	FLASH_READ_UID_CMD_GD_PUYA_ZB_TH	=	0x4B,	//Flash Type = GD/PUYA/ZB/TH/GT
 	FLASH_READ_UID_CMD_XTX				=	0x5A,	//Flash Type = XTX
 
 	FLASH_GET_JEDEC_ID					=	0x9F,
@@ -63,9 +64,12 @@ enum{
 	//special cmd
 	FLASH_WRITE_STATUS_CMD_LOWBYTE		=	0x01,
 	FLASH_WRITE_STATUS_CMD_HIGHBYTE		=	0x31,
+	FLASH_WRITE_CONFIGURE_CMD_1         =   0x31,
+	FLASH_WRITE_CONFIGURE_CMD_2         =   0x11,
 
 	FLASH_READ_STATUS_CMD_LOWBYTE		=	0x05,
 	FLASH_READ_STATUS_CMD_HIGHBYTE		=	0x35,
+	FLASH_READ_CONFIGURE_CMD            =	0x15,
 
 	FLASH_WRITE_DISABLE_CMD 			= 	0x04,
 	FLASH_WRITE_ENABLE_CMD 				= 	0x06,
@@ -85,11 +89,13 @@ typedef enum{
  * @brief     flash vendor and technology definition
  */
 typedef enum{
-	FLASH_ETOX_ZB  		= 0x0100325E,	// 325E		bit[24]:ETOX: Byte Program Time != Page Programming Time
+	FLASH_ETOX_ZB  		= 0x0100325E,	// 325E		bit[24]=1:ETOX: Byte Program Time != Page Programming Time
 	FLASH_ETOX_GD   	= 0x010060C8,	// 60C8/4051
-	FLASH_SONOS_PUYA  	= 0x02006085,	// 6085		bit[25]:SONOS:Byte Program Time == Page Programming Time
+	FLASH_SONOS_PUYA  	= 0x02006085,	// 6085		bit[25]=1:SONOS:Byte Program Time == Page Programming Time
 	FLASH_SONOS_TH  	= 0x020060EB,	// 60EB
-	FLASH_SST_TH  		= 0x040060CD,	// 60CD		bit[26]:SST:  Byte Program Time != Page Programming Time
+	FLASH_SST_TH  		= 0x040060CD,	// 60CD		bit[26]=1:SST:  Byte Program Time != Page Programming Time
+	FLASH_NORD_GT  		= 0x100060C4,	// 60C4		bit[27]=1:NORD: Byte Program Time != Page Programming Time
+	FLASH_NORD_TH  		= 0x100070CD,	// 70CD		bit[27]=1:NORD: Byte Program Time != Page Programming Time
 }flash_vendor_e;
 
 /**

@@ -41,7 +41,7 @@ volatile int i2c_read_cnt = 0;
 volatile int i2c_write_cnt = 0;
 
 
-void user_init()
+void user_init(void)
 {
 	sleep_ms(2000);
 	//1.init the LED pin,for indication

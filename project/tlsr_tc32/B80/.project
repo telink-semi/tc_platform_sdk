@@ -204,7 +204,7 @@
 		<link>
 			<name>vendor/common</name>
 			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/common/B80</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC../demo/vendor/common/common</locationURI>
 		</link>
 		<link>
 			<name>vendor/s7816_Demo</name>
@@ -212,9 +212,9 @@
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/s7816_Demo/s7816_V1.0/s7816_Demo</locationURI>
 		</link>
 		<link>
-			<name>vendor/common/auto_test</name>
+			<name>vendor/common/calibration</name>
 			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/common/auto_test</locationURI>
+			<locationURI>PARENT-3-PROJECT_LOC../demo/vendor/common/B80/calibration</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

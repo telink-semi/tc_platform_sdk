@@ -38,82 +38,82 @@ stages:
     - README.md
   when: manual
 
-release_sdk_S0_B80:
+release_sdk_P0_B80:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_platform_sdk_B80_S0"
+    PACK_NAME: "telink_b85m_platform_sdk_B80_P0"
     
-release_sdk_S1_B80:
+release_sdk_P5_B80:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_platform_sdk_B80_S1"
+    PACK_NAME: "telink_b85m_platform_sdk_B80_P5"
 
-release_sdk_S2_B80:
+release_sdk_P10_B80:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_platform_sdk_B80_S2"
+    PACK_NAME: "telink_b85m_platform_sdk_B80_P10"
 
-release_sdk_S3_B80:
+release_sdk_P12_B80:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_platform_sdk_B80_S3"
+    PACK_NAME: "telink_b85m_platform_sdk_B80_P12"
 
-release_sdk_otp_S0_B80:
+release_sdk_otp_P0_B80:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_platform_sdk_B80_S0_OTP_NO_RET_NO_EXT32K"
+    PACK_NAME: "telink_b85m_platform_sdk_B80_P0_OTP_NO_RET_NO_EXT32K"
 
-release_sdk_otp_S1_B80:
+release_sdk_otp_P5_B80:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_platform_sdk_B80_S1_OTP_NO_RET_NO_EXT32K"
+    PACK_NAME: "telink_b85m_platform_sdk_B80_P5_OTP_NO_RET_NO_EXT32K"
 
-release_sdk_otp_S2_B80:
+release_sdk_otp_P10_B80:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_platform_sdk_B80_S2_OTP_NO_RET_NO_EXT32K"
+    PACK_NAME: "telink_b85m_platform_sdk_B80_P10_OTP_NO_RET_NO_EXT32K"
 
-release_sdk_otp_S3_B80:
+release_sdk_otp_P12_B80:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_platform_sdk_B80_S3_OTP_NO_RET_NO_EXT32K"
+    PACK_NAME: "telink_b85m_platform_sdk_B80_P12_OTP_NO_RET_NO_EXT32K"
 
-release_sdk_S0_B80B:
+release_sdk_P0_B80B:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_platform_sdk_B80B_S0"
+    PACK_NAME: "telink_b85m_platform_sdk_B80B_P0"
     
-release_sdk_S1_B80B:
+release_sdk_P5_B80B:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_platform_sdk_B80B_S1"
+    PACK_NAME: "telink_b85m_platform_sdk_B80B_P5"
 
-release_sdk_S2_B80B:
+release_sdk_P10_B80B:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_platform_sdk_B80B_S2"
+    PACK_NAME: "telink_b85m_platform_sdk_B80B_P10"
 
-release_sdk_S3_B80B:
+release_sdk_P12_B80B:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_platform_sdk_B80B_S3"
+    PACK_NAME: "telink_b85m_platform_sdk_B80B_P12"
 
-release_sdk_otp_S0_B80B:
+release_sdk_otp_P0_B80B:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_platform_sdk_B80B_S0_OTP_NO_RET_NO_EXT32K"
+    PACK_NAME: "telink_b85m_platform_sdk_B80B_P0_OTP_NO_RET_NO_EXT32K"
 
-release_sdk_otp_S1_B80B:
+release_sdk_otp_P5_B80B:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_platform_sdk_B80B_S1_OTP_NO_RET_NO_EXT32K"
+    PACK_NAME: "telink_b85m_platform_sdk_B80B_P5_OTP_NO_RET_NO_EXT32K"
 
-release_sdk_otp_S2_B80B:
+release_sdk_otp_P10_B80B:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_platform_sdk_B80B_S2_OTP_NO_RET_NO_EXT32K"
+    PACK_NAME: "telink_b85m_platform_sdk_B80B_P10_OTP_NO_RET_NO_EXT32K"
 
-release_sdk_otp_S3_B80B:
+release_sdk_otp_P12_B80B:
   <<: *release_sdk_template
   variables:
-    PACK_NAME: "telink_b85m_platform_sdk_B80B_S3_OTP_NO_RET_NO_EXT32K"
+    PACK_NAME: "telink_b85m_platform_sdk_B80B_P12_OTP_NO_RET_NO_EXT32K"

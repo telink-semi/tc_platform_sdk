@@ -23,52 +23,43 @@
  *******************************************************************************************************/
 #pragma once
 #include "driver.h"
+#include "common.h"
 /* Enable C linkage for C++ Compilers: */
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
+/**
+ * @brief Define system clock
+ */
+#define CLOCK_SYS_CLOCK_HZ 24000000
+
+/**
+ * @note The sys_clock.h file depends on the definition of CLOCK_SYS_CLOCK_HZ so CLOCK_SYS_CLOCK_HZ must be placed before #include "sys_clock.h" without reversing the order.
+ */
+#include "sys_clock.h"
+
 #if (MCU_CORE_B80)
-#define LED1     		        GPIO_PA4
-#define LED2     		        GPIO_PA5
-#define LED3     		        GPIO_PA6
-#define LED4     		        GPIO_PA7
 #define S7816_TRX_PIN			GPIO_PB2
 #define S7816_VCC_PIN			GPIO_PB3
 #define S7816_RST_PIN			GPIO_PB4
 #define S7816_CLK_PIN			GPIO_PB5
 #elif (MCU_CORE_B80B)
-#define LED1                    GPIO_PA4
-#define LED2                    GPIO_PA5
-#define LED3                    GPIO_PA6
-#define LED4                    GPIO_PA7
 #define S7816_TRX_PIN           GPIO_PB2
 #define S7816_VCC_PIN           GPIO_PB3
 #define S7816_RST_PIN           GPIO_PB4
 #define S7816_CLK_PIN           GPIO_PB5
 #elif (MCU_CORE_B85)
-#define LED1     		        GPIO_PD2
-#define LED2     		        GPIO_PD3
-#define LED3     		        GPIO_PD4
-#define LED4     		        GPIO_PD5
 #define S7816_TRX_PIN			S7816_TRX_D0
 #define S7816_VCC_PIN			GPIO_PB0
 #define S7816_RST_PIN			GPIO_PB1
 #define S7816_CLK_PIN			S7817_CLK_PA1 //the clk-source of s7816 is 24M.
 #elif (MCU_CORE_B87)
-#define LED1     		        GPIO_PD2
-#define LED2     		        GPIO_PD3
-#define LED3     		        GPIO_PD4
-#define LED4     		        GPIO_PD5
 #define S7816_TRX_PIN			S7816_TRX_D0
 #define S7816_VCC_PIN			GPIO_PB0
 #define S7816_RST_PIN			GPIO_PB1
 #define S7816_CLK_PIN			S7817_CLK_PA1
 #elif (MCU_CORE_B89)
-#define LED1     		        GPIO_PD0
-#define LED2     		        GPIO_PD1
-#define LED3     		        GPIO_PD2
-#define LED4     		        GPIO_PD3
 #define S7816_TRX_PIN			S7816_TRX_PD3
 #define S7816_VCC_PIN			GPIO_PB5
 #define S7816_RST_PIN			GPIO_PB6
@@ -86,49 +77,6 @@ extern "C" {
 
 
 #define S7816_RX_BUFF_LEN   48
-
-/* Define system clock */
-#define CLOCK_SYS_CLOCK_HZ  	24000000
-
-#if(MCU_CORE_B89)
-#if(CLOCK_SYS_CLOCK_HZ==12000000)
-	#define SYS_CLK  	SYS_CLK_12M_Crystal
-#elif (CLOCK_SYS_CLOCK_HZ==16000000)
-	#define SYS_CLK  	SYS_CLK_16M_Crystal
-#elif (CLOCK_SYS_CLOCK_HZ==24000000)
-	#define SYS_CLK  	SYS_CLK_24M_Crystal
-#endif
-#else
-#if(CLOCK_SYS_CLOCK_HZ==12000000)
-	#define SYS_CLK  	SYS_CLK_12M_Crystal
-#elif (CLOCK_SYS_CLOCK_HZ==16000000)
-	#define SYS_CLK  	SYS_CLK_16M_Crystal
-#elif (CLOCK_SYS_CLOCK_HZ==24000000)
-	#define SYS_CLK  	SYS_CLK_24M_Crystal
-#elif (CLOCK_SYS_CLOCK_HZ==32000000)
-	#define SYS_CLK  	SYS_CLK_32M_Crystal
-#elif (CLOCK_SYS_CLOCK_HZ==48000000)
-	#define SYS_CLK  	SYS_CLK_48M_Crystal
-#endif
-#endif
-
-
-enum{
-	CLOCK_SYS_CLOCK_1S = CLOCK_SYS_CLOCK_HZ,
-	CLOCK_SYS_CLOCK_1MS = (CLOCK_SYS_CLOCK_1S / 1000),
-	CLOCK_SYS_CLOCK_1US = (CLOCK_SYS_CLOCK_1S / 1000000),
-};
-
-
-
-
-
-
-
-
-
-
-
 
 /* Disable C linkage for C++ Compilers: */
 #if defined(__cplusplus)

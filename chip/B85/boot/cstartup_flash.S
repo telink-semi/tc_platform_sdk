@@ -46,6 +46,7 @@
 #define  MULTI_ADDRESS_START			1
 #define  MOVE_BIN_CODE_EN				0
 
+#define WD_SET_AND_START_EN             0 /* default 0; 1: Set and Start the watchdog in advance. */
 
 #ifndef __LOAD_RAM_SIZE__
 #define	__LOAD_RAM_SIZE__		0xc
@@ -197,6 +198,26 @@ __suspend_data:
 	.word   (0x80006f)
 
 __reset:
+#if WD_SET_AND_START_EN
+    @ reference wd_set_interval_ms
+    tloadr      r1, WD_REG_BASE    @0x800620
+    tloadr      r0, WD_REG_BASE+8  @  default 0x5b
+    tshftl      r0, r0,#1          @  (WD_REG_BASE+8)<<1
+    tstorerb    r0, [r1, #1]       @ *(unsigned char*)(0x800621)= (WD_REG_BASE+8)<<1
+    tshftr      r0, r0,#8          @  (WD_REG_BASE+8)>>8
+    tstorerb    r0, [r1, #2]       @ *(unsigned char*)(0x800622)=(WD_REG_BASE+8)>>8
+
+    @ reference wd_start
+    tloadr      r1, WD_REG_BASE    @0x800620
+    tmov        r0, #0x40          @ 01000000
+    tstorerb    r0, [r1, #0]       @ *(unsigned char*)(0x800620)=0x60,reg_tmr_ctrl8[6]=1
+
+    tloadr      r1, WD_REG_BASE+4  @0x800622
+    tloadrb     r2, [r1]
+    tmov        r0, #0x80          @ 10000000
+    tor         r0, r2
+    tstorerb    r0, [r1, #0]       @ reg_tmr_ctrl8 |=reg_tmr_ctrl8|0x80
+#endif
 
 #if 0
 	@ add debug, PD3 output 1
@@ -462,6 +483,16 @@ DATA_I:
 
 DEBUG_GPIO:
 	.word	(0x80059a)                  @  PDx oen
+
+#if WD_SET_AND_START_EN
+WD_REG_BASE:
+    .word   (0x800620)                  @0  reg_tmr_ctrl
+    .word   (0x800622)                  @4  reg_wd_ctrl1
+@ capt tick=500ms=(12000000>>18)=0x2d, capt tick = 1s =(24000000>>18) =0x5b,
+@ capt tick=  2s =(48000000>>18)=0xb7, capt tick = 3s =(72000000>>18) =0x112,
+@ capt tick=  4s =(96000000>>18)=0x16e,capt tick = 5s =(120000000>>18)=0x1c9,
+    .word   (0x5b)                      @8  capt tick
+#endif
 
 FLL_D:
 	.word	0xffffffff                	@0

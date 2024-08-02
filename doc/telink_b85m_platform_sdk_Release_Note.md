@@ -1,3 +1,143 @@
+## V2.0.0
+
+### Version
+
+* SDK version: telink_b85m_platform_sdk VX.X.X.
+* This version of SDK supports B80(A1), B80B, B85, B87 chips.
+* The default configuration of LEDs and KEYs match the following hardware revisions:
+*	B80	 	C1T261A30_V1_1
+*	B80B	C1T321A30_V1_0
+*	B85	 	C1T139A30_V1_2
+*	B87  	C1T197A30_V1_2
+
+### BREAKING CHANGES
+
+* **flash**
+  * (B80/B80B/B85/B87):In order to implement the bin firmware protection in driver sdk, we delete the flash_lock/flash_unlock swtich implementation scheme maintained by flash_demo, and for the sake of code simplicity and easy maintenance, we add the flash hal layer to implement the scheme with structure, add hal_flash.c/.h, common.c/.h and flash_comomon.c/.h file of each chip driver, and add the bin firmware protection function in the main of each demo.
+* **sys**
+  * (B80/B80B/B87)Change the xtal parameter to the cap parameter in the cpu_wakeup_init function. This parameter is used to configure whether the internal capacitor needs to be disabled. If the development board has already welded the capacitor on the outside, then the internal capacitor needs to be turned off; If the development board does not weld the capacitor on the outside, then the internal capacitor needs to be opened. If the corresponding operation is not possible, there may be two capacitors in parallel, or no capacitors. This has a great impact on the starting time and frequency of crystal vibration, which may cause reset and crash.
+* **irq**
+  * (B80/B80B/B85/B87)Rename function irq_clr_src2 to irq_clr_sel_src and change the related comment.
+
+### Bug Fixes
+
+* **spi_demo**
+  * (B85/B87)Solved the issue of incorrect irq counts in the SPI slave demo when the master is not a single transmission (with both read and write), and updated the irq handler and comments.(http://192.168.48.36/src/driver/telink_b85m_platform_src/merge_requests/530)
+* **pm**
+  * (B80B) Solved the problem of high current in suspend mode and deep mode in the A0 version of the chip due to the damage of the transistor inside the chip caused by the pull-up abnormality of the USB DP pin (the A1 version of the chip does not have this problem).(http://192.168.48.36/src/driver/telink_b85m_platform_src/merge_requests/550)
+* **USB**
+  * (B80B)Fix USB RESET_STATUS not cleared resulting in non-repeatable tests.(http://192.168.48.36/src/driver/telink_b85m_platform_src/merge_requests/518)
+* **flash**
+  * (B80/B80B): Fix the definition of Flash_VoltageDef (VDD_F voltage with no load).(http://192.168.48.36/src/driver/telink_b85m_platform_src/merge_requests/548)
+
+### Features
+
+* **flash**
+  * (B87)add comments to support two-supply flash GD25LD10E(Comparison has been made between the same mid flash GD25LD10C that the driver already exists, and it is confirmed that the flash driver does not need to be updated).
+* **cstartup.S**
+  * (B80/B80B/B85)Add the function that sets the watchdog capture_tick and starts it in cstartup.S.
+* **pwm**
+  * (B80/B80B/B85/B87)Add pwm_multi_start() interface to support pwm enabling multiple channels simultaneously.
+* **usb**
+  * (B80/B80B/B85/B87)Add swire_through_usb_dp_en() to enable swire communication via USB DP IO and swire_through_usb_dp_dis() to disable swire communication via USB.
+* **spi**
+  * (B80/B80B)Add spi dma full duplex interface: spi_master_write_read_dma_full_duplex.
+* **flash**
+  * (B80): add new flash ZG25WD40B(Untested)/GD25WD10EGIG.
+  * (B80B): add new flash GD25WD10EGIG.
+  * (B87): add new flash TH25Q16UB.  
+* **calibration**
+  * (B80): Add operation to flash ZG25WD40B to increase VDD_F to 2.25V maximum.
+
+### Refactoring
+
+* **watchdog**
+  * (B80/B80B/B85/B87) Fixed comment error in the capture_tick formula of the wd_set_interval_ms() function.
+* **pm**
+  * (B80/B80B/B85/B87)Update the early wakeup time of SUSPEND sleep mode which impacted by add pm_wait_xtal_ready(), meanwhile adjusted the nop number of pm_wait_xtal_ready() to make sure the delay time is 40us.
+* **USB_Demo**
+  * (B80/B80B/B85/B87) Call interface irq_clr_sel_src() to clear the USB reset flag bit.
+  * (B80/B80B/B85/B87) Call interface irq_get_src() to get the interrupt status.
+* **spi**
+  * (B80/B80B)Remove spi dma interface (spi_master_write_dma/ spi_master_write_read_dma) duplicate assignment operation to reg_dma_rdy0_h register (reg_dma_rdy0_h|= FLD_DMA_READY_9;) and SPI_MODE_ WRITE_AND_READ comment modification.
+* **ALL_Demo**
+    * (B80/B80B/B85/B87)Added common.c and common.h, put the definition of LED and KEY in common.h, defined platform_init interface in common.c, put the public initialization content in platform_init interface, and added the initialization content to set up pull-up for sws to prevent probabilistic crash.
+    * (B80/B80B/B85/B87)In order to prevent gpio_set_func related functions from operating on a different set of GPIOs, change all demos where the function parameter is the logical or of multiple LEDs to a single LED parameter.
+    * (B80/B80B/B85/B87)To clear up the warnings caused by warning flag -Wstrict-prototypes, the following demo files has been modified by adding a void parameter to the function without parameters:
+      - ADC_Demo, AES_Demo, AUDIO_Demo, BQB_EMI_Demo, DUT_Demo, Debug_Demo, Display_Demo, Flash_Demo, GPIO_Demo, I2C_Demo, IO_Swire_Demo, IR_LEARN_Demo, Keyscan_Demo, LPC_Demo, MDEC_Demo, OTP_Demo, PKE_Demo, PM_Demo, PWM_Demo, QDEC_Demo, RF_AOA_Demo, RF_Demo, SPI_Demo, SRAM_Test, Swire_Demo, TIMER_Demo, TRNG_Demo, Test_Demo, UART_Demo, USB_Demo, s7816_Demo.
+
+### Performance Improvements
+
+* N/A
+
+### Note
+
+* N/A
+
+### BREAKING CHANGES
+
+* **flash**
+  * (B80/B80B/B85/B87):为了driver sdk实现bin固件保护,删除flash_demo维护的flash_lock/flash_unlock swtich实现方案,为代码简洁以及方便维护,改为添加flash hal层以结构体实现方案,添加hal_flash.c/.h、common.c/.h和各个芯片driver的flash_comomon.c/.h文件,并在各个demo的main中添加bin固件保护功能.
+* **sys**
+  * (B80/B80B/B87)在cpu_wakeup_init函数中修改xtal参数为cap参数，该参数用于配置是否需要关闭内部电容。如果开发板已经在外部焊接了电容，那么就需要关掉内部电容；如果开发板没有在外部焊接电容，那么就需要打开内部电容。如果不能对应操作的话，就可能会出现两个电容并联，或者没有电容的情况。这样对晶振的起振时间和晶振的频率影响很大，可能会造成复位、死机等情况发生。
+* **irq**
+  * (B80/B80B/B85/B87)将函数 irq_clr_src2 重命名为 irq_clr_sel_src 并修改相关注释。
+
+### Bug Fixes
+
+* **spi_demo**
+  * (B85/B87)解决了spi slave demo中，master 非单一传输情况下（有读有写），irq计数不正确的问题，更新了中断处理程序和注释。(http://192.168.48.36/src/driver/telink_b85m_platform_src/merge_requests/530)
+* **pm**
+  * (B80B)解决了芯片 A0 版本因 USB DP 引脚上拉异常导致芯片内部晶体管损坏引起的 suspend 模式和 deep 模式电流偏大的问题（芯片 A1 版本没有此问题）。(http://192.168.48.36/src/driver/telink_b85m_platform_src/merge_requests/550)
+* **USB**
+  * (B80B)修复 USB RESET_STATUS 未清除导致不能重复检测的问题。(http://192.168.48.36/src/driver/telink_b85m_platform_src/merge_requests/518)
+* **flash**
+  * (B80/B80B): 修复Flash_VoltageDef的档位定义（VDD_F无负载时的电压）。(http://192.168.48.36/src/driver/telink_b85m_platform_src/merge_requests/548)
+  
+### Features
+
+* **flash**
+  * (B87)添加注释以支持二供flash GD25LD10E(已对比驱动已有的同mid flash GD25LD10C，确认该flash驱动不需要更新)。
+* **cstartup.S**
+  * (B80/B80B/B85)在 cstartup.S 添加设置并使能 watchdog 功能。
+* **pwm**
+  * (B80/B80B/B85/B87)添加pwm_multi_start()接口以支持pwm同时使能多个通道。
+* **usb**
+  * (B80/B80B/B85/B87)新增swire_through_usb_dp_en()使能通过USB DP IO进行swire通信的功能，新增swire_through_usb_dp_dis()关闭通过USB进行swire通信的功能。
+  * **spi**
+  * (B80/B80B)添加 spi dma 全双工接口：spi_master_write_read_dma_full_duplex。
+* **flash**
+  * (B80): 添加新flash ZG25WD40B(未测试)/GD25WD10EGIG。
+  * (B80B): 添加新flash GD25WD10EGIG。
+  * (B87): 添加新flash TH25Q16UB。
+* **calibration**
+  * (B80): 添加对flash ZG25WD40B调高VDD_F至最高档2.25V的操作。
+
+### Refactoring
+
+* **watchdog**
+  * (B80/B80B/B85/B87) 修复了 wd_set_interval_ms() 函数 capture_tick 计算公式的注释错误。
+* **pm**
+  * (B80/B80B/B85/B87)更新了由于新增pm_wait_xtal_ready()接口带来的SUSPEND模式下提前唤醒时间的变化，同时校准了pm_wait_xtal_ready()接口中的nop数量确保延时时间为40us。
+* **USB_Demo**
+  * (B80/B80B/B85/B87) 调用接口 irq_clr_sel_src() 清除 USB 复位标志位。
+  * (B80/B80B/B85/B87) 调用接口 irq_get_src() 获取中断状态。
+* **spi**
+  * (B80/B80B)删除spi dma接口(spi_master_write_dma/ spi_master_write_read_dma)对reg_dma_rdy0_h寄存器重复赋值操作(reg_dma_rdy0_h|= FLD_DMA_READY_9;)和SPI_MODE_WRITE_AND_READ注释修改。
+* **ALL_Demo**
+  * (B80/B80B/B85/B87)添加了 common.c 和 common.h, 将 LED、KEY 的定义放在 common.h,在 common.c 定义 platform_init 接口，将公共的初始化内容放 platform_init 接口中，初始化内容新增了给 sws 设置上拉，以防概率性死机问题。
+  * (B80/B80B/B85/B87)为了防止 gpio_set_func 相关函数操作的不是同一组 GPIO 导致的功能异常，将所有 demo 中函数参数为多个 LED 逻辑或的参数修改为单个 LED 参数。
+  * (B80/B80B/B85/B87)为了处理由警告选项 -Wstrict-prototypes 带来的编译警告, 以下 demo 文件已经通过向无参函数声明中传入 void 进行了修改:
+    - ADC_Demo, AES_Demo, AUDIO_Demo, BQB_EMI_Demo, DUT_Demo, Debug_Demo, Display_Demo, Flash_Demo, GPIO_Demo, I2C_Demo, IO_Swire_Demo, IR_LEARN_Demo, Keyscan_Demo, LPC_Demo, MDEC_Demo, OTP_Demo, PKE_Demo, PM_Demo, PWM_Demo, QDEC_Demo, RF_AOA_Demo, RF_Demo, SPI_Demo, SRAM_Test, Swire_Demo, TIMER_Demo, TRNG_Demo, Test_Demo, UART_Demo, USB_Demo, s7816_Demo。
+
+### Performance Improvements
+
+* N/A
+
+### Note
+
+* N/A
+
 ## V1.9.0
 
 ### Version

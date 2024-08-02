@@ -131,11 +131,17 @@ spi_b91m_spi_slave_protocol_t spi_tx_buff = {
 };
 #endif
 
-void user_init()
+void user_init(void)
 {
-	gpio_set_func(LED1|LED2,AS_GPIO);
-	gpio_set_output_en(LED1|LED2, 1); 		//enable output
-	gpio_set_input_en(LED1|LED2,0);			//disable input
+    gpio_set_func(LED1, AS_GPIO);
+    gpio_set_func(LED2, AS_GPIO);
+
+    gpio_set_output_en(LED1, 1);//enable output
+    gpio_set_output_en(LED2, 1);//enable output
+
+    gpio_set_input_en(LED1,0);//disable input
+    gpio_set_input_en(LED2,0);//disable input
+
 	/*if you not use spi pin default,should disable it.*/
 	gpio_set_func(GPIO_SPI_MOSI,AS_GPIO);
 	gpio_set_func( GPIO_SPI_MISO,AS_GPIO);
@@ -224,11 +230,16 @@ _attribute_ram_code_sec_ void irq_handler(void)
 * 											 dual   	 max:800K           max:800K
 * 											 quad   	 max:500K           max:500K
 *********************************************************************************************************************/
-void user_init()
+void user_init(void)
 {
-	gpio_set_func(LED1|LED2 ,AS_GPIO);
-	gpio_set_output_en(LED1|LED2, 1); 		//enable output
-	gpio_set_input_en(LED1|LED2,0);			//disable input
+    gpio_set_func(LED1 ,AS_GPIO);
+    gpio_set_func(LED2 ,AS_GPIO);
+
+	gpio_set_output_en(LED1, 1); 		//enable output
+	gpio_set_output_en(LED2, 1); 		//enable output
+
+	gpio_set_input_en(LED1,0);			//disable input
+	gpio_set_input_en(LED2,0);			//disable input
 
 	/*if you not use spi pin default,should disable it.*/
 	gpio_set_func(GPIO_SPI_MOSI,AS_GPIO);

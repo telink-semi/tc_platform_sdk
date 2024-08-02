@@ -25,15 +25,14 @@
 #define __FLASH_TYPE_H__
 
 #include "flash.h"
-#include "flash_mid1160c8.h"	// GD25LD10C
+#include "flash_mid1160c8.h"	// GD25LD10C/GD25LD10E
 #include "flash_mid1360c8.h"	// GD25LD40C/GD25LD40E
 #include "flash_mid1460c8.h"	// GD25LD80C/GD25LD80E
 #include "flash_mid11325e.h"	// ZB25WD10A
 #include "flash_mid13325e.h"	// ZB25WD40B
 #include "flash_mid14325e.h"	// ZB25WD80B
 #include "flash_mid146085.h"    // P25Q80U
-
-
+#include "flash_mid1570cd.h"    // TH25Q16UB
 /**
  * @brief		This function reads the status of flash.
  * @param[in] 	cmd	- the cmd of read status.
@@ -119,7 +118,6 @@ void flash_write_otp(unsigned long addr, unsigned long len, unsigned char *buf);
  *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
  */
 void flash_erase_otp(unsigned long addr);
-
 
 #endif
 

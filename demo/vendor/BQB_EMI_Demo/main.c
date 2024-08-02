@@ -27,7 +27,7 @@
 #include "BQB/bqb.h"
 #endif
 
-extern void user_init();
+extern void user_init(void);
 extern void main_loop (void);
 #if TEST_DEMO==BQB_DEMO && SUPPORT_CONFIGURATION
 extern void rd_usr_definition(unsigned char _s);
@@ -71,15 +71,15 @@ int main (void) {
 
 	rd_usr_definition(1);
 #if (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
-	cpu_wakeup_init(EXTERNAL_XTAL_24M);
+	cpu_wakeup_init(INTERNAL_CAP_XTAL24M);
 #elif (MCU_CORE_B87)
 	if(usr_config.power_mode == 0)
 	{
-		cpu_wakeup_init(LDO_MODE, EXTERNAL_XTAL_24M);
+		cpu_wakeup_init(LDO_MODE, INTERNAL_CAP_XTAL24M);
 	}
 	else
 	{
-		cpu_wakeup_init(DCDC_MODE, EXTERNAL_XTAL_24M);
+		cpu_wakeup_init(DCDC_MODE, INTERNAL_CAP_XTAL24M);
 	}
 #elif (MCU_CORE_B85)
 	cpu_wakeup_init();
@@ -91,14 +91,14 @@ int main (void) {
 	cpu_wakeup_init();
 #elif (MCU_CORE_B87)
 #if POWER_MODE_SELECT == POWER_MODE_LDO
-	cpu_wakeup_init(LDO_MODE, EXTERNAL_XTAL_24M);
+	cpu_wakeup_init(LDO_MODE, INTERNAL_CAP_XTAL24M);
 #elif POWER_MODE_SELECT == POWER_MODE_DCDC
-	cpu_wakeup_init(DCDC_MODE, EXTERNAL_XTAL_24M);
+	cpu_wakeup_init(DCDC_MODE, INTERNAL_CAP_XTAL24M);
 #elif POWER_MODE_SELECT == POWER_MODE_DCDC_LDO
-	cpu_wakeup_init(DCDC_LDO_MODE, EXTERNAL_XTAL_24M);
+	cpu_wakeup_init(DCDC_LDO_MODE, INTERNAL_CAP_XTAL24M);
 #endif
 #elif (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
-	cpu_wakeup_init(EXTERNAL_XTAL_24M);
+	cpu_wakeup_init(INTERNAL_CAP_XTAL24M);
 #endif
 
 #endif
@@ -124,7 +124,22 @@ int main (void) {
 	rf_mode_init();
 	rf_set_ble_1M_NO_PN_mode();
 #endif
-	clock_init(SYS_CLK);
+/**
+	===============================================================================
+						##### driver sdk firmware protection #####
+	===============================================================================
+	Flash write protection must be added, the size of the protected area is decided according to the application bin file,
+	the principle is as follows:
+	1.The program area is protected (to prevent the program area from being erased by mistake);
+	2.the program will modify the data area is not protected (if write-protected, each time before erasing the need to unprotect,
+	  so that there is a risk that the status register of the flash has been mistakenly rewritten);
+
+	@note if flash protection fails, LED1 lights up long, and keeps while.
+	===============================================================================
+*/
+	flash_init(1);
+
+    CLOCK_INIT;
 
 	user_init();
 

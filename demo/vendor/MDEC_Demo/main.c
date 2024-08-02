@@ -24,7 +24,7 @@
 #include "app_config.h"
 
 
-extern void user_init();
+extern void user_init(void);
 extern void main_loop (void);
 
 
@@ -46,9 +46,8 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
  */
 int main (void)   //must on ramcode
 {
-	cpu_wakeup_init(LDO_MODE, EXTERNAL_XTAL_24M);
-
-	clock_init(SYS_CLK);
+    PLATFORM_INIT;
+    CLOCK_INIT;
 
 	user_init();
 

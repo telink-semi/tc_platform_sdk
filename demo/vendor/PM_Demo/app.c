@@ -56,7 +56,7 @@ unsigned char  result = 0;
 
 _attribute_data_retention_ unsigned int retention_data_test = 0;
 
-void user_init()
+void user_init(void)
 {
 	sleep_ms(2000);
 #if CURRENT_TEST

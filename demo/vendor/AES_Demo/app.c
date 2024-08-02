@@ -66,15 +66,29 @@ unsigned char sKey[16]={0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0x
 //unsigned char counter2[16]={0xf0,0xf1,0xf2,0xf3,0xf4,0xf5,0xf6,0xf7,0xf8,0xf9,0xfa,0xfb,0xfc,0xfd,0xff,0x00};
 
 #endif
-void user_init()
+void user_init(void)
 {
 	sleep_ms(2000);
 	//1.init the LED pin,for indication
-	gpio_set_func(LED1|LED2|LED3|LED4 ,AS_GPIO);       //set as GPIO
-	gpio_set_output_en(LED1|LED2|LED3|LED4, 1); 		//enable output
-	gpio_set_input_en(LED1|LED2|LED3|LED4 ,0);			//disable input
-	gpio_write(LED1|LED2|LED3|LED4, 0);              	//LED OFF
+    gpio_set_func(LED1, AS_GPIO); //set as GPIO
+    gpio_set_func(LED2, AS_GPIO); //set as GPIO
+    gpio_set_func(LED3, AS_GPIO); //set as GPIO
+    gpio_set_func(LED4, AS_GPIO); //set as GPIO
 
+    gpio_set_output_en(LED1, 1); //enable output
+    gpio_set_output_en(LED2, 1); //enable output
+    gpio_set_output_en(LED3, 1); //enable output
+    gpio_set_output_en(LED4, 1); //enable output
+
+    gpio_set_input_en(LED1, 0); //disable input
+    gpio_set_input_en(LED2, 0); //disable input
+    gpio_set_input_en(LED3, 0); //disable input
+    gpio_set_input_en(LED4, 0); //disable input
+
+    gpio_write(LED1, 0); //LED OFF
+    gpio_write(LED2, 0); //LED OFF
+    gpio_write(LED3, 0); //LED OFF
+    gpio_write(LED4, 0); //LED OFF
 }
 
 void main_loop (void)
@@ -106,7 +120,10 @@ void main_loop (void)
 		}
 	}
 	sleep_ms(500);
-	gpio_toggle(LED1|LED2|LED3|LED4);
+    gpio_toggle(LED1);
+    gpio_toggle(LED2);
+    gpio_toggle(LED3);
+    gpio_toggle(LED4);
 
 #elif(AES_MODE == DMA_MODE)
 	//encrypt the plain text
@@ -135,7 +152,10 @@ void main_loop (void)
 		}
 	}
 	sleep_ms(500);
-	gpio_toggle(LED1|LED2|LED3|LED4);
+    gpio_toggle(LED1);
+    gpio_toggle(LED2);
+    gpio_toggle(LED3);
+    gpio_toggle(LED4);
 #elif(AES_MODE == CBC_MODE)
 
 	//encrypt 1
@@ -207,7 +227,10 @@ void main_loop (void)
 	}
 
 	sleep_ms(500);
-	gpio_toggle(LED1|LED2|LED3|LED4);
+    gpio_toggle(LED1);
+    gpio_toggle(LED2);
+    gpio_toggle(LED3);
+    gpio_toggle(LED4);
 #endif
 }
 

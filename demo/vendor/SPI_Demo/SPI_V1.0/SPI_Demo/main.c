@@ -24,11 +24,9 @@
 #include "app_config.h"
 #include "calibration.h"
 
-extern void user_init();
+extern void user_init(void);
 extern void main_loop (void);
 
-int spi_read_cnt = 0;
-int spi_write_cnt = 0;
 int slave_rx_length = 0;
 int irq_cnt = 0;
 int spi_irq_cnt=0;
@@ -53,12 +51,12 @@ int spi_irq_cnt=0;
  */
 
 volatile unsigned char  buff[SPI_BUFFER_CNT] __attribute__((section(".spi_slave_buff")));
-unsigned char slave_rxbuf[SPI_BUFFER_CNT];
+unsigned char slave_buf[SPI_BUFFER_CNT];
 
 
 /*SPI interrupt can be only used for Slave mode. When SPI Master writes data to Slave or reads data from Slave, SPI interrupt can be generated.
   Note that SPI interrupt flag is unable to distinguish whether this interrupt belongs to TX or RX.
-  Master SPI Can send data according the next data transmission protocol to help Slave SPI judge whether this interrupt belongs to TX or RX.
+  Master SPI Can send data according to the data transmission protocol below to help Slave SPI to determine data length and integrity.
   Data transmission protocol of Master SPI is as follows:
   DataHead DataLen xx xx xx  DataEnd
   eg. unsigned char TxBuffer[5]={0xAA,0x05,0x01,0x02,0xBB};
@@ -68,23 +66,22 @@ unsigned char slave_rxbuf[SPI_BUFFER_CNT];
  *Step 1: Judge whether SPI interrupt generates.
  *Step 2: Judge DataHead is correct.
  *Step 3: Judge whether DataEnd is correct.
- *When all the above conditions are met,this process is that Master SPI writes data to the Slave.
- *When SPI interrupt generates and Step 2 and Step 3 can not meet the conditions, this process is that Master SPI reads data from Slave.
-
+ *if buff data is not equal to slave buff, copy buff data to slave buff.
+ *Note that once one write irq is executed successfully, subsequent read irq will also meet Step 1,2 and 3.
  */
 
 void spi_slave_irq_handler(void)
 {
 	if(buff[0]==SPI_DATA_HEAD){//Judge whether DataHead is correct.
-		slave_rx_length= buff[1];
+		slave_rx_length=buff[1];
 		if( buff[slave_rx_length-1]==SPI_DATA_END ){//Judge whether DataEnd is correct.
-		   spi_write_cnt++;  //
-		   for(int i = 0;i<slave_rx_length;i++){
-			   slave_rxbuf[i]=buff[i];//Get data that Master SPI writes to Slave.
-		   }
-		 }
+			for(int i=0;i<slave_rx_length;i++){
+				if(slave_buf[i]!=buff[i]){//Get data that Master SPI writes to Slave.
+					slave_buf[i]=buff[i];//If Master data has been updated, copy data to slave buff.
+				}
+			}
+		}
 	}
-	else{ spi_read_cnt++;}
 }
 /**
  * @brief		This function serves to handle the interrupt of MCU
@@ -96,7 +93,8 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 	irq_cnt ++;
 
 	unsigned char  irq_status = reg_spi_slave_irq_status;
-	//SPI Interrupt means that every WRITE or READ will generate one interrupt(capture CS signal)
+	//An interrupt is triggered after each master spi write or read is completed (CS changes from low to high).
+	//Note that it is unable to distinguish which condition triggers it.
 	if(irq_status & FLD_SLAVE_SPI_IRQ)
 	{
 		reg_spi_slave_irq_status = irq_status;
@@ -111,28 +109,8 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
  */
 int main (void)   //must on ramcode
 {
-
-#if (MCU_CORE_B85)
-	cpu_wakeup_init();
-#elif (MCU_CORE_B87)
-	cpu_wakeup_init(LDO_MODE, EXTERNAL_XTAL_24M);
-#elif (MCU_CORE_B89)
-	cpu_wakeup_init(EXTERNAL_XTAL_24M);
-#endif
-
-#if (MCU_CORE_B85) || (MCU_CORE_B87)
-	//Note: This function must be called, otherwise an abnormal situation may occur.
-	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
-	user_read_flash_value_calib();
-#elif (MCU_CORE_B89)
-	//Note: This function must be called, otherwise an abnormal situation may occur.
-	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
-	user_read_otp_value_calib();
-#endif
-
-	gpio_init(0);
-
-	clock_init(SYS_CLK);
+    PLATFORM_INIT;
+    CLOCK_INIT;
 
 	user_init();
 

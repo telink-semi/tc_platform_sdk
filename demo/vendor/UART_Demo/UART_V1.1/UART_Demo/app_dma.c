@@ -46,7 +46,7 @@ extern volatile unsigned char rts_count;
 volatile unsigned char uart_dmairq_err_cnt;
 volatile unsigned char uart_dma_send_flag = 1;
 
-void user_init()
+void user_init(void)
 {
 	sleep_ms(2000);  //leave enough time for SWS_reset when power on
 

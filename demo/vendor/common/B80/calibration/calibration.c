@@ -169,6 +169,7 @@ void user_read_flash_value_calib(void)
 	unsigned char flash_mid[4];
 	unsigned char flash_uid[16];
 	unsigned char flash_mid_sure = 0;
+	unsigned int *flash_mid_check;
 	/******check for flash mid********/
 	flash_mid_sure = flash_read_mid_uid_with_check((unsigned int *)flash_mid, flash_uid);
 	if (1 == flash_mid_sure)
@@ -203,6 +204,17 @@ void user_read_flash_value_calib(void)
 				user_calib_adc_vref(0);
 				break;
 		}
+#if (MCU_CORE_B80)
+/* If the flash is ZG25WD40B, the flash voltage(VDD_F) will be trim to 2.25V(2b'111 the max).
+ * Reason for trim VDD_F voltage: BLE group requires 16byte write time to be less than 200us, the test found that flash voltage is maintained above 1.85V during flash write (VDD_F voltage with load 10mA max), and 16bytes write time is below 200us.
+ * Reason for not trimming voltage for all ZB flash: For the subsequent addition of ZB flash, flash vendors may fix the problem of slow flash write speed, so currently only for this flash ZG25WD40B trim VDD_F voltage.(added by xiaobin.huang 20240802)
+ */
+    flash_mid_check = (unsigned int *)flash_mid;
+	if(*flash_mid_check == 0x13325e)
+	{
+		pm_set_vdd_f(FLASH_VOLTAGE_2V25);
+	}
+#endif
 	}
 	else{
 		user_calib_adc_vref(0);

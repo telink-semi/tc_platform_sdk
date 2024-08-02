@@ -38,7 +38,7 @@ volatile  unsigned char uart_rx_trig_level=1;//B85/B87/B89 can only be 1,B80 can
 __attribute__((aligned(4))) unsigned char rec_buff[rec_buff_Len]={0};
 __attribute__((aligned(4))) unsigned char trans_buff[trans_buff_Len] = {0x00,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff};
 
-void user_init()
+void user_init(void)
 {
 	sleep_ms(2000);  //leave enough time for SWS_reset when power on
 	gpio_set_func(LED1,AS_GPIO);

@@ -69,13 +69,28 @@ unsigned char  ble_tx_packet[48] __attribute__ ((aligned (4))) = {0x23,0x00,0x00
 
 
 
-void user_init()
+void user_init(void)
 {
 	//1.init the LED pin,for indication
-	gpio_set_func(LED1|LED2|LED3,AS_GPIO);
-	gpio_set_output_en(LED1|LED2|LED3, 1); //enable output
-	gpio_set_input_en(LED1|LED2|LED3 ,0);	 //disable input
-	gpio_write(LED1|LED2|LED3, 0);         //LED Off
+    gpio_set_func(LED1, AS_GPIO);
+    gpio_set_func(LED2, AS_GPIO);
+    gpio_set_func(LED3, AS_GPIO);
+    gpio_set_func(LED4, AS_GPIO);
+
+    gpio_set_output_en(LED1, 1);
+    gpio_set_output_en(LED2, 1);
+    gpio_set_output_en(LED3, 1);
+    gpio_set_output_en(LED4, 1);
+
+    gpio_set_input_en(LED1, 0);
+    gpio_set_input_en(LED2, 0);
+    gpio_set_input_en(LED3, 0);
+    gpio_set_input_en(LED4, 0);
+
+    gpio_write(LED1, 0);
+    gpio_write(LED2, 0);
+    gpio_write(LED3, 0);
+    gpio_write(LED4, 0);
 
 	rf_set_power_level_index (RF_POWER);
 	rf_trx_state_set(RF_MODE_AUTO,RF_FREQ);

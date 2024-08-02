@@ -50,7 +50,7 @@ unsigned char  Ant_tx_packet[48] __attribute__ ((aligned (4))) = {RX_PAYLOAD_LEN
 
 #define TX_INTERVAL_MS    1
 
-void user_init()
+void user_init(void)
 {
 	//1.init the LED pin,for indication
 	gpio_set_func(LED1 ,AS_GPIO);
@@ -101,7 +101,7 @@ void main_loop (void)
 
 
 #elif(RF_AUTO_MODE == MANUAL)
-void user_init()
+void user_init(void)
 {
 	//1.init the LED pin,for indication
 	gpio_set_func(LED1 ,AS_GPIO);

@@ -288,7 +288,7 @@ void oled_show_picture(unsigned short x, unsigned short x_delta, unsigned short 
 	spi_master_write_plus_fetch_flash(OLED_SINGLE_WRITE_CMD,0x002C00,pic_addr,display_size,SPI_MODE_WR_WRITE_ONLY);
 #endif
 }
-void user_init()
+void user_init(void)
 {
 	gpio_set_output_en(OLED_RESET_PIN,1);
 	gpio_set_input_en(OLED_RESET_PIN,0);

@@ -36,12 +36,28 @@ volatile unsigned int flag = 0;
 #define OTP_COMMON      2
 #define OTP_TEST_MODE   OTP_COMMON
 
-void user_init()
+void user_init(void)
 {
-	gpio_set_func(LED1 | LED2 | LED3 | LED4 ,AS_GPIO);
-	gpio_set_output_en(LED1 | LED2 | LED3 | LED4, 1); 		//enable output
-	gpio_set_input_en(LED1 | LED2 | LED3 | LED4 ,0);		//disable input
-	gpio_write(LED1 | LED2 | LED3 | LED4, 0);              	//LED On
+    gpio_set_func(LED1, AS_GPIO);
+    gpio_set_func(LED2, AS_GPIO);
+    gpio_set_func(LED3, AS_GPIO);
+    gpio_set_func(LED4, AS_GPIO);
+
+    gpio_set_output_en(LED1, 1); //enable output
+    gpio_set_output_en(LED2, 1); //enable output
+    gpio_set_output_en(LED3, 1); //enable output
+    gpio_set_output_en(LED4, 1); //enable output
+
+    gpio_set_input_en(LED1, 0); //disable input
+    gpio_set_input_en(LED2, 0); //disable input
+    gpio_set_input_en(LED3, 0); //disable input
+    gpio_set_input_en(LED4, 0); //disable input
+
+    gpio_write(LED1, 0); //LED OFF
+    gpio_write(LED2, 0); //LED OFF
+    gpio_write(LED3, 0); //LED OFF
+    gpio_write(LED4, 0); //LED OFF
+
 if(otp_program_flag==0){
 	otp_set_active_mode();
 }

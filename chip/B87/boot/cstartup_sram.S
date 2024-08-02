@@ -59,7 +59,7 @@
 	.equ __SRAM_SIZE,   SRAM_SIZE
 #ifdef DUT_TEST
 	.equ __LOAD_FLASH, 	0
-	.equ __LOAD_DUT, 	12
+	.equ __LOAD_DUT, 	15
 	.equ __LOAD_RAM, 	0
 	.equ FW_BOOT_ADDR,	0
 #else

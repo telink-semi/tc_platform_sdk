@@ -25,7 +25,7 @@
 
 volatile  unsigned int   rns_val_trng;
 
-void user_init()
+void user_init(void)
 {
 
 	random_generator_init();

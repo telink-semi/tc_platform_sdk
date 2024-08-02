@@ -46,7 +46,7 @@ unsigned char  ble_tx_packet[48] __attribute__ ((aligned (4))) = {0x23,0x00,0x00
 
 #define TX_INTERVAL_MS    1
 
-void user_init()
+void user_init(void)
 {
 	//1.init the LED pin,for indication
 	gpio_set_func(LED1 ,AS_GPIO);
@@ -103,7 +103,7 @@ void main_loop (void)
 
 
 #elif(RF_AUTO_MODE == MANUAL)
-void user_init()
+void user_init(void)
 {
 	//1.init the LED pin,for indication
 	gpio_set_func(LED1 ,AS_GPIO);
