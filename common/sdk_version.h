@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    sdk_version.h
  *
- * @brief   This is the header file for B85m
+ * @brief   This is the header file for tc
  *
  * @author  Driver Group
  * @date    2022
@@ -29,7 +29,7 @@
 #if(MCU_CORE_B80)
 /*
  * Release Tool need to change this macro to match the release version,
- * the replace rules is: "$$$B85m_driver_sdk_"#sdk_version_num"$$$", The "#sdk_version_num"
+ * the replace rules is: "$$$tc_platform_sdk_"#sdk_version_num"$$$", The "#sdk_version_num"
  * will replace with this macro value.
  */
 #define B80_SDK_VERSION_NUM				V2.0.0
@@ -38,7 +38,7 @@
 #elif(MCU_CORE_B80B)
 /*
  * Release Tool need to change this macro to match the release version,
- * the replace rules is: "$$$B85m_driver_sdk_"#sdk_version_num"$$$", The "#sdk_version_num"
+ * the replace rules is: "$$$tc_platform_sdk_"#sdk_version_num"$$$", The "#sdk_version_num"
  * will replace with this macro value.
  */
 #define B80B_SDK_VERSION_NUM			V2.0.0
@@ -46,7 +46,7 @@
 #elif(MCU_CORE_B85)
 /*
  * Release Tool need to change this macro to match the release version,
- * the replace rules is: "$$$B85m_driver_sdk_"#sdk_version_num"$$$", The "#sdk_version_num"
+ * the replace rules is: "$$$tc_platform_sdk_"#sdk_version_num"$$$", The "#sdk_version_num"
  * will replace with this macro value.
  */
 #define B85_SDK_VERSION_NUM				V2.0.0
@@ -54,7 +54,7 @@
 #elif(MCU_CORE_B87)
 /*
  * Release Tool need to change this macro to match the release version,
- * the replace rules is: "$$$B85m_driver_sdk_"#sdk_version_num"$$$", The "#sdk_version_num"
+ * the replace rules is: "$$$tc_platform_sdk_"#sdk_version_num"$$$", The "#sdk_version_num"
  * will replace with this macro value.
  */
 #define B87_SDK_VERSION_NUM				V2.0.0
@@ -62,7 +62,7 @@
 #elif(MCU_CORE_B89)
 /*
  * Release Tool need to change this macro to match the release version,
- * the replace rules is: "$$$B85m_driver_sdk_"#sdk_version_num"$$$", The "#sdk_version_num"
+ * the replace rules is: "$$$tc_platform_sdk_"#sdk_version_num"$$$", The "#sdk_version_num"
  * will replace with this macro value.
  */
 #define B89_SDK_VERSION_NUM				V2.0.0
@@ -70,7 +70,7 @@
 #endif
 
 
-#define	SDK_VERSION1(sdk_version_num)	"$$$B85m_driver_sdk_"#sdk_version_num"$$$"
+#define	SDK_VERSION1(sdk_version_num)	"$$$tc_platform_sdk_"#sdk_version_num"$$$"
 #define	SDK_VERSION(sdk_version_num)	SDK_VERSION1(sdk_version_num)
 
 

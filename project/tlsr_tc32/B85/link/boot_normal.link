@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    boot_normal.link
  *
- * @brief   This is the link file for B85m
+ * @brief   This is the link file for Telink MCU
  *
  * @author  Driver Group
  * @date    2022

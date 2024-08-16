@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    app_emi.c
  *
- * @brief   This is the source file for B85m
+ * @brief   This is the source file for Telink MCU
  *
  * @author  Driver Group
  * @date    2018
