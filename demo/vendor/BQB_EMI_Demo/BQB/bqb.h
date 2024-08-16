@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    bqb.h
  *
- * @brief   This is the header file for B85m
+ * @brief   This is the header file for Telink MCU
  *
  * @author  Driver Group
  * @date    2018
@@ -60,7 +60,7 @@
 /* set flash address to set internal cap value and switch internal/external cap */
 #define CAP_SET_FLASH_ADDR_2M 			0x1fe000
 #define CAP_SET_FLASH_ADDR_1M 			0xfe000
-#define CAP_SET_FLASH_ADDR_512K 		0x77000 //B85m:0x77000 B91m:0x7e000
+#define CAP_SET_FLASH_ADDR_512K 		0x77000 //Telink MCU:0x77000 Telink RISC-V:0x7e000
 #define CAP_SET_FLASH_ADDR_128K 		0x1e000
 #define CAP_SET_FLASH_ADDR_64K			0xe000
 

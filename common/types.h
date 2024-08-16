@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    types.h
  *
- * @brief   This is the header file for B85m
+ * @brief   This is the header file for Telink MCU
  *
  * @author  Driver Group
  * @date    2018

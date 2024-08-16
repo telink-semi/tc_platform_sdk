@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    div_mod.S
  *
- * @brief   This is the boot file for B85m
+ * @brief   This is the boot file for Telink MCU
  *
  * @author  Driver Group
  * @date    2018
