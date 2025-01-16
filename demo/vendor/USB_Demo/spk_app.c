@@ -21,7 +21,7 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-#if (!MCU_CORE_B80 && !MCU_CORE_B80B)
+#if (!MCU_CORE_B80 && !MCU_CORE_B80B  && !MCU_CORE_TC1211)
 #include "app_config.h"
 #if(USB_DEMO_TYPE==USB_SPEAKER)
 #include "application/usb_app/usbaud.h"
@@ -40,7 +40,7 @@ void user_init(void)
     usbhw_set_eps_en(BIT(USB_EDP_SPEAKER)); /* enable endpoint. */
 #endif
 	//enable USB DP pull up 1.5k
-	usb_set_pin_en();
+	usb_set_pin(1);
 	//3.enable global interrupt
 	irq_enable();
 

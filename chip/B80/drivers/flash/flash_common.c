@@ -41,7 +41,7 @@
 	Flash Type	  uid CMD	   MID		 Company	Sector Erase Time(MAX)
 	GD25LD10C	  0x4b(AN)	 0x1160C8	   GD			500ms
 	GD25LD40C	  0x4b		 0x1360C8	   GD			500ms
-	P25Q40SU      0x4b       0x136085     PUYA          30ms
+	P25D40SU      0x4b       0x136085     PUYA          30ms
 	P25D09U		  0x4b		 0x114485	  PUYA		    20ms
 	ZG25WD40B     0x4b       0x13325e      ZB           500ms/600ms(85 Celsius/125 Celsius)
 	GD25WD10EGIG  0x4b		 0x1164c8	   GD		    500ms/600ms(85 Celsius/125 Celsius)

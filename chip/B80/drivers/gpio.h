@@ -27,6 +27,11 @@
 #include "gpio.h"
 #include "gpio_default.h"
 #include "analog.h"
+#include "usbhw.h"
+#include "types.h"
+
+/* For compatibility, usb_set_pin_en() is equivalent to usb_set_pin(1), configure the usb pin and enable the dp_through_swire function.*/
+#define usb_set_pin_en()    usb_set_pin(1)
 
 /*
     gpio lookup table
@@ -297,6 +302,7 @@ typedef enum{
 	GPIO_IRQ_GPIO_STATUS           =   	BIT(18),
 	GPIO_IRQ_GPIO2RISC0_STATUS     =    BIT(21),
 	GPIO_IRQ_GPIO2RISC1_STATUS     =    BIT(22),
+	GPIO_IRQ_GPIO2RISC2_STATUS     =    BIT(23),
 }gpio_irq_status_e;
 
 /*
@@ -494,7 +500,7 @@ static inline void gpio_read_all(unsigned char *p)
  * @param[in]  status  - the pin needs to disable its IRQ.
  * @return     1:the interrupt status type is 1, 0: the interrupt status type is 0..
  */
-static inline char gpio_get_irq_status(gpio_irq_status_e status)
+static inline int gpio_get_irq_status(gpio_irq_status_e status)
 {
 	return (reg_irq_src & status);
 }
@@ -571,41 +577,41 @@ static inline void gpio_clr_group_irq_mask(gpio_group_irq_e mask)
 }
 #elif (MCU_CORE_B80B)
 /**
- * @brief      This function serves to clr new_risk irq status.
+ * @brief      This function serves to clr new_risc irq status.
  * @param[in]  status  - the irq need to clear.
  * @return     none.
  */
-static inline char gpio_get_new_risk_irq_status(gpio_new_risc_irq_e status)
+static inline char gpio_get_new_risc_irq_status(gpio_new_risc_irq_e status)
 {
 	return (reg_gpio_irq_from_pad & status);
 }
 
 /**
- * @brief      This function serves to clr new_risk irq status.
+ * @brief      This function serves to clr new_risc irq status.
  * @param[in]  status  - the irq need to clear.
  * @return     none.
  */
-static inline void gpio_clr_new_risk_irq_status(gpio_new_risc_irq_e status)
+static inline void gpio_clr_new_risc_irq_status(gpio_new_risc_irq_e status)
 {
 	reg_gpio_irq_from_pad = status;
 }
 
 /**
- * @brief      This function serves to enable new_risk irq mask function.
+ * @brief      This function serves to enable new_risc irq mask function.
  * @param[in]  mask  - to select interrupt type.
  * @return     none.
  */
-static inline void gpio_set_new_risk_irq_mask(gpio_new_risc_irq_e mask)
+static inline void gpio_set_new_risc_irq_mask(gpio_new_risc_irq_e mask)
 {
    BM_SET(reg_gpio_irq_pad_mask, mask);
 }
 
 /**
- * @brief      This function serves to disable  new_risk irq mask function.
+ * @brief      This function serves to disable  new_risc irq mask function.
  *             if disable gpio interrupt,can choose disable this mask.
  * @return     none.
  */
-static inline void gpio_clr_new_risk_irq_mask(gpio_new_risc_irq_e mask)
+static inline void gpio_clr_new_risc_irq_mask(gpio_new_risc_irq_e mask)
 {
 	BM_CLR(reg_gpio_irq_pad_mask, mask);
 }
@@ -831,19 +837,28 @@ static inline void usb_dp_pullup_en (int en)
 	analog_write (0x0b, dat);
 }
 
-
-
-/* @brief      This function serves to set GPIO MUX function as DP and DM pin of USB
-* @param[in]  none.
-* @return     none.
-*/
-static inline void usb_set_pin_en(void)
+/**
+ * @brief      This function serves to set GPIO MUX function as DP and DM pin of USB.
+ * @param[in]  dp_through_swire - 1: swire_usb_en 0: swire_usb_dis
+ * @return     none.
+ * @note       1. Configure usb_set_pin(0) , there are some risks, please refer to the startup.S file about DP_THROUGH_SWIRE_DIS
+ *                for detailed description (by default dp_through_swire is disabled). Configure usb_set_pin(1) to enable dp_through_swire again.
+ *             2. When dp_through_swire is enabled, Swire and USB applications do not affect each other.
+ */
+static inline void usb_set_pin(bool dp_through_swire)
 {
-	gpio_set_func(GPIO_PA2, 0);//DP
-	gpio_set_func(GPIO_PA1, 0);//DM
-	gpio_set_input_en(GPIO_PA2|GPIO_PA1,1);//DP/DM must set input enable
-	usb_dp_pullup_en (1);
+    gpio_set_func(GPIO_PA2, 0); // DP
+    gpio_set_func(GPIO_PA1, 0); // DM
+    gpio_set_input_en(GPIO_PA2 | GPIO_PA1, 1); // DP/DM must set input enable
+    usb_dp_pullup_en(1);
+    /*                                      Note
+     * If you want to enable the dp_through_swire function, there are the following considerations:
+     * 1.configure dp_through_swire_en(1).
+     * 2.keep DM high (external hardware burning EVK has pull-up function, no software configuration is needed).
+     */
+    dp_through_swire_en(dp_through_swire);
 }
+
 #if(MCU_CORE_B80)
 /**
  * @brief     This function select the irq group source.
@@ -928,8 +943,8 @@ static inline void gpio_set_interrupt_new_risc(GPIO_PinTypeDef pin, gpio_src_irq
         break;
         }
         /*clear gpio interrupt source (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
-        gpio_clr_new_risk_irq_status(BIT(risc));//must clear, or it will cause to unexpected interrupt.
-        gpio_set_new_risk_irq_mask(BIT(risc));
+        gpio_clr_new_risc_irq_status(BIT(risc));//must clear, or it will cause to unexpected interrupt.
+        gpio_set_new_risc_irq_mask(BIT(risc));
         reg_irq_mask |= FLD_IRQ_GPIO_NEW_EN;
 }
 #endif

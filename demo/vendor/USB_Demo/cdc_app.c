@@ -29,7 +29,7 @@
 void user_init(void)
 {
     usb_init();
-#if (MCU_CORE_B80B)
+#if (MCU_CORE_B80B || MCU_CORE_TC1211)
 
 #if (USB_MAP_EN == 1)
     /* When map enable, for the device side, there are three physical endpoints: notify endpoint 2, IN endpoint 4 and OUT endpoint 5. */
@@ -64,7 +64,7 @@ void user_init(void)
 #endif
 
     //enable USB DP pull up 1.5k
-    usb_set_pin_en();
+    usb_set_pin(1);
 }
 
 

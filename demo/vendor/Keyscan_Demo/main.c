@@ -36,11 +36,13 @@ extern void main_loop (void);
 _attribute_ram_code_sec_noinline_ void irq_handler(void)
 {
 	if(reg_comb_irq & FLD_IRQ_KS){
-			unsigned char rptr = 0;
-			unsigned char wptr = 0;
-			unsigned char key_val = 0;
-			keyscan_clr_irq_status();
-			while(1){
+		unsigned char rptr = 0;
+		unsigned char wptr = 0;
+		unsigned char key_val = 0;
+
+		keyscan_clr_irq_status();
+
+		while(1){
 			rptr = keyscan_get_rptr();
 			wptr = keyscan_get_wptr();
 			key_val = keyscan_get_ks_value();
@@ -52,8 +54,8 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 				g_keyscan_error_flag = 1;
 				break;
 			}
-			}
 		}
+	}
 }
 
 /**

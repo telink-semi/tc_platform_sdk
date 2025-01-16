@@ -33,6 +33,12 @@
 #define _attribute_no_inline_   			__attribute__((noinline))
 #define _inline_ 							inline
 
+/**
+ *  _always_inline needs to be added in the following two cases:
+ * 1. The subfunctions in the pm_sleep_wakeup function need to use _always_inline and _attribute_ram_code_sec_noinline_, as detailed in the internal comments of pm_sleep_wakeup.
+ */
+#define _always_inline                      inline __attribute__((always_inline))
+
 /**********************************************************************************************************************
  *   If you need to optimize the code size, you can modify the following configuration according to the situation.
  *   Note:

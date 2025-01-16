@@ -40,7 +40,7 @@ extern "C" {
 #include "sys_clock.h"
 
 /* IDLE MODE */
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80 || MCU_CORE_B80B||MCU_CORE_TC321X)
 #define IDLE_TIMER_WAKEUP				1
 #define IDLE_STIMER_WAKEUP				2
 #define IDLE_RF_WAKEUP					3
@@ -55,7 +55,9 @@ extern "C" {
 /* SUSPEND MODE */
 #define SUSPEND_PAD_WAKEUP   			11
 #define SUSPEND_32K_RC_WAKEUP   		12
+#if(!MCU_CORE_TC321X)
 #define SUSPEND_32K_XTAL_WAKEUP			13
+#endif
 #if(MCU_CORE_B80 || MCU_CORE_B80B)
 #define SUSPEND_LONG_32K_RC_WAKEUP   	14
 #define SUSPEND_LONG_32K_XTAL_WAKEUP   	15
@@ -70,7 +72,9 @@ extern "C" {
 /* DEEPSLEEP MODE */
 #define DEEP_PAD_WAKEUP		 			21
 #define DEEP_32K_RC_WAKEUP      		22
+#if(!MCU_CORE_TC321X)
 #define DEEP_32K_XTAL_WAKEUP      		23
+#endif
 #if(MCU_CORE_B80 || MCU_CORE_B80B)
 #define DEEP_LONG_32K_RC_WAKEUP   		24
 #define DEEP_LONG_32K_XTAL_WAKEUP   	25
@@ -86,7 +90,9 @@ extern "C" {
 /* DEEPSLEEP WITH RETENTION MODE */
 #define DEEP_RET_PAD_WAKEUP     		31
 #define DEEP_RET_32K_RC_WAKEUP     		32
+#if(!MCU_CORE_TC321X)
 #define DEEP_RET_32K_XTAL_WAKEUP     	33
+#endif
 #if(MCU_CORE_B80 || MCU_CORE_B80B)
 #define DEEP_RET_LONG_32K_RC_WAKEUP   	34
 #define DEEP_RET_LONG_32K_XTAL_WAKEUP   35
@@ -99,12 +105,12 @@ extern "C" {
 #define DEEP_RET_COMPARATOR_WAKEUP		36
 #endif
 
-#if(MCU_CORE_B89)
+#if(MCU_CORE_B89||MCU_CORE_TC321X)
 /* SHUTDOWN_MODE */
 #define	SHUTDOWN_PAD_WAKEUP				41
 #endif
 
-#define PM_MODE			     			SUSPEND_PAD_WAKEUP
+#define PM_MODE			     			DEEP_RET_32K_RC_WAKEUP
 
 /* Disable C linkage for C++ Compilers: */
 #if defined(__cplusplus)

@@ -25,7 +25,7 @@
 #define __MID136085_H__
 
 /*
- * @brief     MID = 0x136085 Flash include P25Q40SU.
+ * @brief     MID = 0x136085 Flash include P25D40SU.
  */
 
 
@@ -71,9 +71,9 @@ typedef enum{
  * @brief     The starting address of the Security Registers.
  */
 typedef enum{
-	FLASH_OTP_0x001000_512B_MID146085	=	0x001000,	//001000h-0011FFh
-	FLASH_OTP_0x002000_512B_MID146085	=	0x002000,	//002000h-0021FFh
-	FLASH_OTP_0x003000_512B_MID146085	=	0x003000,	//003000h-0031FFh
+	FLASH_OTP_0x001000_512B_MID136085	=	0x001000,	//001000h-0011FFh
+	FLASH_OTP_0x002000_512B_MID136085	=	0x002000,	//002000h-0021FFh
+	FLASH_OTP_0x003000_512B_MID136085	=	0x003000,	//003000h-0031FFh
 }mid136085_otp_block_e;
 
 /**

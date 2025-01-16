@@ -23,6 +23,7 @@
  *******************************************************************************************************/
 #pragma once
 #include "register.h"
+#include "types.h"
 enum {
 	USB_EDP_PRINTER_IN = 8, // endpoint 8 is alias of endpoint 0,  becareful.  // default hw buf len = 64
 	USB_EDP_MOUSE = 2,			// default hw buf len = 8
@@ -224,21 +225,8 @@ void usbhw_write_ctrl_ep_u16(unsigned short v);
 unsigned short usbhw_read_ctrl_ep_u16(void);
 
 /**
- * @brief     This function servers to enable swire through USB.
- * @note      If you need to enable swire_through_usb_en function, you need to call usb_set_pin_en() at the same time.
- * @return    none.
+ * @brief      This function serves to set dp_through_swire function.
+ * @param[in]  dp_through_swire - 1: swire_usb_en 0: swire_usb_dis
+ * @return     none.
  */
-static inline void swire_through_usb_dp_en(void)
-{
-    write_reg8(0xb1, (read_reg8(0xb1) | BIT(7)));
-}
-
-/**
- * @brief     This function servers to disable swire through USB.
- * @return    none.
- */
-static inline void swire_through_usb_dp_dis(void)
-{
-    write_reg8(0xb1, (read_reg8(0xb1) & (~BIT(7))));
-}
-
+void dp_through_swire_en(bool dp_through_swire);

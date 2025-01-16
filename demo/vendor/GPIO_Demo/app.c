@@ -23,6 +23,8 @@
  *******************************************************************************************************/
 #include "app_config.h"
 #if (GPIO_MODE != AUTO_TEST_MODE)
+volatile unsigned int gpio_irq_cnt;
+
 void user_init(void)
 {
 	sleep_ms(2000);
@@ -71,18 +73,29 @@ void user_init(void)
 	irq_enable();
 #elif(GPIO_MODE == GPIO_IRQ_RSIC0)
 	gpio_write(KEY3, 1);
+#if !MCU_CORE_TC1211
 	gpio_setup_up_down_resistor(IRQ_PIN, PM_PIN_PULLDOWN_100K);
+#endif
 	gpio_set_interrupt_risc0(IRQ_PIN, POL_RISING);
 	irq_enable();
 #elif(GPIO_MODE == GPIO_IRQ_RSIC1)
 	gpio_write(KEY3, 0);
+#if !MCU_CORE_TC1211
 	gpio_setup_up_down_resistor(IRQ_PIN, PM_PIN_PULLUP_10K);
+#endif
 	gpio_set_interrupt_risc1(IRQ_PIN, POL_FALLING);
 	irq_enable();
-#elif (GPIO_MODE == GPIO_IRQ_RSIC2)//only B80_A and B80_B support
+#elif (GPIO_MODE == GPIO_IRQ_RSIC2)//only B80_A / B80_B / TC1211 support
+	gpio_write(KEY3, 0);
+#if !MCU_CORE_TC1211
+    gpio_setup_up_down_resistor(IRQ_PIN, PM_PIN_PULLUP_10K);
+#endif
+    gpio_set_interrupt_risc2(IRQ_PIN, POL_FALLING);
+    irq_enable();
+#elif (GPIO_MODE == GPIO_IRQ_RSIC3)//only B80_A and B80_B support
 	gpio_write(KEY3, 0);
     gpio_setup_up_down_resistor(IRQ_PIN, PM_PIN_PULLUP_10K);
-    gpio_set_interrupt_risc2(IRQ_PIN, POL_FALLING);
+    gpio_set_interrupt_risc3(IRQ_PIN, POL_FALLING);
     irq_enable();
 #elif(GPIO_MODE == GPIO_SEL_IRQ_GROUP)//only B80_A support
 	/*Note : the use method of 8 new GPIO irq source :
@@ -97,11 +110,19 @@ void user_init(void)
 	irq_enable();
 #elif (GPIO_MODE == GPIO_SEL_IRQ_NEW_RISC)//only B80_B support
 	/*Note:
-	 * An IRQ_PIN  can be mapped to an NEW_RISK, and up to 5 new_risks(RISC3~RISC7) can be set up at the same time.
+	 * An IRQ_PIN  can be mapped to an NEW_RISC, and up to 5 new_riscs(RISC3~RISC7) can be set up at the same time.
 	 */
 	gpio_write(KEY3, 0);
 	gpio_setup_up_down_resistor(IRQ_PIN, PM_PIN_PULLUP_10K);
 	gpio_set_interrupt_new_risc(IRQ_PIN, SRC_IRQ_RISING_EDGE, GPIO_IRQ_NEW_RISC_NUM);
+	irq_enable();
+#elif (GPIO_MODE == GPIO_IRQ_RSIC0_LVL)
+	gpio_write(KEY3, 1);
+	gpio_set_interrupt_risc0(IRQ_PIN, IRQ_HIGH_LEVEL);
+	irq_enable();
+#elif (GPIO_MODE == GPIO_IRQ_RSIC1_LVL)
+	gpio_write(KEY3, 1);
+	gpio_set_interrupt_risc1(IRQ_PIN, IRQ_HIGH_LEVEL);
 	irq_enable();
 #endif
 #endif
@@ -113,13 +134,12 @@ void user_init(void)
 /////////////////////////////////////////////////////////////////////
 void main_loop (void)
 {
-   sleep_ms(50);
+   sleep_ms(500);
 #if (GPIO_DEMO_MODE == GPIO_DEMO_SQUARE_WAVE)
    gpio_toggle(KEY3);
 #endif
 }
 
-volatile unsigned int gpio_irq_cnt;
 /**
  * @brief		This function serves to handle the interrupt of MCU
  * @param[in] 	none
@@ -127,7 +147,6 @@ volatile unsigned int gpio_irq_cnt;
  */
 _attribute_ram_code_sec_noinline_ void irq_handler(void)
 {
-    sleep_ms(1000);
 #if (GPIO_MODE == GPIO_IRQ )
 
 	if((reg_irq_src & FLD_IRQ_GPIO_EN)==FLD_IRQ_GPIO_EN){
@@ -137,28 +156,29 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 	}
 
 #elif(GPIO_MODE == GPIO_IRQ_RSIC0)
-
-	if((reg_irq_src & FLD_IRQ_GPIO_RISC0_EN)==FLD_IRQ_GPIO_RISC0_EN){
-		reg_irq_src = FLD_IRQ_GPIO_RISC0_EN; // clear the relevant irq
-			gpio_irq_cnt++;
-			gpio_toggle(LED2);
+	if(gpio_get_irq_status(GPIO_IRQ_GPIO2RISC0_STATUS)){
+		gpio_clr_irq_status(GPIO_IRQ_GPIO2RISC0_STATUS);// clear the relevant irq
+		gpio_irq_cnt++;
+		gpio_toggle(LED1);
 	}
-
 #elif(GPIO_MODE == GPIO_IRQ_RSIC1)
-
-	if((reg_irq_src & FLD_IRQ_GPIO_RISC1_EN)==FLD_IRQ_GPIO_RISC1_EN){
-		reg_irq_src = FLD_IRQ_GPIO_RISC1_EN; // clear the relevant irq
-
-			gpio_irq_cnt++;
-			gpio_toggle(LED3);
+	if(gpio_get_irq_status(GPIO_IRQ_GPIO2RISC1_STATUS)){
+		gpio_clr_irq_status(GPIO_IRQ_GPIO2RISC1_STATUS);// clear the relevant irq
+		gpio_irq_cnt++;
+		gpio_toggle(LED1);
 	}
-#elif (GPIO_MODE == GPIO_IRQ_RSIC2)//only B80_A and B80_B support
-    if((reg_irq_src & FLD_IRQ_GPIO_RISC2_EN)==FLD_IRQ_GPIO_RISC2_EN){
-        reg_irq_src = FLD_IRQ_GPIO_RISC2_EN; // clear the relevant irq
+#elif (GPIO_MODE == GPIO_IRQ_RSIC2)//only B80_A / B80_B / TC321X / TC1211 support
+	if(gpio_get_irq_status(GPIO_IRQ_GPIO2RISC2_STATUS)){
+		gpio_clr_irq_status(GPIO_IRQ_GPIO2RISC2_STATUS);// clear the relevant irq
+		gpio_irq_cnt++;
+		gpio_toggle(LED1);
+	}
+#elif (GPIO_MODE == GPIO_IRQ_RSIC3)//only B80_A and B80_B / TC321X / support
+    if(gpio_get_irq_status(GPIO_IRQ_GPIO2RISC3_STATUS)){
+        gpio_clr_irq_status(GPIO_IRQ_GPIO2RISC3_STATUS);// clear the relevant irq
         gpio_irq_cnt++;
-    	gpio_toggle(LED4);
+    	gpio_toggle(LED1);
     }
-
 #elif(GPIO_MODE == GPIO_SEL_IRQ_GROUP)//only B80_A support
 	volatile unsigned char gpio_irqsrc;
 	gpio_irqsrc = (reg_gpio_irq_from_pad & IRQ_PIN);
@@ -172,11 +192,10 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 	/*Note:
 	  * When multiple new risc are set up at the same time, the corresponding bit in reg_irq_src (FLD_IRQ_GPIO_NEW_EN) is automatically cleared to 0 after all irq states are cleared.
 	 */
-	if(gpio_get_new_risk_irq_status(BIT(GPIO_IRQ_NEW_RISC_NUM)))
+	if(gpio_get_new_risc_irq_status(BIT(GPIO_IRQ_NEW_RISC_NUM)))
 	{
-		gpio_clr_new_risk_irq_status(BIT(GPIO_IRQ_NEW_RISC_NUM));
+		gpio_clr_new_risc_irq_status(BIT(GPIO_IRQ_NEW_RISC_NUM));
 	}
-
 #endif
 
 }

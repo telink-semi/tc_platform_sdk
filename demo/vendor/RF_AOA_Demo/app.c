@@ -110,7 +110,7 @@ void user_init(void)
 	gpio_init(1);
 
 #if (MCU_CORE_B87 || MCU_CORE_B85)
-	usb_set_pin_en();
+	usb_set_pin(1);
 #endif
 	rf_drv_init(RF_MODE_BLE_1M_NO_PN);
 

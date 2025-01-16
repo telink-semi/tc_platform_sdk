@@ -141,6 +141,8 @@ enum {
 	 WAKEUP_STATUS_PAD    			= BIT(3),
 	 WAKEUP_STATUS_MDEC    			= BIT(4),
 
+	 WAKEUP_STATUS_INUSE_ALL        = 0x1f,
+
 	 STATUS_GPIO_ERR_NO_ENTER_PM  	= BIT(8),/**<Bit8 is used to determine whether the wake source is normal.*/
 	 STATUS_ENTER_SUSPEND  			= BIT(30),
 };

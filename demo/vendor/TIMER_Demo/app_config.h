@@ -39,6 +39,12 @@ extern "C" {
  */
 #include "sys_clock.h"
 
+#if (!MCU_CORE_TC1211)
+#define CLOCK_SYS_TIMER_CLK_1MS   CLOCK_16M_SYS_TIMER_CLK_1MS
+#else
+#define CLOCK_SYS_TIMER_CLK_1MS   CLOCK_24M_SYS_TIMER_CLK_1MS
+#endif
+
 #if (MCU_CORE_B80)
 #define TIMER_GPIO      		GPIO_PB3
 #elif (MCU_CORE_B80B)
@@ -49,21 +55,27 @@ extern "C" {
 #define TIMER_GPIO      		GPIO_PD0
 #elif (MCU_CORE_B89)
 #define TIMER_GPIO      		GPIO_PD4
+#elif (MCU_CORE_TC321X)
+#define TIMER_GPIO              GPIO_PB3
+#elif (MCU_CORE_TC1211)
+#define TIMER_GPIO              GPIO_PA4
 #endif
 
 #define TIMER_SYS_CLOCK_MODE 	1
 #define TIMER_GPIO_TRIGGER_MODE 2
 #define TIMER_GPIO_WIDTH_MODE 	3
 #define TIMER_TICK_MODE 		4
-#define TIMER_WATCHDOG_MODE 	5  /* ONLY TIMER2 SUPPORT THIS MODE*/
-#if (MCU_CORE_B80 || MCU_CORE_B80B)
+#if (!MCU_CORE_TC1211)
+#define TIMER_WATCHDOG_MODE 	5  /* ONLY TIMER2 SUPPORT THIS MODE */
+#endif
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B85 || MCU_CORE_TC321X)
 #define STIMER_MODE				6
 #endif
-#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89)
+#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89 || MCU_CORE_TC321X|| MCU_CORE_TC1211)
 #define TIMER_32K_WATCHDOG_MODE 7
 #endif
 
-#define TIMER_MODE				5
+#define TIMER_MODE				TIMER_SYS_CLOCK_MODE
 
 /* Disable C linkage for C++ Compilers: */
 #if defined(__cplusplus)

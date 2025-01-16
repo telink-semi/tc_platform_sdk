@@ -855,6 +855,15 @@ enum{
 #define reg_system_tick_irq		REG_ADDR32(0x744)
 #define reg_system_wakeup_tick	REG_ADDR32(0x748)
 #define reg_system_tick_mode	REG_ADDR8(0x74c)
+enum{
+	FLD_SYSTEM_IRQ_MASK  		= 	BIT(1),
+	FLD_SYSTEM_32K_WR_EN 		= 	BIT(2),
+	FLD_SYSTEM_TIMER_MANUAL_EN 	= 	BIT(3),
+	FLD_SYSTEM_TIMER_SS_EN 	    = 	BIT(4),
+	FLD_SYSTEM_TIMER_BP_CLK     = 	BIT(5),
+	FLD_SYSTEM_TIMER_NXT_32K    = 	BIT(6),
+	FLD_SYSTEM_TIMER_CAL_32K_EN = 	BIT(7),
+};
 #define reg_system_tick_ctrl	REG_ADDR8(0x74f)
 
 enum {

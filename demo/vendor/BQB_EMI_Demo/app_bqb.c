@@ -51,7 +51,7 @@ void rd_usr_definition(unsigned char _s)
 		usr_config.flash = (flash_read_mid() >> 16) & 0xff;
 	}
 }
-#if (MCU_CORE_B80 || MCU_CORE_B80B)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X)
 void get_uart_port(GPIO_PinTypeDef* bqb_uart_tx_port, GPIO_PinTypeDef* bqb_uart_rx_port)
 #else
 void get_uart_port(UART_TxPinDef* bqb_uart_tx_port, UART_RxPinDef* bqb_uart_rx_port)
@@ -75,7 +75,7 @@ void read_bqb_calibration()
 	{
 		if(usr_config.cal_pos == 1)//OTP
 		{
-#if (MCU_CORE_B80 || MCU_CORE_B80B|| MCU_CORE_B89)
+#if (MCU_CORE_B80 || MCU_CORE_B80B|| MCU_CORE_B89 || MCU_CORE_TC321X)
 			extern unsigned char otp_program_flag;
 			unsigned int temp;
 			if(otp_program_flag != 1)
@@ -152,7 +152,7 @@ void user_init(void)
 	gpio_write(LED1, 0);         //LED On
 #endif
 
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X)
 	GPIO_PinTypeDef bqb_uart_tx_port = BQB_UART_TX_PORT;
 	GPIO_PinTypeDef bqb_uart_rx_port = BQB_UART_RX_PORT;
 #else
@@ -166,7 +166,7 @@ void user_init(void)
 	}
 	get_uart_port(&bqb_uart_tx_port, &bqb_uart_rx_port);
 #endif
-#if(MCU_CORE_B80B)
+#if(MCU_CORE_B80B || MCU_CORE_TC321X)
 	uart_gpio_set(UART_MODULE_SEL,bqb_uart_tx_port, bqb_uart_rx_port);// uart tx/rx pin set
 	uart_reset(UART_MODULE_SEL);  //will reset uart digital registers from 0x90 ~ 0x9f, so uart setting must set after this reset
 	uart_init_baudrate(UART_MODULE_SEL,BQB_UART_BAUD,CLOCK_SYS_CLOCK_HZ,PARITY_NONE, STOP_BIT_ONE);
@@ -190,7 +190,7 @@ void user_init(void)
 	read_bqb_calibration();
 	/*DP through sws*/
 #if(MCU_CORE_B85||MCU_CORE_B87)
-	usb_set_pin_en();
+	usb_set_pin(1);
 	gpio_setup_up_down_resistor(GPIO_PA5, PM_PIN_PULLUP_10K);
 #endif
 	bqbtest_init();

@@ -85,12 +85,13 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 int main (void) {
 
 	PLATFORM_INIT;
+    CLOCK_INIT;
 
-#if (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
+#if (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC1211)
 	rf_mode_init();
 #endif
 
-#if (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
+#if (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC1211)
 #if(RF_MODE==RF_BLE_1M)//1
 	 rf_set_ble_1M_mode();
 #elif(RF_MODE==RF_BLE_1M_NO_PN)//2
@@ -159,8 +160,6 @@ int main (void) {
 
 	gpio_init(0);
 #endif
-
-    CLOCK_INIT;
 
 	user_init();
 

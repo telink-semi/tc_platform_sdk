@@ -541,8 +541,8 @@ typedef enum {
 */
 static inline void reset_baseband(void)
 {
-	REG_ADDR8(0x61) = BIT(0);		//reset_baseband
-	REG_ADDR8(0x61) = 0;			//release reset signal
+	REG_ADDR8(0x61) |= BIT(0);		//reset_baseband
+	REG_ADDR8(0x61) &= ~BIT(0);		//release reset signal
 }
 
 

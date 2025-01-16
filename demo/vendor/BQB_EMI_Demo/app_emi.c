@@ -47,7 +47,7 @@
  * */
 #define CLOSE_INTERNAL_CAP		0
 
-#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89 || MCU_CORE_TC321X || MCU_CORE_TC1211)
 /*
  * @brief 	This macro definition is used to select whether to read offset calibration from OTP.
  * */
@@ -132,7 +132,7 @@ signed char get_noise_value()
 #define EMI_TEST_MODE  				     0x04
 #define EMI_TEST_CD_MODE_HOPPING_CHN     0x05
 #define CAP_CLOSE_EN                     0x06
-#if (MCU_CORE_B80 || MCU_CORE_B80B)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC1211)
 #define CAP_VALUE_FLASH				 	 0x07
 #define CAP_VALUE_OTP					 0x3fc8 //0x3fc8-0x3fcb,32bit
 #endif
@@ -208,6 +208,7 @@ void pa_operation(unsigned short v, unsigned char s)
 
 #define   GPIO_SYS 0xffffffff
 const GPIO_PinTypeDef gpio_map[48] = {
+#if	!(MCU_CORE_TC1211)
 	GPIO_PD7,//0
 	GPIO_PA0,//1
 	GPIO_PA1,//2
@@ -259,6 +260,7 @@ const GPIO_PinTypeDef gpio_map[48] = {
 #if	(ALL_PIN_WAKEUP && (MCU_CORE_B80 || MCU_CORE_B80B))
 	GPIO_PF0,
 	GPIO_PF1
+#endif
 #endif
 };
 #ifdef ATE_SW_TEST
@@ -419,8 +421,8 @@ void emi_init(void)
 	write_reg16(PA_TX_RX_SETTING, pa_setting);
 	write_reg32(RX_PACKET_NUM_ADDR, 0);
 	gpio_shutdown(GPIO_ALL);//for pm
-#if(!MCU_CORE_B89)
-	usb_set_pin_en(); //add for chips only support swire function of through-usb
+#if(!MCU_CORE_B89)&&(!MCU_CORE_TC321X)
+	usb_set_pin(1); //add for chips only support swire function of through-usb
 #endif
 #if	ALL_PIN_WAKEUP
 	usb_dp_pullup_en(0);
@@ -428,7 +430,7 @@ void emi_init(void)
 	analog_write(0x33,0xff);
     /*DP through sws*/
 #if(MCU_CORE_B85||MCU_CORE_B87)
-	usb_set_pin_en();
+	usb_set_pin(1);
 	gpio_setup_up_down_resistor(GPIO_PA5, PM_PIN_PULLUP_10K);
 #endif
 
@@ -463,6 +465,7 @@ void emi_serviceloop(void)
 					{
 						ate_list[i].func(RF_MODE_BLE_1M_NO_PN,power_level,chn);
 					}
+#if(!(MCU_CORE_TC321X||MCU_CORE_TC1211))
 					else if(mode==2)//zigbee mode
 					{
 						ate_list[i].func(RF_MODE_ZIGBEE_250K,power_level,chn);
@@ -475,6 +478,7 @@ void emi_serviceloop(void)
 					{
 						ate_list[i].func(RF_MODE_LR_S2_500K,power_level,chn);
 					}
+#endif
 					else if(mode==5)
 					{
 						ate_list[i].func(RF_MODE_PRIVATE_2M,power_level,chn);
@@ -602,6 +606,7 @@ void emitxprbs9(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 #endif
 
 #if CE_ANTI_NOISE_TEST
+	pa_operation(pa_setting, 2);
 	rf_emi_rx(rf_mode,rf_chn);
 #else
 	rf_emi_tx_burst_setup(rf_mode,power,rf_chn,0);
@@ -615,9 +620,12 @@ void emitxprbs9(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 		if(get_noise_value() < MAX_NOISE_VALUE)
 		{
 			rf_emi_stop();
+			pa_operation(pa_setting, 1);
 			rf_emi_tx_burst_setup(rf_mode,power,rf_chn,0);
 			rf_emi_tx_burst_loop(rf_mode,0);
 			rf_emi_stop();
+			sleep_ms(6);
+			pa_operation(pa_setting, 2);
 			rf_emi_rx(rf_mode,rf_chn);
 		}
 #else
@@ -649,6 +657,7 @@ void emitx55(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 #endif
 
 #if CE_ANTI_NOISE_TEST
+	pa_operation(pa_setting, 2);
 	rf_emi_rx(rf_mode,rf_chn);
 #else
 	rf_emi_tx_burst_setup(rf_mode,power,rf_chn,2);
@@ -662,9 +671,12 @@ void emitx55(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 		if(get_noise_value() < MAX_NOISE_VALUE)
 		{
 			rf_emi_stop();
+			pa_operation(pa_setting, 1);
 			rf_emi_tx_burst_setup(rf_mode,power,rf_chn,2);
 			rf_emi_tx_burst_loop(rf_mode,2);
 			rf_emi_stop();
+			sleep_ms(6);
+			pa_operation(pa_setting, 2);
 			rf_emi_rx(rf_mode,rf_chn);
 		}
 #else
@@ -696,6 +708,7 @@ void emitx0f(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 #endif
 
 #if CE_ANTI_NOISE_TEST
+	pa_operation(pa_setting, 2);
 	rf_emi_rx(rf_mode,rf_chn);
 #else
 	rf_emi_tx_burst_setup(rf_mode,power,rf_chn,1);
@@ -709,9 +722,12 @@ void emitx0f(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 		if(get_noise_value() < MAX_NOISE_VALUE)
 		{
 			rf_emi_stop();
+			pa_operation(pa_setting, 1);
 			rf_emi_tx_burst_setup(rf_mode,power,rf_chn,1);
 			rf_emi_tx_burst_loop(rf_mode,1);
 			rf_emi_stop();
+			sleep_ms(6);
+			pa_operation(pa_setting, 2);
 			rf_emi_rx(rf_mode,rf_chn);
 		}
 #else
@@ -777,7 +793,9 @@ void emi_deepio_noren(RF_ModeTypeDef rf_mode,unsigned char pin,signed char rf_ch
 	rf_chn = rf_chn;
 	if(gpio_map[pin]==GPIO_SYS) return;
 	cpu_set_gpio_wakeup(gpio_map[pin], Level_High, 1);  //gpio pad wakeup
+#if	!(MCU_CORE_TC1211)
 	gpio_setup_up_down_resistor(gpio_map[pin], PM_PIN_PULLDOWN_100K);
+#endif
 	cpu_sleep_wakeup(DEEPSLEEP_MODE , PM_WAKEUP_PAD,0);
 }
 
@@ -785,7 +803,11 @@ void emi_deeptimer_noren(RF_ModeTypeDef rf_mode,unsigned char Sec,signed char rf
 {
 	rf_mode = rf_mode;
 	rf_chn = rf_chn;
+#if(MCU_CORE_TC1211)
+	cpu_sleep_wakeup(DEEPSLEEP_MODE , PM_WAKEUP_TIMER,(reg_system_tick+Sec*CLOCK_24M_SYS_TIMER_CLK_1S));
+#else
 	cpu_sleep_wakeup(DEEPSLEEP_MODE , PM_WAKEUP_TIMER,(reg_system_tick+Sec*CLOCK_16M_SYS_TIMER_CLK_1S));
+#endif
 }
 
 void emi_deeptimer_ren(RF_ModeTypeDef rf_mode,unsigned char Sec,signed char rf_chn)
@@ -806,12 +828,14 @@ void emi_deepio_ren(RF_ModeTypeDef rf_mode,unsigned char pin,signed char rf_chn)
 	rf_chn = rf_chn;
 	if(gpio_map[pin]==GPIO_SYS) return;
 	cpu_set_gpio_wakeup(gpio_map[pin], Level_High, 1);  //gpio pad wakeup
+#if	!(MCU_CORE_TC1211)
 	gpio_setup_up_down_resistor(gpio_map[pin], PM_PIN_PULLDOWN_100K);
+#endif
 #if(MCU_CORE_B87 || MCU_CORE_B89)
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW32K , PM_WAKEUP_PAD,0);
 #elif(MCU_CORE_B85)
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K , PM_WAKEUP_PAD,0);
-#elif(ALL_PIN_WAKEUP && (MCU_CORE_B80 || MCU_CORE_B80B))
+#elif(ALL_PIN_WAKEUP && (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC1211))
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K , PM_WAKEUP_PAD,0);
 #endif
 }
@@ -823,7 +847,9 @@ void emi_suspendio_noren(RF_ModeTypeDef rf_mode,unsigned char pin,signed char rf
 	rf_chn = rf_chn;
 	if(gpio_map[pin]==GPIO_SYS) return;
 	cpu_set_gpio_wakeup(gpio_map[pin], Level_High, 1);  //gpio pad wakeup
+#if	!(MCU_CORE_TC1211)
 	gpio_setup_up_down_resistor(gpio_map[pin], PM_PIN_PULLDOWN_100K);
+#endif
 	cpu_sleep_wakeup(SUSPEND_MODE , PM_WAKEUP_PAD,0);
 }
 
@@ -831,7 +857,11 @@ void emi_suspendtimer_noren(RF_ModeTypeDef rf_mode,unsigned char Sec,signed char
 {
 	rf_mode = rf_mode;
 	rf_chn = rf_chn;
+#if(MCU_CORE_TC1211)
+	cpu_sleep_wakeup(SUSPEND_MODE , PM_WAKEUP_TIMER,(reg_system_tick+Sec*CLOCK_24M_SYS_TIMER_CLK_1S));
+#else
 	cpu_sleep_wakeup(SUSPEND_MODE , PM_WAKEUP_TIMER,(reg_system_tick+Sec*CLOCK_16M_SYS_TIMER_CLK_1S));
+#endif
 }
 
 /**
@@ -909,7 +939,7 @@ void read_flash_para(void)
 	   hop = temp;
 	   write_reg8(CD_MODE_HOPPING_CHN,hop);
 	}
-#if (MCU_CORE_B80 || MCU_CORE_B80B)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC1211)
 	flash_read_page(calib_flash_base_addr+CAP_VALUE_FLASH,1,&temp);
 	if( temp!= 0xff )
 	{
@@ -995,7 +1025,7 @@ void user_init(void)
 {
 	emi_init();
 
-#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89 || MCU_CORE_TC321X)
 #if READ_OFFSET_CLIBRATION_OTP
 	read_calibration_otp();
 #else
@@ -1003,8 +1033,10 @@ void user_init(void)
 	read_calibration_flash();
 #endif
 #else
+#if !(MCU_CORE_TC1211)
     read_flash_para();   //  Power on read flash EMI parameter
 	read_calibration_flash();
+#endif
 #endif
 
 #if CLOSE_INTERNAL_CAP

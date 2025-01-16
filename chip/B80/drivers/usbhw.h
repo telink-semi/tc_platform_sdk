@@ -23,6 +23,7 @@
  *******************************************************************************************************/
 #pragma once
 #include "register.h"
+#include "types.h"
 
 /* Enable C linkage for C++ Compilers: */
 #if defined(__cplusplus)
@@ -430,42 +431,8 @@ void usbhw_write_ctrl_ep_u16(unsigned short v);
 unsigned short usbhw_read_ctrl_ep_u16(void);
 
 /**
- * @brief     This function servers to enable swire through USB.
- * @note      If you need to enable swire_through_usb_en function, you need to call usb_set_pin_en() at the same time.
- * @return    none.
+ * @brief      This function serves to set dp_through_swire function.
+ * @param[in]  dp_through_swire - 1: swire_usb_en 0: swire_usb_dis
+ * @return     none.
  */
-static inline void swire_through_usb_dp_en(void)
-{
-#if(MCU_CORE_B80B)
-    if(read_reg8(0x7d) == 0xf0) // chip version A0
-    {
-        write_reg8(0xb1, (read_reg8(0xb1) | BIT(7)));
-    }
-    else // chip version A1 and later
-    {
-        write_reg8(0xb1, (read_reg8(0xb1) & (~BIT(7))));
-    }
-#else
-    write_reg8(0xb1, (read_reg8(0xb1) | BIT(7)));
-#endif
-}
-
-/**
- * @brief     This function servers to disable swire through USB.
- * @return    none.
- */
-static inline void swire_through_usb_dp_dis(void)
-{
-#if(MCU_CORE_B80B)
-    if(read_reg8(0x7d) == 0xf0) // chip version A0
-    {
-        write_reg8(0xb1, (read_reg8(0xb1) & (~BIT(7))));
-    }
-    else // chip version A1 and later
-    {
-        write_reg8(0xb1, (read_reg8(0xb1) | BIT(7)));
-    }
-#else
-    write_reg8(0xb1, (read_reg8(0xb1) & (~BIT(7))));
-#endif
-}
+void dp_through_swire_en(bool dp_through_swire);

@@ -40,7 +40,6 @@ typedef enum{
 	MID14325E   =   0x14325e,//ZB25WD80B
 	MID146085   =   0x146085,//P25Q80U
 	MID1460C8   =   0x1460c8,//GD25LD80C/GD25LD80E
-	MID1570CD   =   0x1570cd,//TH25Q16UB
 }flash_mid_e;
 
 /**
@@ -245,23 +244,6 @@ void flash_read_uid(unsigned char idcmd, unsigned char *buf);
 /*******************************************************************************************************************
  *												Secondary interface
  ******************************************************************************************************************/
-
-/**
- * @brief		This function serves to read flash mid and uid,and check the correctness of mid and uid.
- * @param[out]	flash_mid	- Flash Manufacturer ID.
- * @param[out]	flash_uid	- Flash Unique ID.
- * @return		0: flash no uid or not a known flash model 	 1:the flash model is known and the uid is read.
- * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
- *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.
- *              Taking into account the factors such as power supply fluctuations, the safe voltage value needs to be greater
- *              than the minimum chip operating voltage. For the specific value, please make a reasonable setting according
- *              to the specific application and hardware circuit.
- *
- *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
- *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
- *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
- */
-int flash_read_mid_uid_with_check( unsigned int *flash_mid, unsigned char *flash_uid);
 
 /**
  * @brief		This function serves to get flash vendor.

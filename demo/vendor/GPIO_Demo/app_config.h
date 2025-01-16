@@ -46,12 +46,17 @@ extern "C" {
 #define GPIO_DEMO_MODE 			GPIO_DEMO_KEY
 
 #define GPIO_HIGH_RESISTOR		   1
+#if((!MCU_CORE_TC1211))
 #define GPIO_IRQ				   2
+#endif
 #define GPIO_IRQ_RSIC0			   3
 #define GPIO_IRQ_RSIC1			   4
 
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
-#define GPIO_IRQ_RSIC2             5//only B80_A and B80_B support
+#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC1211)
+#define GPIO_IRQ_RSIC2             5//only B80_A / B80_B / TC321X / TC1211 support
+#if (MCU_CORE_TC321X)
+#define GPIO_IRQ_RSIC3             6//only B80_A / B80_B / TC321X support
+#endif
 #if (MCU_CORE_B80)
 #define GPIO_SEL_IRQ_GROUP         6//only  B80_A support
 #elif (MCU_CORE_B80B)
@@ -60,13 +65,14 @@ extern "C" {
 #endif
 #endif
 
-#define AUTO_TEST_MODE 			   7 // For internal testing, users need not care
+#define AUTO_TEST_MODE 			   10 // For internal testing, users need not care
 
+#if (!MCU_CORE_TC321X) && (!MCU_CORE_TC1211)
 #define GPIO_MODE 				GPIO_IRQ
+#else
+#define GPIO_MODE 				GPIO_IRQ_RSIC0
+#endif
 
-#define GPIO_DEMO_KEY			1	 //Short press SW2 intermittent trigger interrupts,short press KEY3 to generate an edge signal.
-#define GPIO_DEMO_SQUARE_WAVE	2	 //long presses SW2 to continuously trigger interrupts,IRQ_PIN connects to KEY3, toggle KEY3 to generate a square wave signal.
-#define GPIO_DEMO_MODE 			GPIO_DEMO_KEY
 
 /* Disable C linkage for C++ Compilers: */
 #if defined(__cplusplus)

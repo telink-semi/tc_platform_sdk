@@ -61,9 +61,16 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 	if(timer_get_interrupt_status(FLD_TMR_STA_TMR0))
 	{
 		timer_clear_interrupt_status(FLD_TMR_STA_TMR0); //clear irq status
+		gpio_toggle(LED2);
+#if (!MCU_CORE_TC1211)
 		gpio_width = reg_tmr0_tick;
 		reg_tmr0_tick = 0;
-		gpio_toggle(LED2);
+#else
+		gpio_width = reg_tmr0_tick0 | (reg_tmr0_tick1<<8) | (reg_tmr0_tick2<<16);
+		reg_tmr0_tick0 = 0;
+		reg_tmr0_tick1 = 0;
+		reg_tmr0_tick2 = 0;
+#endif
 	}
 #elif(TIMER_MODE == STIMER_MODE)
 	if(stimer_get_irq_status())

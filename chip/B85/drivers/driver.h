@@ -61,3 +61,4 @@
 #include "flash/flash_type.h"
 #include "flash/flash_common.h"
 #include "sdk_version.h"
+#include "stimer.h"

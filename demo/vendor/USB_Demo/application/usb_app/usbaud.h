@@ -21,7 +21,7 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-#if (!MCU_CORE_B80 && !MCU_CORE_B80B)
+#if (!MCU_CORE_B80 && !MCU_CORE_B80B  && !MCU_CORE_TC1211)
 #pragma once
 #include "driver.h"
 #include "../usbstd/HIDClassCommon.h"

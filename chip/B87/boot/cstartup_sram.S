@@ -23,6 +23,21 @@
  *******************************************************************************************************/
 #ifdef MCU_STARTUP_SRAM
 
+ /**
+ * @brief	Set "DP_THROUGH_SWIRE_DIS" as "1" to disable the "dp_through_swire" function. Set "DP_THROUGH_SWIRE_DIS" as "0" to enable the "dp_through_swire" function.
+ *			Risk description:
+ *	        The "dp_through_swire" function is enabled by default.When DP and DM pin are used as GPIO function and trigger "dp_through_swire" timing,
+ *	        there may be a problem of miswriting the chip through swire to cause the chip to crash. Therefore, disable the "dp_through_swire" function in this startup file.(set "DP_THROUGH_SWIRE_DIS" as "1").
+ *	        If the chip has only dp pin but no sws pin, using the above scheme (set "DP_THROUGH_SWIRE_DIS" as "1") will cause the following problems.
+ *	        1. During fixture production, burning a firmware program that disables the "dp_through_swire"function into unprogrammed chip will cause the problem that chip can not be burned again due to swire communication failure.
+ *	        2. Burning a firmware program that disables the "dp_through_swire" function with BDT tool may result in failure of debugging due to swire communication failure.
+ *	        If developers evaluate that the above scheme (set "DP_THROUGH_SWIRE_DIS" as "1") cannot be used, they can only set "DP_THROUGH_SWIRE_DIS" to "0" to enable the "dp_through_swire" function. However, be careful not to make DP and DM pin trigger "dp_through_swire" timing.
+ *          In USB applications, 1. calling the usb_set_pin(1) interface (equivalent to usb_set_pin_en) will re-enable the dp_through_swire function 2. calling the usb_set_pin(0) interface will disable the dp_through_swire function.
+ */
+#ifndef DP_THROUGH_SWIRE_DIS
+#define DP_THROUGH_SWIRE_DIS      1
+#endif
+
 //The default driver configuration is 32K to ensure that the default driver configuration can work properly on all models.
 //In actual use, please configure the sram size according to your own model, otherwise the efficiency will be affected.
 #define SRAM_32K      (0x848000)	//32KSRAM
@@ -134,6 +149,12 @@ __reset:
 
 	tmov		r0, #16			@0b 00010000
 	tstorerb	r0, [r1, #1]	@0x800583  PB output
+#endif
+
+#if DP_THROUGH_SWIRE_DIS
+    tloadr      r1, DP_THROUGH_SWIRE        @read 0xb1
+    tmov        r0, #0                      @0x8000b1 -> 0x00  <7>: 0 swire_usb_dis 
+    tstorerb    r0, [r1, #0]
 #endif
 
 #if FLASH_WAKEUP_EN
@@ -375,6 +396,9 @@ DATA_I:
     .word	(0xff080000)                @36
     .word	(0x000000f7)                @40
 	.word	(0x0080000c)                @44
+
+DP_THROUGH_SWIRE:
+    .word   (0x8000b1)                  @  swire_ctrl
 
 DEBUG_GPIO:
 	.word	(0x80058a)                  @  PBx oen

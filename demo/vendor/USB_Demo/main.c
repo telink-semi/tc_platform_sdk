@@ -29,13 +29,14 @@
 extern void user_init(void);
 extern void main_loop (void);
 
-#if (MCU_CORE_B80B)
+#if (MCU_CORE_B80B || MCU_CORE_TC1211)
 #include "application/usbstd/usb.h"
 volatile unsigned int sof_cnt = 0;
 volatile unsigned int set_intf_cnt;
 volatile unsigned int sof_frame[4] = {0};
 volatile unsigned int sys_tick[4] = {0};
 volatile unsigned char usb_edps_irq_flag = 0;
+volatile unsigned int set_addr_cnt = 0;
 #endif
 
 /**
@@ -45,7 +46,7 @@ volatile unsigned char usb_edps_irq_flag = 0;
  */
 _attribute_ram_code_sec_noinline_ void irq_handler(void)
 {
-#if (MCU_CORE_B80B)
+#if (MCU_CORE_B80B || MCU_CORE_TC1211)
 
 #if (USB_ENUM_IN_INTERRUPT == 1)
     /* sof interrupt. */
@@ -62,7 +63,19 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
         usbhw_clr_irq_status(USB_IRQ_EP_INTF_STATUS);
         set_intf_cnt++;
     }
-#endif
+
+#if (MCU_CORE_TC1211)
+    if (usbhw_get_set_addr_irq_status())
+    {
+        usbhw_clr_set_addr_irq_status();
+        set_addr_cnt++;
+        if (usbhw_get_set_addr_error_status())
+        {
+            usbhw_write_ctrl_ep_ctrl(FLD_EP_DAT_STALL);
+        }
+    }
+#endif /* MCU_CORE_TC1211 */
+#endif /* USB_ENUM_IN_INTERRUPT */
 
     /* edps irq */
     if (usbhw_get_eps_irq() & FLD_USB_EDP4_IRQ)

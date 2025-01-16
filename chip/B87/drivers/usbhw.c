@@ -58,3 +58,20 @@ unsigned short usbhw_read_ctrl_ep_u16(void){
 	return (usbhw_read_ctrl_ep_data() << 8) | v;
 } 
 
+/**
+ * @brief      This function serves to set dp_through_swire function.
+ * @param[in]  dp_through_swire - 1: swire_usb_en 0: swire_usb_dis
+ * @return     none.
+ */
+void dp_through_swire_en(bool dp_through_swire)
+{
+    if(dp_through_swire)
+    {
+        write_reg8(0xb1, (read_reg8(0xb1) | BIT(7))); // BIT(7) = 1 : swire_usb_en
+    }
+    else
+    {
+        write_reg8(0xb1, (read_reg8(0xb1) & (~BIT(7)))); // BIT(7) = 0 : swire_usb_dis
+    }
+
+}

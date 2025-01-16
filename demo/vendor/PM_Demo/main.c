@@ -36,11 +36,7 @@ extern void main_loop (void);
  */
 _attribute_ram_code_sec_noinline_ void irq_handler(void)
 {
-	if((reg_irq_src & FLD_IRQ_GPIO_EN) == FLD_IRQ_GPIO_EN)
-	{
-		reg_irq_src = FLD_IRQ_GPIO_EN;
-		gpio_toggle(LED2);
-	}
+
 }
 
 

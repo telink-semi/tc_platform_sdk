@@ -34,12 +34,13 @@ void user_init(void)
 	irq_enable();
 	//2.enable USB manual interrupt(in auto interrupt mode,USB device would be USB printer device)
     usb_init();
-#if (MCU_CORE_B87 || MCU_CORE_B80 || MCU_CORE_B80B)
+#if (MCU_CORE_B87 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211)
     usbhw_set_eps_en(BIT(USB_EDP_MOUSE)); /* enable endpoint. */
 #endif
 	//3.enable USB DP pull up 1.5k
-	 usb_set_pin_en();
+	 usb_set_pin(1);
 
+#if (!MCU_CORE_TC1211)
 	//initiate LED for indication
 	gpio_set_output_en(LED1,1);
 	gpio_set_func(LED1,AS_GPIO);
@@ -49,19 +50,24 @@ void user_init(void)
 	gpio_set_func(LED3,AS_GPIO);
 	gpio_set_output_en(LED4,1);
 	gpio_set_func(LED4,AS_GPIO);
+#endif
+
 	//initiate Button for Mouse input
+	gpio_set_input_en(USB_USER_KEY1,1);
+	gpio_set_output_en(USB_USER_KEY1,0);
+#if (!MCU_CORE_TC1211)
+	gpio_setup_up_down_resistor(USB_USER_KEY1, PM_PIN_PULLUP_10K);
+#endif
+	gpio_set_func(USB_USER_KEY1, AS_GPIO);
 
-	gpio_set_input_en(GPIO_PD0,1);
-	gpio_set_output_en(GPIO_PD0,0);
-	gpio_setup_up_down_resistor(GPIO_PD0, PM_PIN_PULLUP_10K);
-	gpio_set_func(GPIO_PD0, AS_GPIO);
-
-	gpio_set_input_en(GPIO_PD1,1);
-	gpio_set_output_en(GPIO_PD1,0);
-	gpio_setup_up_down_resistor(GPIO_PD1, PM_PIN_PULLUP_10K);
-	gpio_set_func(GPIO_PD1, AS_GPIO);
-	gpio_write(GPIO_PD0|GPIO_PD1,1);
-
+	gpio_set_input_en(USB_USER_KEY2,1);
+	gpio_set_output_en(USB_USER_KEY2,0);
+#if (!MCU_CORE_TC1211)
+	gpio_setup_up_down_resistor(USB_USER_KEY2, PM_PIN_PULLUP_10K);
+#endif
+	gpio_set_func(USB_USER_KEY2, AS_GPIO);
+	gpio_write(USB_USER_KEY1,1);
+	gpio_write(USB_USER_KEY2,1);
 }
 
 /* enum to USB input device and simulate the left click and right click of mouse */
@@ -71,13 +77,15 @@ void main_loop (void)
 
 	if(usb_g_config != 0 )
 	{
-		if(gpio_read(GPIO_PD0)==0)
+		if(gpio_read(USB_USER_KEY1)==0)
 		{
 			sleep_us(10000);
-			if(gpio_read(GPIO_PD0)==0)
+			if(gpio_read(USB_USER_KEY1)==0)
 			{
-				while(gpio_read(GPIO_PD0)==0);
+				while(gpio_read(USB_USER_KEY1)==0);
+#if (!MCU_CORE_TC1211)
 				gpio_write(LED1,ON);
+#endif
 				printf("Key:Mouse  Click ! \r\n");
 				mouse[0] = BIT(1);// BIT(0) - left key; BIT(1) - right key; BIT(2) - middle key; BIT(3) - side key; BIT(4) - external key
 				mouse[1] = -2;	  // Displacement relative to x coordinate
@@ -87,13 +95,15 @@ void main_loop (void)
 			}
 		}
 
-		if(gpio_read(GPIO_PD1)==0)
+		if(gpio_read(USB_USER_KEY2)==0)
 		{
 			sleep_us(10000);
-			if(gpio_read(GPIO_PD1)==0)
+			if(gpio_read(USB_USER_KEY2)==0)
 			{
-				while(gpio_read(GPIO_PD1)==0);
+				while(gpio_read(USB_USER_KEY2)==0);
+#if (!MCU_CORE_TC1211)
 				gpio_write(LED1,OFF);
+#endif
 				printf("Key:release \r\n");
 				mouse[0] = 0;
 				mouse[1] = 0;

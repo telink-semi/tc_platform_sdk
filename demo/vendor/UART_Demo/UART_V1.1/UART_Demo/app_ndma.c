@@ -75,15 +75,17 @@ void user_init(void)
 #if (UART_MODULE_SEL == UART0_MODULE)
 	dma_chn_irq_enable(FLD_DMA_CHN_UART_RX | FLD_DMA_CHN_UART_TX, 0);
 #elif (UART_MODULE_SEL == UART1_MODULE)
+#ifndef MCU_CORE_TC321X /* TC321X only UART0 support DMA. */
 	dma_chn_irq_enable(FLD_DMA_CHN_UART1_RX | FLD_DMA_CHN_UART1_TX, 0);
+#endif
 #endif
 
 	uart_irq_enable(UART_MODULE_SEL,1,0);   //uart rx_buff irq enable
 
 	uart_ndma_irq_triglevel(UART_MODULE_SEL,uart_rx_trig_level,0);	//set the trig level. 1 indicate one byte will occur interrupt
-#if(MCU_CORE_B80B)
+
 	uart_rxdone_irq_en(UART_MODULE_SEL);  //mask rx_done irq
-#endif
+
 	uart_mask_error_irq_enable(UART_MODULE_SEL);// open uart_error_mask,when stop bit error or parity error,it will enter error_interrupt.
 
 	irq_enable();
@@ -99,7 +101,7 @@ void user_init(void)
 /////////////////////////////////////////////////////////////////////
 void main_loop (void)
 {
-sleep_ms(1000);
+	sleep_ms(1000);
 	gpio_toggle(LED1);
 #if(FLOW_CTR == NONE)
 	if(uart_rx_done_flag>0)
