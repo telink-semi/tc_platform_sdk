@@ -122,6 +122,8 @@ enum {
 	 WAKEUP_STATUS_CORE  			= BIT(1),
 	 WAKEUP_STATUS_TIMER 			= BIT(2),
 
+	 WAKEUP_STATUS_INUSE_ALL        = 0x07,
+
 	 STATUS_GPIO_ERR_NO_ENTER_PM  	= BIT(8), /**<Bit8 is used to determine whether the wake source is normal.*/
 	 STATUS_ENTER_SUSPEND  			= BIT(30),
 };

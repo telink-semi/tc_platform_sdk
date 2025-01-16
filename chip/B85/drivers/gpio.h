@@ -26,7 +26,11 @@
 #include "register.h"
 #include "gpio.h"
 #include "analog.h"
+#include "usbhw.h"
+#include "types.h"
 
+/* For compatibility, usb_set_pin_en() is equivalent to usb_set_pin(1), configure the usb pin and enable the dp_through_swire function.*/
+#define usb_set_pin_en()    usb_set_pin(1)
 
 /**
  *  @brief  Define GPIO types
@@ -291,7 +295,7 @@ static inline void gpio_read_all(unsigned char *p)
  * @param[in]  status  - the pin needs to disable its IRQ.
  * @return     1:the interrupt status type is 1, 0: the interrupt status type is 0..
  */
-static inline char gpio_get_irq_status(gpio_irq_status_e status)
+static inline int gpio_get_irq_status(gpio_irq_status_e status)
 {
 	return (reg_irq_src & status);
 }
@@ -533,14 +537,24 @@ static inline void usb_power_on(unsigned char en)
 		analog_write(0x34,analog_read(0x34)&0xfd);
 	}
 }
+
 /**
- * @brief      This function serves to set GPIO MUX function as DP and DM pin of USB
- * @param[in]  none.
+ * @brief      This function serves to set GPIO MUX function as DP and DM pin of USB.
+ * @param[in]  dp_through_swire - 1: swire_usb_en 0: swire_usb_dis
  * @return     none.
+ * @note       1. Configure usb_set_pin(0) , there are some risks, please refer to the startup.S file about DP_THROUGH_SWIRE_DIS
+ *                for detailed description (by default dp_through_swire is disabled). Configure usb_set_pin(1) to enable dp_through_swire again.
+ *             2. When dp_through_swire is enabled, Swire and USB applications do not affect each other.
  */
-static inline void usb_set_pin_en(void)
+static inline void usb_set_pin(bool dp_through_swire)
 {
-	gpio_set_func(GPIO_PA5, AS_USB);
-	gpio_set_func(GPIO_PA6, AS_USB);
-	usb_dp_pullup_en (1);
+    gpio_set_func(GPIO_PA5, AS_USB);
+    gpio_set_func(GPIO_PA6, AS_USB);
+    usb_dp_pullup_en(1);
+    /*                                      Note
+     * If you want to enable the dp_through_swire function, there are the following considerations:
+     * 1.configure dp_through_swire_en(1).
+     * 2.keep DM high (external hardware burning EVK has pull-up function, no software configuration is needed).
+     */
+    dp_through_swire_en(dp_through_swire);
 }

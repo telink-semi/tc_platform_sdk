@@ -53,6 +53,9 @@ extern "C" {
 #elif (MCU_CORE_B89)
 #define I2C_GPIO_SDA            I2C_GPIO_SDA_A0
 #define I2C_GPIO_SCL            I2C_GPIO_SCL_A1
+#elif(MCU_CORE_TC321X)
+#define I2C_GPIO_SDA            GPIO_PC7
+#define I2C_GPIO_SCL            GPIO_PA0
 #endif
 
 

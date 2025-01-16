@@ -25,6 +25,21 @@
 
 #include "compiler.h"
 
+ /**
+ * @brief	Set "DP_THROUGH_SWIRE_DIS" as "1" to disable the "dp_through_swire" function. Set "DP_THROUGH_SWIRE_DIS" as "0" to enable the "dp_through_swire" function.
+ *			Risk description:
+ *	        The "dp_through_swire" function is enabled by default.When DP and DM pin are used as GPIO function and trigger "dp_through_swire" timing,
+ *	        there may be a problem of miswriting the chip through swire to cause the chip to crash. Therefore, disable the "dp_through_swire" function in this startup file.(set "DP_THROUGH_SWIRE_DIS" as "1").
+ *	        If the chip has only dp pin but no sws pin, using the above scheme (set "DP_THROUGH_SWIRE_DIS" as "1") will cause the following problems.
+ *	        1. During fixture production, burning a firmware program that disables the "dp_through_swire"function into unprogrammed chip will cause the problem that chip can not be burned again due to swire communication failure.
+ *	        2. Burning a firmware program that disables the "dp_through_swire" function with BDT tool may result in failure of debugging due to swire communication failure.
+ *	        If developers evaluate that the above scheme (set "DP_THROUGH_SWIRE_DIS" as "1") cannot be used, they can only set "DP_THROUGH_SWIRE_DIS" to "0" to enable the "dp_through_swire" function. However, be careful not to make DP and DM pin trigger "dp_through_swire" timing.
+ *          In USB applications, 1. calling the usb_set_pin(1) interface (equivalent to usb_set_pin_en) will re-enable the dp_through_swire function 2. calling the usb_set_pin(0) interface will disable the dp_through_swire function.
+ */
+#ifndef DP_THROUGH_SWIRE_DIS
+#define DP_THROUGH_SWIRE_DIS      1
+#endif
+
 /**
  * @brief	1. If your usage is as follows, you need to set ALL_SRAM_CODE = 1:
  * 			The program is burned in flash, you want to power up and move all code to sram for execution.
@@ -258,6 +273,36 @@ __reset:
 	tmov		r0, #16			@0b 00010000
 	tstorerb	r0, [r1, #0]	@0x8005c4  PB output set
 #endif
+
+#if DP_THROUGH_SWIRE_DIS
+#if (MCU_CORE_B80B)
+    tloadr      r0, CHIP_VERSION                @read 0x7d
+    tloadrb		r3, [r0, #0]
+    tmov        r1, #240                        @0xf0 
+    tcmp        r1, r3                          @if r1 >= r3, Version = A0
+    tjge        chip_version_A0                 @jump to chip_version_A0
+
+chip_version_A1:
+    tloadr      r1, DP_THROUGH_SWIRE            @read 0xb1, chip_version_A1 and later  
+    tmov        r0, #128                        @0x8000b1 -> 0x80  <7>: 1 swire_usb_dis 
+    tstorerb    r0, [r1, #0]
+    tj          DP_THROUGH_SWIRE_DIS_FUNC_END
+
+chip_version_A0:
+    tloadr      r1, DP_THROUGH_SWIRE            @read 0xb1
+    tmov        r0, #00                         @0x8000b1 -> 0x00  <7>: 0 swire_usb_dis 
+    tstorerb    r0, [r1, #0]
+    tj          DP_THROUGH_SWIRE_DIS_FUNC_END
+
+#elif (MCU_CORE_B80)
+    tloadr      r1, DP_THROUGH_SWIRE            @read 0xb1
+    tmov        r0, #0                          @0x8000b1 -> 0x00  <7>: 0 swire_usb_dis 
+    tstorerb    r0, [r1, #0]
+    tj          DP_THROUGH_SWIRE_DIS_FUNC_END
+#endif
+#endif
+
+DP_THROUGH_SWIRE_DIS_FUNC_END:
 
     @B80_B is handled in the boot program.
 #if (MCU_CORE_B80)
@@ -507,6 +552,12 @@ DATA_I:
     .word	(0xff080000)                @36
     .word	(0x000000f7)                @40
 	.word	(0x0080000c)                @44
+
+CHIP_VERSION:
+    .word   (0x80007d)                  @chip version
+
+DP_THROUGH_SWIRE:	
+    .word   (0x8000b1)                  @swire ctrl
 
 DEBUG_GPIO_OEN:
 	.word	(0x80050a)                  @  PBx oen

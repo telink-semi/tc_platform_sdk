@@ -404,7 +404,7 @@ void flash_read_uid(unsigned char idcmd, unsigned char *buf)
 }
 
 /**
- * @brief 		This function is used to write the configure of the flash,P25Q40SU uses this function.
+ * @brief 		This function is used to write the configure of the flash,P25D40SU uses this function.
  * @param[in]   cmd			- the write command.
  * @param[out]  data		- the start address of the data buffer.
  * @return 		none.
@@ -424,7 +424,7 @@ void flash_write_config(unsigned char cmd,unsigned char data)
 }
 
 /**
- * @brief 		This function is used to read the configure of the flash,P25Q40SU uses this function.
+ * @brief 		This function is used to read the configure of the flash,P25D40SU uses this function.
  * @return 		the value of configure.
  * @note        Attention: Before calling the FLASH function, please check the power supply voltage of the chip.
  *              Only if the detected voltage is greater than the safe voltage value, the FLASH function can be called.

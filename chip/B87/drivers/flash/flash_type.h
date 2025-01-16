@@ -32,7 +32,6 @@
 #include "flash_mid13325e.h"	// ZB25WD40B
 #include "flash_mid14325e.h"	// ZB25WD80B
 #include "flash_mid146085.h"    // P25Q80U
-#include "flash_mid1570cd.h"    // TH25Q16UB
 /**
  * @brief		This function reads the status of flash.
  * @param[in] 	cmd	- the cmd of read status.

@@ -71,7 +71,7 @@ static u16 g_response_len = 0;
 static int g_stall = 0;
 u8 usb_mouse_report_proto = 0; //default 1 for report proto
 u8 g_rate = 0; //default 0 for all report
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211)
 static unsigned short usb_len_idx_0;
 static unsigned short usb_len_idx_s;
 static unsigned short usb_len_idx_h;
@@ -94,7 +94,7 @@ void usb_send_response(void) {
 		n = USB_CTR_ENDPOINT_SIZE;
 	}
 	g_response_len -= n;
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211)
 	usb_len_idx_0=n;
 #endif
 	usbhw_reset_ctrl_ep_ptr();
@@ -184,7 +184,7 @@ void usb_prepare_desc_data(void) {
 		g_response_len = control_request.Length;
 	}
 
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211)
 	usb_len_idx_s = g_response_len;
 #endif
 
@@ -295,7 +295,7 @@ void usb_handle_std_intf_req() {
 		g_response_len = control_request.Length;
 	}
 
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211)
     usb_len_idx_s = g_response_len;
 #endif
 
@@ -739,7 +739,7 @@ void usb_handle_request(u8 data_request) {
 
 void usb_handle_ctl_ep_setup(void)
 {
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211)
 	reg_usb_sups_cyc_cali=0x38;
 #endif
 	usbhw_reset_ctrl_ep_ptr();
@@ -748,7 +748,7 @@ void usb_handle_ctl_ep_setup(void)
 	control_request.Value = usbhw_read_ctrl_ep_u16();
 	control_request.Index = usbhw_read_ctrl_ep_u16();
 	control_request.Length = usbhw_read_ctrl_ep_u16();
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211)
 	usb_len_idx_h = control_request.Length;
 #endif
 	g_stall = 0;
@@ -765,7 +765,7 @@ void usb_handle_ctl_ep_setup(void)
 
 
 void usb_handle_ctl_ep_data(void) {
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211)
 	reg_usb_sups_cyc_cali=0x38;
 #endif
 	usbhw_reset_ctrl_ep_ptr();
@@ -775,7 +775,7 @@ void usb_handle_ctl_ep_data(void) {
 	{
 		usbhw_write_ctrl_ep_ctrl(FLD_EP_DAT_STALL);
 	}
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211)
 	else if((usb_len_idx_s % USB_CTR_ENDPOINT_SIZE == 0) && (usb_len_idx_0 == 0) && (usb_len_idx_s != usb_len_idx_h))
 	{
 		reg_usb_sups_cyc_cali=0x18;
@@ -792,7 +792,7 @@ void usb_handle_ctl_ep_data(void) {
 
 
 void usb_handle_ctl_ep_status() {
-#if(MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211)
 	reg_usb_sups_cyc_cali=0x38;
 #endif
 	if (g_stall)
@@ -866,7 +866,7 @@ void usb_handle_irq(void) {
 	if (irq_get_src() & FLD_IRQ_USB_RST_EN)
 	{		//USB reset
 			usb_mouse_report_proto = 1;                   //1: report protocol; 0: start protocol
-#if (MCU_CORE_B80B)
+#if (MCU_CORE_B80B || MCU_CORE_TC1211)
             usbhw_clr_ctrl_ep_irq(FLD_USB_IRQ_RESET_STATUS); /* Clear USB reset status */
 #endif
 			irq_clr_sel_src(FLD_IRQ_USB_RST_EN);					//Clear USB reset flag
@@ -903,19 +903,14 @@ void usb_handle_irq(void) {
 void usb_init_interrupt(void)
 {
 	usbhw_enable_manual_interrupt(FLD_CTRL_EP_AUTO_STD | FLD_CTRL_EP_AUTO_DESC|FLD_CTRL_EP_AUTO_CFG);
-#if(MCU_CORE_B87||MCU_CORE_B80 || MCU_CORE_B80B)
+#if(MCU_CORE_B87||MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211)
 	usbhw_set_eps_en(FLD_USB_EDP8_EN|FLD_USB_EDP1_EN|FLD_USB_EDP2_EN|FLD_USB_EDP3_EN|FLD_USB_EDP4_EN|FLD_USB_EDP5_EN|FLD_USB_EDP6_EN|FLD_USB_EDP7_EN);
 #endif
 }
 
 void usb_init(void)
 {
-#if (SWIRE_THROUGH_USB_DP_ENABLE)
-    swire_through_usb_dp_en();
-#else
-    swire_through_usb_dp_dis();
-#endif
-#if (MCU_CORE_B80B)
+#if (MCU_CORE_B80B || MCU_CORE_TC1211)
     usbhw_set_irq_edge();
     /* enable reset mask, otherwise, reg_irq_src does not detect the usb reset and suspend irq.*/
     usbhw_set_irq_mask(FLD_USB_IRQ_RESET_MASK | FLD_USB_IRQ_SUSPEND_MASK);

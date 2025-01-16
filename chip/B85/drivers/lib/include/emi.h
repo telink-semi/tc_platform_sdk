@@ -26,6 +26,7 @@
 
 #include "lib/include/rf_drv.h"
 
+#define EMI_TX_PKT_PAYLOAD   37
 
 /**
  * @brief   This function serves to set singletone power.

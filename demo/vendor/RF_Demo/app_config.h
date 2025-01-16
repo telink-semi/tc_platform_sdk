@@ -49,14 +49,20 @@ extern "C" {
 #define RF_POWER			RF_POWER_P11p46dBm
 #elif(MCU_CORE_B80B)
 #define RF_POWER            RF_POWER_P11p46dBm
+#elif(MCU_CORE_TC321X)
+#define RF_POWER            RF_POWER_P11p25dBm
+#elif(MCU_CORE_TC1211)
+#define RF_POWER            RF_POWER_P11p46dBm
 #endif
 
 #define RF_BLE_2M				1
 #define RF_BLE_1M				2
 #define RF_BLE_1M_NO_PN			3
+#if(!(MCU_CORE_TC321X||MCU_CORE_TC1211))
 #define RF_ZIGBEE_250K			4
 #define RF_LR_S2_500K			5
 #define RF_LR_S8_125K			6
+#endif
 #define RF_PRIVATE_250K			7
 #define RF_PRIVATE_500K			8
 #define RF_PRIVATE_1M			9
@@ -74,7 +80,7 @@ extern "C" {
 
 
 
-#define RF_MODE					RF_LR_S8_125K
+#define RF_MODE					RF_BLE_1M
 
 /* Disable C linkage for C++ Compilers: */
 #if defined(__cplusplus)

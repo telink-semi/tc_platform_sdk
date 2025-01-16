@@ -36,10 +36,10 @@ typedef enum{
 #if(MCU_CORE_B80)
     MID1160C8   =   0x1160C8,//GD25LD10C
 	MID1360C8   =   0x1360c8,//GD25LD40C
-	MID13325E   =   0x13325e,//ZG25WD40B (Untested)
+	MID13325E   =   0x13325e,//ZG25WD40B
 #endif
 	MID114485   =   0x114485,//P25D09U
-	MID136085   =   0x136085,//P25Q40SU
+	MID136085   =   0x136085,//P25D40SU
 	MID1164C8   =   0x1164c8,//GD25WD10EGIG
 }flash_mid_e;
 
@@ -63,9 +63,9 @@ enum{
 
 	//special cmd
 	FLASH_WRITE_STATUS_CMD_LOWBYTE		=	0x01,
-	FLASH_WRITE_STATUS_CMD_HIGHBYTE		=	0x31,    // Flash Type = P25Q40SU for write status register-1;
+	FLASH_WRITE_STATUS_CMD_HIGHBYTE		=	0x31,    // Flash Type = P25D40SU for write status register-1;
 	FLASH_WRITE_CONFIGURE_CMD_1         =   0x31,
-	FLASH_WRITE_CONFIGURE_CMD_2         =   0x11,    // Flash Type = P25Q40SU for write configure register;
+	FLASH_WRITE_CONFIGURE_CMD_2         =   0x11,    // Flash Type = P25D40SU for write configure register;
 
 	FLASH_READ_STATUS_CMD_LOWBYTE		=	0x05,
 	FLASH_READ_STATUS_CMD_HIGHBYTE		=	0x35,

@@ -44,6 +44,9 @@ unsigned short read_data_time_sustain[24] = {0};	//the size of the array can be 
 #define RF_POWER						RF_POWER_P11p46dBm
 #elif(MCU_CORE_B80B)
 #define RF_POWER                        RF_POWER_P11p46dBm
+#elif(MCU_CORE_TC321X)
+#define RF_POWER                        RF_POWER_P11p25dBm
+
 #endif
 #define RF_FREQ							17
 #define ACCESS_CODE						0x29417671
@@ -107,7 +110,7 @@ void user_init(void)
 	cpu_sleep_wakeup(SUSPEND_MODE , PM_WAKEUP_MDEC,0);
 
 #elif(PM_MODE==SUSPEND_CORE_WAKEUP)
-	usb_set_pin_en();
+	usb_set_pin(1);
 	pm_set_suspend_power_cfg(PM_POWER_USB, 1);
 
 #elif(PM_MODE==SUSPEND_COMPARATOR_WAKEUP)
@@ -204,13 +207,19 @@ void user_init(void)
 
 	cpu_set_gpio_wakeup(WAKEUP_PAD, Level_High, 1);
 	gpio_setup_up_down_resistor(WAKEUP_PAD, PM_PIN_PULLDOWN_100K);
-
+#if(MCU_CORE_TC321X)
+	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW32K , PM_WAKEUP_PAD, 0);
+#else
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K , PM_WAKEUP_PAD, 0);
+#endif
 
 #elif(PM_MODE==DEEP_RET_32K_RC_WAKEUP||PM_MODE==DEEP_RET_32K_XTAL_WAKEUP)
 
+#if(MCU_CORE_TC321X)
+	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW32K, PM_WAKEUP_TIMER, (clock_time() + 4000*CLOCK_16M_SYS_TIMER_CLK_1MS));
+#else
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K, PM_WAKEUP_TIMER, (clock_time() + 4000*CLOCK_16M_SYS_TIMER_CLK_1MS));
-
+#endif
 #elif(PM_MODE==DEEP_RET_LONG_32K_RC_WAKEUP||PM_MODE==DEEP_RET_LONG_32K_XTAL_WAKEUP)
 
     cpu_long_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K, PM_WAKEUP_TIMER, 500*CLOCK_32K_SYS_TIMER_CLK_1MS);
@@ -354,10 +363,10 @@ void main_loop (void)
 	gpio_set_output_en(GPIO_PB1, 0);
 	gpio_set_input_en(GPIO_PB1 ,1);
 	gpio_setup_up_down_resistor(GPIO_PB1, PM_PIN_PULLUP_10K);
-	gpio_set_interrupt(GPIO_PB1, POL_FALLING);
+	gpio_set_interrupt_risc0(GPIO_PB1, POL_FALLING);
 	irq_enable();		//Turn on the total interrupt.
-	cpu_stall_wakeup(FLD_IRQ_GPIO_EN);
-	gpio_clr_irq_status(GPIO_IRQ_MASK_GPIO);//Clear the interrupt status.
+	cpu_stall_wakeup(FLD_IRQ_GPIO_RISC0_EN);
+	gpio_clr_irq_status(FLD_IRQ_GPIO_RISC0_EN);//Clear the interrupt status.
 
 #elif(PM_MODE == IDLE_TIMER0_WAKEUP)
 	cpu_stall_wakeup_by_timer0(2*CLOCK_SYS_CLOCK_1S);

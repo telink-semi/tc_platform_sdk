@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    app_config.h
  *
- * @brief   This is the header file for B80B
+ * @brief   This is the header file for Telink MCU
  *
  * @author  Driver Group
  * @date    2018
@@ -43,16 +43,29 @@ extern "C" {
 #define UART_RX_PIN				GPIO_PD1
 #define UART_CTS_PIN			GPIO_PD2
 #define UART_RTS_PIN			GPIO_PD3
+#if MCU_CORE_TC321X
+#define UART_RTX_PIN            GPIO_PB0
+#else
 #define UART_RTX_PIN			GPIO_PC7
+#endif
 
 #define UART0_MODULE            0 /* UART0 */
 #define UART1_MODULE            1 /* UART1 */
-
+#if (MCU_CORE_TC321X)
+#define UART2_MODULE            2 /* UART2 */
+#endif
 /* uart select */
-#define UART_MODULE_SEL         UART1_MODULE
+#define UART_MODULE_SEL         UART0_MODULE
 
 /******************set mode**********************/
+#if MCU_CORE_TC321X /* TC321X only UART0 support DMA. */
+#if (UART_MODULE_SEL == UART0_MODULE)
+#define UART_DMA         1     //uart use dma
+#endif
+#else
 #define UART_DMA  		 1     //uart use dma
+#endif
+
 #define UART_NDMA  		 2     //uart not use dma
 #define UART_SOFTWARE_RX 3     //software simulates the UART receiving function,occupy an GPIO interrupt and a hardware timer
 #define UART_MODE	 	UART_DMA

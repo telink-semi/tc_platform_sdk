@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    app_software.c
  *
- * @brief   This is the source file for B80B
+ * @brief   This is the source file for Telink MCU
  *
  * @author  Driver Group
  * @date    2022

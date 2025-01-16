@@ -40,7 +40,7 @@
     PWM3_N :  PC5.
     PWM4_N :  PC0.  PC6.
     PWM5_N :  PC7.
-    B89_B80:
+    B89_B80_TC321X:
     reference gpio.h
  *********************************************************************************/
 
@@ -50,7 +50,7 @@
 #elif (MCU_CORE_B87||MCU_CORE_B85)
 #define PWM_PIN		GPIO_PC1
 #define AS_PWMx			AS_PWM0	
-#elif (MCU_CORE_B80 || MCU_CORE_B80B)
+#elif (MCU_CORE_B80 || MCU_CORE_B80B|| MCU_CORE_TC321X)
 #define PWM_PIN		GPIO_PC1
 #define AS_PWMx         PWM0
 #endif

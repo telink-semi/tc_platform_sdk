@@ -1,10 +1,10 @@
 /********************************************************************************************************
- * @file	common.c
+ * @file    common.c
  *
- * @brief	This is the header file for Telink MCU
+ * @brief   This is the header file for Telink MCU
  *
- * @author	Driver Group
- * @date	2024
+ * @author  Driver Group
+ * @date    2024
  *
  * @par     Copyright (c) 2024, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
@@ -69,12 +69,18 @@ flash_user_defined_list_t flash_init_list[] = {
     {0x146085, FLASH_LOCK_LOW_512K_MID146085},
     {0x1460C8, FLASH_LOCK_LOW_768K_MID1460C8},
     {0x14325E, FLASH_LOCK_LOW_768K_MID14325E},
-    // 2M
-    {0x1570CD, FLASH_LOCK_LOW_1M_MID1570CD},
 
 #elif (MCU_CORE_B89)
     // 512K
     {0x1360C8, FLASH_LOCK_LOW_256K_MID1360C8},
+#elif (MCU_CORE_TC321X)
+    // 512K
+    {0x1360C8, FLASH_LOCK_LOW_256K_MID1360C8},
+    {0x136085, FLASH_LOCK_LOW_256K_MID136085},
+    //1M
+	{0x146085, FLASH_LOCK_LOW_512K_MID146085},
+    //2M
+	{0x156085, FLASH_LOCK_LOW_1M_MID156085},
 #else
     {0, 0}
 #endif
@@ -113,19 +119,19 @@ void flash_init(unsigned char flash_protect_en)
 
 void platform_init(unsigned char flash_protect_en)
 {
-#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89  || MCU_CORE_TC1211)
     cpu_wakeup_init(INTERNAL_CAP_XTAL24M);
 #elif (MCU_CORE_B85)
     cpu_wakeup_init();
-#elif (MCU_CORE_B87)
+#elif (MCU_CORE_B87 || MCU_CORE_TC321X)
     cpu_wakeup_init(LDO_MODE, INTERNAL_CAP_XTAL24M);
 #endif
 
-#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89 || MCU_CORE_TC321X || MCU_CORE_TC1211)
     wd_32k_stop();
 #endif
 
-#if (MCU_CORE_B85) || (MCU_CORE_B87)
+#if (MCU_CORE_B85) || (MCU_CORE_B87 || MCU_CORE_TC321X)
     // Note: This function must be called, otherwise an abnormal situation may occur.
     // Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
     user_read_flash_value_calib();
@@ -143,10 +149,17 @@ void platform_init(unsigned char flash_protect_en)
 #endif
 
 #endif
+
+#if ((!DUT_TEST) && (!MCU_CORE_TC1211))
     gpio_init(0);
+#endif
+
+
+#ifndef MCU_CORE_TC1211
     // Note: This is to set SWS pull. If SWS is not set up, SWS will be floating, causing abnormal sleep currents of suspend,
     // there may be the risk of sws miswriting the chip registers or sram causing a crash.
     gpio_setup_up_down_resistor(GPIO_SWS, PM_PIN_PULLUP_1M);
+#endif
 
     /**
     ===============================================================================
@@ -161,5 +174,8 @@ void platform_init(unsigned char flash_protect_en)
     @note if flash protection fails, LED1 lights up long, and keeps while.
     ===============================================================================
     */
+#if !defined(DUT_TEST) && !defined(MCU_CORE_TC1211)
     flash_init(flash_protect_en);
+#endif
+
 }

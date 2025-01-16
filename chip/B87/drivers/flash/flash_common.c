@@ -39,7 +39,6 @@
 GD25LD10C/GD25LD10E		0x4b(AN)	0x1160C8	GD			500ms
 GD25LD40C/GD25LD40E		0x4b		0x1360C8	GD			500ms
 GD25LD80C/GD25LD80E		0x4b(AN)	0x1460C8	GD			500ms
-	TH25Q16UB			0x4b		0x1570CD	TH		    7.6ms
 	ZB25WD10A			0x4b		0x11325E	ZB			500ms
 	ZB25WD40B			0x4b		0x13325E	ZB			500ms
 	ZB25WD80B			0x4b		0x14325E	ZB			500ms
@@ -59,8 +58,6 @@ const flash_hal_handler_t flash_list[] = {
 	{0x146085,flash_get_lock_block_mid146085, flash_unlock_mid146085, flash_lock_mid146085,FLASH_LOCK_LOW_512K_MID146085},
 	{0x1460C8,flash_get_lock_block_mid1460c8, flash_unlock_mid1460c8, flash_lock_mid1460c8,FLASH_LOCK_LOW_768K_MID1460C8},
 	{0x14325E,flash_get_lock_block_mid14325e, flash_unlock_mid14325e, flash_lock_mid14325e,FLASH_LOCK_LOW_768K_MID14325E},
-	//2M
-	{0x1570CD,flash_get_lock_block_mid1570cd, flash_unlock_mid1570cd, flash_lock_mid1570cd,FLASH_LOCK_LOW_1M_MID1570CD},
 };
 
 const unsigned int FLASH_CNT = sizeof(flash_list)/sizeof(flash_hal_handler_t);

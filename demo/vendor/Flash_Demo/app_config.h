@@ -34,6 +34,7 @@ extern "C" {
  */
 #define CLOCK_SYS_CLOCK_HZ 16000000
 
+#define FLASH_TEST_ONLY    0//for flash test cycle only
 /**
  * @note The sys_clock.h file depends on the definition of CLOCK_SYS_CLOCK_HZ so CLOCK_SYS_CLOCK_HZ must be placed before #include "sys_clock.h" without reversing the order.
  */

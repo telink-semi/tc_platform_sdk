@@ -27,16 +27,16 @@
 #include "compiler.h"
 
 
-#define DMA_RFRX_LEN_HW_INFO				0	// 826x: 8
-#define DMA_RFRX_OFFSET_HEADER				4	// 826x: 12
-#define DMA_RFRX_OFFSET_RFLEN				5   // 826x: 13
-#define DMA_RFRX_OFFSET_DATA				6	// 826x: 14
+#define DMA_RFRX_LEN_HW_INFO				0
+#define DMA_RFRX_OFFSET_HEADER				4
+#define DMA_RFRX_OFFSET_RFLEN				5
+#define DMA_RFRX_OFFSET_DATA				6
+// note: 826x corresponds to configurations 8, 12, 13, 14
 
-
-#define DMA_RFRX_OFFSET_CRC24(p)			(p[DMA_RFRX_OFFSET_RFLEN]+6)  //data len:3
-#define DMA_RFRX_OFFSET_TIME_STAMP(p)		(p[DMA_RFRX_OFFSET_RFLEN]+9)  //data len:4
-#define DMA_RFRX_OFFSET_FREQ_OFFSET(p)		(p[DMA_RFRX_OFFSET_RFLEN]+13) //data len:2
-#define DMA_RFRX_OFFSET_RSSI(p)				(p[DMA_RFRX_OFFSET_RFLEN]+15) //data len:1, signed
+#define DMA_RFRX_OFFSET_CRC24(p)			(p[DMA_RFRX_OFFSET_RFLEN]+6)  //crc len:3 byte
+#define DMA_RFRX_OFFSET_TIME_STAMP(p)		(p[DMA_RFRX_OFFSET_RFLEN]+9)  //time stamp len:4 byte
+#define DMA_RFRX_OFFSET_FREQ_OFFSET(p)		(p[DMA_RFRX_OFFSET_RFLEN]+13) //freq offset len:2 byte
+#define DMA_RFRX_OFFSET_RSSI(p)				(p[DMA_RFRX_OFFSET_RFLEN]+15) //rssi len:1 byte, signed
 
 
 

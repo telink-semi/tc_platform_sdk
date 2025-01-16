@@ -34,11 +34,12 @@ extern void rd_usr_definition(unsigned char _s);
 extern usr_def_t usr_config;
 #endif
 
-#if MCU_CORE_B87
+#if(MCU_CORE_B87||MCU_CORE_TC321X)
 #define POWER_MODE_LDO			0
 #define POWER_MODE_DCDC_LDO 	1
+#if(MCU_CORE_B87)
 #define POWER_MODE_DCDC			2
-
+#endif
 /**
  * @brief		This is macro used to set the initialize power mode.
  */
@@ -70,7 +71,7 @@ int main (void) {
 #if TEST_DEMO==BQB_DEMO && SUPPORT_CONFIGURATION
 
 	rd_usr_definition(1);
-#if (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
+#if (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC1211)
 	cpu_wakeup_init(INTERNAL_CAP_XTAL24M);
 #elif (MCU_CORE_B87)
 	if(usr_config.power_mode == 0)
@@ -89,7 +90,7 @@ int main (void) {
 
 #if (MCU_CORE_B85)
 	cpu_wakeup_init();
-#elif (MCU_CORE_B87)
+#elif (MCU_CORE_B87||MCU_CORE_TC321X)
 #if POWER_MODE_SELECT == POWER_MODE_LDO
 	cpu_wakeup_init(LDO_MODE, INTERNAL_CAP_XTAL24M);
 #elif POWER_MODE_SELECT == POWER_MODE_DCDC
@@ -97,13 +98,13 @@ int main (void) {
 #elif POWER_MODE_SELECT == POWER_MODE_DCDC_LDO
 	cpu_wakeup_init(DCDC_LDO_MODE, INTERNAL_CAP_XTAL24M);
 #endif
-#elif (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
+#elif (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211)
 	cpu_wakeup_init(INTERNAL_CAP_XTAL24M);
 #endif
 
 #endif
 
-#if(MCU_CORE_B80 || MCU_CORE_B80B ||MCU_CORE_B89)
+#if(MCU_CORE_B80 || MCU_CORE_B80B ||MCU_CORE_B89 || MCU_CORE_TC321X || MCU_CORE_TC1211)
 	wd_32k_stop();
 #endif
 #if (MCU_CORE_B85) || (MCU_CORE_B87)
@@ -120,7 +121,7 @@ int main (void) {
 	rf_drv_init(RF_MODE_BLE_1M_NO_PN);
 
 	gpio_init(!deepRetWakeUp);
-#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B)
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC1211)
 	rf_mode_init();
 	rf_set_ble_1M_NO_PN_mode();
 #endif
@@ -137,7 +138,9 @@ int main (void) {
 	@note if flash protection fails, LED1 lights up long, and keeps while.
 	===============================================================================
 */
-	flash_init(1);
+#if !(MCU_CORE_TC1211)
+	flash_init(0);
+#endif
 
     CLOCK_INIT;
 

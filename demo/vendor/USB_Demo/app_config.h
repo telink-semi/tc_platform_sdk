@@ -42,7 +42,7 @@ extern "C" {
 #define	 USB_MOUSE          1
 #define	 USB_KEYBOARD		2
 #define	 USB_CDC	        3
-#if (!MCU_CORE_B80 && !MCU_CORE_B80B)
+#if (!MCU_CORE_B80 && !MCU_CORE_B80B  && !MCU_CORE_TC1211)
 #define	 USB_MICROPHONE		4
 #define	 USB_SPEAKER		5
 #endif
@@ -74,6 +74,14 @@ extern "C" {
 
 #define  AUDIO_SPK_MODE				1
 
+/* user key config. */
+#if (MCU_CORE_TC1211)
+#define USB_USER_KEY1 GPIO_PA2
+#define USB_USER_KEY2 GPIO_PB0
+#else
+#define USB_USER_KEY1 GPIO_PD0
+#define USB_USER_KEY2 GPIO_PD1
+#endif
 /* Disable C linkage for C++ Compilers: */
 #if defined(__cplusplus)
 }

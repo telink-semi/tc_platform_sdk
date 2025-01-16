@@ -43,6 +43,8 @@
 #define BQB_TX_POWER					RF_POWER_P6p97dBm
 #elif MCU_CORE_B80B
 #define BQB_TX_POWER                    RF_POWER_P6p97dBm
+#elif MCU_CORE_TC321X
+#define BQB_TX_POWER                    RF_POWER_P11p25dBm
 #endif
 
 #define ACCESS_CODE        	0x29417671
@@ -64,7 +66,7 @@
 #define CAP_SET_FLASH_ADDR_128K 		0x1e000
 #define CAP_SET_FLASH_ADDR_64K			0xe000
 
-#if (MCU_CORE_B80 || MCU_CORE_B80B)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X)
 #define CAP_SET_OTP_16K					0x3fc8 //0x3fc8-0x3fcb,32bit
 #endif
 
@@ -90,10 +92,13 @@
 #elif(MCU_CORE_B80B)
 #define BQB_UART_TX_PORT   				GPIO_PD0
 #define BQB_UART_RX_PORT   				GPIO_PD1
+#elif(MCU_CORE_TC321X)
+#define BQB_UART_TX_PORT   				GPIO_PC2
+#define BQB_UART_RX_PORT   				GPIO_PC3
 #endif
 #define BQB_UART_BAUD	   	115200
 
-#if(MCU_CORE_B80B)
+#if(MCU_CORE_B80B || MCU_CORE_TC321X)
 #define UART0_MODULE            0 /* UART0 */
 #define UART1_MODULE            1 /* UART1 */
 /* uart select */

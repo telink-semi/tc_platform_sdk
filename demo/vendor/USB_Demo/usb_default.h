@@ -45,7 +45,7 @@
 #define ID_PRODUCT	   			0x8727
 #endif
 
-#if (MCU_CORE_B80B)
+#if (MCU_CORE_B80B || MCU_CORE_TC1211)
 /* control endpoint size config. */
 #define USB_CTR_ENDPOINT_SIZE       8 /* 8/16/32/64 */
 #define USB_CTR_SIZE                (USB_CTR_ENDPOINT_SIZE == 64) ? SIZE_64_BYTE :                 \
@@ -98,10 +98,12 @@
 	#endif
 #endif
 
+#define USB_ENUM_IN_INTERRUPT       0 /* 1: usb enumeration in interrupt, 0: usb enumeration in main_loop. */
+
 #if (MCU_CORE_B80 || MCU_CORE_B85 || MCU_CORE_B87 || MCU_CORE_B89)
 #define USB_PHYSICAL_EDP_CDC_IN     USB_EDP_CDC_IN  /* physical in endpoint */
 #define USB_PHYSICAL_EDP_CDC_OUT    USB_EDP_CDC_OUT /* physical out endpoint */
-#elif (MCU_CORE_B80B)
+#elif (MCU_CORE_B80B || MCU_CORE_TC1211)
 /* control endpoint size config. */
 #define USB_CTR_ENDPOINT_SIZE       8 /* 8/16/32/64 */
 #define USB_CTR_SIZE                (USB_CTR_ENDPOINT_SIZE == 64) ? SIZE_64_BYTE :                 \
@@ -257,11 +259,6 @@
 #define USB_KEYBOARD_RELEASE_TIMEOUT    (450000) // in us
 #define USB_MOUSE_RELEASE_TIMEOUT       (200000) // in us
 #define USB_SOMATIC_RELEASE_TIMEOUT     (200000) // in us
-
-/*config for swire through USB DP, it requires a call to usb_set_pin_en() at the same time to enable this function*/
-#ifndef SWIRE_THROUGH_USB_DP_ENABLE
-#define SWIRE_THROUGH_USB_DP_ENABLE     1
-#endif
 
 
 

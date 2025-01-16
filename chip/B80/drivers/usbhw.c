@@ -87,3 +87,45 @@ void usbhw_ep_map_en(usb_ep_map_sel_e map_en)
     }
 }
 #endif
+
+/**
+ * @brief      This function serves to set dp_through_swire function.
+ * @param[in]  dp_through_swire - 1: swire_usb_en 0: swire_usb_dis
+ * @return     none.
+ */
+void dp_through_swire_en(bool dp_through_swire)
+{
+#if(MCU_CORE_B80B)
+    if(dp_through_swire)
+    {
+        if(read_reg8(0x7d) == 0xf0) // chip version A0
+        {
+            write_reg8(0xb1, (read_reg8(0xb1) | BIT(7))); // BIT(7) = 1 : swire_usb_en
+        }
+        else // chip version A1 and later
+        {
+            write_reg8(0xb1, (read_reg8(0xb1) & (~BIT(7)))); // BIT(7) = 0 : swire_usb_en
+        }
+    }
+    else
+    {
+        if(read_reg8(0x7d) == 0xf0) // chip version A0
+        {
+            write_reg8(0xb1, (read_reg8(0xb1) & (~BIT(7)))); // BIT(7) = 0 : swire_usb_dis
+        }
+        else // chip version A1 and later
+        {
+            write_reg8(0xb1, (read_reg8(0xb1) | BIT(7))); // BIT(7) = 1 : swire_usb_dis
+        }
+    }
+#else
+    if(dp_through_swire)
+    {
+        write_reg8(0xb1, (read_reg8(0xb1) | BIT(7))); // BIT(7) = 1 : swire_usb_en
+    }
+    else
+    {
+        write_reg8(0xb1, (read_reg8(0xb1) & (~BIT(7)))); // BIT(7) = 0 : swire_usb_dis
+    }
+#endif
+}

@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    app_dma.c
  *
- * @brief   This is the source file for B80B
+ * @brief   This is the source file for Telink MCU
  *
  * @author  Driver Group
  * @date    2018
@@ -103,7 +103,7 @@ void main_loop (void)
 #if(UART_MODE_TRX == TX)
 	if(uart_dma_send_flag == 1)
 	{
-		uart_send_dma((unsigned char *)trans_buff);
+		uart_send_dma(UART_MODULE_SEL,(unsigned char *)trans_buff);
 		trans_buff[4] ++;
 		uart_dma_send_flag = 0;
 	}

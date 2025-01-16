@@ -1,9 +1,9 @@
 /********************************************************************************************************
  * @file    common.h
  *
- * @brief    This is the header file for Telink MCU
+ * @brief   This is the header file for Telink MCU
  *
- * @author    Driver Group
+ * @author  Driver Group
  * @date    2024
  *
  * @par     Copyright (c) 2024, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
@@ -21,7 +21,6 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-
 #ifndef __COMMON_H_
 #define __COMMON_H_
 
@@ -117,6 +116,37 @@
 #define KEY2 GPIO_PD4
 #define KEY3 GPIO_PF0
 #define KEY4 GPIO_PF1
+#elif (MCU_CORE_TC321X)
+#define LED1 GPIO_PB4
+#define LED2 GPIO_PB7
+#define LED3 GPIO_PB6
+#define LED4 GPIO_PC4
+
+/*
+ * Button matrix table:
+ *             KEY3       KEY4
+ *     KEY1    SW2        SW3
+ *     KEY2    SW4        SW5
+ */
+#define KEY1 GPIO_PB0
+#define KEY2 GPIO_PA2
+#define KEY3 GPIO_PA4
+#define KEY4 GPIO_PA1
+#elif (MCU_CORE_TC1211)
+#define LED1 GPIO_PA0
+#define LED2 GPIO_PA1
+#define LED3 GPIO_PA2
+#define LED4 GPIO_PA4
+/*
+ * Button matrix table:
+ *             KEY3       KEY4
+ *     KEY1    SW2        SW3
+ *     KEY2    SW4        SW5
+ */
+#define KEY1 GPIO_PA5
+#define KEY2 GPIO_PA6
+#define KEY3 GPIO_PA7
+#define KEY4 GPIO_PA0
 #endif
 
 void flash_init(unsigned char flash_protect_en);
@@ -124,6 +154,6 @@ void flash_init(unsigned char flash_protect_en);
 void platform_init(unsigned char flash_protect_en);
 
 #define PLATFORM_INIT platform_init(1)
-#define CLOCK_INIT clock_init(SYS_CLK)
+#define CLOCK_INIT    clock_init(SYS_CLK)
 
 #endif /* end of __COMMON_H_ */

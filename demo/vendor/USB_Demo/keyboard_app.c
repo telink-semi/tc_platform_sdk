@@ -34,12 +34,13 @@ unsigned char  kb_data[6];
 void user_init(void)
 {
     usb_init();
-#if (MCU_CORE_B87 || MCU_CORE_B80 || MCU_CORE_B80B)
+#if (MCU_CORE_B87 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211)
     usbhw_set_eps_en(BIT(USB_EDP_KEYBOARD_IN)); /* enable endpoint. */
 #endif
 	//enable USB DP pull up 1.5k
-	usb_set_pin_en();
+	usb_set_pin(1);
 
+#if (!MCU_CORE_TC1211)
 	//initiate LED for indication
 	gpio_set_output_en(LED1,1);
 	gpio_set_func(LED1,AS_GPIO);
@@ -49,16 +50,18 @@ void user_init(void)
 	gpio_set_func(LED3,AS_GPIO);
 	gpio_set_output_en(LED4,1);
 	gpio_set_func(LED4,AS_GPIO);
-	//initiate Button for keyboard input
-	gpio_set_func(GPIO_PD0, AS_GPIO);
-	gpio_set_input_en(GPIO_PD0,1);
-	gpio_set_output_en(GPIO_PD0,0);
-	gpio_setup_up_down_resistor(GPIO_PD0, PM_PIN_PULLUP_10K);
+#endif
 
-	gpio_set_func(GPIO_PD1, AS_GPIO);
-	gpio_set_input_en(GPIO_PD1,1);
-	gpio_set_output_en(GPIO_PD1,0);
-	gpio_setup_up_down_resistor(GPIO_PD1, PM_PIN_PULLUP_10K);
+	//initiate Button for keyboard input
+	gpio_set_func(USB_USER_KEY1, AS_GPIO);
+	gpio_set_input_en(USB_USER_KEY1,1);
+	gpio_set_output_en(USB_USER_KEY1,0);
+	gpio_setup_up_down_resistor(USB_USER_KEY1, PM_PIN_PULLUP_10K);
+
+	gpio_set_func(USB_USER_KEY2, AS_GPIO);
+	gpio_set_input_en(USB_USER_KEY2,1);
+	gpio_set_output_en(USB_USER_KEY2,0);
+	gpio_setup_up_down_resistor(USB_USER_KEY2, PM_PIN_PULLUP_10K);
 }
 
 
@@ -67,13 +70,15 @@ void main_loop (void)
 	usb_handle_irq();
 	if(usb_g_config != 0 )
 	{
-		if(gpio_read(GPIO_PD0)==0)
+		if(gpio_read(USB_USER_KEY1)==0)
 		{
 			sleep_us(10000);
-			if(gpio_read(GPIO_PD0)==0)
+			if(gpio_read(USB_USER_KEY1)==0)
 			{
-				while(gpio_read(GPIO_PD0)==0);
+				while(gpio_read(USB_USER_KEY1)==0);
+#if (!MCU_CORE_TC1211)
 				gpio_write(LED1,ON);
+#endif
 				// normal key: data[0]~data[5]
 			    kb_data[0] = 0;
 				kb_data[1] = 0;
@@ -87,13 +92,15 @@ void main_loop (void)
 			}
 		}
 
-		if(gpio_read(GPIO_PD1)==0)
+		if(gpio_read(USB_USER_KEY2)==0)
 		{
 			sleep_us(10000);
-			if(gpio_read(GPIO_PD1)==0)
+			if(gpio_read(USB_USER_KEY2)==0)
 			{
-				while(gpio_read(GPIO_PD1)==0);
+				while(gpio_read(USB_USER_KEY2)==0);
+#if (!MCU_CORE_TC1211)
 				gpio_write(LED1,OFF);
+#endif
 				{
 					for(int i=0;i<6;i++)
 					{
