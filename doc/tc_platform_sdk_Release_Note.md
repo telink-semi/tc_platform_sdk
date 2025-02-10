@@ -1,3 +1,80 @@
+## V3.0.1
+
+### Version
+* SDK Version: tc_platform_sdk V3.0.1
+* Chip Version
+  - TLSR8208(B80) (A1/A4), TLSR8208 B(B80B) (A0/A1), B85, B87,TC321X(A0)
+* Hardware EVK Version
+  - B80:  C1T261A30_V1_1
+  - B80B: C1T321A30_V1_0
+  - B85:  C1T139A30_V1_2
+  - B87:  C1T197A30_V1_1
+  - TC321X:  C1T357A20_V1_1
+
+* Toolchain Version
+  - TLSR8208(B80) (A1/A4), TLSR8208 B(B80B) (A0/A1), B85, B87,TC321X(A0): TC32 ELF GCC4.3 ( IDE: [Telink IDE](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/IDE-for-TLSR8-Chips/)/ [TelinkIoTStudio_V2024.8](https://wiki.telink-semi.cn/tools_and_sdk/Tools/IoTStudio/TelinkIoTStudio_V2024.8.zip) )
+
+### Bug Fixes
+
+* **calibration**
+  * (B80/B80B/B85/B87/TC321X) Modified the logic for determining frequency_offset_value in the user_calib_freq_offset interface to resolve the issue where the frequency offset calibration value for the chip fixture was not taking effect.
+
+### BREAKING CHANGES
+
+* **calibration**
+  * (B80/B80B/B85/B87/TC321X) Modified the internal logic for determining frequency_offset_value in the user_calib_freq_offset interface to align with the write logic of the chip fixture's frequency offset calibration value. This ensures proper utilization of the RF frequency offset calibration value stored in the flash, preventing potential RF frequency offset issues. This fix impacts all SDKs and applications that require RF frequency offset calibration.
+
+### Features
+
+* N/A
+
+### Refactoring
+
+* N/A
+
+### Performance Improvements
+
+* N/A
+
+### 版本
+* SDK 版本: tc_platform_sdk V3.0.1
+* 芯片版本
+  - TLSR8208(B80) (A1/A4), TLSR8208 B(B80B) (A0/A1), B85, B87,TC321X(A0)
+* 硬件评估板版本
+  - B80:  C1T261A30_V1_1
+  - B80B: C1T321A30_V1_0
+  - B85:  C1T139A30_V1_2
+  - B87:  C1T197A30_V1_1
+  - TC321X:  C1T357A20_V1_1
+
+* 工具链版本
+  - TLSR8208(B80) (A1/A4), TLSR8208 B(B80B) (A0/A1), B85, B87,TC321X(A0): TC32 ELF GCC4.3 ( IDE: [Telink IDE](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/IDE-for-TLSR8-Chips/)/ [TelinkIoTStudio_V2024.8](https://wiki.telink-semi.cn/tools_and_sdk/Tools/IoTStudio/TelinkIoTStudio_V2024.8.zip) )
+
+
+### Bug Fixes
+
+* **calibration**
+  * (B80/B80B/B85/B87/TC321X) 修改了user_calib_freq_offset接口中判断frequency_offset_value的逻辑，以解决芯片夹具频偏校准值不生效的问题。
+
+### BREAKING CHANGES
+
+* **calibration**
+  * (B80/B80B/B85/B87/TC321X) 修改了user_calib_freq_offset接口中判断frequency_offset_value的内部逻辑，使其保证和芯片夹具频偏校准值写入逻辑一致。保证flash中的RF频偏校准值被正确使用，避免产生RF频偏问题。此问题影响所有需要进行RF频偏校准的SDK和应用。
+
+### Features
+
+* N/A
+
+### Refactoring
+
+* N/A
+
+### Performance Improvements
+
+* N/A
+
+---
+
 ## V3.0.0
 
 ### Version

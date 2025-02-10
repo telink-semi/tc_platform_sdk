@@ -107,7 +107,7 @@ unsigned char user_calib_freq_offset(user_calib_from_e velfrom, unsigned int add
 	{
 		flash_read_page(addr, 1, &frequency_offset_value);
 	}
-	if((0xff != frequency_offset_value) && (frequency_offset_value <= 63))
+	if(0xff != frequency_offset_value)
 	{
 		rf_update_internal_cap(frequency_offset_value);
 		return 1;

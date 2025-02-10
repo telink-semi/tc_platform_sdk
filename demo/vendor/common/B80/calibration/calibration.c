@@ -92,7 +92,7 @@ unsigned char user_calib_freq_offset(unsigned int addr)
 	unsigned int frequency_offset_value = 0xff;
 	otp_read(addr,1,&frequency_offset_value);
 #endif
-	if((0xff != (0xff&frequency_offset_value)) && ((0xff&frequency_offset_value) <= 63))
+	if(0xff != (0xff&frequency_offset_value))
 	{
 		rf_update_internal_cap(frequency_offset_value);
 		return 1;
