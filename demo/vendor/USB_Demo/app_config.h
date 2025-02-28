@@ -46,6 +46,7 @@ extern "C" {
 #define	 USB_MICROPHONE		4
 #define	 USB_SPEAKER		5
 #endif
+#define	 USB_MOUSE_SLEEP    6
 
 #define	 USB_DEMO_TYPE		USB_MOUSE
 
@@ -60,6 +61,8 @@ extern "C" {
 	#define	USB_SPEAKER_ENABLE 		1
 #elif (USB_DEMO_TYPE == USB_CDC)
 	#define USB_CDC_ENABLE          1
+#elif (USB_DEMO_TYPE == USB_MOUSE_SLEEP)
+	#define USB_MOUSE_ENABLE        1
 #endif
 
 
@@ -72,7 +75,7 @@ extern "C" {
 /*config for spk */
 #define AUDIO_USB_TO_SDM			1
 
-#define  AUDIO_SPK_MODE				1
+#define AUDIO_SPK_MODE				1
 
 /* user key config. */
 #if (MCU_CORE_TC1211)

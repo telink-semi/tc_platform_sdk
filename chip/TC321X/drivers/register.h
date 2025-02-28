@@ -593,6 +593,9 @@ enum {
 #define reg_gpio_pf_setting1	REG_ADDR32(GPIO_BASE_ADDR+0x28)
 #define reg_gpio_pf_setting2	REG_ADDR32(GPIO_BASE_ADDR+0x2c)
 
+#define areg_gpio_ds0(i)            0xa2+(((i)>>9)<<2)                             //B4~B7 C0~C7
+#define areg_gpio_ds1(i)            0xa3+(((i)>>9)<<2)                             //B4~B7 C0~C7
+
 #define reg_gpio_in(i)				REG_ADDR8(GPIO_BASE_ADDR+((i>>8)<<3))
 #define reg_gpio_ie(i)				REG_ADDR8(GPIO_BASE_ADDR+0x01+((i>>8)<<3))
 #define reg_gpio_oe(i)				REG_ADDR8(GPIO_BASE_ADDR+0x02+((i>>8)<<3))

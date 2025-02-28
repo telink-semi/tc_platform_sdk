@@ -71,8 +71,18 @@ int main (void) {
 #if TEST_DEMO==BQB_DEMO && SUPPORT_CONFIGURATION
 
 	rd_usr_definition(1);
-#if (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC1211)
+#if (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211)
 	cpu_wakeup_init(INTERNAL_CAP_XTAL24M);
+
+#elif(MCU_CORE_TC321X)
+	if(usr_config.power_mode == 0)
+	{
+		cpu_wakeup_init(LDO_MODE, INTERNAL_CAP_XTAL24M);
+	}
+	else
+	{
+		cpu_wakeup_init(DCDC_LDO_MODE, INTERNAL_CAP_XTAL24M);
+	}
 #elif (MCU_CORE_B87)
 	if(usr_config.power_mode == 0)
 	{
@@ -115,6 +125,8 @@ int main (void) {
 	//Note: This function must be called, otherwise an abnormal situation may occur.
 	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
 	user_read_otp_value_calib();
+#elif (MCU_CORE_TC1211)
+	user_read_efuse_value_calib();
 #endif
 
 #if (MCU_CORE_B85 || MCU_CORE_B87)

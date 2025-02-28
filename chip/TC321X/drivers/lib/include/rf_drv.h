@@ -189,55 +189,51 @@ typedef enum {
  */
 typedef enum {
 	/*VBAT*/
-	RF_POWER_P11p25dBm = 63,  /**< 11.25 dbm */
-	RF_POWER_P11p00dBm = 60,  /**< 11.0 dbm */
-	RF_POWER_P10p50dBm = 49,  /**< 10.5 dbm */
-	RF_POWER_P10p25dBm = 43,  /**< 10.25 dbm */
-	RF_POWER_P10p00dBm = 40,  /**< 10.0 dbm */
-	RF_POWER_P9p50dBm  = 34,  /**<  9.5 dbm */
+	RF_POWER_P10p00dBm = 36,  /**< 10.0 dbm */
+	RF_POWER_P9p50dBm  = 32,  /**<  9.5 dbm */
 	RF_POWER_P9p00dBm  = 29,  /**<  9.0 dbm */
 	RF_POWER_P8p50dBm  = 26,  /**<  8.5 dbm */
-	RF_POWER_P8p00dBm  = 23,  /**<  8.0 dbm */
-	RF_POWER_P7p75dBm  = 22,  /**<  7.75 dbm */
-	RF_POWER_P7p50dBm  = 21,  /**<  7.5 dbm */
-	RF_POWER_P7p25dBm  = 20,  /**<  7.25 dbm */
-	RF_POWER_P7p00dBm  = 19,  /**<  7.0 dbm */
-	RF_POWER_P6p50dBm  = 18,  /**<  6.5 dbm */
-	RF_POWER_P6p00dBm  = 16,  /**<  6.0 dbm */
-	RF_POWER_P5p50dBm  = 15,  /**<  5.5 dbm */
-	RF_POWER_P5p00dBm  = 14,  /**<  5.0 dbm */
-	RF_POWER_P4p50dBm  = 13,  /**<  4.5 dbm */
-	RF_POWER_P4p00dBm  = 12,  /**<  4.0 dbm */
-	RF_POWER_P3p50dBm  = 11,    /**<  3.5 dbm */
+	RF_POWER_P8p00dBm  = 24,  /**<  8.0 dbm */
+	RF_POWER_P7p75dBm  = 23,  /**<  7.75 dbm */
+	RF_POWER_P7p50dBm  = 22,  /**<  7.5 dbm */
+	RF_POWER_P7p25dBm  = 21,  /**<  7.25 dbm */
+	RF_POWER_P7p00dBm  = 20,  /**<  7.0 dbm */
+	RF_POWER_P6p50dBm  = 19,  /**<  6.5 dbm */
+	RF_POWER_P6p00dBm  = 18,  /**<  6.0 dbm */
+	RF_POWER_P5p50dBm  = 17,  /**<  5.5 dbm */
+	RF_POWER_P5p00dBm  = 16,  /**<  5.0 dbm */
+	RF_POWER_P4p50dBm  = 15,  /**<  4.5 dbm */
+	RF_POWER_P4p00dBm  = 14,  /**<  4.0 dbm */
+	RF_POWER_P3p50dBm  = 13,  /**<  3.5 dbm */
 	/*VANT*/
-	RF_POWER_P3p25dBm  = BIT(7) | 61,    /**<  3.25 dbm */
-	RF_POWER_P3p00dBm  = BIT(7) | 56,    /**<  3.0 dbm */
-	RF_POWER_P2p50dBm  = BIT(7) | 48,    /**<  2.5 dbm */
-	RF_POWER_P2p00dBm  = BIT(7) | 42,    /**<  2.0 dbm */
-	RF_POWER_P1p50dBm  = BIT(7) | 37,    /**<  1.5 dbm */
-	RF_POWER_P1p00dBm  = BIT(7) | 34,    /**<  1.0 dbm */
-	RF_POWER_P0p50dBm  = BIT(7) | 30,    /**<  0.5 dbm */
-	RF_POWER_P0p25dBm  = BIT(7) | 29,    /**<  0.25 dbm */
-	RF_POWER_P0p00dBm  = BIT(7) | 28,    /**<  0.0 dbm */
-	RF_POWER_N0p25dBm  = BIT(7) | 27,    /**< -0.25 dbm */
-	RF_POWER_N0p50dBm  = BIT(7) | 26,    /**< -0.5 dbm */
-	RF_POWER_N1p00dBm  = BIT(7) | 24,    /**< -1.0 dbm */
-	RF_POWER_N1p50dBm  = BIT(7) | 22,    /**< -1.5 dbm */
-	RF_POWER_N2p00dBm  = BIT(7) | 20,    /**< -2.0 dbm */
-	RF_POWER_N2p50dBm  = BIT(7) | 19,    /**< -2.5 dbm */
-	RF_POWER_N3p00dBm  = BIT(7) | 18,    /**< -3.0 dbm */
-	RF_POWER_N3p50dBm  = BIT(7) | 17,    /**< -3.5 dbm */
-	RF_POWER_N4p00dBm  = BIT(7) | 16,    /**< -4.0 dbm */
-	RF_POWER_N4p50dBm  = BIT(7) | 15,    /**< -4.5 dbm */
-	RF_POWER_N5p00dBm  = BIT(7) | 14,    /**< -5.0 dbm */
-	RF_POWER_N5p50dBm  = BIT(7) | 13,    /**< -5.5 dbm */
-	RF_POWER_N6p00dBm  = BIT(7) | 12,    /**< -6.0 dbm */
-	RF_POWER_N6p50dBm  = BIT(7) | 11,    /**< -6.5 dbm */
-	RF_POWER_N7p50dBm  = BIT(7) | 10,    /**< -7.5 dbm */
-	RF_POWER_N8p00dBm  = BIT(7) | 9,    /**< -8.0 dbm */
-	RF_POWER_N9p00dBm  = BIT(7) | 8,    /**< -9.0 dbm */
-	RF_POWER_N10p50dBm = BIT(7) | 7,    /**<-10.5 dbm */
-	RF_POWER_N12p50dBm = BIT(7) | 5,     /**<-12.5 dbm */
+	RF_POWER_P3p25dBm  = BIT(7) | 63,    /**<  3.25 dbm */
+	RF_POWER_P3p00dBm  = BIT(7) | 59,    /**<  3.0 dbm */
+	RF_POWER_P2p50dBm  = BIT(7) | 51,    /**<  2.5 dbm */
+	RF_POWER_P2p00dBm  = BIT(7) | 45,    /**<  2.0 dbm */
+	RF_POWER_P1p50dBm  = BIT(7) | 41,    /**<  1.5 dbm */
+	RF_POWER_P1p00dBm  = BIT(7) | 38,    /**<  1.0 dbm */
+	RF_POWER_P0p50dBm  = BIT(7) | 35,    /**<  0.5 dbm */
+	RF_POWER_P0p25dBm  = BIT(7) | 33,    /**<  0.25 dbm */
+	RF_POWER_P0p00dBm  = BIT(7) | 31,    /**<  0.0 dbm */
+	RF_POWER_N0p25dBm  = BIT(7) | 30,    /**< -0.25 dbm */
+	RF_POWER_N0p50dBm  = BIT(7) | 28,    /**< -0.5 dbm */
+	RF_POWER_N1p00dBm  = BIT(7) | 27,    /**< -1.0 dbm */
+	RF_POWER_N1p50dBm  = BIT(7) | 25,    /**< -1.5 dbm */
+	RF_POWER_N2p00dBm  = BIT(7) | 23,    /**< -2.0 dbm */
+	RF_POWER_N2p50dBm  = BIT(7) | 21,    /**< -2.5 dbm */
+	RF_POWER_N3p00dBm  = BIT(7) | 20,    /**< -3.0 dbm */
+	RF_POWER_N3p50dBm  = BIT(7) | 18,    /**< -3.5 dbm */
+	RF_POWER_N4p00dBm  = BIT(7) | 17,    /**< -4.0 dbm */
+	RF_POWER_N4p50dBm  = BIT(7) | 16,    /**< -4.5 dbm */
+	RF_POWER_N5p00dBm  = BIT(7) | 15,    /**< -5.0 dbm */
+	RF_POWER_N5p50dBm  = BIT(7) | 14,    /**< -5.5 dbm */
+	RF_POWER_N6p00dBm  = BIT(7) | 13,    /**< -6.0 dbm */
+	RF_POWER_N6p50dBm  = BIT(7) | 12,    /**< -6.5 dbm */
+	RF_POWER_N7p50dBm  = BIT(7) | 11,    /**< -7.5 dbm */
+	RF_POWER_N8p00dBm  = BIT(7) | 10,    /**< -8.0 dbm */
+	RF_POWER_N9p00dBm  = BIT(7) | 9,    /**< -9.0 dbm */
+	RF_POWER_N10p50dBm = BIT(7) | 8,    /**<-10.5 dbm */
+	RF_POWER_N12p50dBm = BIT(7) | 6,     /**<-12.5 dbm */
 	RF_POWER_N15p00dBm = BIT(7) | 4,     /**<-15.0 dbm */
 	RF_POWER_N18p50dBm = BIT(7) | 3,     /**<-18.5 dbm */
 	RF_POWER_N24p50dBm = BIT(7) | 1,     /**<-25.5 dbm */
@@ -255,10 +251,10 @@ typedef enum {
 	* 	Customers are prohibited from using the following energy settings
 	* 	in product development.
 	*/
-	 RF_VBAT_POWER_P2p03dBm  = 0x10, 		//   2.3 dbm
-	 RF_VBAT_POWER_P1p45dBm  = 0x09, 		//   1.45 dbm
+	 RF_VBAT_POWER_P2p03dBm  = 0x0b, 		//   2.3 dbm
+	 RF_VBAT_POWER_P1p45dBm  = 0x0a, 		//   1.45 dbm
 	 RF_VBAT_POWER_P0p0dBm   = 0x08, 		//   0.00 dbm
-	 RF_VBAT_POWER_N1p80dBm  = 0x06, 		//   -1.8 dbm
+	 RF_VBAT_POWER_N1p80dBm  = 0x07, 		//   -1.8 dbm
 	 RF_VBAT_POWER_N3p38dBm  = 0x05, 		//   -3.38 dbm
 	 RF_VBAT_POWER_P5p10dBm  = 0x04, 		//   -5.1 dbm
 } RF_PowerTypeDef;
@@ -373,29 +369,18 @@ static inline void reset_baseband(void)
 
 /**
  * @brief      This function serves to optimize RF performance
- * 			   This function must be called every time rx is turned on,
- * 			   and is called by an internal function.
- * 			   If there are other requirements that need to be called,
- * 			   turn off rx first, then call it again to make sure the Settings take effect
  * @param[in]  none
  * @return     none
- * @note	   1.Call this function after turning on rx 30us, and the calibration value set by the function
- * 			      will take effect after calling rf_ldot_ldo_rxtxlf_bypass_en;if automatic calibration is
- * 			      required, you can use rf_ldot_ldo_rxtxlf_bypass_dis to turn off the bypass function; how to
- * 			      use it can refer to bqb.c file or rf_emi_rx in emi.c
- *			   2. After using rf_ldot_ldo_rxtxlf_bypass_dis to turn off the bypass function and enter tx/rx
- *			      automatic calibration, to use this function again, you need to call the rf_set_rxpara function
- *			      again after entering rx 30us.
+ * @note	   After calling this function, then call rf_ldot_ldo_rxtxlf_bypass_en Functional enablement.
+ *             Usually, this function does not need to be called.
  *             TODO:Current configuration is a temporary solution and has not been adjusted to the optimal state.
  *
  */
 
 static inline void rf_set_rxpara(void)
 {
-	unsigned char reg_calibration=0;
-	reg_calibration = ((read_reg8(0x12ed)&0xf)<<2)|((read_reg8(0x12ec)&0xc0)>>6);
-	if(reg_calibration>7)	reg_calibration -= 7;
-	write_reg8(0x12e5,(read_reg8(0x12e5)&0xc0)|reg_calibration);
+	write_reg8(0x134f,0x06); //CBPF_ADC TRIM
+	write_reg8(0x12e5,0x09); //LDOT_LDO_RXTXLF_TRIM
 }
 
 /**

@@ -56,12 +56,16 @@ void user_init(void)
 	gpio_set_func(USB_USER_KEY1, AS_GPIO);
 	gpio_set_input_en(USB_USER_KEY1,1);
 	gpio_set_output_en(USB_USER_KEY1,0);
+#if (!MCU_CORE_TC1211)
 	gpio_setup_up_down_resistor(USB_USER_KEY1, PM_PIN_PULLUP_10K);
+#endif
 
 	gpio_set_func(USB_USER_KEY2, AS_GPIO);
 	gpio_set_input_en(USB_USER_KEY2,1);
 	gpio_set_output_en(USB_USER_KEY2,0);
+#if (!MCU_CORE_TC1211)
 	gpio_setup_up_down_resistor(USB_USER_KEY2, PM_PIN_PULLUP_10K);
+#endif
 }
 
 

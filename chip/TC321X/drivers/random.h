@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    random.h
  *
- * @brief   This is the header file for TC1211
+ * @brief   This is the header file for TC321X
  *
  * @author  Driver Group
  * @date    2024

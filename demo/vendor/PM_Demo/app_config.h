@@ -51,7 +51,9 @@ extern "C" {
 #define IDLE_TIMER2_WAKEUP				3
 #endif
 
-
+#if(MCU_CORE_TC1211)
+#define SUSPEND_32K_RC_WAKEUP   		12
+#else
 /* SUSPEND MODE */
 #define SUSPEND_PAD_WAKEUP   			11
 #define SUSPEND_32K_RC_WAKEUP   		12
@@ -109,8 +111,9 @@ extern "C" {
 /* SHUTDOWN_MODE */
 #define	SHUTDOWN_PAD_WAKEUP				41
 #endif
+#endif
 
-#define PM_MODE			     			DEEP_RET_32K_RC_WAKEUP
+#define PM_MODE			     			SUSPEND_32K_RC_WAKEUP
 
 /* Disable C linkage for C++ Compilers: */
 #if defined(__cplusplus)

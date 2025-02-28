@@ -33,7 +33,7 @@
  * @brief     flash mid definition
  */
 typedef enum{
-	MID1360c8   =   0x1360c8,//GD25LD40EGEG
+	MID1360C8   =   0x1360c8,//GD25LD40EGEG
 	MID136085   =   0x136085,//P25D40SU
 	MID146085   =   0x146085,//P25Q80SU
 	MID156085   =   0x156085,//P25Q16SU

@@ -81,20 +81,20 @@ void user_init(void)
 #elif(GPIO_MODE == GPIO_IRQ_RSIC1)
 	gpio_write(KEY3, 0);
 #if !MCU_CORE_TC1211
-	gpio_setup_up_down_resistor(IRQ_PIN, PM_PIN_PULLUP_10K);
+	gpio_setup_up_down_resistor(IRQ_PIN, PM_PIN_PULLDOWN_100K);
 #endif
 	gpio_set_interrupt_risc1(IRQ_PIN, POL_FALLING);
 	irq_enable();
 #elif (GPIO_MODE == GPIO_IRQ_RSIC2)//only B80_A / B80_B / TC1211 support
 	gpio_write(KEY3, 0);
 #if !MCU_CORE_TC1211
-    gpio_setup_up_down_resistor(IRQ_PIN, PM_PIN_PULLUP_10K);
+    gpio_setup_up_down_resistor(IRQ_PIN, PM_PIN_PULLDOWN_100K);
 #endif
     gpio_set_interrupt_risc2(IRQ_PIN, POL_FALLING);
     irq_enable();
 #elif (GPIO_MODE == GPIO_IRQ_RSIC3)//only B80_A and B80_B support
 	gpio_write(KEY3, 0);
-    gpio_setup_up_down_resistor(IRQ_PIN, PM_PIN_PULLUP_10K);
+    gpio_setup_up_down_resistor(IRQ_PIN, PM_PIN_PULLDOWN_100K);
     gpio_set_interrupt_risc3(IRQ_PIN, POL_FALLING);
     irq_enable();
 #elif(GPIO_MODE == GPIO_SEL_IRQ_GROUP)//only B80_A support

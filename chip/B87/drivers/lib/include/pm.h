@@ -59,6 +59,7 @@ volatile unsigned int ana_32k_tick;
  */
 
 #define DEEP_ANA_REG0                       0x3a //initial value =0x00	[Bit1] The crystal oscillator failed to start normally.The customer cannot change!
+												 //                     [Bit2] The PLL failed to start normally.The customer cannot change!
 #define DEEP_ANA_REG1                       0x3b //initial value =0x00	[Bit0] system used, user can not use!
 #define DEEP_ANA_REG2                       0x3c //initial value =0x0f
 
@@ -239,7 +240,7 @@ static inline void ram_crc_en_timing(unsigned int RAM_CRC_16K_Timing, unsigned i
  * @param[in] none
  * @return    none
  */
-void pm_wait_bbpll_done(void);
+_attribute_ram_code_sec_noinline_ void pm_wait_bbpll_done(void);
 
 void bls_pm_registerFuncBeforeSuspend (suspend_handler_t func );
 

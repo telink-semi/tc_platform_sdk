@@ -92,7 +92,7 @@ typedef enum
 	GPIO_MSPI_MCLK = GPIO_PF1,      //only support MSPI_MCLK
 	GPIO_PF2 = GPIO_GROUPF | BIT(2),
 	GPIO_MSPI_MSCN = GPIO_PF2,      //only support MSPI_MSCN
-	GPIO_PF3 = GPIO_GROUPF | BIT(2),
+	GPIO_PF3 = GPIO_GROUPF | BIT(3),
 	GPIO_MSPI_MOSO = GPIO_PF3,      //only support MSPI_MISO
 
 	GPIO_ALL = 0x600,
@@ -380,7 +380,7 @@ static inline int gpio_get_irq_status(gpio_irq_status_e status)
 static inline void gpio_clr_irq_status(gpio_irq_status_e status)
 {
 	reg_irq_src = status;
-	reg_gpio_irq_status = (GPIO_IRQ_GPIO2RISC3_STATUS == status)?(GPIO_NEW_RISC3_IRQ):(status>>21);
+	reg_gpio_irq_status = (GPIO_IRQ_GPIO2RISC3_STATUS == status)?(BIT(RISC3)):(status>>21);
 }
 
 /**
@@ -451,6 +451,21 @@ void gpio_setup_up_down_resistor(GPIO_PinTypeDef gpio, GPIO_PullTypeDef up_down)
  * @return     none.
  */
 void gpio_shutdown(GPIO_PinTypeDef pin);
+
+/**
+ * @brief      This function set the pin's driving strength.
+ * @param[in]  pin - the pin needs to set the driving strength.
+ * 			   Each call to this function can set only one pin.
+ * @param[in]  value - the level of driving strength.
+ * @note        | DS0 | DS1 | Drv Strength |
+				| --- | --- | ------------ |
+				| 0   | 0   | 2mA          |
+				| 0   | 1   | 4mA          |
+				| 1   | 0   | 8mA          |
+				| 1   | 1   | 12mA         |
+ * @return     none
+ */
+void gpio_set_data_strength(GPIO_PinTypeDef pin, GPIO_Drv_Strength value);
 
 /**
  * @brief     This function set a pin's gpio gpio2risc0 interrupt,if need disable gpio interrupt,choose disable gpio mask,use interface gpio_clr_irq_mask.
