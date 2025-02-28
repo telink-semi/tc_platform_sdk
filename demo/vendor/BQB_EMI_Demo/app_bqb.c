@@ -75,7 +75,7 @@ void read_bqb_calibration()
 	{
 		if(usr_config.cal_pos == 1)//OTP
 		{
-#if (MCU_CORE_B80 || MCU_CORE_B80B|| MCU_CORE_B89 || MCU_CORE_TC321X)
+#if (MCU_CORE_B80 || MCU_CORE_B80B|| MCU_CORE_B89)
 			extern unsigned char otp_program_flag;
 			unsigned int temp;
 			if(otp_program_flag != 1)

@@ -50,7 +50,7 @@ extern "C" {
 #elif(MCU_CORE_B80B)
 #define RF_POWER            RF_POWER_P11p46dBm
 #elif(MCU_CORE_TC321X)
-#define RF_POWER            RF_POWER_P11p25dBm
+#define RF_POWER            RF_POWER_P10p00dBm
 #elif(MCU_CORE_TC1211)
 #define RF_POWER            RF_POWER_P11p46dBm
 #endif

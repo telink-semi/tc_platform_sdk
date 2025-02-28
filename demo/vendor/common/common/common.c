@@ -97,12 +97,9 @@ flash_hal_user_handler_t flash_handler = {
 
 void flash_init(unsigned char flash_protect_en)
 {
-    gpio_set_func(LED1, AS_GPIO);
-    gpio_set_output_en(LED1, 1); // enable output
     unsigned char flash_init_flag = hal_flash_init(&flash_handler);
     if (flash_init_flag != 0)
     {
-        gpio_write(LED1, 1);
         while (1);
     }
     if (flash_protect_en)
@@ -111,7 +108,6 @@ void flash_init(unsigned char flash_protect_en)
 
         if (!(lock_flag == 1))
         {
-            gpio_write(LED1, 1);
             while (1);
         }
     }

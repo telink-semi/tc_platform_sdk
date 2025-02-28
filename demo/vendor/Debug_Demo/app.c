@@ -28,24 +28,32 @@ void user_init(void)
 	sleep_ms(1000);
 	//1.init the LED pin,for indication
     gpio_set_func(LED1, AS_GPIO);
+#if(!MCU_CORE_TC1211)
     gpio_set_func(LED2, AS_GPIO);
     gpio_set_func(LED3, AS_GPIO);
     gpio_set_func(LED4, AS_GPIO);
+#endif
 
     gpio_set_output_en(LED1, 1); //enable output
+#if(!MCU_CORE_TC1211)
     gpio_set_output_en(LED2, 1); //enable output
     gpio_set_output_en(LED3, 1); //enable output
     gpio_set_output_en(LED4, 1); //enable output
+#endif
 
     gpio_set_input_en(LED1, 0); //disable input
+#if(!MCU_CORE_TC1211)
     gpio_set_input_en(LED2, 0); //disable input
     gpio_set_input_en(LED3, 0); //disable input
     gpio_set_input_en(LED4, 0); //disable input
+#endif
 
     gpio_write(LED1, 0); //LED OFF
+#if(!MCU_CORE_TC1211)
     gpio_write(LED2, 0); //LED OFF
     gpio_write(LED3, 0); //LED OFF
     gpio_write(LED4, 0); //LED OFF
+#endif
 
 	//Only B80 B85 and B87 has support USB, B89 has not USB module, not support USB printf.
 #if ((DEBUG_BUS == DEBUG_USB) && (MCU_CORE_B80 || MCU_CORE_B80B ||MCU_CORE_B85 || MCU_CORE_B87))
@@ -66,9 +74,11 @@ void main_loop (void)
 {
 	sleep_ms(1000);
     gpio_toggle(LED1);
+#if(!MCU_CORE_TC1211)
     gpio_toggle(LED2);
     gpio_toggle(LED3);
     gpio_toggle(LED4);
+#endif
 
 	printf(" Hello world! \n");
 

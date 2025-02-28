@@ -132,7 +132,7 @@ signed char get_noise_value()
 #define EMI_TEST_MODE  				     0x04
 #define EMI_TEST_CD_MODE_HOPPING_CHN     0x05
 #define CAP_CLOSE_EN                     0x06
-#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC1211)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X)
 #define CAP_VALUE_FLASH				 	 0x07
 #define CAP_VALUE_OTP					 0x3fc8 //0x3fc8-0x3fcb,32bit
 #endif
@@ -377,13 +377,14 @@ void emitx0f(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn);
 void emi_con_tx55(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn);
 void emi_con_tx0f(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn);
 
+#if	!(MCU_CORE_TC1211)
 void emi_deepio_noren(RF_ModeTypeDef rf_mode,unsigned char pin,signed char rf_chn);
 void emi_deepio_ren(RF_ModeTypeDef rf_mode,unsigned char pin,signed char rf_chn);
 void emi_deeptimer_noren(RF_ModeTypeDef rf_mode,unsigned char Sec,signed char rf_chn);
 void emi_deeptimer_ren(RF_ModeTypeDef rf_mode,unsigned char Sec,signed char rf_chn);
 void emi_suspendio_noren(RF_ModeTypeDef rf_mode,unsigned char pin,signed char rf_chn);
 void emi_suspendtimer_noren(RF_ModeTypeDef rf_mode,unsigned char Sec,signed char rf_chn);
-
+#endif
 
 struct  test_list_s  ate_list[] = {
 		{0x01,emicarrieronly},
@@ -396,13 +397,17 @@ struct  test_list_s  ate_list[] = {
 		{0x07,emi_con_tx55},
 		{0x08,emi_con_tx0f},
 #else
+#if	!(MCU_CORE_TC1211)
 		{0x07,emi_deepio_noren},//deep with io wakeup without retension
 		{0x08,emi_deeptimer_noren},//deep with timer without retension
 #endif
+#endif
+#if	!(MCU_CORE_TC1211)
 		{0x09,emi_suspendio_noren},//suspend with io wakeup without retension
 		{0x0a,emi_suspendtimer_noren},//suspend with timer without retension
 		{0x0b,emi_deepio_ren},//deep with io wakeup with retension
 		{0x0c,emi_deeptimer_ren},//deep with timer with retension
+#endif
 };
 
 
@@ -786,6 +791,7 @@ void emi_con_tx0f(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 }
 
 
+#if	!(MCU_CORE_TC1211)
 
 void emi_deepio_noren(RF_ModeTypeDef rf_mode,unsigned char pin,signed char rf_chn)
 {
@@ -793,9 +799,7 @@ void emi_deepio_noren(RF_ModeTypeDef rf_mode,unsigned char pin,signed char rf_ch
 	rf_chn = rf_chn;
 	if(gpio_map[pin]==GPIO_SYS) return;
 	cpu_set_gpio_wakeup(gpio_map[pin], Level_High, 1);  //gpio pad wakeup
-#if	!(MCU_CORE_TC1211)
 	gpio_setup_up_down_resistor(gpio_map[pin], PM_PIN_PULLDOWN_100K);
-#endif
 	cpu_sleep_wakeup(DEEPSLEEP_MODE , PM_WAKEUP_PAD,0);
 }
 
@@ -803,11 +807,7 @@ void emi_deeptimer_noren(RF_ModeTypeDef rf_mode,unsigned char Sec,signed char rf
 {
 	rf_mode = rf_mode;
 	rf_chn = rf_chn;
-#if(MCU_CORE_TC1211)
-	cpu_sleep_wakeup(DEEPSLEEP_MODE , PM_WAKEUP_TIMER,(reg_system_tick+Sec*CLOCK_24M_SYS_TIMER_CLK_1S));
-#else
-	cpu_sleep_wakeup(DEEPSLEEP_MODE , PM_WAKEUP_TIMER,(reg_system_tick+Sec*CLOCK_16M_SYS_TIMER_CLK_1S));
-#endif
+	cpu_sleep_wakeup(DEEPSLEEP_MODE , PM_WAKEUP_TIMER,(reg_system_tick+Sec*CLOCK_SYS_TIMER_CLK_1S));
 }
 
 void emi_deeptimer_ren(RF_ModeTypeDef rf_mode,unsigned char Sec,signed char rf_chn)
@@ -828,14 +828,12 @@ void emi_deepio_ren(RF_ModeTypeDef rf_mode,unsigned char pin,signed char rf_chn)
 	rf_chn = rf_chn;
 	if(gpio_map[pin]==GPIO_SYS) return;
 	cpu_set_gpio_wakeup(gpio_map[pin], Level_High, 1);  //gpio pad wakeup
-#if	!(MCU_CORE_TC1211)
 	gpio_setup_up_down_resistor(gpio_map[pin], PM_PIN_PULLDOWN_100K);
-#endif
 #if(MCU_CORE_B87 || MCU_CORE_B89)
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW32K , PM_WAKEUP_PAD,0);
 #elif(MCU_CORE_B85)
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K , PM_WAKEUP_PAD,0);
-#elif(ALL_PIN_WAKEUP && (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC1211))
+#elif(ALL_PIN_WAKEUP && (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X))
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K , PM_WAKEUP_PAD,0);
 #endif
 }
@@ -847,9 +845,7 @@ void emi_suspendio_noren(RF_ModeTypeDef rf_mode,unsigned char pin,signed char rf
 	rf_chn = rf_chn;
 	if(gpio_map[pin]==GPIO_SYS) return;
 	cpu_set_gpio_wakeup(gpio_map[pin], Level_High, 1);  //gpio pad wakeup
-#if	!(MCU_CORE_TC1211)
 	gpio_setup_up_down_resistor(gpio_map[pin], PM_PIN_PULLDOWN_100K);
-#endif
 	cpu_sleep_wakeup(SUSPEND_MODE , PM_WAKEUP_PAD,0);
 }
 
@@ -857,11 +853,7 @@ void emi_suspendtimer_noren(RF_ModeTypeDef rf_mode,unsigned char Sec,signed char
 {
 	rf_mode = rf_mode;
 	rf_chn = rf_chn;
-#if(MCU_CORE_TC1211)
-	cpu_sleep_wakeup(SUSPEND_MODE , PM_WAKEUP_TIMER,(reg_system_tick+Sec*CLOCK_24M_SYS_TIMER_CLK_1S));
-#else
-	cpu_sleep_wakeup(SUSPEND_MODE , PM_WAKEUP_TIMER,(reg_system_tick+Sec*CLOCK_16M_SYS_TIMER_CLK_1S));
-#endif
+	cpu_sleep_wakeup(SUSPEND_MODE , PM_WAKEUP_TIMER,(reg_system_tick+Sec*CLOCK_SYS_TIMER_CLK_1S));
 }
 
 /**
@@ -939,7 +931,7 @@ void read_flash_para(void)
 	   hop = temp;
 	   write_reg8(CD_MODE_HOPPING_CHN,hop);
 	}
-#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC1211)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X)
 	flash_read_page(calib_flash_base_addr+CAP_VALUE_FLASH,1,&temp);
 	if( temp!= 0xff )
 	{
@@ -997,6 +989,7 @@ void update_calibration_flash(unsigned int addr)
  */
 void read_calibration_flash(void)
 {
+#if !(MCU_CORE_TC1211)
 	unsigned char flash_size = (flash_read_mid() >> 16) & 0xff;
 	switch (flash_size)
 	{
@@ -1019,7 +1012,10 @@ void read_calibration_flash(void)
 		default:
 			break;
 	}
+#endif
 }
+
+#endif /*!(MCU_CORE_TC1211)*/
 
 void user_init(void)
 {

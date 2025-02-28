@@ -32,7 +32,7 @@
 
 #define TEST_MAC				0xEE
 
-#define TX_INTERVAL_TICK		(10*CLOCK_16M_SYS_TIMER_CLK_1MS)   //10ms
+#define TX_INTERVAL_TICK		(10*CLOCK_SYS_TIMER_CLK_1MS)   //10ms
 #define TX_INTERVAL_US			(TX_INTERVAL_TICK/16)
 
 
@@ -387,7 +387,7 @@ _attribute_ram_code_sec_noinline_ void irq_rf_handler(void)
 					bltParam_conn_rx_num = 0;
 				}
 
-				if(!bltc_tick_1st_rx && !bltParam_conn_rx_num && (unsigned long)(blt_tick_now - blt_timeStamp) < CLOCK_16M_SYS_TIMER_CLK_1MS){
+				if(!bltc_tick_1st_rx && !bltParam_conn_rx_num && (unsigned long)(blt_tick_now - blt_timeStamp) < CLOCK_SYS_TIMER_CLK_1MS){
 					bltc_tick_1st_rx = blt_timeStamp;
 					if(!brx_mode_flag){
 						brx_mode_flag = 1;
@@ -500,7 +500,7 @@ void ble_brx_rx_test(void)
 
 
 		// 2mS before peer devoice TX
-		while( (unsigned long)(clock_time() - (bltc_connExpectTime - 2 * CLOCK_16M_SYS_TIMER_CLK_1MS)) > BIT(30) );
+		while( (unsigned long)(clock_time() - (bltc_connExpectTime - 2 * CLOCK_SYS_TIMER_CLK_1MS)) > BIT(30) );
 
 
 		bltc_tick_1st_rx = 0;

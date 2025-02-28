@@ -44,7 +44,7 @@
 #elif MCU_CORE_B80B
 #define BQB_TX_POWER                    RF_POWER_P6p97dBm
 #elif MCU_CORE_TC321X
-#define BQB_TX_POWER                    RF_POWER_P11p25dBm
+#define BQB_TX_POWER                    RF_POWER_P7p00dBm
 #endif
 
 #define ACCESS_CODE        	0x29417671

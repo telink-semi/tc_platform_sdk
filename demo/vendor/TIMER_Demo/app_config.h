@@ -39,12 +39,6 @@ extern "C" {
  */
 #include "sys_clock.h"
 
-#if (!MCU_CORE_TC1211)
-#define CLOCK_SYS_TIMER_CLK_1MS   CLOCK_16M_SYS_TIMER_CLK_1MS
-#else
-#define CLOCK_SYS_TIMER_CLK_1MS   CLOCK_24M_SYS_TIMER_CLK_1MS
-#endif
-
 #if (MCU_CORE_B80)
 #define TIMER_GPIO      		GPIO_PB3
 #elif (MCU_CORE_B80B)

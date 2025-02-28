@@ -1,3 +1,96 @@
+## V3.1.0
+
+### Version
+* SDK Version: tc_platform_sdk V3.1.0
+* Chip Version
+  - B80:  TLSR8208/TLSR8373
+  - B80B: TLSR8208H
+  - B85:  TLSR825x/TLSR8359
+  - B87:  TLSR827x/TLSR8355
+  - TC321X(A0)
+* Hardware EVK Version
+  - B80:    C1T261A30_V1_1
+  - B80B:   C1T321A30_V1_0
+  - B85:    C1T139A30_V1_2
+  - B87:    C1T197A30_V1_1
+  - TC321X: C1T357A20_V1_1
+
+* Toolchain Version
+  - B80, B80B, B85, B87, TC321X(A0): TC32 ELF GCC4.3 ( IDE: [Telink IDE](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/IDE-for-TLSR8-Chips/)/ [TelinkIoTStudio_V2024.8](https://wiki.telink-semi.cn/tools_and_sdk/Tools/IoTStudio/TelinkIoTStudio_V2024.8.zip) )
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+### Bug Fixes
+* **gpio**
+  * (TC321X) Fixed risc3 irq non-interrupt response issue.(merge_requests/@679)
+  * (TC321X) Fixed wrong enumeration of PF3 pin in GPIO_PinTypeDef.(merge_requests/@696)
+  * (TC321X) Fixed the 4mA function exception on pins PB4~7 and PC0~7 in the gpio_set_data_strength function, and optimized the interface in software.(merge_requests/@696)
+* **sys**
+  * (B85)Solves the problem that when the system clock is greater than 24M and the power supply is low in a high temperature environment, a code transfer error may occur when the reboot is called soon after awakening, resulting in chip crash.(merge_requests/@700)
+
+### BREAKING CHANGES
+* **pll**
+  * (B87)Customers cannot use the bit that uses the PM_ANA_REG_POWER_ON_CLR_BUF0[bit2] (0x3a[2]) flag to indicate whether a restart caused by a PLL exception occurred.(merge_requests/@691)
+
+### Features
+* **BQB_EMI_Demo**
+  * (TC321X) Modified the BQB configuration scheme to adapt to BDT/BQB_Tool.(merge_requests/@684)
+* **rf**
+  * (TC321X) Update the values in the RF_PowerTypeDef structure and remove the TX power: 	RF_POWER_P11p25dBm,RF_POWER_P11p00dBm,RF_POWER_P10p50dBm,RF_POWER_P10p25dBm level.(merge_requests/@684)
+* **flash**
+  * (TC321X) flash P25Q16SU test passed, open flash driver. (merge_requests/@602)
+  * (TC321X) flash GD25LD40EGEG test passed, open flash driver.(merge_requests/@655) 
+  
+### Refactoring
+* **rf**
+  * (TC321X) Updated the RF configuration and adjusted the AGC table accordingly to ensure the accuracy of RSSI measurements.(merge_requests/@699)
+
+### 版本
+* SDK 版本: tc_platform_sdk V3.1.0
+* 芯片版本
+  - B80:  TLSR8208/TLSR8373
+  - B80B: TLSR8208H
+  - B85:  TLSR825x/TLSR8359
+  - B87:  TLSR827x/TLSR8355
+  - TC321X(A0)
+* 硬件评估板版本
+  - B80:    C1T261A30_V1_1
+  - B80B:   C1T321A30_V1_0
+  - B85:    C1T139A30_V1_2
+  - B87:    C1T197A30_V1_1
+  - TC321X: C1T357A20_V1_1
+
+* 工具链版本
+  - B80, B80B, B85, B87, TC321X(A0): TC32 ELF GCC4.3 ( IDE: [Telink IDE](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/IDE-for-TLSR8-Chips/)/ [TelinkIoTStudio_V2024.8](https://wiki.telink-semi.cn/tools_and_sdk/Tools/IoTStudio/TelinkIoTStudio_V2024.8.zip) )
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+### Bug Fixes
+* **gpio**
+  * (TC321X) 修复risc3 irq 无中断响应的问题。(merge_requests/@679)
+  * (TC321X) 修复了 GPIO_PinTypeDef 中 PF3 引脚枚举错误的问题。(merge_requests/@696)
+  * (TC321X) 修复了 gpio_set_data_strength 函数中 PB4~7 和 PC0~7 引脚的 4mA 功能异常问题，并对该接口进行了软件优化。(merge_requests/@696)
+* **sys** 
+  * (B85)解决了在高温环境下，供电比较低时，系统时钟大于24M时，唤醒后很快调用reboot时，可能发生搬代码错误，导致芯片死机的问题。(merge_requests/@700)
+
+### BREAKING CHANGES
+* **pll**
+  * (B87)占用PM_ANA_REG_POWER_ON_CLR_BUF0[bit2]（0x3a[2]）标志是否发生过PLL异常导致的重启，客户不能使用这个bit。(merge_requests/@691)
+
+### Features
+* **BQB_EMI_Demo**
+  * (TC321X) 修改了BQB的配置方案以适配BDT/BQB_Tool。(merge_requests/@684)
+* **rf**
+  * (TC321X) 更新RF_PowerTypeDef结构体中的值,并删除TX power:RF_POWER_P11p25dBm,RF_POWER_P11p00dBm,RF_POWER_P10p50dBm,RF_POWER_P10p25dBm 档位。(merge_requests/@684)
+* **flash**
+  * (TC321X) flash P25Q16SU测试通过，开放flash驱动。(merge_requests/@602)
+  * (TC321X) flash GD25LD40EGEG测试通过，开放flash驱动。(merge_requests/@655) 
+
+### Refactoring
+* **rf**
+  * (TC321X) 更新 RF 配置并同步调整 AGC table，以确保 RSSI 测量值的准确性。(merge_requests/@699)
+
+---
 ## V3.0.1
 
 ### Version

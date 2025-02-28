@@ -45,7 +45,7 @@ unsigned short read_data_time_sustain[24] = {0};	//the size of the array can be 
 #elif(MCU_CORE_B80B)
 #define RF_POWER                        RF_POWER_P11p46dBm
 #elif(MCU_CORE_TC321X)
-#define RF_POWER                        RF_POWER_P11p25dBm
+#define RF_POWER                        RF_POWER_P10p00dBm
 
 #endif
 #define RF_FREQ							17
@@ -74,10 +74,11 @@ void user_init(void)
 	sleep_ms(1000);
 	gpio_write(LED1, 0);
 
+#if(!MCU_CORE_TC1211)
 	gpio_set_func(LED2,AS_GPIO);		//enable output
 	gpio_set_output_en(LED2, 1);
 	gpio_set_input_en(LED2,0);			//disable input
-
+#endif
 #endif
 
 #if ((PM_MODE == SUSPEND_COMPARATOR_WAKEUP)||(PM_MODE == DEEP_COMPARATOR_WAKEUP)||(PM_MODE == DEEP_RET_COMPARATOR_WAKEUP))
@@ -130,7 +131,7 @@ void user_init(void)
 
 #elif(PM_MODE==DEEP_32K_RC_WAKEUP||PM_MODE==DEEP_32K_XTAL_WAKEUP)
 
-    cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_TIMER, (clock_time() + 1000*CLOCK_16M_SYS_TIMER_CLK_1MS));
+    cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_TIMER, (clock_time() + 1000*CLOCK_SYS_TIMER_CLK_1MS));
 
 #elif(PM_MODE==DEEP_LONG_32K_RC_WAKEUP||PM_MODE==DEEP_LONG_32K_XTAL_WAKEUP)
 
@@ -216,9 +217,9 @@ void user_init(void)
 #elif(PM_MODE==DEEP_RET_32K_RC_WAKEUP||PM_MODE==DEEP_RET_32K_XTAL_WAKEUP)
 
 #if(MCU_CORE_TC321X)
-	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW32K, PM_WAKEUP_TIMER, (clock_time() + 4000*CLOCK_16M_SYS_TIMER_CLK_1MS));
+	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW32K, PM_WAKEUP_TIMER, (clock_time() + 4000*CLOCK_SYS_TIMER_CLK_1MS));
 #else
-	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K, PM_WAKEUP_TIMER, (clock_time() + 4000*CLOCK_16M_SYS_TIMER_CLK_1MS));
+	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K, PM_WAKEUP_TIMER, (clock_time() + 4000*CLOCK_SYS_TIMER_CLK_1MS));
 #endif
 #elif(PM_MODE==DEEP_RET_LONG_32K_RC_WAKEUP||PM_MODE==DEEP_RET_LONG_32K_XTAL_WAKEUP)
 
@@ -310,7 +311,12 @@ unsigned int tick_suspend_interval = 0;
 /////////////////////////////////////////////////////////////////////
 void main_loop (void)
 {
-
+    //24M RC is inaccurate, and it is greatly affected by temperature, so real-time calibration is required
+    //The 24M RC needs to be calibrated before the pm_sleep_wakeup function,
+    //because this clock will be used to kick 24m xtal start after wake up,
+    //The more accurate this time, the faster the crystal will start.Calibration cycle depends on usage
+	//Before invoking this interface, ensure that the current system clock is not 24M rc.
+	//Otherwise, the system clock will fluctuate, affecting the normal operation of the chip.
 	rc_24m_cal();
 
 #if(PM_MODE == IDLE_TIMER_WAKEUP)
@@ -383,7 +389,7 @@ void main_loop (void)
 
 #elif(PM_MODE==SUSPEND_32K_RC_WAKEUP||PM_MODE==SUSPEND_32K_XTAL_WAKEUP)
 
-	cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_TIMER, clock_time() + 500*CLOCK_16M_SYS_TIMER_CLK_1MS);
+	cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_TIMER, clock_time() + 500*CLOCK_SYS_TIMER_CLK_1MS);
 
 #elif(PM_MODE==SUSPEND_LONG_32K_RC_WAKEUP||PM_MODE==SUSPEND_LONG_32K_XTAL_WAKEUP)
 
@@ -416,9 +422,14 @@ void main_loop (void)
 #endif
 
 #if !CURRENT_TEST
-	gpio_toggle(LED1);
+	gpio_write(LED1, 1);
 #endif
-	sleep_ms(1000);
+	sleep_ms(500);
+
+#if !CURRENT_TEST
+	gpio_write(LED1, 0);
+#endif
+	sleep_ms(100);
 }
 
 

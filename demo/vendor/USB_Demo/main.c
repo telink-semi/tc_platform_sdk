@@ -93,6 +93,10 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
  */
 int main (void)
 {
+#if(USB_DEMO_TYPE == USB_MOUSE_SLEEP)
+	blc_pm_select_internal_32k_crystal();
+#endif
+
     PLATFORM_INIT;
     CLOCK_INIT;
 

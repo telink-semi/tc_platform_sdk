@@ -260,14 +260,15 @@ void gpio_set_input_en(GPIO_PinTypeDef pin, unsigned int value)
 
 /**
  * @brief      This function set the pin's driving strength.
- * @param[in]  pin - the pin needs to set the driving strength
- * @param[in]  value - the level of driving strength
-	| DS0 | DS1 | SR | Drv Strength |
-	| --- | --- | -- | ------------ |
-	| 0   | 0   | 0  | 2mA          |
-	| 0   | 1   | 0  | 4mA          |
-	| 1   | 0   | 0  | 8mA          |
-	| 1   | 1   | 0  | 12mA         |
+ * @param[in]  pin - the pin needs to set the driving strength.
+ * 			   Each call to this function can set only one pin.
+ * @param[in]  value - the level of driving strength.
+ * @note        | DS0 | DS1 | Drv Strength |
+				| --- | --- | ------------ |
+				| 0   | 0   | 2mA          |
+				| 0   | 1   | 4mA          |
+				| 1   | 0   | 8mA          |
+				| 1   | 1   | 12mA         |
  * @return     none
  */
 void gpio_set_data_strength(GPIO_PinTypeDef pin, GPIO_Drv_Strength value)
@@ -275,53 +276,29 @@ void gpio_set_data_strength(GPIO_PinTypeDef pin, GPIO_Drv_Strength value)
 	unsigned char bit = pin & 0xff;
 	unsigned short group = pin & 0xf00;
 
-	if(group == GPIO_GROUPC)
-	{
-	    if(DRV_STRENGTH_2MA == value)
-	    {
-			analog_write(areg_gpio_pc_ds0, analog_read(areg_gpio_pc_ds0)&(~bit));
-	    	analog_write(areg_gpio_pc_ds1, analog_read(areg_gpio_pc_ds1)&(~bit));
-	    }
-	    else if(DRV_STRENGTH_4MA == value)
-	    {
-			analog_write(areg_gpio_pc_ds0, analog_read(areg_gpio_pc_ds0)&(~bit));
-	    	analog_write(areg_gpio_pc_ds1, analog_read(areg_gpio_pc_ds1|bit));
-	    }
-	    else if(DRV_STRENGTH_8MA == value)
-	    {
-	    	analog_write(areg_gpio_pc_ds0, analog_read(areg_gpio_pc_ds0)|bit);
-	    	analog_write(areg_gpio_pc_ds1, analog_read(areg_gpio_pc_ds1)&(~bit));
-	    }
-		else if(DRV_STRENGTH_12MA == value)
-	    {
-	    	analog_write(areg_gpio_pc_ds0, analog_read(areg_gpio_pc_ds0)|bit);
-	    	analog_write(areg_gpio_pc_ds1, analog_read(areg_gpio_pc_ds1)|bit);
-	    }
-		
-	}
-	else if(pin == GPIO_PB4 || pin == GPIO_PB5 || pin == GPIO_PB6 || pin == GPIO_PB7)
-	{
-		if(DRV_STRENGTH_2MA == value)
-	    {
-			analog_write(areg_gpio_pb_ds0, analog_read(areg_gpio_pb_ds0)&(~bit));
-	    	analog_write(areg_gpio_pb_ds1, analog_read(areg_gpio_pb_ds1)&(~bit));
-	    }
-	    else if(DRV_STRENGTH_4MA == value)
-	    {
-			analog_write(areg_gpio_pb_ds0, analog_read(areg_gpio_pb_ds0)&(~bit));
-	    	analog_write(areg_gpio_pb_ds1, analog_read(areg_gpio_pb_ds1|bit));
-	    }
-	    else if(DRV_STRENGTH_8MA == value)
-	    {
-	    	analog_write(areg_gpio_pb_ds0, analog_read(areg_gpio_pb_ds0)|bit);
-	    	analog_write(areg_gpio_pb_ds1, analog_read(areg_gpio_pb_ds1)&(~bit));
-	    }
-		else if(DRV_STRENGTH_12MA == value)
-	    {
-	    	analog_write(areg_gpio_pb_ds0, analog_read(areg_gpio_pb_ds0)|bit);
-	    	analog_write(areg_gpio_pb_ds1, analog_read(areg_gpio_pb_ds1)|bit);
-	    }
-	}
+    if((group == GPIO_GROUPC)||(pin == GPIO_PB4 || pin == GPIO_PB5 || pin == GPIO_PB6 || pin == GPIO_PB7))
+    {
+        if(DRV_STRENGTH_2MA == value)
+        {
+			analog_write(areg_gpio_ds0(group), analog_read(areg_gpio_ds0(group))&(~bit));
+			analog_write(areg_gpio_ds1(group), analog_read(areg_gpio_ds1(group))&(~bit));
+        }
+        else if(DRV_STRENGTH_4MA == value)
+        {
+			analog_write(areg_gpio_ds0(group), analog_read(areg_gpio_ds0(group))&(~bit));
+			analog_write(areg_gpio_ds1(group), analog_read(areg_gpio_ds1(group))|bit);
+        }
+        else if(DRV_STRENGTH_8MA == value)
+        {
+			analog_write(areg_gpio_ds0(group), analog_read(areg_gpio_ds0(group))|bit);
+			analog_write(areg_gpio_ds1(group), analog_read(areg_gpio_pc_ds1)&(~bit));
+        }
+            else if(DRV_STRENGTH_12MA == value)
+        {
+			analog_write(areg_gpio_ds0(group), analog_read(areg_gpio_ds0(group))|bit);
+			analog_write(areg_gpio_ds1(group), analog_read(areg_gpio_ds1(group))|bit);
+        }
+    }
 	else
     {
 	    if(DRV_STRENGTH_2MA == value)
