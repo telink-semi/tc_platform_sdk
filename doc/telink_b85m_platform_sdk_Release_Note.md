@@ -1,3 +1,77 @@
+## V1.9.1
+
+### Version
+
+* SDK Version: tc_platform_sdk V1.9.1
+* Chip Version
+  - B80:  TLSR8208/TLSR8373
+  - B80B: TLSR8208H
+  - B85:  TLSR825x/TLSR8359
+  - B87:  TLSR827x/TLSR8355
+
+* Hardware EVK Version
+  - B80:    C1T261A30_V1_1
+  - B80B:   C1T321A30_V1_0
+  - B85:    C1T139A30_V1_2
+  - B87:    C1T197A30_V1_2
+
+
+### BREAKING CHANGES
+* N/A
+
+### Bug Fixes
+* N/A
+
+### Features
+* N/A
+  
+### Refactoring
+* **spi**
+   * (B80/B80B)Added the attribute_ram_code_sec_noinline attribute to the following interfaces: rf_set_channel, rf_rx_buffer_set, rf_tx_pkt, and rf_set_power_level_index.
+
+### Performance Improvements
+
+* N/A
+
+### Note
+
+* N/A
+
+### 版本
+* SDK 版本: tc_platform_sdk V1.9.1
+* 芯片版本
+  - B80:  TLSR8208/TLSR8373
+  - B80B: TLSR8208H
+  - B85:  TLSR825x/TLSR8359
+  - B87:  TLSR827x/TLSR8355
+
+* 硬件评估板版本
+  - B80:    C1T261A30_V1_1
+  - B80B:   C1T321A30_V1_0
+  - B85:    C1T139A30_V1_2
+  - B87:    C1T197A30_V1_2
+
+### BREAKING CHANGES
+* N/A
+
+### Bug Fixes
+* N/A
+
+### Features
+* N/A
+  
+### Refactoring
+* **rf**
+   * (B80/B80B)将_attribute_ram_code_sec_noinline_属性添加到以下接口：rf_set_channel、rf_rx_buffer_set、rf_tx_pkt和rf_set_power_level_index
+
+### Performance Improvements
+
+* N/A
+
+### Note
+
+* N/A
+
 ## V1.9.0
 
 ### Version
