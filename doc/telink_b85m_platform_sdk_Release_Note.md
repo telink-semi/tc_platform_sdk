@@ -26,7 +26,7 @@
 * N/A
   
 ### Refactoring
-* **spi**
+* **rf**
    * (B80/B80B)Added the attribute_ram_code_sec_noinline attribute to the following interfaces: rf_set_channel, rf_rx_buffer_set, rf_tx_pkt, and rf_set_power_level_index.
 
 ### Performance Improvements
