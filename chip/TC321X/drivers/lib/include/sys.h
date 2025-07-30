@@ -21,18 +21,90 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-#ifndef sys_H
-#define sys_H
+#pragma once
+
 #include "compiler.h"
-#include "clock.h"
+
+/**********************************************************************************************************************
+ *                                         global constants                                                           *
+ *********************************************************************************************************************/
+
+/**********************************************************************************************************************
+ *                                           global macro                                                             *
+ *********************************************************************************************************************/
+/**
+ * @brief instruction delay
+ */
+
+#define     _ASM_NOP_			asm("tnop")
+
+#define		CLOCK_DLY_1_CYC    _ASM_NOP_
+#define		CLOCK_DLY_2_CYC    _ASM_NOP_;_ASM_NOP_
+#define		CLOCK_DLY_3_CYC    _ASM_NOP_;_ASM_NOP_;_ASM_NOP_
+#define		CLOCK_DLY_4_CYC    _ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_
+#define		CLOCK_DLY_5_CYC    _ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_
+#define		CLOCK_DLY_6_CYC    _ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_
+#define		CLOCK_DLY_7_CYC    _ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_
+#define		CLOCK_DLY_8_CYC    _ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_
+#define		CLOCK_DLY_9_CYC    _ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_
+#define		CLOCK_DLY_10_CYC   _ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_;_ASM_NOP_
+#define		CLOCK_DLY_20_CYC   CLOCK_DLY_10_CYC;CLOCK_DLY_10_CYC
+#define		CLOCK_DLY_40_CYC   CLOCK_DLY_20_CYC;CLOCK_DLY_20_CYC
+#define		CLOCK_DLY_80_CYC   CLOCK_DLY_40_CYC;CLOCK_DLY_40_CYC
+
+//Protection Code checking related macro
+#define SDK_VERSION_IGNORE	  0
+#define SDK_VERSION_CHECK	  2
+
+#define SDK_VERSION_SELECT		SDK_VERSION_IGNORE
+
+/**********************************************************************************************************************
+ *                                         global data type                                                           *
+ *********************************************************************************************************************/
+
+/**
+ * @brief:  External 24M crystal using internal or external capacitors
+ * @note:   If the software configuration and hardware board does not match,
+ *          it may lead to the following problems:
+ *          crystal clock frequency is not allowed,  slow crystal vibration caused by the chip reset, etc.
+ */
+typedef enum
+{
+    INTERNAL_CAP_XTAL24M = 0, /**<    Use the chip's internal crystal capacitors,
+                                 <p>  hardware boards can not have 24M crystal matching capacitors */
+    EXTERNAL_CAP_XTAL24M = 1, /**<    Use an external crystal capacitor,
+                                 <p>  the hardware board needs to have a matching capacitor for the 24M crystal,
+                                 <p>  the program will turn off the chip's internal capacitor */
+}cap_typedef_e;
+
+
+/**
+ * @brief   Power type for different application
+ */
+typedef enum
+{
+	LDO_MODE 		=0x40,	//LDO mode
+	DCDC_LDO_MODE	=0x41,	//DCDC_LDO mode
+}POWER_MODE_TypeDef;
+
 /**
  * @brief   chip version.
  * @note    this value should confirm when chip reversion.
  */
-typedef enum{
+typedef enum
+{
     CHIP_VERSION_A0 = 0x00,
-}chip_version_e;
+} sys_chip_version_e;
 
+/**********************************************************************************************************************
+ *                                     global variable declaration                                                    *
+ *********************************************************************************************************************/
+
+extern unsigned char g_chip_version;
+
+/**********************************************************************************************************************
+ *                                      global function prototype                                                     *
+ *********************************************************************************************************************/
 /**
  * @brief   This function serves to reboot chip.
  * @param   none.
@@ -54,12 +126,13 @@ void start_reboot(void);
  *          3. When this function called after power on or deep sleep wakeup, it will cost about 6~7ms for perform 32k RC calibration.
  *              If do not want this logic, you can check the usage and precautions of cpu_wakeup_init_calib_32k_rc_cfg().
  */
-void cpu_wakeup_init(POWER_MODE_TypeDef power_mode,cap_typedef_e cap);
+void cpu_wakeup_init(POWER_MODE_TypeDef power_mode, cap_typedef_e cap);
 
 /**
  * @brief     this function servers to manual set crystal.
- * @param[in] none
- * @return    none
+ * @param[in] none.
+ * @return    none.
+ * @note      This function can only used when cclk is 24M RC cause the function execution process will power down the 24M crystal.
  */
 _attribute_ram_code_sec_noinline_ void crystal_manual_settle(void);
 
@@ -71,4 +144,3 @@ _attribute_ram_code_sec_noinline_ void crystal_manual_settle(void);
  * @note      This function will not take effect until it is called before cpu_wakeup_init().
  */
 void cpu_wakeup_init_calib_32k_rc_cfg(char calib_flag);
-#endif

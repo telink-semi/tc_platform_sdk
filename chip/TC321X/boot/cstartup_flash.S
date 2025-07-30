@@ -125,7 +125,7 @@ __start:					@ MUST,  referenced by boot.link
 	.extern  _ramcode_size_align_256_
 	.extern  _ictag_start_
 	.extern  _ictag_end_
-	.extern  tl_multi_addr
+	.extern  g_pm_multi_addr
 	.org 0x0
 	tj	__reset
 #ifdef DUT_TEST
@@ -549,7 +549,7 @@ FLL_D:
 
 MULTI_ADDRESS_DATA:
 	.word	(0x0080063e)				@0
-	.word   tl_multi_addr				@4
+	.word   g_pm_multi_addr				@4
 
 	.align 4
 __irq:

@@ -189,15 +189,15 @@ typedef enum {
  */
 typedef enum {
 	/*VBAT*/
-	RF_POWER_P10p00dBm = 36,  /**< 10.0 dbm */
-	RF_POWER_P9p50dBm  = 32,  /**<  9.5 dbm */
-	RF_POWER_P9p00dBm  = 29,  /**<  9.0 dbm */
-	RF_POWER_P8p50dBm  = 26,  /**<  8.5 dbm */
-	RF_POWER_P8p00dBm  = 24,  /**<  8.0 dbm */
-	RF_POWER_P7p75dBm  = 23,  /**<  7.75 dbm */
-	RF_POWER_P7p50dBm  = 22,  /**<  7.5 dbm */
-	RF_POWER_P7p25dBm  = 21,  /**<  7.25 dbm */
-	RF_POWER_P7p00dBm  = 20,  /**<  7.0 dbm */
+	RF_POWER_P10p00dBm = 46,  /**< 10.0 dbm */
+	RF_POWER_P9p50dBm  = 38,  /**<  9.5 dbm */
+	RF_POWER_P9p00dBm  = 32,  /**<  9.0 dbm */
+	RF_POWER_P8p50dBm  = 28,  /**<  8.5 dbm */
+	RF_POWER_P8p00dBm  = 25,  /**<  8.0 dbm */
+	RF_POWER_P7p75dBm  = 24,  /**<  7.75 dbm */
+	RF_POWER_P7p50dBm  = 23,  /**<  7.5 dbm */
+	RF_POWER_P7p25dBm  = 22,  /**<  7.25 dbm */
+	RF_POWER_P7p00dBm  = 21,  /**<  7.0 dbm */
 	RF_POWER_P6p50dBm  = 19,  /**<  6.5 dbm */
 	RF_POWER_P6p00dBm  = 18,  /**<  6.0 dbm */
 	RF_POWER_P5p50dBm  = 17,  /**<  5.5 dbm */
@@ -205,23 +205,23 @@ typedef enum {
 	RF_POWER_P4p50dBm  = 15,  /**<  4.5 dbm */
 	RF_POWER_P4p00dBm  = 14,  /**<  4.0 dbm */
 	RF_POWER_P3p50dBm  = 13,  /**<  3.5 dbm */
+	RF_POWER_P3p25dBm  = 12,  /**<  3.25 dbm */
 	/*VANT*/
-	RF_POWER_P3p25dBm  = BIT(7) | 63,    /**<  3.25 dbm */
-	RF_POWER_P3p00dBm  = BIT(7) | 59,    /**<  3.0 dbm */
-	RF_POWER_P2p50dBm  = BIT(7) | 51,    /**<  2.5 dbm */
-	RF_POWER_P2p00dBm  = BIT(7) | 45,    /**<  2.0 dbm */
+	RF_POWER_P3p00dBm  = BIT(7) | 63,    /**<  3.0 dbm */
+	RF_POWER_P2p50dBm  = BIT(7) | 54,    /**<  2.5 dbm */
+	RF_POWER_P2p00dBm  = BIT(7) | 46,    /**<  2.0 dbm */
 	RF_POWER_P1p50dBm  = BIT(7) | 41,    /**<  1.5 dbm */
-	RF_POWER_P1p00dBm  = BIT(7) | 38,    /**<  1.0 dbm */
-	RF_POWER_P0p50dBm  = BIT(7) | 35,    /**<  0.5 dbm */
-	RF_POWER_P0p25dBm  = BIT(7) | 33,    /**<  0.25 dbm */
-	RF_POWER_P0p00dBm  = BIT(7) | 31,    /**<  0.0 dbm */
-	RF_POWER_N0p25dBm  = BIT(7) | 30,    /**< -0.25 dbm */
-	RF_POWER_N0p50dBm  = BIT(7) | 28,    /**< -0.5 dbm */
-	RF_POWER_N1p00dBm  = BIT(7) | 27,    /**< -1.0 dbm */
-	RF_POWER_N1p50dBm  = BIT(7) | 25,    /**< -1.5 dbm */
-	RF_POWER_N2p00dBm  = BIT(7) | 23,    /**< -2.0 dbm */
-	RF_POWER_N2p50dBm  = BIT(7) | 21,    /**< -2.5 dbm */
-	RF_POWER_N3p00dBm  = BIT(7) | 20,    /**< -3.0 dbm */
+	RF_POWER_P1p00dBm  = BIT(7) | 37,    /**<  1.0 dbm */
+	RF_POWER_P0p50dBm  = BIT(7) | 33,    /**<  0.5 dbm */
+	RF_POWER_P0p25dBm  = BIT(7) | 31,    /**<  0.25 dbm */
+	RF_POWER_P0p00dBm  = BIT(7) | 30,    /**<  0.0 dbm */
+	RF_POWER_N0p25dBm  = BIT(7) | 28,    /**< -0.25 dbm */
+	RF_POWER_N0p50dBm  = BIT(7) | 27,    /**< -0.5 dbm */
+	RF_POWER_N1p00dBm  = BIT(7) | 25,    /**< -1.0 dbm */
+	RF_POWER_N1p50dBm  = BIT(7) | 24,    /**< -1.5 dbm */
+	RF_POWER_N2p00dBm  = BIT(7) | 22,    /**< -2.0 dbm */
+	RF_POWER_N2p50dBm  = BIT(7) | 20,    /**< -2.5 dbm */
+	RF_POWER_N3p00dBm  = BIT(7) | 19,    /**< -3.0 dbm */
 	RF_POWER_N3p50dBm  = BIT(7) | 18,    /**< -3.5 dbm */
 	RF_POWER_N4p00dBm  = BIT(7) | 17,    /**< -4.0 dbm */
 	RF_POWER_N4p50dBm  = BIT(7) | 16,    /**< -4.5 dbm */
@@ -232,7 +232,7 @@ typedef enum {
 	RF_POWER_N7p50dBm  = BIT(7) | 11,    /**< -7.5 dbm */
 	RF_POWER_N8p00dBm  = BIT(7) | 10,    /**< -8.0 dbm */
 	RF_POWER_N9p00dBm  = BIT(7) | 9,    /**< -9.0 dbm */
-	RF_POWER_N10p50dBm = BIT(7) | 8,    /**<-10.5 dbm */
+	RF_POWER_N10p50dBm = BIT(7) | 7,    /**<-10.5 dbm */
 	RF_POWER_N12p50dBm = BIT(7) | 6,     /**<-12.5 dbm */
 	RF_POWER_N15p00dBm = BIT(7) | 4,     /**<-15.0 dbm */
 	RF_POWER_N18p50dBm = BIT(7) | 3,     /**<-18.5 dbm */
@@ -275,6 +275,50 @@ typedef enum {
 	RF_MI_P1p30 = 1300,		/**< MI = 1.3 */
 	RF_MI_P1p40 = 1400,		/**< MI = 1.4 */
 }RF_MIVauleTypeDef;
+
+
+/**
+ *  @brief  LDO trim calibration value
+ */
+typedef struct
+{
+    unsigned char LDO_CAL_TRIM;
+    unsigned char LDO_RXTXHF_TRIM;
+    unsigned char LDO_RXTXLF_TRIM;
+    unsigned char LDO_PLL_TRIM;
+    unsigned char LDO_VCO_TRIM;
+} rf_ldo_trim_t;
+
+/**
+ *  @brief  DCOC calibration value
+ */
+typedef struct
+{
+    unsigned char DCOC_IDAC;
+    unsigned char DCOC_QDAC;
+    unsigned char DCOC_IADC_OFFSET;
+    unsigned char DCOC_QADC_OFFSET;
+} rf_dcoc_cal_t;
+
+/**
+ *  @brief  RCCAL calibration value
+ */
+typedef struct
+{
+    unsigned char CBPF_CCODE_L;
+    unsigned char CBPF_CCODE_H;
+} rf_rccal_cal_t;
+
+typedef struct
+{
+    unsigned short cal_tbl[81];
+    rf_ldo_trim_t  ldo_trim;
+    rf_dcoc_cal_t  dcoc_cal;
+    rf_rccal_cal_t rccal_cal;
+    unsigned char  tx_fcal[81];
+    unsigned char  rx_fcal[81];
+} rf_fast_settle_t;
+
 #ifdef		RF_MODE_250K
 #define		RF_FAST_MODE_2M		0
 #define		RF_FAST_MODE_1M		0
@@ -376,12 +420,7 @@ static inline void reset_baseband(void)
  *             TODO:Current configuration is a temporary solution and has not been adjusted to the optimal state.
  *
  */
-
-static inline void rf_set_rxpara(void)
-{
-	write_reg8(0x134f,0x06); //CBPF_ADC TRIM
-	write_reg8(0x12e5,0x09); //LDOT_LDO_RXTXLF_TRIM
-}
+void rf_set_rxpara(void);
 
 /**
  * @brief      This function serves to initiate information of RF.
@@ -1195,10 +1234,7 @@ void rf_set_preamble_len(unsigned char len);
   * @param[in]	none.
   * @return	 	none.
   */
- static inline void rf_ldot_ldo_rxtxlf_bypass_en(void)
- {
- 	write_reg8(0x12e4,read_reg8(0x12e4)|BIT(1));
- }
+void rf_ldot_ldo_rxtxlf_bypass_en(void);
 
  /**
   * @brief	    This function is used to close the ldo rxtxlf bypass function, and the hardware will
@@ -1206,10 +1242,7 @@ void rf_set_preamble_len(unsigned char len);
   * @param[in]	none.
   * @return	 	none.
   */
- static inline void rf_ldot_ldo_rxtxlf_bypass_dis(void)
- {
- 	write_reg8(0x12e4,read_reg8(0x12e4)&(~BIT(1)));
- }
+void rf_ldot_ldo_rxtxlf_bypass_dis(void);
 
  /**
   * @brief          This function serves to set the which irq enable.

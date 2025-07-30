@@ -23,8 +23,13 @@
  *******************************************************************************************************/
 #include "app_config.h"
 
+#if defined(MCU_CORE_TC122X)
+#define QDEC_CHA 	GPIO_PA6
+#define QDEC_CHB 	GPIO_PA7
+#else
 #define QDEC_CHA 	GPIO_PB6
 #define QDEC_CHB 	GPIO_PB7
+#endif
 
 volatile signed int total_count;
 volatile signed char qdec_count = 0;
@@ -40,9 +45,13 @@ void user_init(void)
 	gpio_set_output_en(QDEC_CHB,0);
 	gpio_set_input_en(QDEC_CHB,1);
 
-	qdec_clk_en ();
+	qdec_clk_en();
 	qdec_set_mode(DOUBLE_ACCURACY_MODE);
+#if defined(MCU_CORE_TC122X)
+	qdec_set_pin(PA6A,PA7A);
+#else
 	qdec_set_pin(PB6A,PB7A);
+#endif
 
 	qdec_set_debouncing(1);   //set debouncing
 }

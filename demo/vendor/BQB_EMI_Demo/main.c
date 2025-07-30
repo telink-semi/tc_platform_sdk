@@ -71,7 +71,7 @@ int main (void) {
 #if TEST_DEMO==BQB_DEMO && SUPPORT_CONFIGURATION
 
 	rd_usr_definition(1);
-#if (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211)
+#if (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211||MCU_CORE_TC122X)
 	cpu_wakeup_init(INTERNAL_CAP_XTAL24M);
 
 #elif(MCU_CORE_TC321X)
@@ -108,13 +108,13 @@ int main (void) {
 #elif POWER_MODE_SELECT == POWER_MODE_DCDC_LDO
 	cpu_wakeup_init(DCDC_LDO_MODE, INTERNAL_CAP_XTAL24M);
 #endif
-#elif (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211)
+#elif (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211||MCU_CORE_TC122X)
 	cpu_wakeup_init(INTERNAL_CAP_XTAL24M);
 #endif
 
 #endif
 
-#if(MCU_CORE_B80 || MCU_CORE_B80B ||MCU_CORE_B89 || MCU_CORE_TC321X || MCU_CORE_TC1211)
+#if(MCU_CORE_B80 || MCU_CORE_B80B ||MCU_CORE_B89 || MCU_CORE_TC321X || MCU_CORE_TC1211||MCU_CORE_TC122X)
 	wd_32k_stop();
 #endif
 #if (MCU_CORE_B85) || (MCU_CORE_B87)
@@ -125,7 +125,7 @@ int main (void) {
 	//Note: This function must be called, otherwise an abnormal situation may occur.
 	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
 	user_read_otp_value_calib();
-#elif (MCU_CORE_TC1211)
+#elif (MCU_CORE_TC1211||MCU_CORE_TC122X)
 	user_read_efuse_value_calib();
 #endif
 
@@ -133,7 +133,7 @@ int main (void) {
 	rf_drv_init(RF_MODE_BLE_1M_NO_PN);
 
 	gpio_init(!deepRetWakeUp);
-#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC1211)
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC1211||MCU_CORE_TC122X)
 	rf_mode_init();
 	rf_set_ble_1M_NO_PN_mode();
 #endif
@@ -150,7 +150,7 @@ int main (void) {
 	@note if flash protection fails, LED1 lights up long, and keeps while.
 	===============================================================================
 */
-#if !(MCU_CORE_TC1211)
+#if !(MCU_CORE_TC1211||MCU_CORE_TC122X)
 	flash_init(0);
 #endif
 

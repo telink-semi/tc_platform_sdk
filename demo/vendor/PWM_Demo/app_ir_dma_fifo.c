@@ -4,9 +4,9 @@
  * @brief   This is the source file for Telink MCU
  *
  * @author  Driver Group
- * @date    2018
+ * @date    2025
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2025, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -29,7 +29,9 @@
     PWM0   :  PA2.  PC1.  PC2.	PD5
     PWM0_N :  PA0.  PB3.  PC4	PD5
     B89_B80_TC321X:
-    reference gpio.h
+    reference gpio.h    TC122X:
+    PWM0   :  PA0.  PA4.
+    PWM0_N :  PA1.
  *********************************************************************************/
 
 #if (MCU_CORE_B89)
@@ -40,6 +42,9 @@
 #define AS_PWMx			AS_PWM0	
 #elif (MCU_CORE_B80 || MCU_CORE_B80B|| MCU_CORE_TC321X)
 #define PWM_PIN		GPIO_PC1
+#define AS_PWMx         PWM0
+#elif (MCU_CORE_TC122X)
+#define PWM_PIN		GPIO_PA0
 #define AS_PWMx         PWM0
 #endif
 #define PWM_ID					PWM0_ID
@@ -84,11 +89,11 @@ void user_init(void)
 
 	gpio_set_func(PWM_PIN, AS_PWMx);
 	pwm_set_mode(PWM_ID, PWM_IR_DMA_FIFO_MODE);
-	pwm_set_cycle_and_duty(PWM_ID, IR_DMA_MAX_TICK, IR_DMA_CMP_TICK);
+	pwm_set_cycle_and_duty(PWM_ID, IR_DMA_MAX_TICK, IR_DMA_CMP_TICK);//26.26us 13.13us
 	pwm_set_pwm0_shadow_cycle_and_duty(IR_DMA_SHADOW_MAX_TICK,IR_DMA_SHADOW_CMP_TICK);
 	unsigned char index=2;
-	IR_DMA_Buff[index++]= pwm_config_dma_fifo_waveform(1, PWM0_PULSE_NORMAL, 9000 * CLOCK_SYS_CLOCK_1US/IR_DMA_MAX_TICK);
-	IR_DMA_Buff[index++]= pwm_config_dma_fifo_waveform(0, PWM0_PULSE_NORMAL, 4500 * CLOCK_SYS_CLOCK_1US/IR_DMA_MAX_TICK);
+	IR_DMA_Buff[index++]= pwm_config_dma_fifo_waveform(1, PWM0_PULSE_NORMAL, 9000 * CLOCK_SYS_CLOCK_1US/IR_DMA_MAX_TICK);//342 pulse num carrier,342*26.26us ~=9ms
+	IR_DMA_Buff[index++]= pwm_config_dma_fifo_waveform(0, PWM0_PULSE_NORMAL, 4500 * CLOCK_SYS_CLOCK_1US/IR_DMA_MAX_TICK);//171 pulse num not carrier,171*26.26us ~=4.5ms
 	IR_DMA_Buff[index++]= pwm_config_dma_fifo_waveform(1, PWM0_PULSE_NORMAL, 560 * CLOCK_SYS_CLOCK_1US/IR_DMA_MAX_TICK);
 	IR_DMA_Buff[index++]= pwm_config_dma_fifo_waveform(0, PWM0_PULSE_NORMAL, 560 * CLOCK_SYS_CLOCK_1US/IR_DMA_MAX_TICK);
 	IR_DMA_Buff[index++]= pwm_config_dma_fifo_waveform(1, PWM0_PULSE_NORMAL, 560 * CLOCK_SYS_CLOCK_1US/IR_DMA_MAX_TICK);

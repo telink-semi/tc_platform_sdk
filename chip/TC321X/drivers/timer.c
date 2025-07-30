@@ -23,18 +23,6 @@
  *******************************************************************************************************/
 #include "timer.h"
 
-/**
- * @brief     This function performs to set sleep us.
- * @param[in] us - microseconds need to delay.
- * @return    none
- */
-
-_attribute_ram_code_sec_noinline_ void sleep_us(unsigned long us)
-{
-	unsigned long t = clock_time();
-	while(!clock_time_exceed(t, us)){
-	}
-}
 
 /**
  * @brief     initiate GPIO for gpio trigger and gpio width mode of timer0.
@@ -283,6 +271,7 @@ void timer2_set_mode(TIMER_ModeTypeDef mode,unsigned int init_tick, unsigned int
 		default: break;
 	}
 }
+
 /**
  * @brief     the specified timer start working.
  * @param[in] type - select the timer to start.
@@ -305,6 +294,7 @@ void timer_start(TIMER_TypeDef type)
 			break;
 	}
 }
+
 /**
  * @brief     the specified timer stop working.
  * @param[in] type - select the timer to stop.

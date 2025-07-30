@@ -326,6 +326,16 @@ static inline void audio_rxfifo_en(audio_fifo_chn_e fifo_chn)
 }
 
 /**
+ *  @brief      This function serves to rxfifo disable.
+ *  @param[in]  fifo_chn - fifo channel.
+ *  @return     none.
+ */
+static inline void audio_rxfifo_dis(audio_fifo_chn_e fifo_chn)
+{
+    reg_dfifo_mode &= ~BIT(fifo_chn);
+}
+
+/**
  *  @brief      This function serves to txfifo enable.
  *  @return     none.
  */
@@ -335,12 +345,30 @@ static inline void audio_txfifo_en()
 }
 
 /**
+ *  @brief      This function serves to txfifo disable.
+ *  @return     none.
+ */
+static inline void audio_txfifo_dis()
+{
+    reg_dfifo_mode &= ~FLD_AUD_DFIFO0_OUT;
+}
+
+/**
  *  @brief      This function serves to sdm enable.
  *  @return     none.
  */
 static inline void audio_sdm_en(void)
 {
     BM_SET(reg_audio_ctrl, FLD_AUDIO_SDM_PLAYER_EN);
+}
+
+/**
+ *  @brief      This function serves to sdm disable.
+ *  @return     none.
+ */
+static inline void audio_sdm_dis(void)
+{
+    BM_CLR(reg_audio_ctrl, FLD_AUDIO_SDM_PLAYER_EN);
 }
 
 /**
@@ -354,6 +382,18 @@ static inline void audio_set_adc_pga_gain(codec_in_pga_gain_e pga_gain)
 }
 
 /**
+ *  @brief      This function serves to get adc pga gain.
+ *  @param[in]  pga_gain - gain value.
+ *  @return     none.
+ */
+static inline codec_in_pga_gain_e audio_get_adc_pga_gain(void)
+{
+    codec_in_pga_gain_e val;
+    val = (analog_read(areg_0x8d) & FLD_AUDIO_PGAVOL_IN) >> 4;
+    return val;
+}
+
+/**
  *  @brief      This function serves to stream0 digital gain.
  *  @param[in]  d_gain - gain value(Both left and right channels are in effect).
  *  @return     none.
@@ -361,6 +401,17 @@ static inline void audio_set_adc_pga_gain(codec_in_pga_gain_e pga_gain)
 static inline void audio_set_stream0_dig_gain(codec_in_path_digital_gain_e d_gain)
 {
     reg_mic_ctrl = ((reg_mic_ctrl & (~FLD_AUD_MIC_VOL_CONTROL)) | d_gain);
+}
+
+/**
+ *  @brief      This function serves to get stream0 digital gain.
+ *  @return     gain value.
+ */
+static inline codec_in_path_digital_gain_e audio_get_stream0_dig_gain(void)
+{
+    codec_in_path_digital_gain_e val;
+    val = reg_mic_ctrl & FLD_AUD_MIC_VOL_CONTROL;
+    return val;
 }
 
 /**
@@ -426,11 +477,11 @@ static inline void audio_set_mute_mic(unsigned char enable)
 {
     if(enable)
     {
-        reg_audio_vol |= FLD_AUDIO_VOL_MUTE;
+        reg_codec_config |= FLD_DATI_SOTE_MUTE;
     }
     else
     {
-        reg_audio_vol &= ~FLD_AUDIO_VOL_MUTE;
+        reg_codec_config &= ~FLD_DATI_SOTE_MUTE;
     }
 }
 
@@ -477,6 +528,13 @@ static inline void audio_clr_dfifo_mask_and_status(void)
 void audio_set_amic_bias_pin(GPIO_PinTypeDef amic_bias);
 
 /**
+ * @brief     This function unset amic bias pin.
+ * @param[in] amic_bias - the amic bias pin.
+ * @return    none.
+ */
+void audio_unset_amic_bias_pin(GPIO_PinTypeDef amic_bias);
+
+/**
  * @brief     This function configures stream0 dmic pin.
  * @param[in] dmic_data - the data of dmic pin
  * @param[in] dmic_clk1 - the clk1 of dmic pin
@@ -491,6 +549,13 @@ void audio_set_stream0_dmic_pin(audio_dmic_data_pin_e dmic_data, audio_dmic_clk_
  * @return    none.
  */
 void audio_set_sdm_pin(sdm_pin_config_t *config);
+
+/**
+ * @brief     This function unset sdm pin.
+ * @param[in] config - sdm config pin struct.
+ * @return    none.
+ */
+void audio_unset_sdm_pin(sdm_pin_config_t *config);
 
 /**
  * @brief      This function performs to start w/r data into/from DFIFO0 or DFIFO1.
@@ -512,6 +577,14 @@ void audio_power_on(void);
  * @return     none.
  */
 void audio_power_down(void);
+
+/**
+ * @brief      This function serves to set adc power_mode.
+ * @param[in]  mode - power mode. bit[3]for PGA. The default value is 0 for optimal performance and high power consumption.
+ *                    0:high power;1:low power
+ * @return     none.
+ */
+void audio_codec_set_adc_power_mode(unsigned char mode);
 
 /**
  * @brief     This function serves to initial audio.
@@ -580,4 +653,11 @@ void audio_i2s_output_init(audio_i2s_input_output_t *audio_i2s_output);
  * @return    none.
  */
 void audio_dfifo_write_data(const short *buf, unsigned int len);
+
+/**
+ *  @brief      This function serves to clear codec's input pop.
+ *  @param[in]  t_ms        - cut input codec's data.
+ *  @return     none.
+ */
+void audio_codec_clr_input_pop(unsigned char t_ms);
 #endif

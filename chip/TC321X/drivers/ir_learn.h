@@ -28,22 +28,24 @@
 #include "register.h"
 #include "irq.h"
 #include "pwm.h"
+#include "lib/include/sys.h"
 
+extern unsigned char g_chip_version;
 /**
  * @brief ir_learn capture mode
  */
 typedef enum
 {
-    RISING_EDGE_START_CNT = 0x00,       /**<
+    RISING_EDGE_START_CNT = 0,       /**<
                                         After enabling the ir_learning module, wait for the first rising edge tick to start counting.
                                         */
-    IL_EN_HIGH_STATUS_START_CNT = 0x01, /**<
+    IL_EN_HIGH_STATUS_START_CNT = 1, /**<
                                         After the module is enabled, the software specifies to enter the high state, and the tick starts counting immediately.
                                         */
-    FALLING_EDGE_START_CNT = 0x10,      /**<
+    FALLING_EDGE_START_CNT = 2,      /**<
                                         After enabling the ir_learning module, wait for the first falling edge tick to start counting.
                                         */
-    IL_EN_LOW_STATUS_START_CNT = 0x11,  /**<
+    IL_EN_LOW_STATUS_START_CNT = 3,  /**<
                                         After the module is enabled, the software specifies to enter the low state, and the tick starts counting immediately.
                                         */
 } ir_learn_start_cnt_mode_e;
@@ -284,6 +286,11 @@ static inline void ir_learn_ana_tx_dis(void)
 static inline void ir_learn_ana_rx_en(void)
 {
     analog_write(0x0f, (analog_read(0x0f) | 0x08));
+    if (g_chip_version != CHIP_VERSION_A0) {
+    	analog_write(0x14, (analog_read(0x14) | 0x08));
+        sleep_us(1);
+        analog_write(0x14, (analog_read(0x14) & 0xf7));
+    }
 }
 
 /**

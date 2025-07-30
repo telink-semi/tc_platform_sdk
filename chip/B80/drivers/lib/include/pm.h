@@ -53,6 +53,7 @@ volatile unsigned int ana_32k_tick;
  */
 
 #define DEEP_ANA_REG0                       0x3a //initial value =0x00	[Bit1] The crystal oscillator failed to start normally.The customer cannot change!
+                                                 //                     [Bit2] The PLL failed to start normally.The customer cannot change!
 #define DEEP_ANA_REG1                       0x3b //initial value =0x00
 #define DEEP_ANA_REG2                       0x3c //initial value =0x0f
 
@@ -227,11 +228,18 @@ static inline void ram_crc_en_timing(unsigned int RAM_CRC_16K_Timing, unsigned i
 }
 
 /**
- * @brief     this function servers to wait bbpll clock lock
- * @param[in] none
- * @return    none
+ * @brief     this function servers to wait bbpll clock lock.
+ * @param[in] none.
+ * @return    none.
  */
-void pm_wait_bbpll_done(void);
+_attribute_ram_code_sec_noinline_ void pm_wait_bbpll_done(void);
+
+/**
+ * @brief     this function servers to wait bbpll clock lock.
+ * @param[in] num - the number of PLL tests.
+ * @return    none.
+ */
+_attribute_ram_code_sec_noinline_ void pm_bbpll_zero_tolerance_check(unsigned int num);
 
 void bls_pm_registerFuncBeforeSuspend (suspend_handler_t func );
 
@@ -338,7 +346,7 @@ void cpu_wakeup_init(cap_typedef_e cap);
  * @param[in] calib_flag - Choose whether to calibrate the 32k rc or not.
  * 						1 - calibrate; 0 - not calibrate
  * @return	  none
- * @note	  This function will not take effect until it is called before cpu_wakeup_init(). 
+ * @note	  This function will not take effect until it is called before cpu_wakeup_init().
  */
 void cpu_wakeup_init_calib_32k_rc_cfg(char calib_flag);
 

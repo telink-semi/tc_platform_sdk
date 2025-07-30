@@ -64,6 +64,16 @@ extern "C" {
 //#define    AUDIO_CODEC_POWER_TEST              1 //codec power off, power on and reinit loop test
 #endif
 
+/* There are 3 steps in order to clear codec pop:
+ * Step1 - mute audio;
+ * Step2 - Clear codec input pop and dis mute audio;
+ * Step3 - enable codec, codec data come in.
+ */
+#define AUDIO_CLR_CODEC_POP 1
+
+/* Collect enough codec data and make it fade in. */
+#define AUDIO_CODEC_FADE_IN 1
+
 /* Disable C linkage for C++ Compilers: */
 #if defined(__cplusplus)
 }

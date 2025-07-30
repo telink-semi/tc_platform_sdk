@@ -28,7 +28,7 @@ volatile  unsigned int   rns_val_trng;
 void user_init(void)
 {
 
-#if (MCU_CORE_TC1211 || MCU_CORE_TC321X)
+#if (MCU_CORE_TC1211 || MCU_CORE_TC321X || MCU_CORE_TC122X)
 #else
 	random_generator_init();
 #endif

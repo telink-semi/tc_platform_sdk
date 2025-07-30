@@ -75,12 +75,16 @@ flash_user_defined_list_t flash_init_list[] = {
     {0x1360C8, FLASH_LOCK_LOW_256K_MID1360C8},
 #elif (MCU_CORE_TC321X)
     // 512K
-    {0x1360C8, FLASH_LOCK_LOW_256K_MID1360C8},
     {0x136085, FLASH_LOCK_LOW_256K_MID136085},
     //1M
 	{0x146085, FLASH_LOCK_LOW_512K_MID146085},
+    {0x1471cd, FLASH_LOCK_LOW_512K_MID1471cd},
     //2M
 	{0x156085, FLASH_LOCK_LOW_1M_MID156085},
+#elif (MCU_CORE_TC122X)
+    // 128K
+    {0x114485, FLASH_LOCK_LOW_64K_MID114485},
+    {0x1164c8, FLASH_LOCK_LOW_64K_MID1164C8},
 #else
     {0, 0}
 #endif
@@ -115,7 +119,7 @@ void flash_init(unsigned char flash_protect_en)
 
 void platform_init(unsigned char flash_protect_en)
 {
-#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89  || MCU_CORE_TC1211)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89  || MCU_CORE_TC1211 || MCU_CORE_TC122X)
     cpu_wakeup_init(INTERNAL_CAP_XTAL24M);
 #elif (MCU_CORE_B85)
     cpu_wakeup_init();
@@ -123,7 +127,7 @@ void platform_init(unsigned char flash_protect_en)
     cpu_wakeup_init(LDO_MODE, INTERNAL_CAP_XTAL24M);
 #endif
 
-#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89 || MCU_CORE_TC321X || MCU_CORE_TC1211)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89 || MCU_CORE_TC321X || MCU_CORE_TC1211 || MCU_CORE_TC122X)
     wd_32k_stop();
 #endif
 
@@ -144,17 +148,23 @@ void platform_init(unsigned char flash_protect_en)
     user_read_flash_value_calib();
 #endif
 
+#elif (MCU_CORE_TC122X)
+    user_read_efuse_value_calib();
 #endif
 
 #if ((!DUT_TEST) && (!MCU_CORE_TC1211))
-    gpio_init(0);
+    int deepRetWakeUp = pm_is_MCU_deepRetentionWakeup();
+    gpio_init(!deepRetWakeUp);
 #endif
 
 
-#ifndef MCU_CORE_TC1211
+#if !(MCU_CORE_TC1211 || MCU_CORE_TC122X)
     // Note: This is to set SWS pull. If SWS is not set up, SWS will be floating, causing abnormal sleep currents of suspend,
     // there may be the risk of sws miswriting the chip registers or sram causing a crash.
     gpio_setup_up_down_resistor(GPIO_SWS, PM_PIN_PULLUP_1M);
+#elif MCU_CORE_TC1211
+    gpio_digital_pullup_en(GPIO_SWS,1);
+
 #endif
 
     /**
@@ -170,7 +180,7 @@ void platform_init(unsigned char flash_protect_en)
     @note if flash protection fails, LED1 lights up long, and keeps while.
     ===============================================================================
     */
-#if !defined(DUT_TEST) && !defined(MCU_CORE_TC1211)
+#if !defined(DUT_TEST) && !(defined(MCU_CORE_TC1211)) && !(defined(MCU_CORE_TC122X))
     flash_init(flash_protect_en);
 #endif
 

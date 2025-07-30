@@ -24,6 +24,32 @@
 #ifndef AUDIO_COMMON_H
 #define AUDIO_COMMON_H
 
+/**
+ * @brief       This function serves to configure audio data fade in
+ * @param[in]   source          - audio channel select.
+ * @param[in]   data_width      - data bit width.
+ * @param[in]   rate            - select channel sample rate.
+ * @param[in]   audio_data      - audio data buff.
+ * @param[in]   t_start         - start time of audio fade in.
+ * @param[in]   t_end           - end time of audio fade in.
+ * @return      none.
+ */
+void audio_linear_fade_in_config(audio_channel_select_e source, audio_codec_wl_mode_e data_width, audio_sample_rate_e rate, char *audio_data, unsigned short t_start, unsigned short t_end);
+
+/**
+ * @brief       This function serves to fade audio pga gain
+ * @param[in]   gain          - audio channel select.
+ * @return      none.
+ */
+void audio_fade_pga_gain(codec_in_pga_gain_e gain);
+
+/**
+ * @brief       This function serves to fade stream digital gain
+ * @param[in]   gain          - audio channel select.
+ * @return      none.
+ */
+void audio_stream0_fade_dig_gain(codec_in_path_digital_gain_e gain);
+
 signed short sin_8K_d1[] __attribute__((aligned(4))) = {
 0x0000,0x5a81,0x7ffe,0x5a81,0x0000,-0x5a81,-0x7ffe,-0x5a81,
 };

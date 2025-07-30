@@ -50,6 +50,18 @@ static unsigned int audio_stream_output_step[AUDIO_RATE_SIZE] = {
     0x03127001, /*48k*/
 };
 
+unsigned int audio_sample_rate_value[AUDIO_RATE_SIZE] = {
+    8000,   /*8k*/
+    11025,  /*11.0259k*/
+    12000,  /*12k*/
+    16000,  /*16k*/
+    22058,  /*22.0588k*/
+    24000,  /*24k*/
+    32000,  /*32k*/
+    44100,  /*44.1k*/
+    48000,  /*48k*/
+};
+
 /**
  * @brief     This function configures amic bias pin.
  * @param[in] amic_bias - the amic bias pin.
@@ -61,6 +73,19 @@ void audio_set_amic_bias_pin(GPIO_PinTypeDef amic_bias)
     gpio_set_output_en(amic_bias, 1);
     gpio_set_input_en(amic_bias, 0);
     gpio_write(amic_bias, 1);
+}
+
+/**
+ * @brief     This function unset amic bias pin.
+ * @param[in] amic_bias - the amic bias pin.
+ * @return    none.
+ */
+void audio_unset_amic_bias_pin(GPIO_PinTypeDef amic_bias)
+{
+    gpio_set_func(amic_bias, AS_GPIO);
+    gpio_set_output_en(amic_bias, 1);
+    gpio_set_input_en(amic_bias, 0);
+    gpio_write(amic_bias, 0);
 }
 
 /**
@@ -136,6 +161,30 @@ void audio_set_sdm_pin(sdm_pin_config_t *config)
 }
 
 /**
+ * @brief     This function unset sdm pin.
+ * @param[in] config - sdm config pin struct.
+ * @return    none.
+ */
+void audio_unset_sdm_pin(sdm_pin_config_t *config)
+{
+    if (config->sdm0_p_pin != GPIO_NONE_PIN) {
+        gpio_set_func(config->sdm0_p_pin, AS_GPIO);
+    }
+
+    if (config->sdm0_n_pin != GPIO_NONE_PIN) {
+        gpio_set_func(config->sdm0_n_pin, AS_GPIO);
+    }
+
+    if (config->sdm1_p_pin != GPIO_NONE_PIN) {
+        gpio_set_func(config->sdm1_p_pin,AS_GPIO);
+    }
+
+    if (config->sdm1_n_pin != GPIO_NONE_PIN) {
+        gpio_set_func(config->sdm1_n_pin, AS_GPIO);
+    }
+}
+
+/**
  * @brief      This function performs to start w/r data into/from DFIFO0 or DFIFO1.
  * @param[in]  fifo_chn  - fifo channel.
  * @param[in]  pbuff     - address in DFIFO0 or DFIFO1.
@@ -161,7 +210,7 @@ void audio_dfifo_config(audio_fifo_chn_e fifo_chn, unsigned short* pbuff,unsigne
  */
 void audio_power_on(void)
 {
-    analog_write(areg_aon_0x7d, (analog_read(areg_aon_0x7d) | FLD_PG_CLK_EN) & ~FLD_PG_AUDIO_EN);
+    pm_set_dig_module_power_switch(PM_POWER_AUDIO, PM_POWER_UP);
     BM_SET(reg_rst2, FLD_RST2_AUD);
 }
 
@@ -172,7 +221,18 @@ void audio_power_on(void)
 void audio_power_down(void)
 {
     BM_CLR(reg_rst2, FLD_RST2_AUD);
-    analog_write(areg_aon_0x7d, (analog_read(areg_aon_0x7d) | FLD_PG_CLK_EN) | FLD_PG_AUDIO_EN);
+    pm_set_dig_module_power_switch(PM_POWER_AUDIO, PM_POWER_DOWN);
+}
+
+/**
+ * @brief      This function serves to set adc power_mode.
+ * @param[in]  mode - power mode. bit[3]for PGA. The default value is 0 for optimal performance and high power consumption.
+ *                    0:high power;1:low power
+ * @return     none.
+ */
+void audio_codec_set_adc_power_mode(unsigned char mode)
+{
+    analog_write(areg_0x8f, (analog_read(areg_0x8f) & ~FLD_PGA_LOWPOWER) | MASK_VAL(FLD_PGA_LOWPOWER,mode));
 }
 
 /**
@@ -292,7 +352,6 @@ void audio_codec_stream0_input_config(codec_stream0_input_src_e source, audio_sa
     audio_set_codec_stream0_path(source & 3);
     audio_set_codec_stream0_sample_rate(source, rate);
     audio_set_stream0_dig_gain(CODEC_IN_D_GAIN_m24_DB);
-    audio_set_codec_en(1);
 }
 
 /**
@@ -545,4 +604,15 @@ void audio_dfifo_write_data(const short *buf, unsigned int len)
         reg_usb_mic_dat1 = (unsigned short)buf[i];
         reg_usb_mic_dat0 = (unsigned short)buf[i + 1];
     }
+}
+
+/**
+ *  @brief      This function serves to clear codec's input pop.
+ *  @param[in]  t_ms        - cut input codec's data.
+ *  @return     none.
+ */
+void audio_codec_clr_input_pop(unsigned char t_ms)
+{
+    sleep_ms(t_ms);
+    audio_set_mute_mic(0);
 }

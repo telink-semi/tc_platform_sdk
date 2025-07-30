@@ -51,7 +51,7 @@ void rd_usr_definition(unsigned char _s)
 		usr_config.flash = (flash_read_mid() >> 16) & 0xff;
 	}
 }
-#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X)
 void get_uart_port(GPIO_PinTypeDef* bqb_uart_tx_port, GPIO_PinTypeDef* bqb_uart_rx_port)
 #else
 void get_uart_port(UART_TxPinDef* bqb_uart_tx_port, UART_RxPinDef* bqb_uart_rx_port)
@@ -96,6 +96,7 @@ void read_bqb_calibration()
 		}
 		else//FLASH
 		{
+			#if (!MCU_CORE_TC122X)
 			if(usr_config.flash == FLASH_SIZE_2M)
 			{
 				flash_read_page(FLASH_CAP_VALUE_ADDR_2M, 1, &chnidx);
@@ -116,6 +117,7 @@ void read_bqb_calibration()
 			{
 				flash_read_page(FLASH_CAP_VALUE_ADDR_64K, 1, &chnidx);
 			}
+			#endif
 		}
 
 		if(chnidx!=0xff)
@@ -126,7 +128,9 @@ void read_bqb_calibration()
 #else
 	#if(SWITCH_INTERNAL_CAP)
 		#if SWITCH_CALIBRATION_POSITION
+			#if (!MCU_CORE_TC122X)
 			flash_read_page(CAP_SET_FLASH_ADDR, 1, &chnidx);
+			#endif
 		#else
 			chnidx = read_config(CAP_CALIBRATION_SRAM);
 		#endif
@@ -152,7 +156,7 @@ void user_init(void)
 	gpio_write(LED1, 0);         //LED On
 #endif
 
-#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X)
+#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X)
 	GPIO_PinTypeDef bqb_uart_tx_port = BQB_UART_TX_PORT;
 	GPIO_PinTypeDef bqb_uart_rx_port = BQB_UART_RX_PORT;
 #else
@@ -166,7 +170,7 @@ void user_init(void)
 	}
 	get_uart_port(&bqb_uart_tx_port, &bqb_uart_rx_port);
 #endif
-#if(MCU_CORE_B80B || MCU_CORE_TC321X)
+#if(MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X)
 	uart_gpio_set(UART_MODULE_SEL,bqb_uart_tx_port, bqb_uart_rx_port);// uart tx/rx pin set
 	uart_reset(UART_MODULE_SEL);  //will reset uart digital registers from 0x90 ~ 0x9f, so uart setting must set after this reset
 	uart_init_baudrate(UART_MODULE_SEL,BQB_UART_BAUD,CLOCK_SYS_CLOCK_HZ,PARITY_NONE, STOP_BIT_ONE);

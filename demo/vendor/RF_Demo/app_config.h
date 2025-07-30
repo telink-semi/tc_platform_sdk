@@ -52,13 +52,15 @@ extern "C" {
 #elif(MCU_CORE_TC321X)
 #define RF_POWER            RF_POWER_P10p00dBm
 #elif(MCU_CORE_TC1211)
-#define RF_POWER            RF_POWER_P11p46dBm
+#define RF_POWER            RF_POWER_P10p00dBm
+#elif(MCU_CORE_TC122X)
+#define RF_POWER            RF_POWER_P10p00dBm
 #endif
 
 #define RF_BLE_2M				1
 #define RF_BLE_1M				2
 #define RF_BLE_1M_NO_PN			3
-#if(!(MCU_CORE_TC321X||MCU_CORE_TC1211))
+#if(!(MCU_CORE_TC321X||MCU_CORE_TC1211||MCU_CORE_TC122X))
 #define RF_ZIGBEE_250K			4
 #define RF_LR_S2_500K			5
 #define RF_LR_S8_125K			6

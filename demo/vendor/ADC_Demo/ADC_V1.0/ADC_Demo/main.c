@@ -1,12 +1,12 @@
 /********************************************************************************************************
- * @file    analog.h
+ * @file    main.c
  *
- * @brief   This is the header file for TC321X
+ * @brief   This is the source file for Telink MCU
  *
  * @author  Driver Group
- * @date    2024
+ * @date    2018
  *
- * @par     Copyright (c) 2024, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -21,26 +21,37 @@
  *          limitations under the License.
  *
  *******************************************************************************************************/
-#pragma once
+#include "app_config.h"
+#include "calibration.h"
 
-#include "compiler.h"
 
-
-/**
- * @brief      This function serves to analog register read.
- * @param[in]  addr - address need to be read.
- * @return     the result of read.
- */
-unsigned char analog_read(unsigned char addr);
+extern void user_init(void);
+extern void main_loop (void);
 
 /**
- * @brief      This function serves to analog register write.
- * @param[in]  addr - address need to be write.
- * @param[in]  v - the value need to be write.
- * @return     none.
+ * @brief		This function serves to handle the interrupt of MCU
+ * @param[in] 	none
+ * @return 		none
  */
-void analog_write(unsigned char addr, unsigned char v);
+_attribute_ram_code_sec_noinline_ void irq_handler(void)
+{
 
-#define  WriteAnalogReg  analog_write
-#define  ReadAnalogReg   analog_read
+}
+/**
+ * @brief		This is main function
+ * @param[in]	none
+ * @return      none
+ */
+int main (void) {
+
+    PLATFORM_INIT;
+    CLOCK_INIT;
+
+	user_init();
+
+	while (1) {
+		main_loop ();
+	}
+	return 0;
+}
 

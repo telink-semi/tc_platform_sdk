@@ -140,7 +140,8 @@ typedef enum
 	I2S_LR = 29,
 	I2S_DO = 30,
 	i2S_DI_I = 31,
-	UART_PE_RTX_IO = 3, UART_RTX_IO = 15, UART1_RTX_IO = 16, UART2_RTX_IO = 17,BLE_ACTIVITY =23,BLE_STATUS=23,KSCAN = 0, SWS_IO =0 ,UART1_PA2_TX=0, UART1_PA1_RX, UART2_PB3_RTX_IO = 0, CLK_7816 = 0 ,MSPI_MISO=0,MSPI_MSCN=0,MSPI_MCLK=0,MSPI_MOSI=0, // The temporary definition needs to be modified later
+	UART_PE_RTX_IO = 3, UART_RTX_IO = 15, UART1_RTX_IO = 16, UART2_RTX_IO = 17,BLE_ACTIVITY =23,BLE_STATUS=23,KSCAN = 0, SWS_IO =0 ,UART1_PA2_TX=0, UART1_PA1_RX, UART2_PB3_RTX_IO = 0, CLK_7816 = 0 ,MSPI_MISO=0,MSPI_MSCN=0,MSPI_MCLK=0,MSPI_MOSI=0,
+	SPI_PB0_CN_IO=0,SPI_PB1_CK_IO=0,SPI_PE0_MOSI_IO=0,SPI_PE1_MIS0_IO=0,
 } gpio_func_e;
 
 /**
@@ -225,6 +226,19 @@ typedef enum
 	GPIO_NEW_RISC2_IRQ = BIT(3),
 	GPIO_NEW_RISC3_IRQ = BIT(4),
 } gpio_risc_irq_e;
+
+typedef enum
+{
+    PROB_CLK_7816,
+    PROB_CLK_32K,
+    PROB_CLK_SYS,
+    PROB_CLK_24M_RC,
+    PROB_CLK_24M_XTAL,
+    PROB_CLK_HS,
+    PROB_CLK_STIMER,
+    PROB_CLK_78161=8,
+}prob_clock_src_e;
+
 
 /**
  * @brief      This function servers to initialization all gpio.
@@ -681,3 +695,11 @@ static _always_inline void gpio_set_mspi_pin_ie_dis(void)
 {
 	 write_reg8(0x529, 0x00); //MSPI ie disable
 }
+
+/**
+ * @brief     This function performs to probe clock to IO.
+ * @param[in] pin - the pin to probe clock, only support PB[0]/PD0/PE[1:0].
+ * @param[in] sel_clk - the clock source which you want to probe.
+ * @return    none.
+ */
+void gpio_set_probe_clk_function(GPIO_PinTypeDef pin, prob_clock_src_e sel_clk);

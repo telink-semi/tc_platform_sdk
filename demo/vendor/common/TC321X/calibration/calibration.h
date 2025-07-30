@@ -90,6 +90,19 @@
 #define OTP_VDD_1V2_CALIB_ADDR             0x3fc0
 #endif
 
+typedef struct
+{
+    unsigned short single_gpio_gain_10000x;
+    signed short single_gpio_offset_10x;
+
+    unsigned short vbat_gain_10000x;
+    signed short vbat_offset_10x;
+
+    unsigned short diff_gpio_gain_10000x;
+    signed short diff_gpio_offset_10x;
+
+}sd_adc_calib_t;
+
 /**
  * @brief		This function is used to calibrate the user's parameters.
  * 				This function is to read the calibration value stored in flash,

@@ -22,7 +22,7 @@
  *
  *******************************************************************************************************/
 #include "ir_learn.h"
-
+#include "pwm.h"
 /**
  * @brief      This function is used to set rx pin of the ir_learn
  * @param[in]  ir_rx_pin       - the rx pin of ir_learn
@@ -98,7 +98,20 @@ void ir_learn_tx_init(ir_learn_tx_t *ir_learn_tx)
  */
 void ir_learn_rx_init(ir_learn_rx_t *ir_learn_rx)
 {
+    unsigned short ir_dma_send_buff_rev[3]={0x0002, 0x0000, 0x8001};
+
     ir_learn_rx_mode(ir_learn_rx->rx_mode); /* TODO: A2 chip version need software trig timing to fix the first edge loss issue. */
     reg_il_cfg0 = MASK_VAL(FLD_IL_MODE, ir_learn_rx->cnt_mode, FLD_IL_INPUT_SEL, ir_learn_rx->rx_mode);
     reg_il_cfg1 = (reg_il_cfg1 & (~FLD_IL_TIMEOUT)) |MASK_VAL(FLD_IL_TIMEOUT, ir_learn_rx->timeout_cnt);
+
+    if (g_chip_version == CHIP_VERSION_A0) {
+        pwm_set_mode(PWM0_ID, PWM_IR_DMA_FIFO_MODE);
+        pwm_set_cycle_and_duty(PWM0_ID, 100 * 24, 50 * 24);
+        pwm_set_dma_address(&ir_dma_send_buff_rev);
+        ir_learn_ana_tx_en();
+        pwm_set_pwm0_output_to_ana_ir_en();
+        pwm_start_dma_ir_sending();
+        sleep_us(20);
+        ir_learn_ana_tx_dis();
+    }
 }

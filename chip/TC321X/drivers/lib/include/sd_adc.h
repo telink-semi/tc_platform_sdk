@@ -35,9 +35,9 @@
     |              |   1/4   |    -3.6-3.6V    |
     |              |   1/8   |    -3.6-3.6V    |
     +--------------+---------+-----------------+
-    |   VBAT_MODE  |   1/2   |     1.9-2.4V    |
-    |              |   1/4   |     1.9-4.2V    |
-    |              |   1/8   |     1.9-4.2V    |
+    |   VBAT_MODE  |   1/2   |     2.0-2.4V    |
+    |              |   1/4   |     2.0-3.6V    |
+    |              |   1/8   |     2.0-3.6V    |
     +--------------+---------+-----------------+
     |   TEMP_MODE  |    \    |  -40-85Celsius  |
     +--------------+---------+-----------------+
@@ -58,6 +58,12 @@
 volatile unsigned char g_sd_adc_divider;
 volatile unsigned short g_sd_adc_downsample_rate;
 
+/**
+ * @note Different models of chips support different resolutions, including 12bit and 16bit.
+ * The 12-bit chip only support the sampling clock for 1M,
+ * The 16-bit chip support the sampling clock for 1M/2M,
+ * chip specific support for which resolution, please refer to the datasheet.
+ */
 #define SD_ADC_SAPMPLE_CLK_1M_DIV(sys_clk)     (((sys_clk)/2/(1000000))-1)
 #define SD_ADC_SAPMPLE_CLK_2M_DIV(sys_clk)     (((sys_clk)/2/(2000000))-1)
 
@@ -128,6 +134,10 @@ typedef enum{
 
 /**
  * @brief sd_adc downsample rate type.
+ * @note  Different models of chips support different resolutions, including 12bit and 16bit.
+ * The 12-bit chip only support the downsampling rate of 64,
+ * The 16-bit chip support the downsampling rate of 64/128/256,
+ * chip specific support for which resolution, please refer to the datasheet.
  */
 typedef enum{
     SD_ADC_DOWNSAMPLE_RATE_64  = 64,
@@ -139,7 +149,6 @@ typedef enum{
  * @brief sd_adc vbat channel divider
  */
 typedef enum{
-    SD_ADC_VBAT_DIV_1F8 = 0,
     SD_ADC_VBAT_DIV_1F4 = 0x01,
     SD_ADC_VBAT_DIV_1F2 = 0x02,
 }sd_adc_vbat_div_e;
@@ -148,7 +157,6 @@ typedef enum{
  * @brief sd_adc positive input channel divider
  */
 typedef enum{
-    SD_ADC_GPIO_P_CHN_DIV_1F8 = 0,
     SD_ADC_GPIO_P_CHN_DIV_1F4 = 0x01,
     SD_ADC_GPIO_P_CHN_DIV_1F2 = 0x02,
     SD_ADC_GPIO_P_CHN_DIV_OFF = 0x03,
@@ -158,7 +166,6 @@ typedef enum{
  * @brief sd_adc negative input channel divider
  */
 typedef enum{
-    SD_ADC_GPIO_N_CHN_DIV_1F8 = 0,
     SD_ADC_GPIO_N_CHN_DIV_1F4 = 0x01,
     SD_ADC_GPIO_N_CHN_DIV_1F2 = 0x02,
     SD_ADC_GPIO_N_CHN_DIV_OFF = 0x03,
@@ -166,6 +173,10 @@ typedef enum{
 
 /**
  * @brief sd_adc gpio mode configuration
+ * @note Different models of chips support different resolutions, including 12bit and 16bit.
+ * The 12-bit chip only support the sampling clock for 1M, downsampling rate of 64,
+ * The 16-bit chip support the sampling clock for 1M/2M, downsampling rate of 64/128/256,
+ * chip specific support for which resolution, please refer to the datasheet.
  */
 typedef struct{
     sd_adc_p_input_pin_def_e input_p;
@@ -182,9 +193,42 @@ typedef enum{
     TEMP_VALUE,
 }sd_adc_result_type_e;
 
+/**
+ *  @brief  Define SD ADC VMID power switch state
+ */
+typedef enum
+{
+    SD_ADC_VMID_VREF,
+    SD_ADC_VBG_VREF,
+} sd_adc_vref_e;
+
 /**********************************************************************************************************************
  *                                                  SD_ADC only interface                                                 *
  **********************************************************************************************************************/
+/**
+ * @brief This function is used to calibrate sd adc sample voltage for single GPIO.
+ * @param[in] vref - GPIO sampling calibration value.
+ * @param[in] offset - GPIO sampling two-point calibration value offset.
+ * @return none
+ */
+void adc_set_single_gpio_calib_vref(unsigned short vref, signed short offset);
+
+/**
+ * @brief This function is used to calibrate sd adc sample voltage for VABT.
+ * @param[in] vref - GPIO sampling calibration value.
+ * @param[in] offset - GPIO sampling two-point calibration value offset.
+ * @return none
+ */
+void adc_set_vbat_calib_vref(unsigned short vref, signed short offset);
+
+/**
+ * @brief This function is used to calibrate sd adc sample voltage for GPIO differential.
+ * @param[in] vref - GPIO sampling calibration value.
+ * @param[in] offset - GPIO sampling two-point calibration value offset.
+ * @return none
+ */
+void adc_set_diff_gpio_calib_vref(unsigned short vref, signed short offset);
+
 /**
  * @brief      This function servers to clear the write pointer of fifo.
  * @param[in]  none
@@ -206,25 +250,26 @@ static inline void sd_adc_set_diff_input(sd_adc_p_input_pin_def_e p_ain, sd_adc_
 }
 
 /**
- * @brief      This function serves to set the sample clock of the SD_ADC (SD_ADC source clock: sys_clk).
- * @param[in]  clk_div  - SD_ADC_SAPMPLE_CLK_1M_DIV/SD_ADC_SAPMPLE_CLK_2M_DIV
- * @return     none
+ * @brief     This function servers to set the SD_ADC reference voltage.
+ * @param[in] vref - sd_adc_vref_e
+ * @return    none
+ * @note	  The A0 version chip is unable to utilize this interface.
  */
-static inline void sd_adc_set_clk(unsigned char clk_div)
+static inline void sd_adc_select_vref(sd_adc_vref_e vref)
 {
-	reg_dfifo_dc_clk_div = clk_div;//sd_adc sample clock = system clock/2/(div+1)
+    if (g_chip_version != CHIP_VERSION_A0) {
+
+    	if(vref == SD_ADC_VBG_VREF)
+    	{
+    		analog_write(0x08, analog_read(0x08) | BIT(3));
+    	}else
+    	{
+    		analog_write(0x08, analog_read(0x08) & (~BIT(3)));
+    	}
+    }
 }
 
-/**
- * @brief      This function serves to set the downsample rate of the SD_ADC.
- * @param[in]  downsample_rate -sd_adc_downsample_rate_e
- * @return     none
- */
-static inline void sd_adc_set_downsample_rate(sd_adc_downsample_rate_e downsample_rate)
-{
-    reg_dfifo_aidx2 = (reg_dfifo_aidx2 & (~FLD_R_DEC)) | ((downsample_rate>>7)<<4);
-    g_sd_adc_downsample_rate = downsample_rate;
-}
+
 
 /**
  * @brief       This function serves to set the interrupt trigger threshold.
@@ -296,20 +341,30 @@ static inline void sd_adc_clr_irq_mask(void)
  * @brief     This function servers to power on temperature sensor.
  * @param[in] none
  * @return    none
+ * @note      The A0 version of the chip temperature sensor is no longer open for use.
  */
 static inline void sd_adc_temp_sensor_power_on(void)
 {
-      analog_write(0x06,analog_read(0x06) & (~BIT(2)));
+    analog_write(0x06,analog_read(0x06) & (~BIT(2)));
+    if (g_chip_version != CHIP_VERSION_A0)
+    {
+       analog_write(0x08,analog_read(0x08) | BIT(4));  //Set to 1 to select CTAT(a voltage complementary to absolute temperature)
+    }
 }
 
 /**
  * @brief      This function servers to power off temperature sensor.
  * @param[in]  none
  * @return     none
+ * @note       The A0 version of the chip temperature sensor is no longer open for use.
  */
 static inline void sd_adc_temp_sensor_power_off(void)
 {
-      analog_write(0x06,analog_read(0x06) | BIT(2));
+    analog_write(0x06,analog_read(0x06) | BIT(2));
+    if (g_chip_version != CHIP_VERSION_A0)
+    {
+       analog_write(0x08,analog_read(0x08) & (~BIT(4)));
+    }
 }
 
 /**
@@ -449,6 +504,7 @@ void sd_adc_power_on(sd_adc_mode_e mode);
  * @brief     This function servers to power off SD_ADC.
  * @param[in] mode -sd_adc_mode_e
  * @return    none
+ * @note      -# sd_adc_power_off must be called before entering pm sleep to prevent abnormal sampling of sd adc after PM wakes up.
  */
 void sd_adc_power_off(sd_adc_mode_e mode);
 

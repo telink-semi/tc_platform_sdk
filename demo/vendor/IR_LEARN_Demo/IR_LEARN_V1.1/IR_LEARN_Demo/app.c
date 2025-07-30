@@ -163,6 +163,9 @@ void user_init(void)
         .rx_mode       = ANALOG_RX_MODE,
         .timeout_cnt   = TICK_VALUE_65535,
     };
+    if (g_chip_version == CHIP_VERSION_A0) {
+        ir_learn_rx.cnt_mode = FALLING_EDGE_START_CNT;
+    }
     ir_learn_rx_init(&ir_learn_rx);
     ir_learn_en();
     /* interrupt config. */

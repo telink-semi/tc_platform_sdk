@@ -218,6 +218,8 @@ void user_init(void)
 
 #if(MCU_CORE_TC321X)
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW32K, PM_WAKEUP_TIMER, (clock_time() + 4000*CLOCK_SYS_TIMER_CLK_1MS));
+#elif(MCU_CORE_TC122X)
+	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW8K, PM_WAKEUP_TIMER, (clock_time() + 4000*CLOCK_SYS_TIMER_CLK_1MS));
 #else
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K, PM_WAKEUP_TIMER, (clock_time() + 4000*CLOCK_SYS_TIMER_CLK_1MS));
 #endif
@@ -424,12 +426,12 @@ void main_loop (void)
 #if !CURRENT_TEST
 	gpio_write(LED1, 1);
 #endif
-	sleep_ms(500);
+	sleep_ms(600);
 
 #if !CURRENT_TEST
 	gpio_write(LED1, 0);
 #endif
-	sleep_ms(100);
+	sleep_ms(50);
 }
 
 
