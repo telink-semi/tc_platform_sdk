@@ -1,7 +1,7 @@
-## VX.X.X
+## V3.2.0
 
 ### Version
-* SDK Version: tc_platform_sdk VX.X.X
+* SDK Version: tc_platform_sdk V3.2.0
 * Chip Version
   - B80:  TLSR8208/TLSR8373
   - B80B: TLSR8208H
@@ -76,7 +76,7 @@
    * (tc321x): Optimize the RX sensitivity of some frequency points and modify relevant interfaces: rf_set_rxpara/rf_ldot_ldo_rxtxlf_bypass_en/rf_ldot_ldo_rxtxlf_bypass_dis(merge_requests/@769)(merge_requests/@786)
    * (tc321x): Optimize TX modulation performance and modify the interface: rf_mode_init. (merge_requests/@796)
 ### 版本
-* SDK 版本: tc_platform_sdk VX.X.X
+* SDK 版本: tc_platform_sdk V3.2.0
 * 芯片版本
   - B80:  TLSR8208/TLSR8373
   - B80B: TLSR8208H
