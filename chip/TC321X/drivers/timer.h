@@ -54,22 +54,6 @@ typedef enum{
 	TMR_STA_WD =			BIT(3),
 }tmr_sta_e;
 
-#define	    sys_tick_per_us   				16
-#define		CLOCK_SYS_CLOCK_1250US			(1250 * sys_tick_per_us)
-
-/**
- * @brief   system Timer : 16Mhz, Constant
- */
-enum{
-	CLOCK_16M_SYS_TIMER_CLK_1S  = sys_tick_per_us*1000*1000,
-	CLOCK_16M_SYS_TIMER_CLK_1MS = sys_tick_per_us*1000,
-	CLOCK_16M_SYS_TIMER_CLK_1US = sys_tick_per_us,
-
-	CLOCK_SYS_TIMER_CLK_1S  = CLOCK_16M_SYS_TIMER_CLK_1S,
-	CLOCK_SYS_TIMER_CLK_1MS = CLOCK_16M_SYS_TIMER_CLK_1MS,
-	CLOCK_SYS_TIMER_CLK_1US = CLOCK_16M_SYS_TIMER_CLK_1US,
-};
-
 /**
  * @brief   system Timer : 32Khz, Constant
  */
@@ -78,41 +62,6 @@ enum{
 	CLOCK_32K_SYS_TIMER_CLK_1MS = 32,
 };
 
-/**
- * @brief     This function performs to gets system timer0 address.
- * @param[in] none.
- * @return    timer0 address.
- */
-static inline unsigned long clock_time(void)
-{
-	return reg_system_tick;
-}
-
-
-/**
- * @brief     This function performs to set sleep us.
- * @param[in] us - microseconds need to delay.
- * @return    none
- */
-
-extern void sleep_us(unsigned long us);
-
-#define ClockTime			clock_time
-#define WaitUs				sleep_us
-#define WaitMs(t)			sleep_us((t)*1000)
-#define sleep_ms(t)			sleep_us((t)*1000)
-
-/**
- * @brief     This function performs to calculation exceed us of the timer.
- * @param[in] ref - Variable of reference timer address.
- * @param[in] span_us - Variable of span us.
- * @return    the exceed.
- */
-
-static inline unsigned int clock_time_exceed(unsigned int ref, unsigned int us)
-{
-	return ((unsigned int)(clock_time() - ref) > us * sys_tick_per_us);
-}
 
 /**
  * @brief     initiate GPIO for gpio trigger and gpio width mode of timer0.

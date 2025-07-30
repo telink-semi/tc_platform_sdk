@@ -239,7 +239,7 @@ void bqb_serviceloop (void)
 					}
 #if (MCU_CORE_B85 || MCU_CORE_B87)
 					rf_drv_init(RF_MODE_BLE_1M_NO_PN);
-#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X)
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X)
 					rf_set_ble_1M_NO_PN_mode();
 #endif
 					rf_set_preamble_len(BQB_PREAMBLE_LEN+0x40); //add by junwei
@@ -261,7 +261,7 @@ void bqb_serviceloop (void)
 					{
 #if (MCU_CORE_B85 || MCU_CORE_B87)
 						rf_drv_init(RF_MODE_BLE_1M_NO_PN);
-#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X)
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X)
 						rf_set_ble_1M_NO_PN_mode();
 #endif
 						rsp = 0;
@@ -270,7 +270,7 @@ void bqb_serviceloop (void)
 					{
 #if (MCU_CORE_B85 || MCU_CORE_B87)
 						rf_drv_init(RF_MODE_BLE_2M);
-#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X)
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X)
 						rf_set_ble_2M_mode();
 #endif
 
@@ -440,7 +440,7 @@ void bqb_serviceloop (void)
 				rf_set_tx_rx_off_auto_mode();
 				rf_set_ble_channel(freq);
 #if SUPPORT_CONFIGURATION
-#if(MCU_CORE_B85||MCU_CORE_B87||MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X)
+#if(MCU_CORE_B85||MCU_CORE_B87||MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X)
 				rf_set_power_level_index((usr_config.power == 0)?BQB_TX_POWER:rf_power_Level_list[usr_config.power-1]);
 #elif(MCU_CORE_B89)
 				rf_set_power_level_index((usr_config.power == 0)?BQB_TX_POWER:(usr_config.power-1));
@@ -527,7 +527,7 @@ void  bqbtest_init(void)
 	FSM_RX_FIRST_TIMEOUT_DISABLE;
 #if (MCU_CORE_B85 || MCU_CORE_B87)
 	rf_drv_init(RF_MODE_BLE_1M_NO_PN);
-#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X)
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X)
 	rf_mode_init();
 	rf_set_ble_1M_NO_PN_mode();
 #endif

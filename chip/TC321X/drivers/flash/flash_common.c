@@ -36,21 +36,22 @@
 	   if there is a problem, you need to modify the user_read_flash_value_calib function.(added by xiaobin.huang 20240802)
     #8 When adding new flash, you need to confirm the maximum operating current, not greater than 10mA. the larger the load on the LDO of the flash of the TC321X, the lower the VDD_F voltage will be,
        the present voltage settings are in accordance with the maximum operating current of the flash is evaluated at 10mA, if the maximum operating current is greater than 10mA, you need to re-assessment.(added by xiaobin.huang 20240802)
+	#9 Due to the high power supply voltage of VDDF(greater than 2.0V), the TC321X can only use wide-voltage Flash. Issue:RAP-3.
 
     If add flash type, need pay attention to the read uid command and the bit number of status register
 	Flash Type	  uid CMD	   MID		 Company	Sector Erase Time(MAX)
 	P25Q40SU      0x4b       0x136085     PUYA          30ms
-	GD25LD40EGEG  0x4b(AN)	 0x1360C8	  GD			500ms
     P25Q80SU      0x4b       0x146085     PUYA          20ms
+    TH25Q80U      0x4b       0x1471cd     TSINGTENG     2ms
 	P25Q16SU      0x4b       0x156085     PUYA          30ms
 
  */
 const flash_hal_handler_t flash_list[] = {
 	//512K
-	{0x1360C8,flash_get_lock_block_mid1360c8, flash_unlock_mid1360c8, flash_lock_mid1360c8,FLASH_LOCK_LOW_256K_MID1360C8},
 	{0x136085,flash_get_lock_block_mid136085, flash_unlock_mid136085, flash_lock_mid136085,FLASH_LOCK_LOW_256K_MID136085},
 	//1M
 	{0x146085,flash_get_lock_block_mid146085, flash_unlock_mid146085, flash_lock_mid146085,FLASH_LOCK_LOW_512K_MID146085},
+	{0x1471cd,flash_get_lock_block_mid1471cd, flash_unlock_mid1471cd, flash_lock_mid1471cd,FLASH_LOCK_LOW_512K_MID1471cd},
 	//2M
 	{0x156085,flash_get_lock_block_mid156085, flash_unlock_mid156085, flash_lock_mid156085,FLASH_LOCK_LOW_1M_MID156085},
 };

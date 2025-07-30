@@ -22,6 +22,7 @@
  *
  *******************************************************************************************************/
 #include "qdec.h"
+#include "clock.h"
 
 /**
  * @brief      This function servers to set input port.

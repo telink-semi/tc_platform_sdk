@@ -39,21 +39,37 @@ extern "C" {
  */
 #include "sys_clock.h"
 
+#if MCU_CORE_TC122X
+#define UART_TX_PIN             GPIO_PA0
+#define UART_RX_PIN             GPIO_PA1
+#define UART_CTS_PIN            GPIO_PA4
+#define UART_RTS_PIN            GPIO_PA5
+#else
 #define UART_TX_PIN				GPIO_PD0
 #define UART_RX_PIN				GPIO_PD1
 #define UART_CTS_PIN			GPIO_PD2
 #define UART_RTS_PIN			GPIO_PD3
+#endif
+
 #if MCU_CORE_TC321X
 #define UART_RTX_PIN            GPIO_PB0
+#elif MCU_CORE_TC122X
+#define UART_RTX_PIN            GPIO_PB1
 #else
 #define UART_RTX_PIN			GPIO_PC7
 #endif
 
+#if MCU_CORE_TC122X
+#define UART0_MODULE            0 /* UART0 */
+#else
 #define UART0_MODULE            0 /* UART0 */
 #define UART1_MODULE            1 /* UART1 */
+#endif
+
 #if (MCU_CORE_TC321X)
 #define UART2_MODULE            2 /* UART2 */
 #endif
+
 /* uart select */
 #define UART_MODULE_SEL         UART0_MODULE
 

@@ -4,9 +4,9 @@
  * @brief   This is the source file for Telink MCU
  *
  * @author  Driver Group
- * @date    2018
+ * @date    2025
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2025, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -29,7 +29,9 @@
     PWM0   :  PA2.  PC1.  PC2.	PD5
     PWM0_N :  PA0.  PB3.  PC4	PD5
     B89_B80_TC321X:
-    reference gpio.h
+    reference gpio.h    TC122X:
+    PWM0   :  PA0.  PA4.
+    PWM0_N :  PA1.
  *********************************************************************************/
 
 volatile unsigned char cnt=0;
@@ -42,9 +44,12 @@ volatile unsigned char cnt=0;
 #elif (MCU_CORE_B80 || MCU_CORE_B80B|| MCU_CORE_TC321X)
 #define PWM_PIN		GPIO_PC1
 #define AS_PWMx         PWM0
+#elif (MCU_CORE_TC122X)
+#define PWM_PIN		GPIO_PA0
+#define AS_PWMx         PWM0
 #endif
 #define PWM_ID			PWM0_ID
-#define PWM_PULSE_NUM	12
+#define PWM_PULSE_NUM	5
 
 _attribute_ram_code_sec_noinline_ void irq_handler(void)
 {

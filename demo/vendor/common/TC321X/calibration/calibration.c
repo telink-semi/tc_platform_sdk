@@ -24,58 +24,7 @@
 #include "calibration.h"
 #include "driver.h"
 #include "types.h"
-/**
- * @brief		This function is used to Tighten the judgment of illegal values for gpio calibration and vbat calibration in the otp.
- *              The ADC vref gain calibtation should range from 1100mV to 1300mV, the ADC vref offset calibration should range from -40mV to 100mV.
- * @param[in]   gain - the value of gpio_calib_vref_gain or vbat_calib_vref_gain
- *              offset - the value of gpio_calib_vref_offset or vbat_calib_vref_offset
- *              calib_func - Function pointer to gpio_calibration or vbat_calibration.
- * @return		false:the calibration function is invalid; true:the calibration function is valid.
- */
-bool adc_update_vref_calib_value_ft_cp(unsigned char gain, signed char offset, void (*calib_func)(unsigned short, signed char))
-{
-	/**
-	 * The stored offset value is not of "signed" type, and the ATE writes the offset value with the following rules:
-	 * Bit[7] = 1 for negative value, Bit[7] = 0 for positive value, and the absolute value of Bit[0:6] indicates the absolute value of the offset.
-	 * Therefore, after taking out the offset value, it needs to be converted to "signed" type.
-	 */
-	offset = (offset & BIT(7)) ? ((-1) * (offset & 0x7f)) : offset;
-	if((gain >= 100) && (offset >= -20) && (offset <= 120))
-	{
-		(*calib_func)(gain+1000, offset-20);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-/**
- * @brief		This function is used to Tighten the judgment of illegal values for gpio calibration and vbat calibration in the flash.
- *              The ADC vref gain calibtation should range from 1047mV to 1300mV, the ADC vref offset calibration should range from 0mV to 127mV.
- * @param[in]   gain - the value of gpio_calib_vref_gain or vbat_calib_vref_gain
- *              offset - the value of gpio_calib_vref_offset or vbat_calib_vref_offset
- *              calib_func - Function pointer to gpio_calibration or vbat_calibration.
- * @return		false:the calibration function is invalid; true:the calibration function is valid.
- */
-bool adc_update_vref_calib_value_flash(unsigned char gain, signed char offset, void (*calib_func)(unsigned short, signed char))
-{
-	/**
-	 * The stored offset value with the following rules:
-	 * Bit[7] = 1 for negative value, Bit[7] = 0 for positive value, and the absolute value of Bit[0:6] indicates the absolute value of the offset.
-	 * Therefore, after taking out the offset value, it needs to be converted to "signed" type.
-	 */
-	offset = (offset & BIT(7)) ? ((-1) * (offset & 0x7f)) : offset;
-	if((gain >= 47) && (offset >= 20) && (offset <= 147))
-	{
-		(*calib_func)(gain+1000, offset-20);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
+
 /**
  * @brief      This function serves to update rf frequency offset.
  * @param[in]  addr - the frequency offset value address of flash.
@@ -91,6 +40,48 @@ unsigned char user_calib_freq_offset(unsigned int addr)
 		return 1;
 	}
 	return 0;
+}
+
+/**
+ * @brief       This function is used to tighten the judgment of illegal values for gpio calibration and vbat calibration in the flash.
+ * @param[in]   gain - the value of single_gpio_gain_10000x ,diff_gpio_gain_10000x and vbat_gain_10000x
+ *              offset - the value of single_gpio_offset_10x ,diff_gpio_offset_10x and vbat_offset_10x
+ *              calib_func - Function pointer to gpio_calibration or vbat_calibration.
+ * @return      1:the calibration function is invalid; 0:the calibration function is valid.
+ */
+unsigned char flash_set_adc_calib_value(unsigned short gain, signed short offset, void (*calib_func)(unsigned short, signed short))
+{
+    /**
+     * The legal range of gain for single_gpio/diff_gpio and vbat in flash is [9000,11000],
+     * and the legal range of offset for single_gpio/diff_gpio and vbat is [-1000,1000].
+     */
+    if ((gain >= 9000) && (gain <= 11000) && (offset >= -1000) && (offset <= 1000)) {
+        (*calib_func)(gain, offset);
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+/**
+ * @brief      This function servers to get calibration value from flash.
+ * @param[in]  addr - the  calibration value address of flash.
+ * @return     true - the calibration value update, false - the calibration value is not update.
+ */
+bool user_calib_sd_adc(unsigned int addr)
+{
+	sd_adc_calib_t calib_value;
+	flash_read_page(addr, 12,  (unsigned char*)&calib_value);
+
+    if (flash_set_adc_calib_value(calib_value.single_gpio_gain_10000x, calib_value.single_gpio_offset_10x, adc_set_single_gpio_calib_vref) ||
+        flash_set_adc_calib_value(calib_value.vbat_gain_10000x, calib_value.vbat_offset_10x, adc_set_vbat_calib_vref) ||
+		flash_set_adc_calib_value(calib_value.diff_gpio_gain_10000x, calib_value.diff_gpio_offset_10x, adc_set_diff_gpio_calib_vref) )
+    {
+        return false;
+    }else
+    {
+    	return true;
+    }
 }
 /**
  * @brief		This function is used to calibrate the user's parameters.
@@ -112,21 +103,27 @@ void user_read_flash_value_calib(void)
 		{
 			case FLASH_SIZE_64K:
 				user_calib_freq_offset(FLASH_CAP_VALUE_ADDR_64K);
+				user_calib_sd_adc(FLASH_ADC_VREF_CALIB_ADDR_64K);
 				break;
 			case FLASH_SIZE_128K:
 				user_calib_freq_offset(FLASH_CAP_VALUE_ADDR_128K);
+				user_calib_sd_adc(FLASH_ADC_VREF_CALIB_ADDR_128K);
 				break;
 			case FLASH_SIZE_512K:
 				user_calib_freq_offset(FLASH_CAP_VALUE_ADDR_512K);
+				user_calib_sd_adc(FLASH_ADC_VREF_CALIB_ADDR_512K);
 				break;
 			case FLASH_SIZE_1M:
 				user_calib_freq_offset(FLASH_CAP_VALUE_ADDR_1M);
+				user_calib_sd_adc(FLASH_ADC_VREF_CALIB_ADDR_1M);
 				break;
 			case FLASH_SIZE_2M:
 				user_calib_freq_offset(FLASH_CAP_VALUE_ADDR_2M);
+				user_calib_sd_adc(FLASH_ADC_VREF_CALIB_ADDR_2M);
 				break;
 			case FLASH_SIZE_4M:
 				user_calib_freq_offset(FLASH_CAP_VALUE_ADDR_4M);
+				user_calib_sd_adc(FLASH_ADC_VREF_CALIB_ADDR_4M);
 				break;
 			default:
 				break;

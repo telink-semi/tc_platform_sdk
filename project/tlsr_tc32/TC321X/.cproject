@@ -57,6 +57,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.888216681" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.1255367234" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -137,6 +138,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.827875054" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.571229210" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -217,6 +219,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.1818605278" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.1496980308" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -297,6 +300,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.699665810" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.1620734194" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -377,6 +381,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.1783312062" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.997516232" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -457,6 +462,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.128071100" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.2146693482" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -537,6 +543,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.1593545234" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.885415240" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -617,6 +624,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.676739420" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.498909883" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -697,6 +705,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.1890324130" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.958269760" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -777,6 +786,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.1509853566" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.131247316" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -858,6 +868,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.1283358958" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.1060595818" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -938,6 +949,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.1307955895" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.953329891" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -1018,6 +1030,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.1280424211" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.55212896" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -1098,6 +1111,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.501022960" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.260149202" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -1178,6 +1192,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.1583676480" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.341311571" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -1262,6 +1277,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.1619028768" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.1251028962" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -1342,6 +1358,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.80854145" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.161397486" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -1422,6 +1439,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.1301236279" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.2011509264" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -1503,6 +1521,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.744513568" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.532455430" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -1584,6 +1603,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.1069681813" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.1402294021" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -1665,6 +1685,7 @@
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.telink.tc32eclipse.linker.option.libs.1543649780" name="Libraries (-l)" superClass="com.telink.tc32eclipse.linker.option.libs" useByScannerDiscovery="false" valueType="libs">
 									<listOptionValue builtIn="false" value="driver_tc321x"/>
+									<listOptionValue builtIn="false" value="soft-fp"/>
 								</option>
 								<inputType id="com.telink.tc32eclipse.tool.linker.input.1241730321" name="OBJ Files" superClass="com.telink.tc32eclipse.tool.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
@@ -1793,6 +1814,7 @@
 			<resource resourceType="PROJECT" workspacePath="/TC_PLATFORM_SDK_321X"/>
 		</configuration>
 		<configuration configurationName="AUDIO_Demo"/>
+		<configuration configurationName="Dhrystone_Demo"/>
 		<configuration configurationName="DC_Demo">
 			<resource resourceType="PROJECT" workspacePath="/TC_PLATFORM_SDK_321X"/>
 		</configuration>
@@ -1808,6 +1830,7 @@
 		<configuration configurationName="IR_LEARN_Demo">
 			<resource resourceType="PROJECT" workspacePath="/TC_PLATFORM_SDK_321X"/>
 		</configuration>
+		<configuration configurationName="Coremark_Demo"/>
 		<configuration configurationName="GPIO_Demo">
 			<resource resourceType="PROJECT" workspacePath="/TC_PLATFORM_SDK_321X"/>
 		</configuration>

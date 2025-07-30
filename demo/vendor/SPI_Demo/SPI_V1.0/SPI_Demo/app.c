@@ -60,7 +60,7 @@ spi_pin_config_t spi_pin_config = {
 #define MCU_CORE_B89_SLAVE_ADDR             0x4102c
 #define MCU_CORE_B87_SLAVE_ADDR             0x41938
 #define MCU_CORE_B85_SLAVE_ADDR             0x41020
-#define MCU_CORE_TC321X_SLAVE_ADDR          0x841250
+#define MCU_CORE_TC321X_SLAVE_ADDR          0x841828
 #define SLAVE_ADDR   MCU_CORE_TC321X_SLAVE_ADDR
 
 #define CMD_BUF_LEN             4

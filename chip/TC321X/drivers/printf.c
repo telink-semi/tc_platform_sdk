@@ -23,7 +23,7 @@
  *******************************************************************************************************/
 #include "register.h"
 #include "printf.h"
-#include "timer.h"
+#include "lib/include/stimer.h"
 
 
 

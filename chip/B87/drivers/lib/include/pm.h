@@ -236,11 +236,18 @@ static inline void ram_crc_en_timing(unsigned int RAM_CRC_16K_Timing, unsigned i
 
 
 /**
- * @brief     this function servers to wait bbpll clock lock
- * @param[in] none
- * @return    none
+ * @brief     this function servers to wait bbpll clock lock.
+ * @param[in] none.
+ * @return    none.
  */
 _attribute_ram_code_sec_noinline_ void pm_wait_bbpll_done(void);
+
+/**
+ * @brief     this function servers to wait bbpll clock lock.
+ * @param[in] num - the number of PLL tests.
+ * @return    none.
+ */
+_attribute_ram_code_sec_noinline_ void pm_bbpll_zero_tolerance_check(unsigned int num);
 
 void bls_pm_registerFuncBeforeSuspend (suspend_handler_t func );
 

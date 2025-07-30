@@ -24,7 +24,7 @@
 #include "bsp.h"
 #include "clock.h"
 #include "analog.h"
-#include "timer.h"
+#include "lib/include/stimer.h"
 
 /**
  * @brief      This function performs a series of operations of writing digital or analog registers

@@ -26,6 +26,7 @@
 #include "compiler.h"
 #include "register.h"
 #include "irq.h"
+#include "lib/include/sys.h"
 
 /**
  * @brief      This function serves to wait for analog register ready.
@@ -69,5 +70,3 @@ _attribute_ram_code_sec_noinline_ void analog_write(unsigned char addr, unsigned
 	reg_ana_ctrl = 0;
 	irq_restore(r);
 }
-
-

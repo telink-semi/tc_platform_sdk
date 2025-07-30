@@ -25,6 +25,7 @@
 
 #include "register.h"
 #include "compiler.h"
+#include "analog.h"
 #include "lib/include/pm/pm.h"
 
 /********************************************************************************************************
@@ -34,7 +35,7 @@
 /*
  * @note    This is for internal stability debugging use only.
  */
-#define PM_DEBUG 0
+#define PM_DEBUG                 0
 //1 PB4, 2 PB5
 #define PM_SUSPEND_WHILE_DEBUG   0
 #define PM_SUSPEND_WHILE_DEBUG_2 0
@@ -50,7 +51,7 @@ extern _attribute_data_retention_ unsigned int   g_current_stimer_tick;
 extern _attribute_data_retention_ unsigned int   g_current_32k_tick;
 extern _attribute_data_retention_ unsigned char  g_pm_suspend_power_cfg;
 extern _attribute_data_retention_ unsigned char  g_pm_long_suspend;
-extern _attribute_data_retention_ unsigned short tl_multi_addr;
+extern _attribute_data_retention_ unsigned short g_pm_multi_addr;
 
 #if (PM_DEBUG)
 extern volatile unsigned char debug_pm_info;
@@ -118,7 +119,7 @@ _always_inline void sys_reset_all(void)
 #if (PM_DEBUG)
     while(1){}
 #endif
-    reg_pwdn_ctrl = 0x20;
+    reg_pwdn_en = 0x20;
 }
 
 /**

@@ -24,7 +24,7 @@
 #include "s7816.h"
 #include "irq.h"
 #include "dma.h"
-#include "timer.h"
+#include "lib/include/stimer.h"
 
 volatile unsigned int  s7816_rst_pin;
 volatile unsigned int  s7816_vcc_pin;

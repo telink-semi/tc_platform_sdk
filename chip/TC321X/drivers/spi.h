@@ -84,6 +84,12 @@ void spi_set_pin_mux(GPIO_PinTypeDef pin,gpio_func_e function);
  * @brief       This function servers configures spi pin.
  * @param[in]   config - the pointer of pin config struct.
  * @return      none
+ * @attention   The connections for pin are as follows
+ *               master       slave
+ *               csn     <->   csn
+ *               clk     <->   clk
+ *               mosi    <->   miso
+ *               miso    <->   mosi
  */
 void spi_set_pin(spi_pin_config_t *spi_pin_config);
 

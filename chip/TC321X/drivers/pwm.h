@@ -26,7 +26,7 @@
 
 #include "register.h"
 #include "clock.h"
-#include "timer.h"
+#include "lib/include/stimer.h"
 
 /**
  * @brief  enum variable, the number of PWM channels supported

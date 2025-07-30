@@ -23,7 +23,7 @@
  *******************************************************************************************************/
 #pragma once
 
-#include "clock.h"
+
 #include "lib/include/pm/pm.h"
 #include "analog.h"
 #include "register.h"

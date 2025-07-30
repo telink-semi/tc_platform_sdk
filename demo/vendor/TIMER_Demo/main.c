@@ -41,28 +41,28 @@ unsigned int gpio_width =0;
 _attribute_ram_code_sec_noinline_ void irq_handler(void)
 {
 #if(TIMER_MODE == TIMER_SYS_CLOCK_MODE)
-	if(timer_get_interrupt_status(FLD_TMR_STA_TMR0))
+	if(timer_get_interrupt_status(TMR_STA_TMR0))
 	{
-		timer_clear_interrupt_status(FLD_TMR_STA_TMR0); //clear irq status
+		timer_clear_interrupt_status(TMR_STA_TMR0); //clear irq status
 		timer0_irq_cnt ++;
 		gpio_toggle(LED2);
 	}
 #elif(TIMER_MODE == TIMER_GPIO_TRIGGER_MODE)
 
-	if(timer_get_interrupt_status(FLD_TMR_STA_TMR0))
+	if(timer_get_interrupt_status(TMR_STA_TMR0))
 	{
-		timer_clear_interrupt_status(FLD_TMR_STA_TMR0); //clear irq status
+		timer_clear_interrupt_status(TMR_STA_TMR0); //clear irq status
 		timer0_irq_cnt ++;
 		gpio_toggle(LED2);
 	}
 
 #elif(TIMER_MODE == TIMER_GPIO_WIDTH_MODE)
 	
-	if(timer_get_interrupt_status(FLD_TMR_STA_TMR0))
+	if(timer_get_interrupt_status(TMR_STA_TMR0))
 	{
-		timer_clear_interrupt_status(FLD_TMR_STA_TMR0); //clear irq status
+		timer_clear_interrupt_status(TMR_STA_TMR0); //clear irq status
 		gpio_toggle(LED2);
-#if (!MCU_CORE_TC1211)
+#if (!(MCU_CORE_TC1211 || MCU_CORE_TC122X))
 		gpio_width = reg_tmr0_tick;
 		reg_tmr0_tick = 0;
 #else
@@ -73,14 +73,21 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 #endif
 	}
 #elif(TIMER_MODE == STIMER_MODE)
+#if (MCU_CORE_TC321X)
+	if(stimer_get_irq_status(FLD_SYSTEM_IRQ))
+#else
 	if(stimer_get_irq_status())
+#endif
 	{
-		stimer_clr_irq_status();            			//clear irq status
+#if (MCU_CORE_TC321X)
+		stimer_clr_irq_status(FLD_SYSTEM_IRQ);            			//clear irq status
+#else
+		stimer_clr_irq_status();
+#endif
 		stimer_set_capture_tick(clock_time() + CLOCK_16M_SYS_TIMER_CLK_1S);
 		stimer_irq_cnt++;
 		gpio_toggle(LED2);
 	}
-	
 #endif
 	
 }

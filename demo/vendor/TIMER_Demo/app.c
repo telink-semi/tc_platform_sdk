@@ -75,7 +75,10 @@ void user_init(void)
 #elif(TIMER_MODE==TIMER_TICK_MODE)
 	timer0_set_mode(TIMER_MODE_TICK,0,0);
 	timer_start(TIMER0);
-#elif(TIMER_MODE==TIMER_WATCHDOG_MODE)//TC1211 NOT SUPPORT
+#elif(TIMER_MODE==TIMER_WATCHDOG_MODE)//TC1211/TC122X NOT SUPPORT
+	/**
+	 * Since the SW reset of Raptor A0 cannot be used, it also leads to the inability to use the Timer watchdog.
+	 */
 	wd_set_interval_ms(1000,CLOCK_SYS_CLOCK_1MS);
 	wd_start();
 #elif(TIMER_MODE == TIMER_32K_WATCHDOG_MODE)
@@ -87,9 +90,14 @@ void user_init(void)
 	 */
 	wd_32k_set_interval_ms(1000 + WD_OFFSET_MS);
 	wd_32k_start();
-#elif(TIMER_MODE==STIMER_MODE && (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B85 || MCU_CORE_TC321X))
-	stimer_set_irq_mask();
+#elif(TIMER_MODE==STIMER_MODE)
 	stimer_set_capture_tick(clock_time() + CLOCK_16M_SYS_TIMER_CLK_1S);
+#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B85)
+	stimer_set_irq_mask();
+#elif(MCU_CORE_TC321X)
+	stimer_set_irq_mask(FLD_SYSTEM_IRQ_MASK);
+	irq_set_mask(FLD_IRQ_SYSTEM_TIMER);
+#endif
 	irq_enable();
 #endif
 
@@ -104,7 +112,7 @@ void main_loop (void)
 
 #elif(TIMER_MODE == TIMER_TICK_MODE)
 
-#if (!MCU_CORE_TC1211)
+#if (!(MCU_CORE_TC1211 || MCU_CORE_TC122X))
 	if(reg_tmr0_tick > 500 * CLOCK_SYS_CLOCK_1US*1000)
 	{
 		reg_tmr0_tick = 0;
@@ -133,8 +141,8 @@ void main_loop (void)
 	gpio_toggle(LED1);
 
 #elif(TIMER_MODE == TIMER_32K_WATCHDOG_MODE)
-#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89 || MCU_CORE_TC321X|| MCU_CORE_TC1211)
-	sleep_ms(990);
+#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89 || MCU_CORE_TC321X || MCU_CORE_TC1211 || MCU_CORE_TC122X)
+	sleep_ms(900);
 	//32K watchdog capture time settings: program run time and sleep time to leave some margin.
 	wd_32k_stop();
 
@@ -142,11 +150,12 @@ void main_loop (void)
 	 * For TC1211, interval time must be set to a multiple of 2048ms
 	 * and the 32k watch dog reboot may take place at any time between “ interval ~ (interval+2048ms) ".
 	 */
-#if(MCU_CORE_TC321X)
+#if(!MCU_CORE_TC1211)
 	wd_32k_set_interval_ms(1000 + WD_OFFSET_MS);
 
 	wd_32k_start();
 	sleep_ms(200);
+//	sleep_ms(500);
 	cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_PAD|PM_WAKEUP_TIMER, (clock_time() + 500*CLOCK_SYS_TIMER_CLK_1MS));
 	wd_32k_stop();
 #endif

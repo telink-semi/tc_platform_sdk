@@ -444,4 +444,24 @@ void gpio_shutdown(GPIO_PinTypeDef pin)
 		}
 }
 
+/**
+ * @brief     This function performs to probe clock to IO.
+ * @param[in] pin - the pin to probe clock, only support PB[0]/PD0/PE[1:0].
+ * @param[in] sel_clk - the clock source which you want to probe.
+ * @return    none.
+ */
+void gpio_set_probe_clk_function(GPIO_PinTypeDef pin, prob_clock_src_e sel_clk)
+{
+	write_reg8(0x75, ((read_reg8(0x75) & 0xf8) | sel_clk));	//0:clk_7816,  1:clk32k,   2:clk_sys,      3:rc24m
+												  	    //4:xtl24m,    5:clkpll,   6:clk_stimer,
+	BM_CLR(reg_gpio_func(pin), (pin&0xff));
+
+	if (pin == GPIO_PB0) {
+		reg_gpio_func_mux(pin) = 19;// PB0 as CLK_7816
+	} else if (pin == GPIO_PD0) {
+		reg_gpio_func_mux(pin) = 0;// PD0 as CLK_7816
+	} else if ((pin == GPIO_PE0) || (pin == GPIO_PE1)) {
+		reg_gpio_func_mux(pin) = 2;// PE0/PE1 as CLK_7816
+	}	
+}
 

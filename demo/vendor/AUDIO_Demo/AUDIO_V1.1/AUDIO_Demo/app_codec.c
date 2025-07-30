@@ -105,8 +105,34 @@ void user_init(void)
     /****stream0 line in/amic/dmic init****/
     audio_codec_stream0_input_init(&audio_codec_stream0_input);
     /****line output init****/
-    audio_set_sdm_pin(&sdm_pin_config);
     audio_codec_stream_output_init(&audio_stream_output);
+
+    /****audio starts run****/
+    #if (AUDIO_CLR_CODEC_POP == 1)
+    audio_set_mute_mic(1);                                             /* Step1 - mute audio*/
+    #endif
+    #if (AUDIO_CLR_CODEC_POP == 1)
+    audio_codec_clr_input_pop(20);                                     /* Step2 - Clear codec input pop and dis mute audio */
+    #endif
+    audio_set_codec_en(1);                                             /* Step3 - enable codec, codec data come in */
+
+    #if (AUDIO_CODEC_FADE_IN == 1)
+    /* Collect enough codec data and make it fade in.
+     * A delay of 5ms is used here in order to allow the codec to generate enough data for the fade-in process.
+     * (t_end - t_start) : fade-in time.
+    */
+    /* start end: fade-in process */
+    unsigned short t_start = 0;
+    unsigned short t_end = 5;
+    sleep_ms(t_end);
+    audio_linear_fade_in_config(AUDIO_MONO, audio_codec_stream0_input.data_width, audio_codec_stream0_input.sample_rate, (char *)audio_codec_stream0_input.data_buf, t_start, t_end);
+    #endif
+
+#if (AUDIO_MODE == AMIC_INPUT_TO_BUF_TO_LINEOUT)
+    audio_stream0_fade_dig_gain(CODEC_IN_D_GAIN_12_DB);
+#endif
+    audio_set_sdm_pin(&sdm_pin_config);
+
 #elif (AUDIO_MODE == BUFF_TO_LINEOUT)
     irq_enable();//enable global interrupt
     timer1_set_mode(TIMER_MODE_SYSCLK,0,CLOCK_SYS_CLOCK_1MS);
@@ -126,6 +152,9 @@ void main_loop(void)
 #if defined(AUDIO_CODEC_POWER_TEST)
     sleep_ms(5000);
     {/* audio off */
+        audio_stream0_fade_dig_gain(CODEC_IN_D_GAIN_m48_DB);
+        audio_unset_sdm_pin(&sdm_pin_config);
+        audio_set_codec_en(0);
 #if (AUDIO_MODE == AMIC_INPUT_TO_BUF_TO_LINEOUT)
         audio_codec_adc_power_down();
 #endif
@@ -137,6 +166,13 @@ void main_loop(void)
         audio_dfifo_config(FIFO0,(unsigned short* )AUDIO_BUFF,sizeof(AUDIO_BUFF));
         /****stream0 line in/amic/dmic init****/
         audio_codec_stream0_input_init(&audio_codec_stream0_input);
+        audio_set_mute_mic(1);                                             /* Step1 - mute audio*/
+        audio_codec_clr_input_pop(20);                                     /* Step2 - Clear codec input pop and dis mute audio */
+        audio_set_codec_en(1);                                             /* Step3 - enable codec, codec data come in */
+#if (AUDIO_MODE == AMIC_INPUT_TO_BUF_TO_LINEOUT)
+        audio_stream0_fade_dig_gain(CODEC_IN_D_GAIN_12_DB);
+#endif
+        audio_set_sdm_pin(&sdm_pin_config);
         /****line output init****/
         audio_codec_stream_output_init(&audio_stream_output);
     }

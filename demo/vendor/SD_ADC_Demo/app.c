@@ -156,7 +156,7 @@ signed int sd_adc_sort_and_get_average_code(signed int *sample_buffer)
     //get average value from raw data(abandon 1/4 small and 1/4 big data)
     for (i = SD_ADC_SAMPLE_CNT>>2; i < (SD_ADC_SAMPLE_CNT - (SD_ADC_SAMPLE_CNT>>2)); i++)
     {
-        sd_adc_code_average += sample_buffer[i]/(SD_ADC_SAMPLE_CNT>>1);
+        sd_adc_code_average += (float)sample_buffer[i]/(float)(SD_ADC_SAMPLE_CNT>>1);
     }
     return sd_adc_code_average;
 }
@@ -165,6 +165,7 @@ signed int sd_adc_sort_and_get_average_code(signed int *sample_buffer)
  * @brief       This function serves to get voltage or temperature value.
  * @param[in]   result_type -sd_adc_result_type_e
  * @return      voltage or temperature value
+ * @note        The A0 version of the chip temperature sensor is no longer open for use.
  */
 signed int sd_adc_get_result(sd_adc_result_type_e result_type)
 {

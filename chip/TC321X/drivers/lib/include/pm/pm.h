@@ -23,23 +23,18 @@
  *******************************************************************************************************/
 #pragma once
 
-#include "bsp.h"
 #include "gpio.h"
-#include "clock.h"
-#include "flash.h"
 #include "lib/include/pm/pm_internal.h"
-
-#define PM_LONG_SUSPEND_EN                  1
 
 
 /**
  * @brief these analog register can store data in deep sleep mode or deep sleep with SRAM retention mode.
  *        Reset these analog registers by watchdog, software reboot (sys_reboot()), RESET Pin, power cycle, 32k watchdog.
  */
-#define PM_ANA_REG_WD_CLR_BUF1 0x36 // initial value 0x00.
-#define PM_ANA_REG_WD_CLR_BUF2 0x37 // initial value 0x00.
-#define PM_ANA_REG_WD_CLR_BUF3 0x38 // initial value 0x00.
-#define PM_ANA_REG_WD_CLR_BUF4 0x39 // initial value 0x00.
+#define PM_ANA_REG_WD_CLR_BUF1       0x36 // initial value 0x00.
+#define PM_ANA_REG_WD_CLR_BUF2       0x37 // initial value 0x00.
+#define PM_ANA_REG_WD_CLR_BUF3       0x38 // initial value 0x00.
+#define PM_ANA_REG_WD_CLR_BUF4       0x39 // initial value 0x00.
 
 /**
  * @brief analog register below can store information when MCU in deep sleep mode or deep sleep with SRAM retention mode.
@@ -50,9 +45,9 @@
 
 
 //ana3b system used, user can not use
-//#define SYS_DEEP_ANA_REG                  DEEP_ANA_REG1
-#define WAKEUP_STATUS_TIMER_CORE            ( WAKEUP_STATUS_TIMER | WAKEUP_STATUS_CORE)
-#define WAKEUP_STATUS_TIMER_PAD             ( WAKEUP_STATUS_TIMER | WAKEUP_STATUS_PAD)
+#define SYS_DEEP_ANA_REG             PM_ANA_REG_POWER_ON_CLR_BUF1
+#define WAKEUP_STATUS_TIMER_CORE     ( WAKEUP_STATUS_TIMER | WAKEUP_STATUS_CORE)
+#define WAKEUP_STATUS_TIMER_PAD      ( WAKEUP_STATUS_TIMER | WAKEUP_STATUS_PAD)
 
 /**
  * @brief   gpio wakeup level definition
@@ -109,7 +104,7 @@ typedef enum
 }SleepWakeupSrc_TypeDef;
 
 /**
- * @brief   wakeup status
+ * @brief   wake up status
  */
 typedef enum
 {
@@ -137,7 +132,7 @@ typedef enum
 }pm_power_sel_e;
 
 /**
- * @brief   deepsleep wakeup by external xtal
+ * @brief   deep sleep wake up by external xtal
  */
 typedef struct{
     unsigned char ext_cap_en;    //24xtal  cap
@@ -145,7 +140,6 @@ typedef struct{
     unsigned char pm_enter_en;
     unsigned char rsvd;
 }misc_para_t;
-
 extern  _attribute_aligned_(4) misc_para_t              blt_miscParam;
 
 
@@ -177,7 +171,7 @@ typedef struct
 extern volatile pm_r_delay_cycle_s g_pm_r_delay_cycle;
 
 /**
- * @brief   sleep wakeup status
+ * @brief   sleep wake up status
  */
 typedef struct
 {
@@ -209,8 +203,8 @@ static inline int pm_is_deepPadWakeup(void)
 }
 
 /**
- * @brief       This function serves to get wakeup source.
- * @return      wakeup source.
+ * @brief       This function serves to get wake up source.
+ * @return      wake up source.
  * @note        After the wake source is obtained, &WAKEUP_STATUS_INUSE_ALL is needed to determine
  *              whether the wake source in use has been cleared, because some of the wake sources
  *              that are not in use may have been set up.
@@ -221,7 +215,7 @@ static _always_inline pm_wakeup_status_e pm_get_wakeup_src(void)
 }
 
 /**
- * @brief       This function serves to clear the wakeup bit.
+ * @brief       This function serves to clear the wake up bit.
  * @param[in]   status  - the interrupt status that needs to be cleared.
  * @return      none.
  * @note        To clear all wake sources, the parameter of this interface is usually FLD_WAKEUP_STATUS_ALL
@@ -239,20 +233,20 @@ static _always_inline void pm_clr_irq_status(pm_wakeup_status_e status)
  */
 static _always_inline void pm_set_wakeup_src(SleepWakeupSrc_TypeDef wakeup_src)
 {
-    analog_write(0x4b, wakeup_src&0xff);
+    analog_write(0x4b, wakeup_src & 0xff);
 }
 
 /**
- * @brief       This function configures a GPIO pin as the wakeup pin.
+ * @brief       This function configures a GPIO pin as the wake up pin.
  * @param[in]   pin - the pins can be set to all GPIO except PB0, PB1, PB3, PD4, PF0 and GPIOE groups.
- * @param[in]   pol - the wakeup polarity of the pad pin(0: low-level wakeup, 1: high-level wakeup).
- * @param[in]   en  - enable or disable the wakeup function for the pan pin(1: enable, 0: disable).
+ * @param[in]   pol - the wake up polarity of the pad pin(0: low-level wake up, 1: high-level wake up).
+ * @param[in]   en  - enable or disable the wake up function for the pan pin(1: enable, 0: disable).
  * @return      none.
  */
 void cpu_set_gpio_wakeup(GPIO_PinTypeDef pin, GPIO_LevelTypeDef pol, int en);
 
 /**
- * @brief       This function configures pm wakeup time parameter.
+ * @brief       This function configures pm wake up time parameter.
  * @param[in]   param - deep/suspend/deep_retention r_delay time.(default value: suspend/deep_ret=3, deep=11)
  * @return      none.
  * @note        Those parameters will be lost after reboot or deep sleep, so it required to be reconfigured.
@@ -311,17 +305,14 @@ void cpu_stall_wakeup(irq_list_e irq_mask);
  * @return     indicate whether the cpu is wake up successful.
  */
 int  cpu_sleep_wakeup_32k_rc(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, pm_wakeup_tick_type_e wakeup_tick_type, unsigned int  wakeup_tick);
-
 typedef int (*cpu_pm_handler_t)(SleepMode_TypeDef sleep_mode,  SleepWakeupSrc_TypeDef wakeup_src, pm_wakeup_tick_type_e wakeup_tick_type, unsigned int  wakeup_tick);
-
 extern  cpu_pm_handler_t         cpu_sleep_wakeup_and_longsleep;
-
 #define cpu_sleep_wakeup(sleep_mode, wakeup_src, wakeup_tick)  cpu_sleep_wakeup_and_longsleep(sleep_mode, wakeup_src, PM_TICK_STIMER, wakeup_tick)
 #define cpu_long_sleep_wakeup(sleep_mode, wakeup_src, wakeup_tick)  cpu_sleep_wakeup_and_longsleep(sleep_mode, wakeup_src, PM_TICK_32K, wakeup_tick)
+
 extern _attribute_ram_code_sec_noinline_ void pm_stimer_recover_32k_rc(void);
 typedef void (*pm_tim_recover_handler_t)(void);
-
-extern  pm_tim_recover_handler_t pm_tim_recover;
+extern  pm_tim_recover_handler_t     pm_tim_recover;
 
 /**
  * @brief      This function serves to determine whether wake up source is internal 32k RC.

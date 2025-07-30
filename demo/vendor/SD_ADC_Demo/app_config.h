@@ -45,7 +45,7 @@ extern "C" {
  *********************************************************************************************************************/
 #define SD_ADC_GPIO_MODE        1
 #define SD_ADC_VBAT_MODE        2
-#define SD_ADC_TEMP_MODE        3
+#define SD_ADC_TEMP_MODE        3//The A0 version of chip does not support the SD_ADC_TEMP_MODE.
 
 #define POLLING_MODE        1
 #define INTERRUPT_MODE      2
@@ -56,6 +56,10 @@ extern "C" {
 
 /**
  * @attention SD_ADC_SAMPLE_CLOCK only supports 1M/2M.
+ * @note Different models of chips support different resolutions, including 12bit and 16bit.
+ * The 12-bit chip only support the sampling clock for 1M, downsampling rate of 64,
+ * The 16-bit chip support the sampling clock for 1M/2M, downsampling rate of 64/128/256,
+ * chip specific support for which resolution, please refer to the datasheet.
  */
 #define SD_ADC_SAMPLE_CLOCK_DIV     SD_ADC_SAPMPLE_CLK_2M_DIV(CLOCK_SYS_CLOCK_HZ)
 #define SD_ADC_DOWN_SAMPLE_RATE     SD_ADC_DOWNSAMPLE_RATE_128

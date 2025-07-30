@@ -210,7 +210,7 @@ enum{
 	FLD_WAKEUP_SRC_RST_SYS = BIT(7),
 };
 
-#define reg_pwdn_ctrl			REG_ADDR8(0x6f)
+#define reg_pwdn_en			    REG_ADDR8(0x6f)
 enum
 {
 	FLD_PWDN_CTRL_REBOOT = BIT(5),
@@ -730,27 +730,62 @@ typedef enum{
 
 /*******************************      system timer registers: 0x740      ******************************/
 
-#define reg_system_tick				REG_ADDR32(0x740)
-#define reg_system_tick_irq_level	REG_ADDR32(0x744)
-#define reg_system_irq_mask			REG_ADDR8(0x748)
+#define reg_system_tick			REG_ADDR32(0x740)
+#define reg_system_irq_level	REG_ADDR32(0x744)
+#define reg_system_irq_mask		REG_ADDR8(0x748)
+typedef enum
+{
+	FLD_SYSTEM_IRQ_32K_CAL_MASK    = BIT(0), /**<
+                                            When the current tick value of the system timer reaches the preset tick value,the IRQ_SYSTIMER interrupt is generated,
+                                            This mask must be turned on if you want to trigger an interrupt.
+                                            If you do not trigger an interrupt and only polling can detect the state, this mask also needs to be turned on.
+                                          */
+    FLD_SYSTEM_READ_32K_DONE_MASK  = BIT(1), /**<
+                                            When the system timer completes the calibration of 32k timer,the IRQ_SYSTIMER interrupt is generated,
+                                            This mask must be turned on if you want to trigger an interrupt.
+                                            If you do not trigger an interrupt and only polling can detect the state, this mask also needs to be turned on.
+                                          */
+    FLD_SYSTEM_IRQ_MASK            = BIT(2),
+} stimer_irq_mask_e;
+
 #define reg_system_cal_irq			REG_ADDR8(0x749)
+typedef enum
+{
+	FLD_SYSTEM_32K_CAL_IRQ          = BIT(0), /**<
+	                                            Get interrupt status:stimer_get_irq_status(),clear interrupt status:stimer_clr_irq_status().
+	                                            The interrupt flag bit needs to be manually cleared.
+	                                          */
+	FLD_SYSTEM_READ_32K_DONE_IRQ    = BIT(1), /**<
+	                                            Get interrupt status:stimer_get_irq_status(),clear interrupt status:stimer_clr_irq_status().
+	                                            The interrupt flag bit needs to be manually cleared.
+	                                         <p>
+	                                            In Non-dma mode,the received data is read by stimer_get_tracking_32k_value().
+	                                          */
+    FLD_SYSTEM_IRQ                  = BIT(2),
+} stimer_irq_status_e;
+
 #define reg_system_ctrl				REG_ADDR8(0x74a)
 enum{
-	FLD_SYSTEM_32K_CAL_MODE 	= 	BIT_RNG(4,7),
-	FLD_SYSTEM_32K_CAL_EN 		= 	BIT(3),
-	FLD_SYSTEM_TIMER_AUTO_EN 	= 	BIT(2),
-	FLD_SYSTEM_TIMER_MANUAL_EN 	= 	BIT(1),
 	FLD_SYSTEM_32K_WR_EN 		= 	BIT(0),
+	FLD_SYSTEM_TIMER_MANUAL_EN 	= 	BIT(1),
+	FLD_SYSTEM_TIMER_AUTO_EN 	= 	BIT(2),
+	FLD_SYSTEM_32K_CAL_EN 		= 	BIT(3),
+	FLD_SYSTEM_32K_CAL_MODE 	= 	BIT_RNG(4,7),
 };
 
 #define reg_system_status			REG_ADDR8(0x74b)
 enum{
-	FLD_SYSTEM_32K_TIMER_BUSY 			=   BIT(6),
-	FLD_SYSTEM_32K_TIMER_UPDATE_RD 		=   BIT(5),			FLD_SYSTEM_32K_TIMER_CLEAR_RD		=   BIT(5),
-	FLD_SYSTEM_STATE_MACHINE_STATUS		=   BIT_RNG(3,4),  	FLD_SYSTEM_32K_TIMER_SYNC_TRIG		=   BIT(3),
-	FLD_SYSTEM_CMD_SET_TRIG 			=   BIT(2),
-	FLD_SYSTEM_CMD_SYNC_TRIG 			=   BIT(1),
 	FLD_SYSTEM_TIMER_STATUS 			=   BIT(0),
+	FLD_SYSTEM_CMD_SYNC_TRIG 			=   BIT(1),
+	FLD_SYSTEM_CMD_SET_TRIG 			=   BIT(2),
+	FLD_SYSTEM_CMD_SYNC		            =   BIT(3),
+	FLD_SYSTEM_RD_BUSY 			        =   BIT(6),
+
+	FLD_SYSTEM_32K_TIMER_SYNC_TRIG		=   BIT(3),
+	FLD_SYSTEM_STATE_MACHINE_STATUS		=   BIT_RNG(3,4),
+	FLD_SYSTEM_32K_TIMER_UPDATE_RD 		=   BIT(5),
+	FLD_SYSTEM_32K_TIMER_CLEAR_RD		=   BIT(5),
+	FLD_SYSTEM_32K_TIMER_BUSY 			=   BIT(6),
 };
 
 #define reg_system_32k_tick_wt  	REG_ADDR32(0x74c)
@@ -1114,7 +1149,7 @@ enum{
 
 #define reg_dfifo_wptr2                 REG_ADDR16(0xb5e)
 enum{
-	FLD_DFIFO_WPTR2	= BIT_RNG(0,10),
+	FLD_DFIFO_WPTR2	= BIT_RNG(2,12),
 };
 
 /*******************************      dma registers: 0xc00      ******************************/
@@ -1361,6 +1396,486 @@ enum
 	FLD_RF_HPMC_EXP_DIFF_COUNT_L	  = BIT_RNG(4,7),
 };
 
+//******************************      RF_Register_list      ******************************/
+#define reg_rf_mode_cfg_rx1_0 REG_ADDR8(REG_AURA_BASE + 0x20)
+
+enum
+{
+    FLD_RF_BW_CODE = BIT_RNG(1, 3),
+    FLD_RF_SC_CODE = BIT(4),
+};
+
+#define reg_rf_mode_cfg_rx1_1 REG_ADDR8(REG_AURA_BASE + 0x21)
+
+enum
+{
+    FLD_RF_MODE_VANT_RX = BIT(1),
+    FLD_RF_FE_RTRIM_RX  = BIT_RNG(2, 4),
+    FLD_RF_IF_FREQ      = BIT_RNG(5, 6),
+
+};
+
+#define reg_rf_mode_cfg_tx1_1 REG_ADDR8(REG_AURA_BASE + 0x23)
+
+enum
+{
+    FLD_RF_HPMC_EXP_DIFF_COUNT_H = BIT_RNG(0, 4),
+    FLD_RF_DAC_TRIM_CFBK         = BIT_RNG(5, 6),
+
+};
+
+#define reg_rf_mode_cfg_txrx_0 REG_ADDR8(REG_AURA_BASE + 0x26)
+
+enum
+{
+    FLD_RF_DIS_CLK_DIG_O    = BIT(0),
+    FLD_RF_VANT_PULLDN      = BIT(1),
+    FLD_RF_GF_BT            = BIT(2),
+    FLD_RF_LDO_ANT_TRIM     = BIT_RNG(3, 5),
+    FLD_RF_CBPF_TYPE        = BIT(6),
+    FLD_RF_TX_PA_PWR_L      = BIT(7),
+};
+
+#define reg_rf_mode_cfg_txrx_1 REG_ADDR8(REG_AURA_BASE + 0x27)
+
+enum
+{
+    FLD_RF_TX_PA_PWR_H = BIT_RNG(0, 4),
+};
+
+#define reg_rf_burst_cfg_txrx_0 REG_ADDR8(REG_AURA_BASE + 0x28)
+
+enum
+{
+    FLD_RF_CHNL_NUM = BIT_RNG(0, 5),
+    FLD_RF_TX_EN    = BIT(6),
+    FLD_RF_RX_EN    = BIT(7),
+};
+
+#define reg_rf_burst_cfg_txrx_1 REG_ADDR8(REG_AURA_BASE + 0x29)
+
+enum
+{
+    FLD_RF_RX_TIM_SRQ_SEL_TESQ = BIT(0),
+    FLD_RF_TX_TIM_SRQ_SEL_TESQ = BIT(1),
+    FLD_RF_FE_CTRIM            = BIT_RNG(2, 5),
+};
+
+#define reg_rf_txrx_dbg3_0 REG_ADDR8(REG_AURA_BASE + 0x44)
+
+enum
+{
+    FLD_RF_CHNL_FREQ_DIRECT = BIT(0),
+    FLD_RF_CHNL_FREQ_L      = BIT_RNG(1, 7),
+};
+
+#define reg_rf_txrx_dbg3_1 REG_ADDR8(REG_AURA_BASE + 0x45)
+
+enum
+{
+    FLD_RF_CHNL_FREQ_H        = BIT_RNG(0, 5),
+    FLD_RF_DSN_DITHER_DISABLE = BIT(6),
+    FLD_RF_DSM_INT_MODE       = BIT(7),
+};
+
+#define reg_rf_cal_ow_ctrl_0 REG_ADDR8(REG_AURA_BASE + 0x80)
+
+enum
+{
+    FLD_RF_DSM_RUN_OW          = BIT(0),
+    FLD_RF_LDOT_TX_RUN_OW      = BIT(1),
+    FLD_RF_RCCAL_RUN_OW        = BIT(2),
+    FLD_RF_FCAL_TX_RUN_OW      = BIT(3),
+    FLD_RF_RXDCOC_RUN_OW       = BIT(4),
+    FLD_RF_HPMC_RUN_OW         = BIT(5),
+    FLD_RF_LOCD_RUN_OW         = BIT(6),
+    FLD_RF_DCOC_GAIN_CFG_OW    = BIT(6),
+};
+
+#define reg_rf_txrx_cb_cal_ctrl REG_ADDR8(REG_AURA_BASE + 0x84)
+
+enum
+{
+    FLD_RF_LDOT_TX_RUN_CB         = BIT(0),
+    FLD_RF_FCAL_TX_RUN_CB         = BIT(1),
+    FLD_RF_HPMC_RUN_CB            = BIT(2),
+    FLD_RF_LDOT_RX_RUN_CB         = BIT(3),
+    FLD_RF_FCAL_RX_RUN_CB         = BIT(4),
+    FLD_RF_RCCAL_RUN_CB           = BIT(5),
+    FLD_RF_RXDCOC_RUN_CB          = BIT(6),
+    FLD_RF_EN_RXDCOC_ADC_DATA_CB  = BIT(6),
+};
+
+#define reg_rf_idle_txfsk_ss1_ss2_strt_cb_0 REG_ADDR8(REG_AURA_BASE + 0xa4)
+
+#define reg_rf_idle_txfsk_ss1_ss2_strt_cb_0_1 REG_ADDR8(REG_AURA_BASE + 0xa5)
+
+#define reg_rf_idle_txfsk_ss1_ss2_strt_cb_1 REG_ADDR8(REG_AURA_BASE + 0xa6)
+
+#define reg_rf_idle_txfsk_ss1_ss2_strt_cb_1_1 REG_ADDR8(REG_AURA_BASE + 0xa7)
+
+#define reg_rf_idle_txfsk_ss3_ss4_strt_cb0  REG_ADDR8(REG_AURA_BASE + 0xa8)
+
+#define reg_rf_idle_txfsk_ss3_ss4_strt_cb0_1  REG_ADDR8(REG_AURA_BASE + 0xa9)
+
+#define reg_rf_idle_txfsk_ss3_ss4_strt_cb1  REG_ADDR8(REG_AURA_BASE + 0xaa)
+
+#define reg_rf_idle_txfsk_ss3_ss4_strt_cb1_1  REG_ADDR8(REG_AURA_BASE + 0xab)
+
+#define reg_rf_idle_txfsk_ss5_ss6_strt_cb_0 REG_ADDR8(REG_AURA_BASE + 0xac)
+
+#define reg_rf_idle_txfsk_ss5_ss6_strt_cb_0_1 REG_ADDR8(REG_AURA_BASE + 0xad)
+
+#define reg_rf_idle_txfsk_ss5_ss6_strt_cb_1 REG_ADDR8(REG_AURA_BASE + 0xae)
+
+#define reg_rf_idle_txfsk_ss5_ss6_strt_cb_1_1 REG_ADDR8(REG_AURA_BASE + 0xaf)
+
+#define reg_rf_idle_txfsk_ss7_strt_cb_0 REG_ADDR8(REG_AURA_BASE + 0xbc)
+
+#define reg_rf_idle_txfsk_ss7_strt_cb_0_1 REG_ADDR8(REG_AURA_BASE + 0xbd)
+
+#define reg_rf_idle_rx_ss1_ss2_strt_cb_0    REG_ADDR8(REG_AURA_BASE + 0xb0)
+
+#define reg_rf_idle_rx_ss1_ss2_strt_cb_0_1    REG_ADDR8(REG_AURA_BASE + 0xb1)
+
+#define reg_rf_idle_rx_ss1_ss2_strt_cb_1    REG_ADDR8(REG_AURA_BASE + 0xb2)
+
+#define reg_rf_idle_rx_ss1_ss2_strt_cb_1_1    REG_ADDR8(REG_AURA_BASE + 0xb3)
+
+#define reg_rf_idle_rx_ss3_ss4_strt_cb_0    REG_ADDR8(REG_AURA_BASE + 0xb4)
+
+#define reg_rf_idle_rx_ss3_ss4_strt_cb_0_1    REG_ADDR8(REG_AURA_BASE + 0xb5)
+
+#define reg_rf_idle_rx_ss3_ss4_strt_cb_1    REG_ADDR8(REG_AURA_BASE + 0xb6)
+
+#define reg_rf_idle_rx_ss3_ss4_strt_cb_1_1    REG_ADDR8(REG_AURA_BASE + 0xb7)
+
+#define reg_rf_idle_rx_ss5_ss6_strt_cb_0    REG_ADDR8(REG_AURA_BASE + 0xb8)
+
+#define reg_rf_idle_rx_ss5_ss6_strt_cb_0_1    REG_ADDR8(REG_AURA_BASE + 0xb9)
+
+#define reg_rf_idle_rx_ss5_ss6_strt_cb_1    REG_ADDR8(REG_AURA_BASE + 0xba)
+
+#define reg_rf_idle_rx_ss5_ss6_strt_cb_1_1    REG_ADDR8(REG_AURA_BASE + 0xbb)
+
+#define reg_rf_rccal_dbg1_0 REG_ADDR8(REG_AURA_BASE + 0xc6)
+
+enum
+{
+    FLD_RF_BYPASS_RCCAL           = BIT(0),
+    FLD_RF_RCCAL_OVERWRITE        = BIT_RNG(1, 5),
+    FLD_RF_CBPF_CCODE_BYPASS      = BIT(6),
+    FLD_RF_CBPF_CCODE_OVERWRITE_L = BIT(7),
+};
+
+#define reg_rf_rccal_dbg1_1 REG_ADDR8(REG_AURA_BASE + 0xc7)
+
+enum
+{
+    FLD_RF_CBPF_CCODE_OVERWRITE_H = BIT_RNG(0, 5),
+    FLD_RF_COMP_POL               = BIT(6),
+};
+
+#define reg_rf_rccal_dbg2 REG_ADDR8(REG_AURA_BASE + 0xc8)
+
+enum
+{
+    FLD_RF_RCCAL_CBPF_OFFSET = BIT_RNG(0, 2),
+};
+
+#define reg_rf_rccal_rdbk_0 REG_ADDR8(REG_AURA_BASE + 0xca)
+
+enum
+{
+    FLD_RF_RCCAL_CODE   = BIT_RNG(0, 4),
+    FLD_RF_CBPF_CCODE_L = BIT_RNG(5, 7),
+};
+
+#define reg_rf_rccal_rdbk_1 REG_ADDR8(REG_AURA_BASE + 0xcb)
+
+enum
+{
+    FLD_RF_CBPF_CCODE_H = BIT_RNG(0, 3),
+};
+
+#define reg_rf_dcoc_bypass_adc_0 REG_ADDR8(REG_AURA_BASE + 0xce)
+
+enum
+{
+    FLD_RF_DCOC_BYPASS_ADC            = BIT(0),
+    FLD_RF_DCOC_IADC_OFFSET_OVERWRITE = BIT_RNG(1, 7),
+};
+
+#define reg_rf_dcoc_bypass_adc_1 REG_ADDR8(REG_AURA_BASE + 0xcf)
+
+enum
+{
+    FLD_RF_DCOC_QADC_OFFSET_OVERWRITE = BIT_RNG(0, 6),
+};
+
+#define reg_rf_dcoc_bypass_dac_0 REG_ADDR8(REG_AURA_BASE + 0xd0)
+
+enum
+{
+    FLD_RF_DCOC_BYPASS_DAC          = BIT(0),
+    FLD_RF_DCOC_IDAC_CODE_OVERWRITE = BIT_RNG(1, 7),
+};
+
+#define reg_rf_dcoc_bypass_dac_1 REG_ADDR8(REG_AURA_BASE + 0xd1)
+
+enum
+{
+    FLD_RF_DCOC_QDAC_CODE_OVERWRITE = BIT_RNG(0, 6),
+};
+
+#define reg_rf_dcoc_dbg0 REG_ADDR8(REG_AURA_BASE + 0xd2)
+
+enum
+{
+    FLD_RF_DCOC_SFIQ         = BIT(0),
+    FLD_RF_DCOC_SFQI         = BIT(1),
+    FLD_RF_DCOC_IDAC_SRC_POL = BIT(2),
+    FLD_RF_DCOC_QDAC_SRC_POL = BIT(3),
+    FLD_RF_DCOC_SFIIP        = BIT(4),
+    FLD_RF_DCOC_SFQQP        = BIT(5),
+    FLD_RF_DCOC_SFII_L       = BIT_RNG(6, 7),
+};
+
+#define reg_rf_dcoc_dbg1 REG_ADDR8(REG_AURA_BASE + 0xd3)
+
+enum
+{
+    FLD_RF_DCOC_SFII_H    = BIT_RNG(0, 1),
+    FLD_RF_DCOC_SFQQ      = BIT_RNG(2, 5),
+    FLD_RF_DCOC_DAC_ORDER = BIT(6),
+};
+
+#define reg_rf_dcoc_rdbk1_0 REG_ADDR8(REG_AURA_BASE + 0xd8)
+
+enum
+{
+    FLD_RF_DCOC_IDAC_CODE = BIT_RNG(0, 6),
+    FLD_RF_SPARE_3        = BIT(7),
+};
+
+#define reg_rf_dcoc_rdbk1_1 REG_ADDR8(REG_AURA_BASE + 0xd9)
+
+enum
+{
+    FLD_RF_SPARE_4 = BIT_RNG(0, 3),
+};
+
+#define reg_rf_dcoc_rdbk2 REG_ADDR8(REG_AURA_BASE + 0xda)
+
+enum
+{
+    FLD_RF_DCOC_QDAC_CODE = BIT_RNG(0, 6),
+};
+
+#define reg_rf_dcoc_rdbk3_0 REG_ADDR8(REG_AURA_BASE + 0xdc)
+
+enum
+{
+    FLD_RF_DCOC_IADC_OFFSET   = BIT_RNG(0, 6),
+    FLD_RF_DCOC_QADC_OFFSET_L = BIT(7),
+};
+
+#define reg_rf_dcoc_rdbk3_1 REG_ADDR8(REG_AURA_BASE + 0xdd)
+
+enum
+{
+    FLD_RF_DCOC_QADC_OFFSET_H = BIT_RNG(0, 5),
+};
+
+#define reg_rf_ldot_dbg1 REG_ADDR8(REG_AURA_BASE + 0xe2)
+
+enum
+{
+    FLD_RF_LDOT_LDO_CAL_BYPASS         = BIT(0),
+    FLD_RF_LDOT_LDO_CAL_TRIM_OVERWRITE = BIT_RNG(1, 6),
+};
+
+#define reg_rf_ldot_dbg2_0 REG_ADDR8(REG_AURA_BASE + 0xe4)
+
+enum
+{
+    FLD_RF_LDOT_LDO_RXTXHF_BYPASS         = BIT(0),
+    FLD_RF_LDOT_LDO_RXTXLF_BYPASS         = BIT(1),
+    FLD_RF_LDOT_LDO_RXTXHF_TRIM_OVERWRITE = BIT_RNG(2, 7),
+};
+
+#define reg_rf_ldot_dbg2_1 REG_ADDR8(REG_AURA_BASE + 0xe5)
+
+enum
+{
+    FLD_RF_LDOT_LDO_RXTXLF_TRIM_OVERWRITE = BIT_RNG(0, 5),
+};
+
+#define reg_rf_ldot_dbg3_0 REG_ADDR8(REG_AURA_BASE + 0xe6)
+
+enum
+{
+    FLD_RF_LDOT_LDO_PLL_BYPASS         = BIT(0),
+    FLD_RF_LDOT_LDO_VCO_BYPASS         = BIT(1),
+    FLD_RF_LDOT_LDO_PLL_TRIM_OVERWRITE = BIT_RNG(2, 7),
+};
+
+#define reg_rf_ldot_dbg3_1 REG_ADDR8(REG_AURA_BASE + 0xe7)
+
+enum
+{
+    FLD_RF_LDOT_LDO_VCO_TRIM_OVERWRITE = BIT_RNG(0, 5),
+};
+
+#define reg_rf_ldot_dbg4_0 REG_ADDR8(REG_AURA_BASE + 0xe8)
+
+enum
+{
+    FLD_RF_LDOT_INCCAL_DIS        = BIT(0),
+    FLD_RF_LDOT_LDO_RXTXHF_OFFSET = BIT_RNG(1, 2),
+    FLD_RF_LDOT_LDO_RXTXLF_OFFSET = BIT_RNG(3, 4),
+    FLD_RF_LDOT_LDO_PLL_OFFSET    = BIT_RNG(5, 6),
+    FLD_RF_LDOT_LDO_VCO_OFFSET_L  = BIT(7),
+};
+
+#define reg_rf_ldot_dbg4_1 REG_ADDR8(REG_AURA_BASE + 0xe9)
+
+enum
+{
+    FLD_RF_LDOT_LDO_VCO_OFFSET_H = BIT(0),
+};
+
+#define reg_rf_ldot_rdbk1 REG_ADDR8(REG_AURA_BASE + 0xea)
+
+enum
+{
+    FLD_RF_LDOT_LDO_CAL_TRIM = BIT_RNG(0, 5),
+};
+
+#define reg_rf_ldot_rdbk2_0 REG_ADDR8(REG_AURA_BASE + 0xec)
+
+enum
+{
+    FLD_RF_LDOT_LDO_RXTXHF_TRIM   = BIT_RNG(0, 5),
+    FLD_RF_LDOT_LDO_RXTXLF_TRIM_L = BIT_RNG(6, 7),
+};
+
+#define reg_rf_ldot_rdbk2_1 REG_ADDR8(REG_AURA_BASE + 0xed)
+
+enum
+{
+    FLD_RF_LDOT_LDO_RXTXLF_TRIM_H = BIT_RNG(0, 3),
+};
+
+#define reg_rf_ldot_rdbk3_0 REG_ADDR8(REG_AURA_BASE + 0xee)
+
+enum
+{
+    FLD_RF_LDOT_LDO_PLL_TRIM   = BIT_RNG(0, 5),
+    FLD_RF_LDOT_LDO_VCO_TRIM_L = BIT_RNG(6, 7),
+};
+
+#define reg_rf_ldot_rdbk3_1 REG_ADDR8(REG_AURA_BASE + 0xef)
+
+enum
+{
+    FLD_RF_LDOT_LDO_VCO_TRIM_H = BIT_RNG(0, 3),
+};
+
+#define reg_rf_hpmc_cfg REG_ADDR8(REG_AURA_BASE + 0xf4)
+
+enum
+{
+    FLD_RF_HPMC_DAC_SWING = BIT(0),
+    FLD_RF_HPMC_SLOW_MODE = BIT(1),
+    FLD_RF_HPMC_COUNT_POL = BIT(2),
+};
+
+#define reg_rf_hpmc_debug_0 REG_ADDR8(REG_AURA_BASE + 0xf6)
+
+enum
+{
+    FLD_RF_HPMC_BYPASS           = BIT(0),
+    FLD_RF_HPMC_GAIN_OVERWRITE_L = BIT_RNG(1, 7),
+};
+
+#define reg_rf_hpmc_debug_1 REG_ADDR8(REG_AURA_BASE + 0xf7)
+
+enum
+{
+    FLD_RF_HPMC_GAIN_OVERWRITE_H = BIT_RNG(0, 3),
+};
+
+#define reg_rf_hpmc_rdbk1_0 REG_ADDR8(REG_AURA_BASE + 0xf8)
+
+
+#define reg_rf_hpmc_rdbk1_1 REG_ADDR8(REG_AURA_BASE + 0xf9)
+
+
+#define reg_rf_hpmc_rdbk2_0 REG_ADDR8(REG_AURA_BASE + 0xfa)
+
+
+#define reg_rf_hpmc_rdbk2_1 REG_ADDR8(REG_AURA_BASE + 0xfb)
+
+
+#define reg_rf_hpmc_rdbk3_0 REG_ADDR8(REG_AURA_BASE + 0xfc)
+
+enum
+{
+    FLD_RF_HPMC_COUNT1_LSW        = BIT_RNG(0, 2),
+    FLD_RF_HPMC_COUNT2_LSW        = BIT_RNG(3, 5),
+    FLD_RF_HPMC_MEAS_DIFF_COUNT_L = BIT_RNG(6, 7),
+};
+
+#define reg_rf_hpmc_rdbk3_1 REG_ADDR8(REG_AURA_BASE + 0xfd)
+
+enum
+{
+    FLD_RF_HPMC_MEAS_DIFF_COUNT_H = BIT_RNG(0, 6),
+    FLD_RF_HPMC_PASS              = BIT(7),
+};
+
+#define reg_rf_hpmc_rdbk4_0 REG_ADDR8(REG_AURA_BASE + 0xfe)
+
+
+#define reg_rf_hpmc_rdbk4_1 REG_ADDR8(REG_AURA_BASE + 0xff)
+
+enum
+{
+    FLD_RF_HPMC_GAIN_H = BIT_RNG(0, 2),
+};
+
+#define reg_rf_fcal_rdbk_0 REG_ADDR8(REG_AURA_BASE + 0xc0)
+
+enum
+{
+    FLD_RF_FCAL_DCAP_COARSE_L = BIT(7),
+    FLD_RF_FCAL_DCAP_FINE   = BIT_RNG(5, 6),
+};
+
+#define reg_rf_fcal_rdbk_1 REG_ADDR8(REG_AURA_BASE + 0xc1)
+
+enum
+{
+    FLD_RF_FCAL_DCAP_COARSE_H = BIT_RNG(0, 4),
+};
+
+#define reg_rf_tx_frac_ctr2_0 REG_ADDR8(REG_AURA_BASE + 0xc2)
+
+enum
+{
+    FLD_RF_FCAL_STL_DCAP_EN      = BIT(0),
+    FLD_RF_DCAP_COARSE_OVERWRITE = BIT_RNG(1, 6),
+    FLD_RF_DCAP_FINE_OVERWRITE_L = BIT(7),
+};
+#define reg_rf_tx_frac_ctr2_1 REG_ADDR8(REG_AURA_BASE + 0xc3)
+
+enum
+{
+    FLD_RF_DCAP_FINE_OVERWRITE_H = BIT(0),
+    FLD_RF_FCAL_DEBUG_CNT_SEL = BIT_RNG(2, 5),
+};
+
 /********************************************************************************************
  *****|~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|*****
  *****|								Aanlog  Register Table  						   |*****
@@ -1374,7 +1889,7 @@ enum{
 	FLD_EN_BYPASS_LDO_1P8V            = BIT(0),
 };
 
-#define areg_05_power			        0x05
+#define areg_aon_0x05			        0x05
 enum{
 	FLD_32K_RC_PD						= BIT(0),
 	//rsvd
@@ -1396,6 +1911,12 @@ enum{
 	FLD_PD_SPD_LDO            = BIT(6),//1
 	FLD_PD_DIG_RET_LDO        = BIT(7),//1
 };
+
+#define areg_aon_0x08         0x08
+enum{
+    FLD_SD_ADC_REF_VOL_SEL    = BIT(3),//0:select VMID as ADC reference voltage; 1:select VBG as ADC reference voltage
+};
+
 #define areg_aon_0x0b			        0x0b
 enum{
 
@@ -1409,6 +1930,11 @@ enum{
 
 #define areg_aon_0x0e        0x0e
 #define areg_aon_0x0f        0x0f
+
+#define areg_aon_0x11        0x11
+enum{
+    FLD_SD_ADC_PATH_SEL      = BIT(5),//0:DC; 1:audio
+};
 
 #define areg_0e_pa0_pa3_pull			0x17
 #define areg_0f_pa4_pa7_pull			0x18
@@ -1641,14 +2167,14 @@ enum
 };
 
 /**
- * BIT[0:3] Low-power mode enable signal. <3>for PGA and <2:0> for ADC.
-            0: default mode 1: low-power mode
+ * BIT[3] Low-power mode enable signal. <3>for PGA.
+          0: default mode 1: low-power mode
  * BIT[4:6] Control the selection of test signal from ADC.
  * BIT[7]   vbat detector enable signal 0:disable; 1:enable; default:0
  */
 #define areg_0x8f                       0x8f
 enum{
-    FLD_PGA_LOWPOWER                    = BIT_RNG(0,3),
+    FLD_PGA_LOWPOWER                    = BIT(3),
     FLD_ADC_TEST                        = BIT_RNG(4,6),
     FLD_EN_VBAT                         = BIT(7),
 };

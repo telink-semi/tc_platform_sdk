@@ -24,7 +24,7 @@
 #include "flash.h"
 #include "spi_i.h"
 #include "irq.h"
-#include "timer.h"
+#include "lib/include/stimer.h"
 #include "string.h"
 
 flash_handler_t flash_read_page = flash_read_data;

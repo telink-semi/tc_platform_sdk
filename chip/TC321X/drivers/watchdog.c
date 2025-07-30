@@ -23,6 +23,7 @@
  *******************************************************************************************************/
 #include "register.h"
 #include "lib/include/pm/pm.h"
+#include "clock.h"
 #include "analog.h"
 
 /**

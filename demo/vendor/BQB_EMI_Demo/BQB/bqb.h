@@ -45,6 +45,8 @@
 #define BQB_TX_POWER                    RF_POWER_P6p97dBm
 #elif MCU_CORE_TC321X
 #define BQB_TX_POWER                    RF_POWER_P7p00dBm
+#elif MCU_CORE_TC122X
+#define BQB_TX_POWER                    RF_POWER_P7p00dBm
 #endif
 
 #define ACCESS_CODE        	0x29417671
@@ -95,6 +97,9 @@
 #elif(MCU_CORE_TC321X)
 #define BQB_UART_TX_PORT   				GPIO_PC2
 #define BQB_UART_RX_PORT   				GPIO_PC3
+#elif(MCU_CORE_TC122X)
+#define BQB_UART_TX_PORT   				GPIO_PA0
+#define BQB_UART_RX_PORT   				GPIO_PA1
 #endif
 #define BQB_UART_BAUD	   	115200
 
@@ -107,6 +112,15 @@
 /* set uart config */
 #define REG_UART_BUF_CNT           reg_uart_buf_cnt(UART_MODULE_SEL)
 #define REG_UART_DATA_BUF(i)       reg_uart_data_buf(UART_MODULE_SEL,i)
+#define UART_NDMA_SENT_BYTE(i)     uart_ndma_send_byte(UART_MODULE_SEL,i)
+#elif(MCU_CORE_TC122X)
+#define UART0_MODULE            0 /* UART0 */
+/* uart select */
+#define UART_MODULE_SEL         UART0_MODULE
+
+/* set uart config */
+#define REG_UART_BUF_CNT           reg_uart_buf_cnt(UART_MODULE_SEL)
+#define REG_UART_DATA_BUF(i)       reg_uart_data_buf(i)
 #define UART_NDMA_SENT_BYTE(i)     uart_ndma_send_byte(UART_MODULE_SEL,i)
 #else
 #define REG_UART_BUF_CNT           reg_uart_buf_cnt

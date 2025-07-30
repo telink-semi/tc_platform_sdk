@@ -58,7 +58,7 @@ unsigned short  audio_i2s_8k_config[3]    ={16, 250, 5}; // 48M * 16 / 250 / (2 
 #define OUTPUT_SRC I2S_MONO_L
 #elif (AUDIO_MODE == AMIC_INPUT_TO_BUF_TO_I2S)
 #define INPUT_SRC AMIC_STREAM0_MONO_L
-#define OUTPUT_SRC SDM_MONO
+#define OUTPUT_SRC I2S_MONO_L
 #elif (AUDIO_MODE == DMIC_INPUT_TO_BUF_TO_I2S)
 #define INPUT_SRC DMIC_STREAM0_STEREO
 #define OUTPUT_SRC I2S_STEREO
@@ -104,6 +104,7 @@ void user_init(void)
     audio_dfifo_config(FIFO0,(unsigned short* )AUDIO_BUFF,sizeof(AUDIO_BUFF));
     /****stream0 line in/amic/dmic init****/
     audio_codec_stream0_input_init(&audio_codec_stream0_input);
+    audio_set_codec_en(1);
 #if (AUDIO_MODE== DMIC_INPUT_TO_BUF_TO_I2S)
     audio_set_stream0_dmic_pin(DMIC_DATA_PA5,DMIC_CLK_PA6,DMIC_CLK_PB5);
     audio_set_stream0_dig_gain(CODEC_IN_D_GAIN_m6_DB);

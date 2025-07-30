@@ -1,3 +1,154 @@
+## VX.X.X
+
+### Version
+* SDK Version: tc_platform_sdk VX.X.X
+* Chip Version
+  - B80:  TLSR8208/TLSR8373
+  - B80B: TLSR8208H
+  - B85:  TLSR825x/TLSR8359
+  - B87:  TLSR827x/TLSR8355
+  - TC321X(A0)
+* Hardware EVK Version
+  - B80:    C1T261A30_V1_1
+  - B80B:   C1T321A30_V1_0
+  - B85:    C1T139A30_V1_2
+  - B87:    C1T197A30_V1_1
+  - TC321X: C1T357A20_V1_1
+
+* Toolchain Version
+  - B80, B80B, B85, B87, TC321X(A0): TC32 ELF GCC4.3 ( IDE: [Telink IDE](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/IDE-for-TLSR8-Chips/)/ [TelinkIoTStudio_V2024.8](https://wiki.telink-semi.cn/tools_and_sdk/Tools/IoTStudio/TelinkIoTStudio_V2024.8.zip) )
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+### Bug Fixes
+* **IR_Learn**
+  * (TC321x)Fix the issue where the IR_Learn module's idle level is low during IR_Learn simulation reception, resulting in the first edge not being captured.(merge_requests/@797)
+* **pm**
+  * (tc321x):pm_set_dig_module_power_switch interface, 0x7d power switching need to wait for about 3us delay, otherwise lead to program exception.(merge_requests/@771)
+  * (tc321x):start_reboot interface，reboot is abnormal, use "deep" instead.(merge_requests/@770)
+  * (tc321x):To address the issue of current pulses generated when the suspend LDO is turned on in LDO mode during suspend, the system first switches to DCDC mode, then turns on the suspend LDO, and finally returns to LDO mode. After waking up from suspend, the LDO is not turned off. Under active mode, both the suspend LDO and the main LDO will supply power together.(merge_requests/@762)(merge_requests/@779)
+* **sd_adc**
+  * (TC321x) Fixed the error in the register.h file regarding the FLD_DFIFO_WPTR2 enumeration value.
+  * (TC321x) Fixed the issue in the sd_adc.c file where the sd_adc_set_vmid() function's disable operation read the incorrect address. 
+  (merge_requests/@758)
+* **audio**
+  * (TC321x)Fixed PC hanging problem caused by accessing sys bus after switching analog 0x7d audio power.(merge_requests/@775)
+* **SPI** 
+  * (TC321x) Fix the problem that PB0/PB1/PE0/PE1 parameters do not take effect in spi_set_pin interface.(merge_requests/@781)
+  
+### BREAKING CHANGES
+* **pll**
+  * (B80/B80B)Customers cannot use the bit that uses the PM_ANA_REG_POWER_ON_CLR_BUF0[bit2] (0x3a[2]) flag to indicate whether a restart caused by a PLL exception occurred.(merge_requests/@711)
+  * (B80/B80B/B87)The criteria for determining the stability of the PLL have become more stringent. Previously, it was considered passed if detected once; now, it is only considered passed if it is detected three times consecutively.(merge_requests/@723)(merge_requests/@742)
+* **sd_adc**
+  * (TC321x) Remove the 1/8 input voltage divider options for the gpio mode and vbat mode of the SD_ADC module. (merge_requests/@758)
+* **audio**
+  * (TC321x)Refactor audio_codec_stream0_input_config, after initializing the codec, it is necessary to call audio_set_codec_en interface to enable the codec.(merge_requests/@775)
+* **rf**
+  * (B87/TC321x)The rf_mode_init() function has added an RF Rx DCOC software calibration scheme to solve the problem of poor sensitivity performance of Rx BLE1M and BLE2M in some chips with large DC-offset.(merge_requests/@766)(merge_requests/@786)
+
+### Features
+* **pll**
+  * (B80/B80B/B87)Add the interface pm_bbpll_zero_tolerance_check.(merge_requests/@723)(merge_requests/@742)
+* **sd_adc**
+  *(TC321x)Add a note to explain that the A0 chip does not support the temperature sampling function.
+  *(TC321x)Added sd_adc_select_vref() interface for internal use.
+  (merge_requests/@758)
+* **audio**
+  * (TC321x)Clear audio pop in codec demo and add audio_codec_set_adc_power_mode interface.(merge_requests/@775)
+* **sd_adc**
+  * (TC321x):add middle value of calibration.(merge_requests/@782)
+* **efuse**
+  * (TC321X) Added the API efuse_protection_code_check to verify the protection code stored in the eFuse.(merge_requests/@793)
+  * (TC321X) Added the efuse.h header file.(merge_requests/@793)
+* **sd_adc**
+  * (TC321x):Add flash_set_adc_calib_value() and user_calib_sd_adc() for voltage calibration.
+  
+### Refactoring
+* **rf**
+   * (B80/B80B)Added the attribute_ram_code_sec_noinline attribute to the following interfaces: rf_set_channel, rf_rx_buffer_set, rf_tx_pkt, and rf_set_power_level_index.
+   * (tc321x):Code optimization without affecting functionality.(merge_requests/@727/@726)
+   * (TC321X) Update the values in the RF_PowerTypeDef structure based on hardware matching adjustments.(merge_requests/@785)
+   * (TC321X) Refactor audio_codec_set_adc_power_mode interface.(merge_requests/@789)
+
+### Performance Improvements
+* **rf**
+   * (tc321x): Optimize the RX sensitivity of some frequency points and modify relevant interfaces: rf_set_rxpara/rf_ldot_ldo_rxtxlf_bypass_en/rf_ldot_ldo_rxtxlf_bypass_dis(merge_requests/@769)(merge_requests/@786)
+   * (tc321x): Optimize TX modulation performance and modify the interface: rf_mode_init. (merge_requests/@796)
+### 版本
+* SDK 版本: tc_platform_sdk VX.X.X
+* 芯片版本
+  - B80:  TLSR8208/TLSR8373
+  - B80B: TLSR8208H
+  - B85:  TLSR825x/TLSR8359
+  - B87:  TLSR827x/TLSR8355
+  - TC321X(A0)
+* 硬件评估板版本
+  - B80:    C1T261A30_V1_1
+  - B80B:   C1T321A30_V1_0
+  - B85:    C1T139A30_V1_2
+  - B87:    C1T197A30_V1_1
+  - TC321X: C1T357A20_V1_1
+
+* 工具链版本
+  - B80, B80B, B85, B87, TC321X(A0): TC32 ELF GCC4.3 ( IDE: [Telink IDE](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/IDE-for-TLSR8-Chips/)/ [TelinkIoTStudio_V2024.8](https://wiki.telink-semi.cn/tools_and_sdk/Tools/IoTStudio/TelinkIoTStudio_V2024.8.zip) )
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+### Bug Fixes
+* **IR_Learn**
+  * (TC321x)修复IR_Learn模拟接收的时候，IR_Learn模块的空闲电平是低电平，导致第一个沿无法捕获的问题。(merge_requests/@797)
+* **pm**
+  * (tc321x):pm_set_dig_module_power_switch接口，0x7d电源切换需等3us左右的延时,否则导致程序异常;(merge_requests/@771)
+  * (tc321x):start_reboot接口，reboot功能异常，使用deep代替;(merge_requests/@770)
+  * (tc321x):为了解决在ldo模式下进suspend时打开suspend ldo会产生电流脉冲的问题，会先切换到dcdc模式，然后再打开suspend ldo，然后恢复到ldo模式，在suspend唤醒后不关闭ldo，active下会有suspend ldo和主ldo共同供电。(merge_requests/@762)(merge_requests/@779)
+* **sd_adc**
+  * (TC321x)修复register.h文件中FLD_DFIFO_WPTR2枚举值错误的问题。
+  * (TC321x)修复sd_adc.c文件中sd_adc_set_vmid()函数disable操作读取地址错误问题。
+    (merge_requests/@758)
+* **audio**
+  * (TC321x)修复开关模拟0x7d audio电后访问sys bus会导致的PC挂住问题.(merge_requests/@775)
+* **SPI** 
+  * (TC321x)修复在spi_set_pin接口里，PB0/PB1/PE0/PE1 参数不生效问题。(merge_requests/@781)    
+### BREAKING CHANGES
+* **pll**
+  * (B80/B80B)占用PM_ANA_REG_POWER_ON_CLR_BUF0[bit2]（0x3a[2]）标志是否发生过PLL异常导致的重启，客户不能使用这个bit。(merge_requests/@711)
+  * (B80/B80B/B87)判断PLL稳定的标志位的标准更加严格，以前检测到一次就通过，改为连续三次检测到才算通过。(merge_requests/@723)(merge_requests/@742)
+* **sd_adc**
+  * (TC321x)删除SD_ADC模块gpio模式和vbat模式1/8输入分压选项。(merge_requests/@758)
+* **audio**
+  * (TC321x)重构了audio_codec_stream0_input_config,在codec初始化后需要再调用audio_set_codec_en使能codec.(merge_requests/@775)
+* **rf**
+  * (B87/TC321X)rf_mode_init()函数添加了rf Rx DCOC软件校准方案，以解决一些直流偏移较大的芯片中BLE 1M 和BLE 2M Rx灵敏度性能较差的问题。(merge_requests/@766)(merge_requests/@786)
+### Features
+* **pll**
+  * (B80/B80B/B87)添加接口pm_bbpll_zero_tolerance_check。(merge_requests/@723)(merge_requests/@742)
+* **sd_adc**
+  * (TC321x)添加注释说明A0芯片不支持温度采样功能。
+  * (TC321x)新增sd_adc_select_vref()接口供内部使用。
+    (merge_requests/@758)
+* **audio**
+  * (TC321x)在codec demo中清除了pop音.(merge_requests/@775)
+* **sd_adc**
+  * (TC321x):添加校准中值。(merge_requests/@782)
+* **efuse**
+  * (TC321X) 新增了 efuse_protection_code_check API，用于检查存储在 eFuse 中的保护code。(merge_requests/@793)
+  * (TC321X) 新增了 efuse.h 头文件。(merge_requests/@793)
+* **sd_adc**
+  * (TC321x):添加flash_set_adc_calib_value()和 user_calib_sd_adc()用于电压校准。
+  
+### Refactoring
+* **rf**
+   * (B80/B80B)将_attribute_ram_code_sec_noinline_属性添加到以下接口：rf_set_channel、rf_rx_buffer_set、rf_tx_pkt和rf_set_power_level_index
+   * (tc321x):代码优化，不影响功能.(merge_requests/@727/@726)
+   * (TC321X) 根据硬件匹配调整，更新RF_PowerTypeDef结构体中的值。(merge_requests/@785)
+   * (TC321X) 重构audio_codec_set_adc_power_mode接口.(merge_requests/@789)
+
+### Performance Improvements
+* **rf**
+   * (tc321x):优化部分频点RX灵敏度，修改相关接口：rf_set_rxpara/rf_ldot_ldo_rxtxlf_bypass_en/rf_ldot_ldo_rxtxlf_bypass_dis(merge_requests/@769)(merge_requests/@786)
+   * (tc321x):优化TX调制性能，修改接口：rf_mode_init.(merge_requests/@796)
+---
 ## V3.1.0
 
 ### Version
@@ -400,6 +551,80 @@
   * (B80/B80B/B85/B87)为了防止 gpio_set_func 相关函数操作的不是同一组 GPIO 导致的功能异常，将所有 demo 中函数参数为多个 LED 逻辑或的参数修改为单个 LED 参数。
   * (B80/B80B/B85/B87)为了处理由警告选项 -Wstrict-prototypes 带来的编译警告, 以下 demo 文件已经通过向无参函数声明中传入 void 进行了修改:
     - ADC_Demo, AES_Demo, AUDIO_Demo, BQB_EMI_Demo, DUT_Demo, Debug_Demo, Display_Demo, Flash_Demo, GPIO_Demo, I2C_Demo, IO_Swire_Demo, IR_LEARN_Demo, Keyscan_Demo, LPC_Demo, MDEC_Demo, OTP_Demo, PKE_Demo, PM_Demo, PWM_Demo, QDEC_Demo, RF_AOA_Demo, RF_Demo, SPI_Demo, SRAM_Test, Swire_Demo, TIMER_Demo, TRNG_Demo, Test_Demo, UART_Demo, USB_Demo, s7816_Demo。
+
+### Performance Improvements
+
+* N/A
+
+### Note
+
+* N/A
+
+## V1.9.1
+
+### Version
+
+* SDK Version: tc_platform_sdk V1.9.1
+* Chip Version
+  - B80:  TLSR8208/TLSR8373
+  - B80B: TLSR8208H
+  - B85:  TLSR825x/TLSR8359
+  - B87:  TLSR827x/TLSR8355
+
+* Hardware EVK Version
+  - B80:    C1T261A30_V1_1
+  - B80B:   C1T321A30_V1_0
+  - B85:    C1T139A30_V1_2
+  - B87:    C1T197A30_V1_2
+
+
+### BREAKING CHANGES
+* N/A
+
+### Bug Fixes
+* N/A
+
+### Features
+* N/A
+  
+### Refactoring
+* **rf**
+   * (B80/B80B)Added the attribute_ram_code_sec_noinline attribute to the following interfaces: rf_set_channel, rf_rx_buffer_set, rf_tx_pkt, and rf_set_power_level_index.
+
+### Performance Improvements
+
+* N/A
+
+### Note
+
+* N/A
+
+### 版本
+* SDK 版本: tc_platform_sdk V1.9.1
+* 芯片版本
+  - B80:  TLSR8208/TLSR8373
+  - B80B: TLSR8208H
+  - B85:  TLSR825x/TLSR8359
+  - B87:  TLSR827x/TLSR8355
+
+* 硬件评估板版本
+  - B80:    C1T261A30_V1_1
+  - B80B:   C1T321A30_V1_0
+  - B85:    C1T139A30_V1_2
+  - B87:    C1T197A30_V1_2
+
+### BREAKING CHANGES
+* N/A
+
+### Bug Fixes
+* N/A
+
+### Features
+* N/A
+  
+### Refactoring
+* **rf**
+   * (B80/B80B)将_attribute_ram_code_sec_noinline_属性添加到以下接口：rf_set_channel、rf_rx_buffer_set、rf_tx_pkt和rf_set_power_level_index
 
 ### Performance Improvements
 
