@@ -21,7 +21,7 @@
 <hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
 
 ### Bug Fixes
-* **IR_Learn**
+* **ir_learn**
   * (TC321x)Fix the issue where the IR_Learn module's idle level is low during IR_Learn simulation reception, resulting in the first edge not being captured.(merge_requests/@797)
 * **pm**
   * (tc321x):pm_set_dig_module_power_switch interface, 0x7d power switching need to wait for about 3us delay, otherwise lead to program exception.(merge_requests/@771)
@@ -96,7 +96,7 @@
 <hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
 
 ### Bug Fixes
-* **IR_Learn**
+* **ir_learn**
   * (TC321x)修复IR_Learn模拟接收的时候，IR_Learn模块的空闲电平是低电平，导致第一个沿无法捕获的问题。(merge_requests/@797)
 * **pm**
   * (tc321x):pm_set_dig_module_power_switch接口，0x7d电源切换需等3us左右的延时,否则导致程序异常;(merge_requests/@771)
