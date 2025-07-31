@@ -66,11 +66,4 @@ unsigned int efuse_read(efuse_block block);
  */
 void efuse_write(efuse_block block, unsigned int data);
 
-/**
- * @brief        This function serves to check protection code according SDK version.
- * @param[in]    sdk_version, 0:driver sdk  0xff:sdk_version_ignore
- * @return       none.
- */
-void efuse_protection_code_check(unsigned char sdk_version);
-
 #endif /* EFUSE_H_ */

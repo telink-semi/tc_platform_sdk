@@ -52,11 +52,6 @@
 #define		CLOCK_DLY_40_CYC   CLOCK_DLY_20_CYC;CLOCK_DLY_20_CYC
 #define		CLOCK_DLY_80_CYC   CLOCK_DLY_40_CYC;CLOCK_DLY_40_CYC
 
-//Protection Code checking related macro
-#define SDK_VERSION_IGNORE	  0
-#define SDK_VERSION_CHECK	  2
-
-#define SDK_VERSION_SELECT		SDK_VERSION_IGNORE
 
 /**********************************************************************************************************************
  *                                         global data type                                                           *
