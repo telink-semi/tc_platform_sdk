@@ -35,6 +35,8 @@
   * (TC321x)Fixed PC hanging problem caused by accessing sys bus after switching analog 0x7d audio power.(merge_requests/@775)
 * **SPI** 
   * (TC321x) Fix the problem that PB0/PB1/PE0/PE1 parameters do not take effect in spi_set_pin interface.(merge_requests/@781)
+* **watchdog** 
+  * (TC321x) Since the software reset of the A0 chip cannot be used, the Timer watchdog cannot be used. Therefore, the watchdog-related interfaces are removed.(merge_requests/@792)
   
 ### BREAKING CHANGES
 * **pll**
@@ -109,7 +111,10 @@
 * **audio**
   * (TC321x)修复开关模拟0x7d audio电后访问sys bus会导致的PC挂住问题.(merge_requests/@775)
 * **SPI** 
-  * (TC321x)修复在spi_set_pin接口里，PB0/PB1/PE0/PE1 参数不生效问题。(merge_requests/@781)    
+  * (TC321x)修复在spi_set_pin接口里，PB0/PB1/PE0/PE1 参数不生效问题。(merge_requests/@781)
+* **watchdog** 
+  * (TC321x)由于A0芯片的软件复位功能不能使用，导致Timer watchdog 不能使用，所以将watchdog相关接口删除.(merge_requests/@792)
+
 ### BREAKING CHANGES
 * **pll**
   * (B80/B80B)占用PM_ANA_REG_POWER_ON_CLR_BUF0[bit2]（0x3a[2]）标志是否发生过PLL异常导致的重启，客户不能使用这个bit。(merge_requests/@711)
