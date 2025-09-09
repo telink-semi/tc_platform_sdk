@@ -216,20 +216,39 @@ void flash_read_data(unsigned long addr, unsigned long len, unsigned char *buf)
  *              Risk description: When the chip power supply voltage is relatively low, due to the unstable power supply,
  *              there may be a risk of error in the operation of the flash (especially for the write and erase operations.
  *              If an abnormality occurs, the firmware and user data may be rewritten, resulting in the final Product failure)
+ * 
+ *              buf pointer passed in should be a sram addr, otherwise a data access error will occurred in spi transfer stage,
+ *              because xip function was disabled during spi flash access.
+ *              to avoid this issue, a sram moving operation was added if the buf pointer passed in is flash addr, and the stack cost was defined by STACK_SIZE_FOR_FLASH_DATA.
+ *              once the passed buffer len is larger than STACK_SIZE_FOR_FLASH_DATA, the program stalled for user debug.
  */
 void flash_page_program(unsigned long addr, unsigned long len, unsigned char *buf)
 {
-	unsigned int ns = PAGE_SIZE - (addr&(PAGE_SIZE - 1));
-	int nw = 0;
+    unsigned int ns = PAGE_SIZE - (addr&(PAGE_SIZE - 1));
+    int nw = 0;
+    unsigned int is_flash_addr = ((unsigned int)buf < RAM_ADDR_BASE) ? 1 : 0;
 
-	do{
-		nw = len > ns ? ns :len;
-		flash_mspi_write_ram(FLASH_WRITE_CMD, addr, 1, buf, nw);
-		ns = PAGE_SIZE;
-		addr += nw;
-		buf += nw;
-		len -= nw;
-	}while(len > 0);
+    do{
+        nw = len > ns ? ns :len;
+
+        if(1 == is_flash_addr)
+        {
+            if(nw > STACK_SIZE_FOR_FLASH_DATA) while(1);
+            unsigned char const_buf[nw];
+
+            memcpy(const_buf, buf, nw);
+            flash_mspi_write_ram(FLASH_WRITE_CMD, addr, 1, const_buf, nw);
+        }
+        else
+        {
+            flash_mspi_write_ram(FLASH_WRITE_CMD, addr, 1, buf, nw);
+        }
+
+        ns = PAGE_SIZE;
+        addr += nw;
+        buf += nw;
+        len -= nw;
+    }while(len > 0);
 }
 
 /**

@@ -4,9 +4,9 @@
  * @brief   This is the header file for Telink MCU
  *
  * @author  Driver Group
- * @date    2018
+ * @date    2025
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2025, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -22,13 +22,13 @@
  *
  *******************************************************************************************************/
 #pragma once
-#include "driver.h"
-#include "common.h"
 /* Enable C linkage for C++ Compilers: */
 #if defined(__cplusplus)
-extern "C" {
+extern "C"
+{
 #endif
-
+#include "driver.h"
+#include "common.h"
 /**
  * @brief Define system clock
  */
@@ -39,39 +39,16 @@ extern "C" {
  */
 #include "sys_clock.h"
 
-#if (MCU_CORE_B80)
-#define TIMER_GPIO      		GPIO_PB3
-#elif (MCU_CORE_B80B)
-#define TIMER_GPIO              GPIO_PB3
-#elif (MCU_CORE_B85)
-#define TIMER_GPIO      		GPIO_PD0
-#elif (MCU_CORE_B87)
-#define TIMER_GPIO      		GPIO_PD0
-#elif (MCU_CORE_B89)
-#define TIMER_GPIO      		GPIO_PD4
-#elif (MCU_CORE_TC321X)
-#define TIMER_GPIO              GPIO_PB3
-#elif (MCU_CORE_TC1211)
-#define TIMER_GPIO              GPIO_PA4
-#elif (MCU_CORE_TC122X)
-#define TIMER_GPIO              GPIO_PA0
-#endif
+#define STIMER_DELAY            1
+#define STIMER_IRQ              2
+#define STIMER_GET_32K_TICK     3
+#define STIMER_SET_32K_TICK_LVL 4
+#define STIMER_TRACK_32K_TICK   5
+#define STIMER_GET_TICK         6
 
-#define TIMER_SYS_CLOCK_MODE 	1
-#define TIMER_GPIO_TRIGGER_MODE 2
-#define TIMER_GPIO_WIDTH_MODE 	3
-#define TIMER_TICK_MODE 		4
-#if (!(MCU_CORE_TC1211 || MCU_CORE_TC122X))
-#define TIMER_WATCHDOG_MODE 	5  /* ONLY TIMER2 SUPPORT THIS MODE */
-#endif
-#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B85 || MCU_CORE_TC321X)
-#define STIMER_MODE				6
-#endif
-#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89 || MCU_CORE_TC321X || MCU_CORE_TC1211 || MCU_CORE_TC122X)
-#define TIMER_32K_WATCHDOG_MODE 7
-#endif
 
-#define TIMER_MODE				TIMER_WATCHDOG_MODE
+#define STIMER_MODE             STIMER_DELAY
+
 
 /* Disable C linkage for C++ Compilers: */
 #if defined(__cplusplus)

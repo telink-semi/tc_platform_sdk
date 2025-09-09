@@ -39,12 +39,33 @@ SECTIONS
     }
     PROVIDE(_cstartup_ram_funcs_size_div_16_ = (. + 15 ) / 16);
     
-    
+
+	. = (((. + 3) / 4)*4);
+        PROVIDE(_rstored_ = . );
+
+    . = (0x840000 + _rstored_);
+	    .retention_data :
+          AT (_rstored_)
+        {
+        . = (((. + 3) / 4)*4);
+        PROVIDE(_retention_data_start_ = . );
+        *(.retention_data)
+        *(.retention_data.*)
+        PROVIDE(_retention_data_end_ = . );
+        }
+	    
+	PROVIDE(_retention_data_size_div_256_ = (. - 0x840000 + 255) / 256);
+	PROVIDE(_retention_data_size_align_256_ = ( (. - 0x840000 + 255) / 256) * 256);
+	PROVIDE(_retention_data_size_div_16_align_256_ = _retention_data_size_align_256_ / 16);
+	
+	. = _retention_data_size_align_256_;
+
     .ram_code :
     {
     *(.ram_code)
     *(.ram_code.*)
     }
+
 	PROVIDE(_ramcode_size_ = . );
 	PROVIDE(_ramcode_size_div_16_ = (. + 15 ) / 16);
 	PROVIDE(_ramcode_size_div_256_ = (. + 255) / 256);
@@ -52,8 +73,9 @@ SECTIONS
 	PROVIDE(_ramcode_size_align_256_ = ( (. + 255) / 256) * 256);
 
     . =  _ramcode_size_align_256_ ; /* >= (_ictag_start_ - 0x840000)*/
-	
+
 	.text :
+		AT (_ramcode_size_align_256_)
 	    {
 	    *(.text)
 	    *(.text.*)
@@ -63,30 +85,15 @@ SECTIONS
 	    *(.rodata)
 	    *(.rodata.*)
 	    }
-	
+
 	. = (((. + 3) / 4)*4);
-		PROVIDE(_rstored_ = . );
+		PROVIDE(_dstored_ = . );
 	    PROVIDE(_code_size_ = .);
 	
-	 . = (0x840000 + ((0x900 + _ramcode_size_align_256_) * __LOAD_FLASH) + (0x400 * __LOAD_DUT) + (_rstored_ * __LOAD_RAM));	/* __LOAD_FLASH for MCU RUN IN Flash 0x100 alighned, must greater than or equal to:0x808000 + ram_code_size +  irq_vector(0x100) + IC_tag(0x100) + IC_cache(0x800) == 0x808a00 + ram_code_size */
+	 . = (0x840000 + ((0x900 + _ramcode_size_align_256_) * __LOAD_FLASH) + (0x400 * __LOAD_DUT) + (_dstored_ * __LOAD_RAM));	/* __LOAD_FLASH for MCU RUN IN Flash 0x100 alighned, must greater than or equal to:0x808000 + ram_code_size +  irq_vector(0x100) + IC_tag(0x100) + IC_cache(0x800) == 0x808a00 + ram_code_size */
 																													/*  __LOAD_DUT	for MCU RUN IN SRAM ,this setting is used for DUT Test and bin size is limited to 8k*/ 
 																													/* __LOAD_RAM   for MCU RUN IN SRAM */
-	    .retention_data :
-	      AT ( _rstored_ )
-	    {
-	    . = (((. + 3) / 4)*4);
-	    PROVIDE(_retention_data_start_ = . );
-	    *(.retention_data)
-	    *(.retention_data.*)
-	    . = (((. + 3) / 4)*4);
-	    PROVIDE(_retention_data_end_ = . );     
-	    } 
-        PROVIDE(_dstored_ = _rstored_ + _retention_data_end_ - _retention_data_start_); 
-    
-        .my_code(NOLOAD) :
-        {
-        *(.spi_slave_buff)
-        }    
+
 	    .data :
 	      AT ( _dstored_ )
 	     {
@@ -96,7 +103,13 @@ SECTIONS
 	     *(.data.*);
 	. = (((. + 3) / 4)*4);
 	     PROVIDE(_end_data_ = . );
-	     } 
+	     }
+
+        .platform_func(NOLOAD) :
+        {
+        *(.spi_slave_buff)
+		*(.rf_sw_config)
+        }
 
 	/* irk_stk is 4 word align */
 	. = (((. + 15) / 16)*16);

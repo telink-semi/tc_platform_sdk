@@ -55,8 +55,8 @@ int main (void)   //must on ramcode
 #endif
 
     PLATFORM_INIT;
-    CLOCK_INIT;
 
+    CLOCK_INIT;
 
 	user_init();
 

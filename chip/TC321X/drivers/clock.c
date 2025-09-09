@@ -248,7 +248,9 @@ _attribute_ram_code_sec_noinline_ void clock_init(SYS_CLK_TypeDef SYS_CLK)
 {
     reg_clk_sel = (unsigned char)SYS_CLK;
     system_clk_type = (unsigned char)SYS_CLK;
+
     g_sys_clk_freq = SYS_CLK>>8;
+
     /*
         In some customer application scenarios, they want code execution time to be short and power consumption to be low.
         Meanwhile, they do not concerned about the accuracy of 24m rc or they want to control the calibration cycle themselves. 
@@ -256,7 +258,8 @@ _attribute_ram_code_sec_noinline_ void clock_init(SYS_CLK_TypeDef SYS_CLK)
         Before invoking this interface, ensure that the current system clock is not 24M rc.
         Otherwise, the system clock will fluctuate, affecting the normal operation of the chip.
     */
-    if(!pm_is_MCU_deepRetentionWakeup() && (g_24m_rc_calib_flag == 1)){
+    if(!pm_is_MCU_deepRetentionWakeup() && (g_24m_rc_calib_flag == 1))
+    {
         rc_24m_cal();
     }
 }

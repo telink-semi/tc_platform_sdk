@@ -29,6 +29,12 @@
 #define PAGE_SIZE		256
 #define PAGE_SIZE_OTP	256
 
+#define RAM_ADDR_BASE       0x840000
+
+#ifndef STACK_SIZE_FOR_FLASH_DATA
+    #define STACK_SIZE_FOR_FLASH_DATA       32
+#endif
+
 /**
  * @brief     flash mid definition
  */

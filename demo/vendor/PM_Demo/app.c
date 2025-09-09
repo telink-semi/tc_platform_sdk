@@ -74,7 +74,7 @@ void user_init(void)
 	sleep_ms(1000);
 	gpio_write(LED1, 0);
 
-#if(!MCU_CORE_TC1211)
+#if(!MCU_CORE_TC1211)&&(!MCU_CORE_TC122X)
 	gpio_set_func(LED2,AS_GPIO);		//enable output
 	gpio_set_output_en(LED2, 1);
 	gpio_set_input_en(LED2,0);			//disable input
@@ -130,7 +130,7 @@ void user_init(void)
 	cpu_sleep_wakeup(DEEPSLEEP_MODE , PM_WAKEUP_PAD, 0);
 
 #elif(PM_MODE==DEEP_32K_RC_WAKEUP||PM_MODE==DEEP_32K_XTAL_WAKEUP)
-
+	retention_data_test++;
     cpu_sleep_wakeup(DEEPSLEEP_MODE, PM_WAKEUP_TIMER, (clock_time() + 1000*CLOCK_SYS_TIMER_CLK_1MS));
 
 #elif(PM_MODE==DEEP_LONG_32K_RC_WAKEUP||PM_MODE==DEEP_LONG_32K_XTAL_WAKEUP)
@@ -219,6 +219,7 @@ void user_init(void)
 #if(MCU_CORE_TC321X)
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW32K, PM_WAKEUP_TIMER, (clock_time() + 4000*CLOCK_SYS_TIMER_CLK_1MS));
 #elif(MCU_CORE_TC122X)
+	retention_data_test++;
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW8K, PM_WAKEUP_TIMER, (clock_time() + 4000*CLOCK_SYS_TIMER_CLK_1MS));
 #else
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K, PM_WAKEUP_TIMER, (clock_time() + 4000*CLOCK_SYS_TIMER_CLK_1MS));

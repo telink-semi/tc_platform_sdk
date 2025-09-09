@@ -597,7 +597,7 @@ static inline void rf_rx_acc_code_enable(unsigned char pipe)
 */
 static inline void rf_tx_acc_code_select(unsigned char pipe)
 {
-    write_reg8(0xf15, (read_reg8(0xf15)&0xf8) | pipe); //Tx_Channel_man[2:0]
+    write_reg8(0xf15, ((read_reg8(0xf15)&0xf8) | pipe)|BIT(4)); //Tx_Channel_man[2:0]
 }
 
 /**
@@ -606,12 +606,8 @@ static inline void rf_tx_acc_code_select(unsigned char pipe)
  * @return  none.
  */
 
-static inline void rf_set_tx_rx_off(void)
-{
-	write_reg8 (0x800f16, 0x29);
-	write_reg8 (0x800428, RF_TRX_MODE);	// rx disable
-	write_reg8 (0x800f02, RF_TRX_OFF);	// reset tx/rx state machine
-}
+void rf_set_tx_rx_off(void);
+
 /**
  * @brief   This function serves to turn off RF auto mode.
  * @param   none.
@@ -1188,10 +1184,7 @@ static inline void rf_set_rx_settle_time( unsigned short rx_stl_us )
  * @param[in]	none.
  * @return	 	none.
  */
-static inline void rf_ldot_ldo_rxtxlf_bypass_en(void)
-{
-	write_reg8(0x12e4,read_reg8(0x12e4)|BIT(1));
-}
+void rf_ldot_ldo_rxtxlf_bypass_en(void);
 
 /**
  * @brief	    This function is used to close the ldo rxtxlf bypass function, and the hardware will
@@ -1199,10 +1192,7 @@ static inline void rf_ldot_ldo_rxtxlf_bypass_en(void)
  * @param[in]	none.
  * @return	 	none.
  */
-static inline void rf_ldot_ldo_rxtxlf_bypass_dis(void)
-{
-	write_reg8(0x12e4,read_reg8(0x12e4)&(~BIT(1)));
-}
+void rf_ldot_ldo_rxtxlf_bypass_dis(void);
 
 /**
  * @brief		This function is mainly used to set the antenna switching mode. According to the protocol requirements,

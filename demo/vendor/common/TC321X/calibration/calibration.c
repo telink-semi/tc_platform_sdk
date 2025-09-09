@@ -52,15 +52,24 @@ unsigned char user_calib_freq_offset(unsigned int addr)
 unsigned char flash_set_adc_calib_value(unsigned short gain, signed short offset, void (*calib_func)(unsigned short, signed short))
 {
     /**
-     * The legal range of gain for single_gpio/diff_gpio and vbat in flash is [9000,11000],
+     * -# For CHIP_VERSION_A0, the legal range of gain for single_gpio/diff_gpio and vbat in flash is [8590,10500],
+     * and the legal range of offset for single_gpio/diff_gpio and vbat is [-1000,1000].
+     * -# For CHIP_VERSION_A1, the legal range of gain for single_gpio/diff_gpio and vbat in flash is [10260,12540],
      * and the legal range of offset for single_gpio/diff_gpio and vbat is [-1000,1000].
      */
-    if ((gain >= 9000) && (gain <= 11000) && (offset >= -1000) && (offset <= 1000)) {
-        (*calib_func)(gain, offset);
-        return 0;
-    } else {
-        return 1;
+	if (g_chip_version == CHIP_VERSION_A0) {
+	    if ((gain >= 8590) && (gain <= 10500) && (offset >= -1000) && (offset <= 1000)) {
+	        (*calib_func)(gain, offset);
+	        return 0;
+	    }
+	}else {
+        if ((gain >= 10260) && (gain <= 12540) && (offset >= -1000) && (offset <= 1000)) {
+            (*calib_func)(gain, offset);
+            return 0;
+        }
     }
+	return 1;
+
 }
 
 /**

@@ -38,40 +38,41 @@ extern "C" {
  * @note The sys_clock.h file depends on the definition of CLOCK_SYS_CLOCK_HZ so CLOCK_SYS_CLOCK_HZ must be placed before #include "sys_clock.h" without reversing the order.
  */
 #include "sys_clock.h"
+#include "driver.h"
 
-#if (MCU_CORE_B80)
-#define TIMER_GPIO      		GPIO_PB3
-#elif (MCU_CORE_B80B)
-#define TIMER_GPIO              GPIO_PB3
-#elif (MCU_CORE_B85)
-#define TIMER_GPIO      		GPIO_PD0
-#elif (MCU_CORE_B87)
-#define TIMER_GPIO      		GPIO_PD0
-#elif (MCU_CORE_B89)
-#define TIMER_GPIO      		GPIO_PD4
-#elif (MCU_CORE_TC321X)
-#define TIMER_GPIO              GPIO_PB3
-#elif (MCU_CORE_TC1211)
-#define TIMER_GPIO              GPIO_PA4
-#elif (MCU_CORE_TC122X)
-#define TIMER_GPIO              GPIO_PA0
+    /**********************************************************************************************************************
+ *                                         Users do not need to modify                                                *
+ *********************************************************************************************************************/
+#define ADC_DMA_MODE         1
+#define ADC_NDMA_MODE        2
+
+#define ADC_GPIO_SAMPLE      1
+#define ADC_VBAT_SAMPLE      2
+
+//In NDMA mode, only M channel can be used.
+#define NDMA_M_1_CHN_EN 1
+#define DMA_M_1_CHN_EN  1
+
+
+/**********************************************************************************************************************
+ *                                         Users can modify macros                                                    *
+ *********************************************************************************************************************/
+/**
+ *@attention  -# In NDMA/DMA mode, ADC_SAMPLE_GROUP_CNT must be multiple of 8.
+ */
+#define ADC_SAMPLE_GROUP_CNT        16 //Number of adc sample codes per channel.
+
+#define ADC_MODE                    ADC_NDMA_MODE
+
+#if (ADC_MODE == ADC_DMA_MODE)
+    #define ADC_SAMPLE_CHN_CNT      DMA_M_1_CHN_EN //Number of channels enabled
+    #define ADC_M_CHN_SAMPLE_MODE   ADC_GPIO_SAMPLE
+#else
+    #define ADC_SAMPLE_CHN_CNT      NDMA_M_1_CHN_EN
+    #define ADC_SAMPLE_MODE         ADC_GPIO_SAMPLE
 #endif
 
-#define TIMER_SYS_CLOCK_MODE 	1
-#define TIMER_GPIO_TRIGGER_MODE 2
-#define TIMER_GPIO_WIDTH_MODE 	3
-#define TIMER_TICK_MODE 		4
-#if (!(MCU_CORE_TC1211 || MCU_CORE_TC122X))
-#define TIMER_WATCHDOG_MODE 	5  /* ONLY TIMER2 SUPPORT THIS MODE */
-#endif
-#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B85 || MCU_CORE_TC321X)
-#define STIMER_MODE				6
-#endif
-#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89 || MCU_CORE_TC321X || MCU_CORE_TC1211 || MCU_CORE_TC122X)
-#define TIMER_32K_WATCHDOG_MODE 7
-#endif
-
-#define TIMER_MODE				TIMER_WATCHDOG_MODE
+#define GPIO_M_CHN_SAMPLE_PIN       ADC_GPIO_PB0
 
 /* Disable C linkage for C++ Compilers: */
 #if defined(__cplusplus)

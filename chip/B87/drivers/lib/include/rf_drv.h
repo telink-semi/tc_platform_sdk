@@ -689,9 +689,8 @@ static inline void rf_rx_acc_code_enable(unsigned char pipe)
 */
 static inline void rf_tx_acc_code_select(unsigned char pipe)
 {
-    write_reg8(0xf15, (read_reg8(0xf15)&0xf8) | pipe); //Tx_Channel_man[2:0]
+    write_reg8(0xf15, ((read_reg8(0xf15)&0xf8) | pipe)|BIT(4)); //Tx_Channel_man[2:0]}
 }
-
 
 /**
  * @brief   This function serves to reset RF Tx/Rx mode.
@@ -1413,10 +1412,7 @@ static inline void rf_set_pta_t2_time(unsigned char time_us)
  * @param[in]	none.
  * @return	 	none.
  */
-static inline void rf_ldot_ldo_rxtxlf_bypass_en(void)
-{
-	write_reg8(0x12e4,read_reg8(0x12e4)|BIT(1));
-}
+void rf_ldot_ldo_rxtxlf_bypass_en(void);
 
 /**
  * @brief	    This function is used to close the ldo rxtxlf bypass function, and the hardware will
@@ -1424,10 +1420,7 @@ static inline void rf_ldot_ldo_rxtxlf_bypass_en(void)
  * @param[in]	none.
  * @return	 	none.
  */
-static inline void rf_ldot_ldo_rxtxlf_bypass_dis(void)
-{
-	write_reg8(0x12e4,read_reg8(0x12e4)&(~BIT(1)));
-}
+void rf_ldot_ldo_rxtxlf_bypass_dis(void);
 
 /**
  * @brief		This function is mainly used to set the antenna switching mode. Vulture support three different

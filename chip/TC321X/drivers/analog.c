@@ -33,7 +33,8 @@
  * @param[in]  none.
  * @return     none.
  */
-static inline void analog_wait(){
+static _always_inline void analog_wait(void)
+{
 	while(reg_ana_ctrl & FLD_ANA_BUSY){}
 }
 
@@ -42,7 +43,8 @@ static inline void analog_wait(){
  * @param[in]  addr - address need to be read.
  * @return     the result of read.
  */
-_attribute_ram_code_sec_noinline_ unsigned char analog_read(unsigned char addr){
+__attribute__((section(".cstartup_ram_funcs"))) __attribute__((noinline)) unsigned char analog_read(unsigned char addr)
+{
 	unsigned char r = irq_disable();
 
 	reg_ana_addr = addr;
@@ -60,7 +62,8 @@ _attribute_ram_code_sec_noinline_ unsigned char analog_read(unsigned char addr){
  * @param[in]  v - the value need to be write.
  * @return     none.
  */
-_attribute_ram_code_sec_noinline_ void analog_write(unsigned char addr, unsigned char v){
+__attribute__((section(".cstartup_ram_funcs"))) __attribute__((noinline)) void analog_write(unsigned char addr, unsigned char v)
+{
 	unsigned char r = irq_disable();
 
 	reg_ana_addr = addr;

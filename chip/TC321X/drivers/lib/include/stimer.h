@@ -123,7 +123,7 @@ static _always_inline void stimer_clr_irq_status(stimer_irq_status_e status)
  */
 static _always_inline unsigned char stimer_get_irq_status(stimer_irq_status_e status)
 {
-	return (reg_irq_src & FLD_IRQ_SYSTEM_TIMER) == FLD_IRQ_SYSTEM_TIMER;
+    return (reg_irq_src & FLD_IRQ_SYSTEM_TIMER) == FLD_IRQ_SYSTEM_TIMER;
 }
 
 /**

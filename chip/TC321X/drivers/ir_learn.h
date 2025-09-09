@@ -30,6 +30,8 @@
 #include "pwm.h"
 #include "lib/include/sys.h"
 
+#define INTERNAL_DEBUG 0
+
 extern unsigned char g_chip_version;
 /**
  * @brief ir_learn capture mode
@@ -286,6 +288,9 @@ static inline void ir_learn_ana_tx_dis(void)
 static inline void ir_learn_ana_rx_en(void)
 {
     analog_write(0x0f, (analog_read(0x0f) | 0x08));
+#if INTERNAL_DEBUG
+    analog_write(0x11, (analog_read(0x11) & 0xf0) | 0x0c);//probe rx wave from pc3
+#endif
     if (g_chip_version != CHIP_VERSION_A0) {
     	analog_write(0x14, (analog_read(0x14) | 0x08));
         sleep_us(1);
