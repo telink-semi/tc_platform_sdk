@@ -4,7 +4,7 @@
 * SDK Version: tc_platform_sdk V3.3.0
 * Chip Version
   - B80:  TLSR8208/TLSR8373
-  - B80B: TLSR8208H
+  - B80B: TLSR8208 Version B
   - B85:  TLSR825x/TLSR8359
   - B87:  TLSR827x/TLSR8355
   - TC321X(A1/A0)
@@ -16,7 +16,7 @@
   - TC321X: C1T357A20_V1_1
 
 * Toolchain Version
-  - B80, B80B, B85, B87, TC321X(A0): TC32 ELF GCC4.3 ( IDE: [Telink IDE](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/IDE-for-TLSR8-Chips/)/ [TelinkIoTStudio_V2025.2](https://doc.telink-semi.cn/tools/telink_iot_studio/TelinkIoTStudio_V2025.2.zip) )
+  - B80, B80B, B85, B87, TC321X(A0): TC32 ELF GCC4.3 ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
 
 <hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
 
@@ -55,7 +55,7 @@
 * SDK 版本: tc_platform_sdk V3.3.0
 * 芯片版本
   - B80:  TLSR8208/TLSR8373
-  - B80B: TLSR8208H
+  - B80B: TLSR8208 Version B
   - B85:  TLSR825x/TLSR8359
   - B87:  TLSR827x/TLSR8355
   - TC321X(A1/A0)
@@ -67,7 +67,7 @@
   - TC321X: C1T357A20_V1_1
 
 * 工具链版本
-  - B80, B80B, B85, B87, TC321X(A0): TC32 ELF GCC4.3 ( IDE: [Telink IDE](https://wiki.telink-semi.cn/wiki/IDE-and-Tools/IDE-for-TLSR8-Chips/)/ [TelinkIoTStudio_V2025.2](https://doc.telink-semi.cn/tools/telink_iot_studio/TelinkIoTStudio_V2025.2.zip) )
+  - B80, B80B, B85, B87, TC321X(A0): TC32 ELF GCC4.3 ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
 
 <hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
 
