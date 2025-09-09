@@ -16,7 +16,7 @@
   - TC321X: C1T357A20_V1_1
 
 * Toolchain Version
-  - B80, B80B, B85, B87, TC321X(A0): TC32 ELF GCC4.3 ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - B80, B80B, B85, B87, TC321X(A1/A0): TC32 ELF GCC4.3 ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
 
 <hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
 
@@ -26,7 +26,7 @@
 * **pm**
   * (b80/b85/b87/b89/tc321X):Fixed the issue where pmParam.wakeup_src was not updated after the suspend was wakeuped.(merge_requests/@791)
 * **flash**
-  * (b80/b85/b87/b89/tc1211/tc122x/tc321X) fix data access error in flash write API when passed in a const buffer pointer(merge_requests/@817)
+  * (b80/b85/b87/b89/tc1211/tc122x/tc321X) fix data access error in flash write API when passed in a const buffer pointer.(merge_requests/@817)
 
 ### BREAKING CHANGES
 * N/A
@@ -67,7 +67,7 @@
   - TC321X: C1T357A20_V1_1
 
 * 工具链版本
-  - B80, B80B, B85, B87, TC321X(A0): TC32 ELF GCC4.3 ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - B80, B80B, B85, B87, TC321X(A1/A0): TC32 ELF GCC4.3 ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
 
 <hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
 
@@ -75,9 +75,9 @@
 * **sd adc**
   * (tc321x):更新A0芯片的gain卡控范围。(merge_requests/@820)
 * **pm**
-  * (b80/b85/b87/b89/tc321X):解决了suspend唤醒后，pmParam.wakeup_src没有更新唤醒源的问题.(merge_requests/@791)
+  * (b80/b85/b87/b89/tc321X):解决了suspend唤醒后，pmParam.wakeup_src没有更新唤醒源的问题。(merge_requests/@791)
 * **flash** 
-  * (b80/b85/b87/b89/tc1211/tc122x/tc321X) 解决了写flash API在传入常量buffer指针时的数据访问出错问题(merge_requests/@817)
+  * (b80/b85/b87/b89/tc1211/tc122x/tc321X) 解决了写flash API在传入常量buffer指针时的数据访问出错问题。(merge_requests/@817)
 
 ### BREAKING CHANGES
 * N/A
@@ -94,7 +94,7 @@
 * **.link**
   * (tc321x):修改retention_data段位置。(merge_requests/@811)
 * **rf**
-  * (B85/B87)调整rf_ldot_ldo_rxtxlf_bypass_en/rf_ldot_ldo_rxtxlf_bypass_dis接口定义到C文件中(merge_requests/@818)
+  * (B85/B87)调整rf_ldot_ldo_rxtxlf_bypass_en/rf_ldot_ldo_rxtxlf_bypass_dis接口定义到C文件中。(merge_requests/@818)
   * (tc321x)根据当前硬件版本更新RF TX power表定义。(merge_requests/@818)
   * (B85/B87)为了与其他芯片的接口定义一致，调整了rf_tx_acc_code_select/rf_set_tx_rx_off的接口定义。(merge_requests/@825)
 
