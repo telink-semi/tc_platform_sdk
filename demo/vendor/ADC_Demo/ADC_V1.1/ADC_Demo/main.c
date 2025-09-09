@@ -24,15 +24,12 @@
 #include "app_config.h"
 #include "calibration.h"
 
+
 extern void user_init(void);
 extern void main_loop (void);
+extern unsigned char sd_adc_rx_done_flag;
 
-int timer0_irq_cnt = 0;
-int timer1_irq_cnt = 0;
-int timer2_irq_cnt = 0;
-int stimer_irq_cnt = 0;
-unsigned int gpio_width =0;
-
+volatile unsigned char sample_cnt=0;
 /**
  * @brief		This function serves to handle the interrupt of MCU
  * @param[in] 	none
@@ -40,71 +37,32 @@ unsigned int gpio_width =0;
  */
 _attribute_ram_code_sec_noinline_ void irq_handler(void)
 {
-#if(TIMER_MODE == TIMER_SYS_CLOCK_MODE)
-	if(timer_get_interrupt_status(TMR_STA_TMR0))
+#if (ADC_MODE == ADC_DMA_MODE)
+	if(dma_chn_irq_status_get(FLD_DMA_CHN_SAR_ADC))
 	{
-		timer_clear_interrupt_status(TMR_STA_TMR0); //clear irq status
-		timer0_irq_cnt ++;
-		gpio_toggle(LED2);
+		sample_cnt++;
+		sd_adc_rx_done_flag=1;
+		adc_stop_sample_dma();
+		dma_chn_irq_status_clr(FLD_DMA_CHN_SAR_ADC);
 	}
-#elif(TIMER_MODE == TIMER_GPIO_TRIGGER_MODE)
+#endif
 
-	if(timer_get_interrupt_status(TMR_STA_TMR0))
-	{
-		timer_clear_interrupt_status(TMR_STA_TMR0); //clear irq status
-		timer0_irq_cnt ++;
-		gpio_toggle(LED2);
-	}
-
-#elif(TIMER_MODE == TIMER_GPIO_WIDTH_MODE)
-	
-	if(timer_get_interrupt_status(TMR_STA_TMR0))
-	{
-		timer_clear_interrupt_status(TMR_STA_TMR0); //clear irq status
-		gpio_toggle(LED2);
-#if (!(MCU_CORE_TC1211 || MCU_CORE_TC122X))
-		gpio_width = reg_tmr0_tick;
-		reg_tmr0_tick = 0;
-#else
-		gpio_width = reg_tmr0_tick0 | (reg_tmr0_tick1<<8) | (reg_tmr0_tick2<<16);
-		reg_tmr0_tick0 = 0;
-		reg_tmr0_tick1 = 0;
-		reg_tmr0_tick2 = 0;
-#endif
-	}
-#elif(TIMER_MODE == STIMER_MODE)
-#if (MCU_CORE_TC321X || MCU_CORE_TC122X)
-	if(stimer_get_irq_status(FLD_SYSTEM_IRQ))
-#else
-	if(stimer_get_irq_status())
-#endif
-	{
-#if (MCU_CORE_TC321X || MCU_CORE_TC122X)
-		stimer_clr_irq_status(FLD_SYSTEM_IRQ);            			//clear irq status
-#else
-		stimer_clr_irq_status();
-#endif
-		stimer_set_capture_tick(clock_time() + CLOCK_SYS_TIMER_CLK_1S);
-		stimer_irq_cnt++;
-		gpio_toggle(LED2);
-	}
-#endif
-	
 }
+
 /**
  * @brief		This is main function
  * @param[in]	none
  * @return      none
  */
-int main (void)
-{
+int main (void) {
+
     PLATFORM_INIT;
     CLOCK_INIT;
 
 	user_init();
 
 	while (1) {
-		main_loop();
+		main_loop ();
 	}
 	return 0;
 }

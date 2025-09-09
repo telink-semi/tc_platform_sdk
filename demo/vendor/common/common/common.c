@@ -99,6 +99,7 @@ flash_hal_user_handler_t flash_handler = {
     .flash_cnt = (sizeof(flash_init_list) / sizeof(flash_user_defined_list_t)),
 };
 
+
 void flash_init(unsigned char flash_protect_en)
 {
     unsigned char flash_init_flag = hal_flash_init(&flash_handler);
@@ -119,6 +120,29 @@ void flash_init(unsigned char flash_protect_en)
 
 void platform_init(unsigned char flash_protect_en)
 {
+    /**
+	===============================================================================
+						 ##### update system status #####
+	===============================================================================
+	You need to update the system status and set it to a fixed value.
+	Otherwise, the next judgment may be inaccurate because the corresponding value is not configured.
+	===============================================================================
+	*/
+#if defined(MCU_CORE_TC122X)
+    pm_update_status_info(1);
+
+    if(pmParam.mcu_status == MCU_POWER_ON)
+    {
+		if((analog_read(PM_ANA_REG_WD_CLR_BUF0) & FLASH_BIN) == 0x00)
+		{
+		    for(volatile unsigned int i = 0; i < 300000; i++)
+		    {
+		        asm("tnop");
+		    }
+		}
+    }
+#endif
+
 #if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89  || MCU_CORE_TC1211 || MCU_CORE_TC122X)
     cpu_wakeup_init(INTERNAL_CAP_XTAL24M);
 #elif (MCU_CORE_B85)
@@ -152,19 +176,17 @@ void platform_init(unsigned char flash_protect_en)
     user_read_efuse_value_calib();
 #endif
 
-#if ((!DUT_TEST) && (!MCU_CORE_TC1211))
+#if ((!DUT_TEST) && (!MCU_CORE_TC1211) && (!MCU_CORE_TC122X))
     int deepRetWakeUp = pm_is_MCU_deepRetentionWakeup();
     gpio_init(!deepRetWakeUp);
 #endif
 
-
-#if !(MCU_CORE_TC1211 || MCU_CORE_TC122X)
+#if MCU_CORE_TC1211
+    gpio_digital_pullup_en(GPIO_SWS,1);
+#else
     // Note: This is to set SWS pull. If SWS is not set up, SWS will be floating, causing abnormal sleep currents of suspend,
     // there may be the risk of sws miswriting the chip registers or sram causing a crash.
     gpio_setup_up_down_resistor(GPIO_SWS, PM_PIN_PULLUP_1M);
-#elif MCU_CORE_TC1211
-    gpio_digital_pullup_en(GPIO_SWS,1);
-
 #endif
 
     /**
@@ -180,8 +202,19 @@ void platform_init(unsigned char flash_protect_en)
     @note if flash protection fails, LED1 lights up long, and keeps while.
     ===============================================================================
     */
-#if !defined(DUT_TEST) && !(defined(MCU_CORE_TC1211)) && !(defined(MCU_CORE_TC122X))
+#if (defined(DUT_TEST) || defined(MCU_CORE_TC1211))
+
+#elif defined(MCU_CORE_TC122X)
+    unsigned char anareg_35 = analog_read(PM_ANA_REG_WD_CLR_BUF0);
+
+	if((anareg_35 & FLASH_BIN) == FLASH_BIN)
+	{
+		flash_init(flash_protect_en);
+	}
+
+#else
     flash_init(flash_protect_en);
+
 #endif
 
 }

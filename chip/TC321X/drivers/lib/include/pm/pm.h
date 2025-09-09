@@ -37,8 +37,9 @@
 #define PM_ANA_REG_WD_CLR_BUF4       0x39 // initial value 0x00.
 
 /**
+ * @note  this register else will be lost upon reboot.
  * @brief analog register below can store information when MCU in deep sleep mode or deep sleep with SRAM retention mode.
- *        Reset these analog registers by power cycle, 32k watchdog, RESET Pin.
+ *        Reset these analog registers by power cycle, 32k watchdog, RESET Pin, watchdog, software reboot (sys_reboot()).
  */
 #define PM_ANA_REG_POWER_ON_CLR_BUF1 0x3b // initial value 0x00.
 #define PM_ANA_REG_POWER_ON_CLR_BUF2 0x3c // initial value 0xff.
@@ -97,10 +98,10 @@ typedef enum
  */
 typedef enum
 {
-    PM_WAKEUP_PAD           = FLD_WAKEUP_STATUS_PAD,
-//  PM_WAKEUP_CORE_QDEC     = ( (FLD_WAKEUP_SRC_QDEC  << 8) | FLD_WAKEUP_STATUS_CORE ),
-//  PM_WAKEUP_CORE_KEY_SCAN = ( (FLD_WAKEUP_SRC_KS    << 8) | FLD_WAKEUP_STATUS_CORE ),
-    PM_WAKEUP_TIMER         = FLD_WAKEUP_STATUS_TIMER,
+    PM_WAKEUP_PAD           = FLD_WAKEUP_PAD_EN,
+//    PM_WAKEUP_CORE_QDEC     = ( (FLD_WAKEUP_SRC_QDEC  << 8) | FLD_WAKEUP_STATUS_CORE ),
+//    PM_WAKEUP_CORE_KEY_SCAN = ( (FLD_WAKEUP_SRC_KS    << 8) | FLD_WAKEUP_STATUS_CORE ),
+    PM_WAKEUP_TIMER         = FLD_WAKEUP_TIMER_EN,
 }SleepWakeupSrc_TypeDef;
 
 /**

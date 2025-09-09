@@ -74,7 +74,6 @@ void ir_learn_rx_mode(ir_learn_rx_e rx_mode)
         break;
     case ANALOG_RX_MODE:
         ir_learn_ana_rx_en();
-        analog_write(0x14, 0x34);
         break;
     default:
         break;
@@ -100,7 +99,7 @@ void ir_learn_rx_init(ir_learn_rx_t *ir_learn_rx)
 {
     unsigned short ir_dma_send_buff_rev[3]={0x0002, 0x0000, 0x8001};
 
-    ir_learn_rx_mode(ir_learn_rx->rx_mode); /* TODO: A2 chip version need software trig timing to fix the first edge loss issue. */
+    ir_learn_rx_mode(ir_learn_rx->rx_mode);
     reg_il_cfg0 = MASK_VAL(FLD_IL_MODE, ir_learn_rx->cnt_mode, FLD_IL_INPUT_SEL, ir_learn_rx->rx_mode);
     reg_il_cfg1 = (reg_il_cfg1 & (~FLD_IL_TIMEOUT)) |MASK_VAL(FLD_IL_TIMEOUT, ir_learn_rx->timeout_cnt);
 

@@ -134,6 +134,7 @@ static _always_inline void clock_set_all_clock_to_default(void)
 {
     reg_clk_sel = (unsigned char)SYS_CLK_24M_RC;              //change to 24M rc clock
 }
+
 /**
  * @brief       This function use to save all clock configuration for the follow-up restore. 
  * @return      system clock config.

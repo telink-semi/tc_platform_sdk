@@ -1889,6 +1889,8 @@ enum{
 	FLD_EN_BYPASS_LDO_1P8V            = BIT(0),
 };
 
+#define areg_aon_0x03                   0x03
+
 #define areg_aon_0x05			        0x05
 enum{
 	FLD_32K_RC_PD						= BIT(0),
@@ -1909,13 +1911,15 @@ enum{
 	FLD_PM_PD_UVLO_IB         = BIT(4),//0
 	FLD_PD_VDD_DCORE          = BIT(5),//0
 	FLD_PD_SPD_LDO            = BIT(6),//1
-	FLD_PD_DIG_RET_LDO        = BIT(7),//1
+	FLD_PD_RET_LDO        = BIT(7),//1
 };
 
 #define areg_aon_0x08         0x08
 enum{
     FLD_SD_ADC_REF_VOL_SEL    = BIT(3),//0:select VMID as ADC reference voltage; 1:select VBG as ADC reference voltage
 };
+
+#define areg_aon_0x0a			        0x0a
 
 #define areg_aon_0x0b			        0x0b
 enum{
@@ -1974,6 +1978,7 @@ enum{
 };
 
 /**
+ * @note : This register else will be lost upon reboot.
  * Customers cannot use analog register 0x3a because driver and chip functions are occupied, details are as follows:
  * [Bit0]: If this bit is 1, it means that reboot has occurred.
  * REBOOT_MANUAL, it means that manually invoke the reboot interface.
@@ -1994,30 +1999,33 @@ typedef enum{
     WAIT_TIMEOUT                  = 0x03,
 }pm_sw_reboot_reason_e;
 
-
-#define areg_aon_0x4c          0x4c
+#define areg_aon_0x4b          0x4b
 enum{
-    FLD_PD_32K_RC               = BIT(0),
-	//rsvd             = BIT(1),
-    FLD_PD_24M_RC            = BIT(2),
-    FLD_PD_24M_XTAL             = BIT(3),
-    FLD_PD_LOGIC                = BIT(4),
-    FLD_PD_DCDC                 = BIT(5),
-	//rsvd             = BIT(6),
-    FLD_PD_ANA_BBPLL_TEMP_LDO   = BIT(7),
+    FLD_WAKEUP_PAD_EN               = BIT(0),
+//    FLD_WAKEUP_CORE_EN              = BIT(1),
+    FLD_WAKEUP_TIMER_EN             = BIT(2),
+    FLD_WAKEUP_SHUTDOWN_EN          = BIT(7),
+};
+
+#define areg_aon_0x4c               0x4c
+enum{
+	FLD_PD_RC32K_AUTO               = BIT(0),
+	//RSVD
+	FLD_PD_RC24M_AUTO               = BIT(2),
+	FLD_PD_XTAL24M_AUTO             = BIT(3),
+    FLD_PD_PL_ALL_AUTO              = BIT(4),
+    FLD_PD_DCDC_AUTO                = BIT(5),
+	//RSVD
+    FLD_PD_ANA_BBPLL_TEMP_LDO_AUTO  = BIT(7),
 
 };
-#define areg_aon_0x4d          0x4d
+#define areg_aon_0x4d               0x4d
 enum{
-
-	//rsvd                 = BIT(0),
-//    rsvd            = BIT(1),
-    FLD_PD_UVLO_IB              = BIT(2),////Cannot be turned off during sleep.
-	//rsvd              = BIT(3),
-//    rsvd           = BIT(4),
-//    rsvd           = BIT(5),
-    FLD_PD_SEQUENCE_EN          = BIT(6),
-    FLD_PD_ISOLATION            = BIT(7),
+	//RSVD
+    FLD_PD_UVLO_IB_AUTO             = BIT(2),////Cannot be turned off during sleep.
+	//RSVD
+	FLD_PWDN_EN                     = BIT(6),
+	FLD_ISO_EN                      = BIT(7),
 };
 #define areg_aon_0x4f                   0x4f
 enum{
@@ -2028,9 +2036,9 @@ enum{
 #define areg_aon_0x64           0x64
 typedef enum {
     FLD_WAKEUP_STATUS_PAD           = BIT(0),
-   // FLD_WAKEUP_STATUS_CORE          = BIT(1),
+    //RSVD
     FLD_WAKEUP_STATUS_TIMER         = BIT(2),
-    //FLD_WAKEUP_STATUS_COMPARATOR    = BIT(3),
+    //RSVD
 	FLD_32K_WD_OVERFLOW_STATUS      = BIT(7),
     //To clear all wake sources, the parameter of this interface is usually FLD_WAKEUP_STATUS_ALL
     //instead of FLD_WAKEUP_STATUS_INUSE_ALL.
@@ -2041,6 +2049,30 @@ typedef enum {
     //that are not in use may have been set up.
     FLD_WAKEUP_STATUS_INUSE_ALL     = 0x05,
 }pm_wakeup_status_e;
+
+/**
+ * BIT[0] 1:power down baseband.
+ * BIT[2] 1:power down audio.
+ * BIT[7] 1:enable change power sequence clk.
+ */
+#define areg_aon_0x7d                0x7d //analog always on, even in deep retention
+enum
+{
+    FLD_PG_ZB_EN                        = BIT(0),
+    FLD_PG_AUDIO_EN                     = BIT(2),
+    FLD_PG_CLK_EN                       = BIT(7),
+};
+
+/**
+ * @brief   pm power weather to power down definition
+ */
+typedef enum {
+     PM_POWER_BASEBAND      = BIT(0),   //weather to power on the BASEBAND before suspend.
+     PM_POWER_AUDIO         = BIT(2),   //weather to power on the AUDIO before suspend.
+}pm_pd_module_e;
+
+#define areg_aon_0x7e           0x7e
+
 #define areg_aon_rc32k_cap_bits_0_to_2  0x4f
 #define areg_aon_rc32k_res_bits_0_to_5  0x50
 #define areg_aon_rc32k_res_bits_6_to_13 0x51
@@ -2048,6 +2080,11 @@ typedef enum {
 #define areg_rc_24m_cap                 0x52
 
 /*******************************      analog registers(1v): 0x80      ***************************/
+#define areg_aon_0x81           0x81
+enum{
+	FLD_PD_48M_DOUBLER	        = BIT(4),
+};
+
 #define areg_clk_setting				0x82
 enum{
 	FLD_DCCC_DOUBLER_POWER_DOWN	        = BIT(3),
@@ -2089,26 +2126,6 @@ enum{
 #define codec_ana_cfg2                  0xe6
 #define codec_ana_cfg3                  0xe7
 #define codec_ana_cfg4                  0xe8
-/**
- * BIT[0] 1:power down baseband.
- * BIT[2] 1:power down audio.
- * BIT[7] 1:enable change power sequence clk.
- */
-#define areg_aon_0x7d                0x7d //analog always on, even in deep retention
-enum
-{
-    FLD_PG_ZB_EN                        = BIT(0),
-    FLD_PG_AUDIO_EN                     = BIT(2),
-    FLD_PG_CLK_EN                       = BIT(7),
-};
-
-/**
- * @brief   pm power weather to power down definition
- */
-typedef enum {
-     PM_POWER_BASEBAND      = BIT(0),   //weather to power on the BASEBAND before suspend.
-     PM_POWER_AUDIO         = BIT(2),   //weather to power on the AUDIO before suspend.
-}pm_pd_module_e;
 
 /**
  * BIT[0] 1:Force start for XO LDO PTAT loop

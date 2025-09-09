@@ -4,9 +4,9 @@
  * @brief   This is the source file for Telink MCU
  *
  * @author  Driver Group
- * @date    2018
+ * @date    2025
  *
- * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ * @par     Copyright (c) 2025, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
  *
  *          Licensed under the Apache License, Version 2.0 (the "License");
  *          you may not use this file except in compliance with the License.
@@ -28,23 +28,16 @@
 extern void user_init(void);
 extern void main_loop (void);
 
-/**
- * @brief		This function serves to handle the interrupt of MCU
- * @param[in] 	none
- * @return 		none
- */
-_attribute_ram_code_sec_noinline_ void irq_handler(void)
-{
 
-}
 /**
  * @brief		This is main function
  * @param[in]	none
  * @return      none
  */
-int main (void) {
-
+int main (void)
+{
     PLATFORM_INIT;
+
     CLOCK_INIT;
 
 	user_init();
@@ -54,4 +47,3 @@ int main (void) {
 	}
 	return 0;
 }
-

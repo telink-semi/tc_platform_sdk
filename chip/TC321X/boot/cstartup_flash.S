@@ -126,6 +126,7 @@ __start:					@ MUST,  referenced by boot.link
 	.extern  _ictag_start_
 	.extern  _ictag_end_
 	.extern  g_pm_multi_addr
+	.extern _retention_data_size_align_256_
 	.org 0x0
 	tj	__reset
 #ifdef DUT_TEST
@@ -136,7 +137,7 @@ __start:					@ MUST,  referenced by boot.link
 	.word	(0x544c4e4b)
 	@Boot will write the value here to the digital register 0x602, mainly the difference of 0x602[4],
 	@write 0 to fetch instructions from flash;
-
+/* 
 #if(SRAM_SIZE   ==  SRAM_32K)
 #if	ALL_SRAM_CODE
 	.word	(0x00880000 + _bin_size_div_16)
@@ -144,10 +145,15 @@ __start:					@ MUST,  referenced by boot.link
 	.word	(0x00880000 + _ramcode_size_div_16_align_256_)
 #endif
 #elif(SRAM_SIZE   ==  SRAM_64K )
-    .word	(0x00880000 + _cstartup_ram_funcs_size_div_16_)
+*/
+    .word	(0x00880000 + _retention_data_size_align_256_)
+
+	.extern rf_sw_config
 	.extern copy_ramcode
 	.extern copy_bincode
+/* 
 #endif
+*/
 
 	.org 0x10
 	tj		__irq
@@ -328,20 +334,7 @@ FLL_STK_END:
 	tmcsr	r0								@CPSR=r0
 	tloadr	r0, DAT0 + 12					@r0 = 0x850000
 	tmov	r13, r0  						@r13= r0		update SP under SVC mode
-@********************************************************************************************************
-@                                    .BSS INITIALIZATION FOR 0
-@********************************************************************************************************
-	tmov	r0, #0							@r0 = 0
-	tloadr	r1, DAT0 + 16					@r1 = _start_bss_
-	tloadr	r2, DAT0 + 20					@r2 = _end_bss_
 
-ZERO_BSS_BEGIN:
-	tcmp	r1, r2
-	tjge	ZERO_BSS_END					@r1>=r2 jump to ZERO_BSS_END
-	tstorer	r0, [r1, #0]					@*(unsigned int*)(_start_bss_)=r0=0
-	tadd    r1, #4							@r1 = r1 + 4
-	tj		ZERO_BSS_BEGIN					@jump to ZERO_BSS_BEGIN
-ZERO_BSS_END:
 @********************************************************************************************************
 @                                    IC TAG INITIALIZATION
 @********************************************************************************************************
@@ -425,18 +418,36 @@ DEEP_RETENTION_BRANCH:
 POWER_ON_OR_DEEP_BRANCH:
 #endif
 
-#if(SRAM_SIZE == SRAM_64K)
+	tjl rf_sw_config
+
+@********************************************************************************************************
+@                                    .BSS INITIALIZATION FOR 0
+@********************************************************************************************************
+	tmov	r0, #0							@r0 = 0
+	tloadr	r1, DAT0 + 16					@r1 = _start_bss_
+	tloadr	r2, DAT0 + 20					@r2 = _end_bss_
+
+ZERO_BSS_BEGIN:
+	tcmp	r1, r2
+	tjge	ZERO_BSS_END					@r1>=r2 jump to ZERO_BSS_END
+	tstorer	r0, [r1, #0]					@*(unsigned int*)(_start_bss_)=r0=0
+	tadd    r1, #4							@r1 = r1 + 4
+	tj		ZERO_BSS_BEGIN					@jump to ZERO_BSS_BEGIN
+ZERO_BSS_END:
+	
+//if(SRAM_SIZE == SRAM_64K)
 #if (ALL_SRAM_CODE&&(ALL_SRAM_START_MODE == ALL_SRAM_WITH_FLASH_START))
     tjl copy_bincode
 #elif(ALL_SRAM_CODE ==0)
     tjl copy_ramcode
 #endif
-#endif
+//#endif
 
 
 @********************************************************************************************************
 @                                    RETENTION DATA INITIALIZATION
 @********************************************************************************************************
+/*
 COPY_RET_DATA:
 	tloadr		r1, DATA_I					@ r1 = _rstored_
 	tloadr		r2, DATA_I+4				@ r2 = _retention_data_start_
@@ -450,7 +461,7 @@ COPY_RET_DATA_BEGIN:
 	tadd		r2, #4						@ r2 = r2 + 4
 	tj			COPY_RET_DATA_BEGIN			@ jump to COPY_RET_DATA_BEGIN
 COPY_RET_DATA_END:
-
+*/
 @********************************************************************************************************
 @                                    DATA INITIALIZATION
 @********************************************************************************************************
@@ -502,6 +513,7 @@ DAT0:
 	.word	(0x00f000)    				@36
 #endif
 	.word	_ramcode_size_align_256_    @40
+	.word   _retention_data_size_align_256_ @44
 
 DATA_I:	
 	.word   (_rstored_)                 @0

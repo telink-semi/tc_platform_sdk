@@ -37,6 +37,7 @@
  */
 #define PM_DEBUG                 0
 //1 PB4, 2 PB5
+#define PM_DEBUG_PAD             GPIO_PB5
 #define PM_SUSPEND_WHILE_DEBUG   0
 #define PM_SUSPEND_WHILE_DEBUG_2 0
 #define PM_MIN_CODE_DEBUG        0
