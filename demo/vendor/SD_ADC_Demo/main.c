@@ -26,6 +26,7 @@
 extern void user_init(void);
 extern void main_loop (void);
 
+#if (DEMO_MODE==NORMAL_MODE)
 extern volatile unsigned char flag;
 
 /**
@@ -43,6 +44,14 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
     }
 }
 
+#else
+
+_attribute_ram_code_sec_noinline_ void irq_handler(void)
+{
+
+}
+
+#endif
 /**
  * @brief       This is main function
  * @param[in]   none

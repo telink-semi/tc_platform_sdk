@@ -1,3 +1,98 @@
+## V3.3.1
+
+### Version
+* SDK Version: tc_platform_sdk V3.3.1
+* Chip Version
+  - B80:  TLSR8208/TLSR8373
+  - B80B: TLSR8208 Version B
+  - B85:  TLSR825x/TLSR8359
+  - B87:  TLSR827x/TLSR8355
+  - TC321X(A1/A0)
+* Hardware EVK Version
+  - B80:    C1T261A30_V1_1
+  - B80B:   C1T321A30_V1_0
+  - B85:    C1T139A30_V1_2
+  - B87:    C1T197A30_V1_1
+  - TC321X: C1T357A20_V1_1
+
+* Toolchain Version
+  - B80, B80B, B85, B87, TC321X(A1/A0): TC32 ELF GCC4.3 ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+### Bug Fixes
+* Critical Bugs：
+  - [gpio]
+    - (TC321X):Fixed the issue where the gpio_read_all interface was unable to read the input level of the PE port.(merge_requests/@837)
+      - Fix Effect:​​ The gpio_read_all function can read the input level status of the PE port.
+      - Update Recommendation:​​ Update may be assessed as needed.
+
+* Critical Bugs：
+  - [sd adc]
+    - (TC321X):Fixed an issue in A1 version where adjusting the bangap voltage to optimize RF performance in DCDC mode caused inaccurate SD ADC voltage sampling.(merge_requests/@835)
+      - Fix Effect:​​ After adjusting the bangap voltage to optimize RF performance, it will not affect SD ADC sampling.
+      - Update Recommendation:​​ If both the RF and SD ADC modules are used simultaneously, an update is required. When using only the RF or SD ADC module individually, you may assess whether an update is necessary.
+  
+### BREAKING CHANGES
+* N/A
+
+### Features
+* **gpio**
+  * (TC321X):The gpio_analog_resistance interface now includes pull-up and pull-down control for the PE port.(merge_requests/@837)
+### Refactoring
+* N/A
+
+### Performance Improvements
+* **watchdog**
+  * (TC321X):Optimize the watchdog feeding interface to feed the hardware watchdog within an effective tick (32 us) to avoid the operation of stopping the watchdog.(merge_requests/@836)
+
+### 版本
+* SDK 版本: tc_platform_sdk V3.3.1
+* 芯片版本
+  - B80:  TLSR8208/TLSR8373
+  - B80B: TLSR8208 Version B
+  - B85:  TLSR825x/TLSR8359
+  - B87:  TLSR827x/TLSR8355
+  - TC321X(A1/A0)
+* 硬件评估板版本
+  - B80:    C1T261A30_V1_1
+  - B80B:   C1T321A30_V1_0
+  - B85:    C1T139A30_V1_2
+  - B87:    C1T197A30_V1_1
+  - TC321X: C1T357A20_V1_1
+
+* 工具链版本
+  - B80, B80B, B85, B87, TC321X(A1/A0): TC32 ELF GCC4.3 ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+### Bug Fixes
+* General Bugs：
+  - [gpio]
+    - (TC321X):修复了gpio_read_all接口无法读取PE口输入电平的问题。(merge_requests/@837)
+      - 修复效果:​​ gpio_read_all可以读取PE口输入电平状态。
+      - 更新建议:​​ gpio_read_all，可自行评估是否更新。
+
+* Critical Bugs：
+  - [sd adc]
+    - (TC321X):修复了A1版本在DCDC模式下，由于调节bangap电压优化rf性能后，影响sd adc电压采样不准的问题。(merge_requests/@835)
+      - 修复效果:​​ 调节bangap电压优化rf性能后，不会影响sd adc采样。
+      - 更新建议:​​ 如果同时使用了rf和sd adc模块，必须更新。仅单独用rf或sd adc模块，可自行评估是否更新。
+
+### BREAKING CHANGES
+* N/A
+
+### Features
+* **gpio**
+  * (TC321X):gpio_analog_resistance  接口中增加了PE 端口的上下拉控制(merge_requests/@837)
+  
+### Refactoring
+* N/A
+
+### Performance Improvements
+* **watchdog**
+  * (TC321X):优化喂狗的接口，在硬件看门狗的一个有效tick（32us）内，进行喂狗，以避免stop看门狗的操作。(merge_requests/@836)
+---
 ## V3.3.0
 
 ### Version
@@ -22,29 +117,32 @@
 
 ### Bug Fixes
 * **sd adc**
-  * (tc321x):Update the gain range for chip version A0.(merge_requests/@820)
+  * (TC321X):Based on ATE test big data, update the card control range for the A0 chip gain calibration value to prevent reading abnormal calibration values.(merge_requests/@820)
 * **pm**
-  * (b80/b85/b87/b89/tc321X):Fixed the issue where pmParam.wakeup_src was not updated after the suspend was wakeuped.(merge_requests/@791)
+  * (b80/b85/b87/b89/TC321X):Fixed the issue where pmParam.wakeup_src was not updated after the suspend was wakeuped.(merge_requests/@791)
 * **flash**
-  * (b80/b85/b87/b89/tc1211/tc122x/tc321X) fix data access error in flash write API when passed in a const buffer pointer.(merge_requests/@817)
+  * (b80/b85/b87/b89/TC321X) fix data access error in flash write API when passed in a const buffer pointer.(merge_requests/@817)
 
 ### BREAKING CHANGES
 * N/A
 
 ### Features
 * **watchdog**
-  * (tc321x): The A1S1 version adds a new timer watchdog feature. (merge_requests/@814)
+  * (TC321X): The A1 version adds a new timer watchdog feature. (merge_requests/@814)
 * **sd adc**
-  * (tc321x):  Add the default calibration values for chip version A1.(merge_requests/@820)
-
+  * (TC321X):Due to the inconsistent linearity of the SD ADC in A0 and A1, the default calibration value for the A1 chip has been added to ensure more accurate sampling by the A1 chip's SD ADC.(merge_requests/@820)
+* **stimer**
+  * (TC321X): Added interfaces related to stimer track 32krc and stimer read/write 32krc tick value. (merge_requests/@726)
+* **pwm**
+  * (TC321X):Added DMA_PINGPONG_MODE in IR DMA FIFO mode, enabling the FIFO to be configured with CFG group length increased from 511 bytes to 1033 bytes.(merge_requests/@803)  
 ### Refactoring
 * **.S**
-  * (tc321x):Added RF software configuration invocation, related interface: rf_sw_config. Adjusted the clearing of the BSS section location.(merge_requests/@811)
+  * (TC321X):Added RF software configuration invocation, related interface: rf_sw_config. Adjusted the clearing of the BSS section location.(merge_requests/@811)
 * **.link**
-  * (tc321x):Modified the retention_data section location.(merge_requests/@811)
+  * (TC321X):Modified the retention_data section location.(merge_requests/@811)
 * **rf**
   * (B85/B87)Adjusted the interface definitions of rf_ldot_ldo_rxtxlf_bypass_en/rf_ldot_ldo_rxtxlf_bypass_dis to the C file (merge_requests/@818).
-  * (tc321x)Update RF TX power table definitions based on the current hardware version.(merge_requests/@818)
+  * (TC321X)Update RF TX power table definitions based on the current hardware version.(merge_requests/@818)
   * (B85/B87)Adjusted the interface definitions of rf_tx_acc_code_select/rf_set_tx_rx_off to align with those of other chips.(merge_requests/@825)
 
 ### Performance Improvements
@@ -73,29 +171,32 @@
 
 ### Bug Fixes
 * **sd adc**
-  * (tc321x):更新A0芯片的gain卡控范围。(merge_requests/@820)
+  * (TC321X):根据ATE测试大数据，更新A0芯片gain校准值的卡控范围，避免读取到异常校准值。(merge_requests/@820)
 * **pm**
   * (b80/b85/b87/b89/tc321X):解决了suspend唤醒后，pmParam.wakeup_src没有更新唤醒源的问题。(merge_requests/@791)
 * **flash** 
-  * (b80/b85/b87/b89/tc1211/tc122x/tc321X) 解决了写flash API在传入常量buffer指针时的数据访问出错问题。(merge_requests/@817)
+  * (b80/b85/b87/b89/tc321X) 解决了写flash API在传入常量buffer指针时的数据访问出错问题。(merge_requests/@817)
 
 ### BREAKING CHANGES
 * N/A
 
 ### Features
 * **watchdog**
-  * (tc321x):A1S1版本新增timer watchdog功能。(merge_requests/@814)
+  * (TC321X):A1版本新增timer watchdog功能。(merge_requests/@814)
 * **sd adc**
-  * (tc321x):添加A1芯片的默认校准值。(merge_requests/@820)
-  
+  * (TC321X):由于A0和A1的sd adc线性度不一致，所以添加了A1芯片的默认校准值，使得A1芯片sd adc采样更准确。(merge_requests/@820)
+* **stimer**
+  * (TC321X)：新增stimer track 32krc和stimer读写32krc tick值的相关接口，(merge_requests/@726)
+* **pwm**
+  * (TC321X):IR DMA FIFO模式下添加了DMA_PINGPONG_MODE，使得fifo可配置cfg组长度从511byte提升到1033byte。(merge_requests/@803)  
 ### Refactoring
 * **.S**
-  * (tc321x):增加RF软件配置调用，相关接口：rf_sw_config。调整清BSS段位置。(merge_requests/@811)
+  * (TC321X):增加RF软件配置调用，相关接口：rf_sw_config。调整清BSS段位置。(merge_requests/@811)
 * **.link**
-  * (tc321x):修改retention_data段位置。(merge_requests/@811)
+  * (TC321X):修改retention_data段位置。(merge_requests/@811)
 * **rf**
   * (B85/B87)调整rf_ldot_ldo_rxtxlf_bypass_en/rf_ldot_ldo_rxtxlf_bypass_dis接口定义到C文件中。(merge_requests/@818)
-  * (tc321x)根据当前硬件版本更新RF TX power表定义。(merge_requests/@818)
+  * (TC321X)根据当前硬件版本更新RF TX power表定义。(merge_requests/@818)
   * (B85/B87)为了与其他芯片的接口定义一致，调整了rf_tx_acc_code_select/rf_set_tx_rx_off的接口定义。(merge_requests/@825)
 
 ### Performance Improvements
@@ -129,59 +230,61 @@
 * **ir_learn**
   * (TC321x)Fix the issue where the IR_Learn module's idle level is low during IR_Learn simulation reception, resulting in the first edge not being captured.(merge_requests/@797)
 * **pm**
-  * (tc321x):pm_set_dig_module_power_switch interface, 0x7d power switching need to wait for about 3us delay, otherwise lead to program exception.(merge_requests/@771)
-  * (tc321x):start_reboot interface，reboot is abnormal, use "deep" instead.(merge_requests/@770)
-  * (tc321x):To address the issue of current pulses generated when the suspend LDO is turned on in LDO mode during suspend, the system first switches to DCDC mode, then turns on the suspend LDO, and finally returns to LDO mode. After waking up from suspend, the LDO is not turned off. Under active mode, both the suspend LDO and the main LDO will supply power together.(merge_requests/@762)(merge_requests/@779)
+  * (TC321X):pm_set_dig_module_power_switch interface, 0x7d power switching need to wait for about 3us delay, otherwise lead to program exception.(merge_requests/@771)
+  * (TC321X):start_reboot interface，reboot is abnormal, use "deep" instead.(merge_requests/@770)
+  * (TC321X):To address the issue of current pulses generated when the suspend LDO is turned on in LDO mode during suspend, the system first switches to DCDC mode, then turns on the suspend LDO, and finally returns to LDO mode. After waking up from suspend, the LDO is not turned off. Under active mode, both the suspend LDO and the main LDO will supply power together.(merge_requests/@762)(merge_requests/@779)
 * **sd_adc**
-  * (TC321x) Fixed the error in the register.h file regarding the FLD_DFIFO_WPTR2 enumeration value.
-  * (TC321x) Fixed the issue in the sd_adc.c file where the sd_adc_set_vmid() function's disable operation read the incorrect address. 
+  * (TC321x) Fixed an error in the FLD_DFIFO_WPTR2 enumeration value within the register.h file to prevent SD ADC FIFO clearing failures.(merge_requests/@758)
+  * (TC321x) Fixed an incorrect address read during the disable operation in the `sd_adc_set_vmid()` function within the `sd_adc.c` file to prevent the SD ADC from failing to disable the VMID voltage.(merge_requests/@758)
   (merge_requests/@758)
 * **audio**
-  * (TC321x)Fixed PC hanging problem caused by accessing sys bus after switching analog 0x7d audio power.(merge_requests/@775)
+  * (TC321x)Fixed an issue where repeatedly toggling audio power would cause a hang. After the fix, repeatedly toggling audio power will not result in abnormal behavior. The modified interface `pm_set_dig_module_power_switch` increases the binary size by 224 bytes.(merge_requests/@775)
 * **SPI** 
   * (TC321x) Fix the problem that PB0/PB1/PE0/PE1 parameters do not take effect in spi_set_pin interface.(merge_requests/@781)
 * **watchdog** 
   * (TC321x) Since the software reset of the A0 chip cannot be used, the Timer watchdog cannot be used. Therefore, the watchdog-related interfaces are removed.(merge_requests/@792)
-  
+
 ### BREAKING CHANGES
 * **pll**
   * (B80/B80B)Customers cannot use the bit that uses the PM_ANA_REG_POWER_ON_CLR_BUF0[bit2] (0x3a[2]) flag to indicate whether a restart caused by a PLL exception occurred.(merge_requests/@711)
   * (B80/B80B/B87)The criteria for determining the stability of the PLL have become more stringent. Previously, it was considered passed if detected once; now, it is only considered passed if it is detected three times consecutively.(merge_requests/@723)(merge_requests/@742)
 * **sd_adc**
-  * (TC321x) Remove the 1/8 input voltage divider options for the gpio mode and vbat mode of the SD_ADC module. (merge_requests/@758)
+  * (TC321x)Since the GPIO mode and VBAT mode 1/8 voltage divider are only used for internal testing and are not open to the public, the GPIO mode and VBAT mode 1/8 input voltage divider options have been removed from the SD_ADC module.(merge_requests/@758)
 * **audio**
-  * (TC321x)Refactor audio_codec_stream0_input_config, after initializing the codec, it is necessary to call audio_set_codec_en interface to enable the codec.(merge_requests/@775)
+  * (TC321x)Refactor `audio_codec_stream0_input_config`. After codec initialization, `audio_set_codec_en` must be called to enable the codec. Otherwise, the audio codec functionality remains disabled.(merge_requests/@775)
 * **rf**
-  * (B87/TC321x)The rf_mode_init() function has added an RF Rx DCOC software calibration scheme to solve the problem of poor sensitivity performance of Rx BLE1M and BLE2M in some chips with large DC-offset.(merge_requests/@766)(merge_requests/@786)
+  * (B87/TC321X)Added RF RX DCOC software calibration scheme to address the issue of poor BLE 1M and BLE 2M RX sensitivity performance in some chips with large DC offsets. This modification increases the bin size by approximately 5kB and the startup time by about 21ms for TC321X. (merge_requests/@766)(merge_requests/@786)
 
 ### Features
 * **pll**
   * (B80/B80B/B87)Add the interface pm_bbpll_zero_tolerance_check.(merge_requests/@723)(merge_requests/@742)
 * **sd_adc**
-  *(TC321x)Add a note to explain that the A0 chip does not support the temperature sampling function.
-  *(TC321x)Added sd_adc_select_vref() interface for internal use.
+  *(TC321x)Since the temperature sampling function is unavailable on the A0 chip but available on the A1 chip, a note has been added to indicate that the A0 chip does not support temperature sampling.(merge_requests/@758)
+  *(TC321x)Since the A1 chip introduces a more robust vbg reference voltage, while the A0 chip only supports the vmid reference voltage, the new sd_adc_select_vref() interface is provided for selection.(merge_requests/@758)
   (merge_requests/@758)
 * **audio**
-  * (TC321x)Clear audio pop in codec demo and add audio_codec_set_adc_power_mode interface.(merge_requests/@775)
+  * (TC321x)Code for eliminating audio pops has been added to the codec demo. Refer to this code when audio pops need to be removed. And added `audio_codec_set_adc_power_mode` interface, which can be used for low-power configurations.(merge_requests/@775)
 * **sd_adc**
-  * (TC321x):add middle value of calibration.(merge_requests/@782)
+  * (TC321x):Add default calibration values for the SD ADC on the A0 chip to improve the accuracy of SD ADC sampling.(merge_requests/@782)
 * **efuse**
   * (TC321X) Added the API efuse_protection_code_check to verify the protection code stored in the eFuse.(merge_requests/@793)
   * (TC321X) Added the efuse.h header file.(merge_requests/@793)
 * **sd_adc**
-  * (TC321x):Add flash_set_adc_calib_value() and user_calib_sd_adc() for voltage calibration.
+  * (TC321x):Added flash_set_adc_calib_value() and user_calib_sd_adc() interfaces to obtain the SD ADC calibration values from the chip, enhancing the accuracy of SD ADC sampling.(merge_requests/@798)
   
 ### Refactoring
 * **rf**
    * (B80/B80B)Added the attribute_ram_code_sec_noinline attribute to the following interfaces: rf_set_channel, rf_rx_buffer_set, rf_tx_pkt, and rf_set_power_level_index.
-   * (tc321x):Code optimization without affecting functionality.(merge_requests/@727/@726)
    * (TC321X) Update the values in the RF_PowerTypeDef structure based on hardware matching adjustments.(merge_requests/@785)
+* **audio**
    * (TC321X) Refactor audio_codec_set_adc_power_mode interface.(merge_requests/@789)
+* **pm**
+   * (TC321X):Code optimization without affecting functionality.(merge_requests/@727/@726)
 
 ### Performance Improvements
 * **rf**
-   * (tc321x): Optimize the RX sensitivity of some frequency points and modify relevant interfaces: rf_set_rxpara/rf_ldot_ldo_rxtxlf_bypass_en/rf_ldot_ldo_rxtxlf_bypass_dis(merge_requests/@769)(merge_requests/@786)
-   * (tc321x): Optimize TX modulation performance and modify the interface: rf_mode_init. (merge_requests/@796)
+   * (TC321X): Optimize the RX sensitivity of some frequency points and modify relevant interfaces: rf_set_rxpara/rf_ldot_ldo_rxtxlf_bypass_en/rf_ldot_ldo_rxtxlf_bypass_dis(merge_requests/@769)(merge_requests/@786)
+   * (TC321X): Optimized TX modulation performance and modified the interface: rf_mode_init. This modification increases the bin size by approximately 0.8KB.(merge_requests/@796)
 ### 版本
 * SDK 版本: tc_platform_sdk V3.2.0
 * 芯片版本
@@ -206,17 +309,17 @@
 * **ir_learn**
   * (TC321x)修复IR_Learn模拟接收的时候，IR_Learn模块的空闲电平是低电平，导致第一个沿无法捕获的问题。(merge_requests/@797)
 * **pm**
-  * (tc321x):pm_set_dig_module_power_switch接口，0x7d电源切换需等3us左右的延时,否则导致程序异常;(merge_requests/@771)
-  * (tc321x):start_reboot接口，reboot功能异常，使用deep代替;(merge_requests/@770)
-  * (tc321x):为了解决在ldo模式下进suspend时打开suspend ldo会产生电流脉冲的问题，会先切换到dcdc模式，然后再打开suspend ldo，然后恢复到ldo模式，在suspend唤醒后不关闭ldo，active下会有suspend ldo和主ldo共同供电。(merge_requests/@762)(merge_requests/@779)
+  * (TC321X):pm_set_dig_module_power_switch接口，0x7d电源切换需等3us左右的延时,否则导致程序异常;(merge_requests/@771)
+  * (TC321X):start_reboot接口，reboot功能异常，使用deep代替;(merge_requests/@770)
+  * (TC321X):为了解决在ldo模式下进suspend时打开suspend ldo会产生电流脉冲的问题，会先切换到dcdc模式，然后再打开suspend ldo，然后恢复到ldo模式，在suspend唤醒后不关闭ldo，active下会有suspend ldo和主ldo共同供电。(merge_requests/@762)(merge_requests/@779)
 * **sd_adc**
-  * (TC321x)修复register.h文件中FLD_DFIFO_WPTR2枚举值错误的问题。
-  * (TC321x)修复sd_adc.c文件中sd_adc_set_vmid()函数disable操作读取地址错误问题。
+  * (TC321x)修复register.h文件中FLD_DFIFO_WPTR2枚举值错误的问题，防止sd adc的fifo清除失效。(merge_requests/@758)
+  * (TC321x)修复sd_adc.c文件中sd_adc_set_vmid()函数disable操作读取地址错误问题，防止sd adc关闭vmid电压失效。(merge_requests/@758)
     (merge_requests/@758)
 * **audio**
-  * (TC321x)修复开关模拟0x7d audio电后访问sys bus会导致的PC挂住问题.(merge_requests/@775)
+  * (TC321x)修复反复开关audio power会挂住的问题,修复后,反复开关audio不会导致异常。修改后的接口`pm_set_dig_module_power_switch`会使binary size增加224bytes.(merge_requests/@775)
 * **SPI** 
-  * (TC321x)修复在spi_set_pin接口里，PB0/PB1/PE0/PE1 参数不生效问题。(merge_requests/@781)
+  * (TC321x)修复在spi_set_pin接口里，PB0/PB1/PE0/PE1 参数不生效问题。(merge_requests/@781)    
 * **watchdog** 
   * (TC321x)由于A0芯片的软件复位功能不能使用，导致Timer watchdog 不能使用，所以将watchdog相关接口删除.(merge_requests/@792)
 
@@ -225,39 +328,41 @@
   * (B80/B80B)占用PM_ANA_REG_POWER_ON_CLR_BUF0[bit2]（0x3a[2]）标志是否发生过PLL异常导致的重启，客户不能使用这个bit。(merge_requests/@711)
   * (B80/B80B/B87)判断PLL稳定的标志位的标准更加严格，以前检测到一次就通过，改为连续三次检测到才算通过。(merge_requests/@723)(merge_requests/@742)
 * **sd_adc**
-  * (TC321x)删除SD_ADC模块gpio模式和vbat模式1/8输入分压选项。(merge_requests/@758)
+  * (TC321x)由于gpio模式和vbat模式1/8分压仅用于内部测试，不对外开放，所以删除了SD_ADC模块gpio模式和vbat模式1/8输入分压选项。(merge_requests/@758)
 * **audio**
-  * (TC321x)重构了audio_codec_stream0_input_config,在codec初始化后需要再调用audio_set_codec_en使能codec.(merge_requests/@775)
+  * (TC321x)重构了`audio_codec_stream0_input_config`,在codec初始化后需要再调用`audio_set_codec_en`使能codec,否则audio codec功能未使能.(merge_requests/@775)
 * **rf**
-  * (B87/TC321X)rf_mode_init()函数添加了rf Rx DCOC软件校准方案，以解决一些直流偏移较大的芯片中BLE 1M 和BLE 2M Rx灵敏度性能较差的问题。(merge_requests/@766)(merge_requests/@786)
+    * (B87/TC321X):添加了RF RX DCOC软件校准方案，以解决一些直流偏移较大的芯片中BLE 1M 和BLE 2M RX灵敏度性能较差的问题。此修改TC321X增加bin size约5kB,增加启动时间21ms左右。(merge_requests/@766)(merge_requests/@786)
 ### Features
 * **pll**
   * (B80/B80B/B87)添加接口pm_bbpll_zero_tolerance_check。(merge_requests/@723)(merge_requests/@742)
 * **sd_adc**
-  * (TC321x)添加注释说明A0芯片不支持温度采样功能。
-  * (TC321x)新增sd_adc_select_vref()接口供内部使用。
+  * (TC321x)由于A0芯片温度采样功能不可用，A1芯片可用，所以添加了注释说明A0芯片不支持温度采样功能。(merge_requests/@758)
+  * (TC321x)由于A1芯片新增了更健壮的vbg参考电压，A0芯片仅支持vmid参考电压，所以新增sd_adc_select_vref()接口供选择。(merge_requests/@758)
     (merge_requests/@758)
 * **audio**
-  * (TC321x)在codec demo中清除了pop音.(merge_requests/@775)
+  * (TC321x)在codec demo中增加了用于清除audio pop音的代码,可以参考该代码当audio pop需要被清除,以及增加了`audio_codec_set_adc_power_mode`接口,可用于低功耗配置。(merge_requests/@775)
 * **sd_adc**
-  * (TC321x):添加校准中值。(merge_requests/@782)
+  * (TC321x):为A0芯片的sd adc添加默认校准值，使得sd adc采样更准确。(merge_requests/@782)
 * **efuse**
   * (TC321X) 新增了 efuse_protection_code_check API，用于检查存储在 eFuse 中的保护code。(merge_requests/@793)
   * (TC321X) 新增了 efuse.h 头文件。(merge_requests/@793)
 * **sd_adc**
-  * (TC321x):添加flash_set_adc_calib_value()和 user_calib_sd_adc()用于电压校准。
+  * (TC321x):添加flash_set_adc_calib_value()和 user_calib_sd_adc()接口用于获取芯片的sd adc校准值，提高sd adc采样的准确性。(merge_requests/@798)
   
 ### Refactoring
 * **rf**
    * (B80/B80B)将_attribute_ram_code_sec_noinline_属性添加到以下接口：rf_set_channel、rf_rx_buffer_set、rf_tx_pkt和rf_set_power_level_index
-   * (tc321x):代码优化，不影响功能.(merge_requests/@727/@726)
    * (TC321X) 根据硬件匹配调整，更新RF_PowerTypeDef结构体中的值。(merge_requests/@785)
+* **audio**
    * (TC321X) 重构audio_codec_set_adc_power_mode接口.(merge_requests/@789)
+* **pm**
+   * (TC321X):代码优化，不影响功能.(merge_requests/@727/@726)
 
 ### Performance Improvements
 * **rf**
-   * (tc321x):优化部分频点RX灵敏度，修改相关接口：rf_set_rxpara/rf_ldot_ldo_rxtxlf_bypass_en/rf_ldot_ldo_rxtxlf_bypass_dis(merge_requests/@769)(merge_requests/@786)
-   * (tc321x):优化TX调制性能，修改接口：rf_mode_init.(merge_requests/@796)
+   * (TC321X):优化部分频点RX灵敏度，修改相关接口：rf_set_rxpara/rf_ldot_ldo_rxtxlf_bypass_en/rf_ldot_ldo_rxtxlf_bypass_dis(merge_requests/@769)(merge_requests/@786)
+   * (TC321X):优化TX调制性能，修改接口：rf_mode_init.此修改增加bin size约0.8KB。(merge_requests/@796)
 ---
 ## V3.1.0
 

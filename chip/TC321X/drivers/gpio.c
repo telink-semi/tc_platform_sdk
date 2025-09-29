@@ -28,7 +28,7 @@
 #include "gpio.h"
 
 /**
- * @brief      This function servers to initiate pull up-down resistor of all gpio,Except GPIOE group.
+ * @brief      This function servers to initiate pull up-down resistor of all gpio,Except GPIOF group.
  * @param[in]  none
  * @return     none.
  */
@@ -73,6 +73,9 @@ static void gpio_analog_resistance_init(void)
 						(PULL_WAKEUP_SRC_PD5<<2) |
 						(PULL_WAKEUP_SRC_PD6<<4) |
 						(PULL_WAKEUP_SRC_PD7<<6));
+
+	analog_write (0x1f,  PULL_WAKEUP_SRC_PE0 |
+						(PULL_WAKEUP_SRC_PE1<<2));
 }
 /**
  * @brief      This function servers to initialization all gpio.
