@@ -39,6 +39,7 @@ void user_init(void)
 	gpio_set_output_en(LED1, 1); 		//enable output
 	gpio_set_input_en(LED1 ,0);			//disable input
 	gpio_write(LED1, 0);              	//LED On
+#if !(MCU_CORE_TC1211)
 	gpio_set_func(LED2 ,AS_GPIO);
 	gpio_set_output_en(LED2, 1); 		//enable output
 	gpio_set_input_en(LED2 ,0);			//disable input
@@ -51,6 +52,7 @@ void user_init(void)
 	gpio_set_output_en(LED4, 1); 		//enable output
 	gpio_set_input_en(LED4 ,0);			//disable input
 	gpio_write(LED4, 0);
+#endif
 
 
 #if (TIMER_MODE==TIMER_SYS_CLOCK_MODE)
@@ -82,7 +84,9 @@ void user_init(void)
 	wd_set_interval_ms(1000,CLOCK_SYS_CLOCK_1MS);
 	wd_start();
 #elif(TIMER_MODE == TIMER_32K_WATCHDOG_MODE)
+#if !(MCU_CORE_TC1211)
 	gpio_write(LED2, 1);
+#endif
 	blc_pm_select_internal_32k_crystal();
 	/**
 	 * For TC1211, period_ms must be set to a multiple of 2048ms

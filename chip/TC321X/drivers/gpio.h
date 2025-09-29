@@ -366,14 +366,16 @@ static inline unsigned int gpio_read_cache(GPIO_PinTypeDef pin, unsigned char *p
 /**
  * @brief      This function read all the pins' input level.
  * @param[out] p - the buffer used to store all the pins' input level
- * @return     none
+ * @note	   The address pointed to by the pointer is at least 5 bytes in size.  
+ * @return     none   
  */
 static inline void gpio_read_all(unsigned char *p)
 {
-	p[0] = REG_ADDR8(0x500);
-	p[1] = REG_ADDR8(0x508);
-	p[2] = REG_ADDR8(0x510);
-	p[3] = REG_ADDR8(0x518);
+	p[0] = REG_ADDR8(0x500); //PA
+	p[1] = REG_ADDR8(0x508); //PB
+	p[2] = REG_ADDR8(0x510); //PC
+	p[3] = REG_ADDR8(0x518); //PD
+	p[4] = REG_ADDR8(0x520); //PE
 }
 
 /**

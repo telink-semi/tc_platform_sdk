@@ -25,6 +25,7 @@
 #include "lib/include/pm/pm.h"
 #include "clock.h"
 #include "analog.h"
+#include "irq.h"
 
 /**
  * @brief     start 32k watchdog.
@@ -80,11 +81,12 @@ _attribute_ram_code_sec_noinline_ void wd_32k_clear_status(void)
 _attribute_ram_code_sec_noinline_ void wd_32k_set_interval_ms(unsigned int period_ms)
 {
 	unsigned int tmp_period_ms = 0;
-
 	tmp_period_ms = pm_get_32k_tick() + 32 * period_ms;
-
+	unsigned char r = irq_disable();
+	cpu_get_32k_tick();
 	analog_write(0x7c, tmp_period_ms >> 24);//ltimer_watchdog_v[31:24]
 	analog_write(0x7b, tmp_period_ms >> 16);//ltimer_watchdog_v[23:16]
 	analog_write(0x7a, tmp_period_ms >> 8);//ltimer_watchdog_v[15:8]
 	//ltimer_watchdog_v[7:0] is fixed at 0x0. Watch dog is 8ms resolutions
+	irq_restore(r);
 }
