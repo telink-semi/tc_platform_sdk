@@ -705,6 +705,12 @@
 #ifndef PULL_WAKEUP_SRC_PD7
 #define PULL_WAKEUP_SRC_PD7	0
 #endif
+#ifndef PULL_WAKEUP_SRC_PE0
+#define PULL_WAKEUP_SRC_PE0	0
+#endif
+#ifndef PULL_WAKEUP_SRC_PE1
+#define PULL_WAKEUP_SRC_PE1	0
+#endif
 
 //////////////////////////////////////////////////
 #ifndef PE0_INPUT_ENABLE

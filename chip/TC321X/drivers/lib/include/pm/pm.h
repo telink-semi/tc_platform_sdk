@@ -347,3 +347,10 @@ _attribute_ram_code_sec_noinline_ void pm_set_dig_module_power_switch(pm_pd_modu
  * @return      none.
  */
 _attribute_ram_code_sec_noinline_ void pm_sys_reboot_with_reason(pm_sw_reboot_reason_e reboot_reason);
+
+/**
+ * @brief   This function serves to get the 32k tick.
+ * @param   none
+ * @return  variable of 32k tick.
+ */
+_attribute_ram_code_sec_noinline_ _attribute_no_inline_ unsigned int cpu_get_32k_tick (void);
