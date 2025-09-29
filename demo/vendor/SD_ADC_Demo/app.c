@@ -23,7 +23,7 @@
  *******************************************************************************************************/
 #include "app_config.h"
 
-
+#if (DEMO_MODE == NORMAL_MODE)
 sd_adc_gpio_cfg_t sd_adc_gpio_cfg =
 {
      .input_p          = SD_ADC_GPIO_PB0P,
@@ -191,3 +191,4 @@ signed int sd_adc_get_result(sd_adc_result_type_e result_type)
         return 0;
     }
 }
+#endif

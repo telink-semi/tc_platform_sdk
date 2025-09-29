@@ -43,7 +43,11 @@ extern "C" {
 /**********************************************************************************************************************
  *                                         Users do not need to modify                                                *
  *********************************************************************************************************************/
-#define SD_ADC_GPIO_MODE        1
+
+#define NORMAL_MODE				1
+#define TEST_MODE				2
+
+ #define SD_ADC_GPIO_MODE        1
 #define SD_ADC_VBAT_MODE        2
 #define SD_ADC_TEMP_MODE        3//The A0 version of chip does not support the SD_ADC_TEMP_MODE.
 
@@ -83,6 +87,7 @@ extern "C" {
 
 #define SAMPLE_MODE        POLLING_MODE
 
+#define DEMO_MODE		   NORMAL_MODE
 
 /* Disable C linkage for C++ Compilers: */
 #if defined(__cplusplus)

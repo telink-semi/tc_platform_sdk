@@ -316,47 +316,9 @@ typedef enum {
 	RF_MI_P1p40 = 1400,		/**< MI = 1.4 */
 }RF_MIVauleTypeDef;
 
-
-/**
- *  @brief  LDO trim calibration value
- */
-typedef struct
-{
-    unsigned char LDO_CAL_TRIM;
-    unsigned char LDO_RXTXHF_TRIM;
-    unsigned char LDO_RXTXLF_TRIM;
-    unsigned char LDO_PLL_TRIM;
-    unsigned char LDO_VCO_TRIM;
-} rf_ldo_trim_t;
-
-/**
- *  @brief  DCOC calibration value
- */
-typedef struct
-{
-    unsigned char DCOC_IDAC;
-    unsigned char DCOC_QDAC;
-    unsigned char DCOC_IADC_OFFSET;
-    unsigned char DCOC_QADC_OFFSET;
-} rf_dcoc_cal_t;
-
-/**
- *  @brief  RCCAL calibration value
- */
-typedef struct
-{
-    unsigned char CBPF_CCODE_L;
-    unsigned char CBPF_CCODE_H;
-} rf_rccal_cal_t;
-
 typedef struct
 {
     unsigned short cal_tbl[81];
-    rf_ldo_trim_t  ldo_trim;
-    rf_dcoc_cal_t  dcoc_cal;
-    rf_rccal_cal_t rccal_cal;
-    unsigned char  tx_fcal[81];
-    unsigned char  rx_fcal[81];
 } rf_fast_settle_t;
 
 #ifdef		RF_MODE_250K
