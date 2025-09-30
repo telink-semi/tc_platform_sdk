@@ -21,15 +21,12 @@
 <hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
 
 ### Bug Fixes
-* Critical Bugs：
-  - [gpio]
+* **gpio**
     - (TC321X):Fixed the issue where the gpio_read_all interface was unable to read the input level of the PE port.(merge_requests/@837)
-      - Fix Effect:​​ The gpio_read_all function can read the input level status of the PE port.
-      - Update Recommendation:​​ Update may be assessed as needed.
 
-* Critical Bugs：
-  - [sd adc]
-    - (TC321X):Fixed an issue in A1 version where adjusting the bangap voltage to optimize RF performance in DCDC mode caused inaccurate SD ADC voltage sampling.(merge_requests/@835)
+* **sd_adc**
+    - (TC321X):Fixed inaccurate SD ADC voltage sampling in DCDC mode for A1 version configuration.(merge_requests/@835)
+      - Detailed Description: In DCDC mode, the optimization of bandgap voltage for RF performance improvement affected SD ADC voltage sampling accuracy.
       - Fix Effect:​​ After adjusting the bangap voltage to optimize RF performance, it will not affect SD ADC sampling.
       - Update Recommendation:​​ If both the RF and SD ADC modules are used simultaneously, an update is required. When using only the RF or SD ADC module individually, you may assess whether an update is necessary.
   
@@ -67,15 +64,12 @@
 <hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
 
 ### Bug Fixes
-* General Bugs：
-  - [gpio]
+* **gpio**
     - (TC321X):修复了gpio_read_all接口无法读取PE口输入电平的问题。(merge_requests/@837)
-      - 修复效果:​​ gpio_read_all可以读取PE口输入电平状态。
-      - 更新建议:​​ gpio_read_all，可自行评估是否更新。
 
-* Critical Bugs：
-  - [sd adc]
-    - (TC321X):修复了A1版本在DCDC模式下，由于调节bangap电压优化rf性能后，影响sd adc电压采样不准的问题。(merge_requests/@835)
+* **sd_adc**
+    - (TC321X):修复了A1版本配置在DCDC模式下影响sd adc电压采样不准的问题。(merge_requests/@835)
+      - 详细描述: DCDC模式下由于调节bangap电压优化rf性能,导致sd adc电压采样不准
       - 修复效果:​​ 调节bangap电压优化rf性能后，不会影响sd adc采样。
       - 更新建议:​​ 如果同时使用了rf和sd adc模块，必须更新。仅单独用rf或sd adc模块，可自行评估是否更新。
 
