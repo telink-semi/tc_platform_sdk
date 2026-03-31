@@ -25,7 +25,7 @@
 #define __MID1471CD_H__
 
 /*
- * @brief     MID = 0x1471cd Flash include P25Q80U.
+ * @brief     MID = 0x1471cd Flash include TH25Q80U.
  */
 
 

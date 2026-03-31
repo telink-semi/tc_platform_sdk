@@ -47,11 +47,13 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
  */
 int main (void)   //must on ramcode
 {
+#if !MCU_CORE_TC122X
 #if(PM_MODE==SUSPEND_32K_XTAL_WAKEUP||PM_MODE==DEEP_32K_XTAL_WAKEUP||PM_MODE==DEEP_RET_32K_XTAL_WAKEUP)\
 	||(PM_MODE==SUSPEND_LONG_32K_XTAL_WAKEUP||PM_MODE==DEEP_LONG_32K_XTAL_WAKEUP||PM_MODE==DEEP_RET_LONG_32K_XTAL_WAKEUP)
 	blc_pm_select_external_32k_crystal();
 #else
 	blc_pm_select_internal_32k_crystal();
+#endif
 #endif
 
     PLATFORM_INIT;

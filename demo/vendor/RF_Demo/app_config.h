@@ -55,6 +55,8 @@ extern "C" {
 #define RF_POWER            RF_POWER_P10p00dBm
 #elif(MCU_CORE_TC122X)
 #define RF_POWER            RF_POWER_P10p00dBm
+#elif(MCU_CORE_TC123X)
+#define RF_POWER            RF_POWER_P10p00dBm
 #endif
 
 #define RF_BLE_2M				1

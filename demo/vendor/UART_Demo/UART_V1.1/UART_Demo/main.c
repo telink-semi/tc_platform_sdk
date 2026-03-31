@@ -69,7 +69,9 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 	{
 		uart_dmairq_tx_cnt++;
 		uart_dma_send_flag = 1;
+#if !(MCU_CORE_TC123X)
 		gpio_toggle(LED2);
+#endif
 		uart_clr_tx_done(UART_MODULE_SEL);
 	}
 #if(UART_DMA_INT_TYPE == UART_RXDMA_IRQ)
@@ -102,7 +104,9 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 	if(uart_is_parity_error(UART_MODULE_SEL))//when stop bit error or parity error.
 	{
 		uart_clear_parity_error(UART_MODULE_SEL);
+#if !(MCU_CORE_TC123X)
 		gpio_write(LED4,1);
+#endif
 		uart_dmairq_err_cnt++;
 	}
 #elif(UART_MODE==UART_NDMA)

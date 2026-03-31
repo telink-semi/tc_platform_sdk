@@ -41,7 +41,9 @@ GD25LD40C/GD25LD40E		0x4b		0x1360C8	GD			500ms
 GD25LD80C/GD25LD80E		0x4b(AN)	0x1460C8	GD			500ms
 	ZB25WD10A			0x4b		0x11325E	ZB			500ms
 	ZB25WD40B			0x4b		0x13325E	ZB			500ms
+	ZB25WD40C			0x4b		0x0113325E	ZB			500ms
 	ZB25WD80B			0x4b		0x14325E	ZB			500ms
+	ZB25WD80C			0x4b		0x0114325E	ZB			500ms
 
 	The uid of the early ZB25WD40B (mid is 0x13325E) is 8 bytes. If you read 16 bytes of uid,
 	the next 8 bytes will be read as 0xff. Later, the uid of ZB25WD40B has been switched to 16 bytes.
@@ -54,10 +56,12 @@ const flash_hal_handler_t flash_list[] = {
 	//512K
 	{0x1360C8,flash_get_lock_block_mid1360c8, flash_unlock_mid1360c8, flash_lock_mid1360c8,FLASH_LOCK_LOW_256K_MID1360C8},
 	{0x13325E,flash_get_lock_block_mid13325e, flash_unlock_mid13325e, flash_lock_mid13325e,FLASH_LOCK_LOW_256K_MID13325E},
+	{0x0113325E,flash_get_lock_block_mid0113325e, flash_unlock_mid0113325e, flash_lock_mid0113325e,FLASH_LOCK_LOW_256K_MID0113325E},
 	//1M
 	{0x146085,flash_get_lock_block_mid146085, flash_unlock_mid146085, flash_lock_mid146085,FLASH_LOCK_LOW_512K_MID146085},
 	{0x1460C8,flash_get_lock_block_mid1460c8, flash_unlock_mid1460c8, flash_lock_mid1460c8,FLASH_LOCK_LOW_768K_MID1460C8},
 	{0x14325E,flash_get_lock_block_mid14325e, flash_unlock_mid14325e, flash_lock_mid14325e,FLASH_LOCK_LOW_768K_MID14325E},
+	{0x0114325E,flash_get_lock_block_mid0114325e, flash_unlock_mid0114325e, flash_lock_mid0114325e,FLASH_LOCK_LOW_512K_MID0114325E},
 };
 
 const unsigned int FLASH_CNT = sizeof(flash_list)/sizeof(flash_hal_handler_t);

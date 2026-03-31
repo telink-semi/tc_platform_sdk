@@ -127,6 +127,7 @@ __start:					@ MUST,  referenced by boot.link
 	.extern  _ictag_end_
 	.extern  g_pm_multi_addr
 	.extern _retention_data_size_align_256_
+	.extern _reboot_data_size_align_256_
 	.org 0x0
 	tj	__reset
 #ifdef DUT_TEST
@@ -146,11 +147,12 @@ __start:					@ MUST,  referenced by boot.link
 #endif
 #elif(SRAM_SIZE   ==  SRAM_64K )
 */
-    .word	(0x00880000 + _retention_data_size_align_256_)
+    .word	(0x00880000 + _retention_data_size_div_16_align_256_)
 
 	.extern rf_sw_config
 	.extern copy_ramcode
 	.extern copy_bincode
+	.extern sys_reboot_back_restore_ana
 /* 
 #endif
 */
@@ -418,23 +420,11 @@ DEEP_RETENTION_BRANCH:
 POWER_ON_OR_DEEP_BRANCH:
 #endif
 
+#ifndef SKIP_RF_DRV   // BQB_EMI_Demo, RF_Demo, Test_Demo, rf_sw_config must be used. 
+	//All applications using RF peripherals must call this function, which will increase FLASH usage by 6389 bytes.
 	tjl rf_sw_config
+#endif
 
-@********************************************************************************************************
-@                                    .BSS INITIALIZATION FOR 0
-@********************************************************************************************************
-	tmov	r0, #0							@r0 = 0
-	tloadr	r1, DAT0 + 16					@r1 = _start_bss_
-	tloadr	r2, DAT0 + 20					@r2 = _end_bss_
-
-ZERO_BSS_BEGIN:
-	tcmp	r1, r2
-	tjge	ZERO_BSS_END					@r1>=r2 jump to ZERO_BSS_END
-	tstorer	r0, [r1, #0]					@*(unsigned int*)(_start_bss_)=r0=0
-	tadd    r1, #4							@r1 = r1 + 4
-	tj		ZERO_BSS_BEGIN					@jump to ZERO_BSS_BEGIN
-ZERO_BSS_END:
-	
 //if(SRAM_SIZE == SRAM_64K)
 #if (ALL_SRAM_CODE&&(ALL_SRAM_START_MODE == ALL_SRAM_WITH_FLASH_START))
     tjl copy_bincode
@@ -442,7 +432,6 @@ ZERO_BSS_END:
     tjl copy_ramcode
 #endif
 //#endif
-
 
 @********************************************************************************************************
 @                                    RETENTION DATA INITIALIZATION
@@ -479,6 +468,20 @@ COPY_DATA_BEGIN:
 	tj			COPY_DATA_BEGIN				@ jump to COPY_DATA_BEGIN
 COPY_DATA_END:
 
+@********************************************************************************************************
+@                                    .BSS INITIALIZATION FOR 0
+@********************************************************************************************************
+	tmov	r0, #0							@r0 = 0
+	tloadr	r1, DAT0 + 16					@r1 = _start_bss_
+	tloadr	r2, DAT0 + 20					@r2 = _end_bss_
+
+ZERO_BSS_BEGIN:
+	tcmp	r1, r2
+	tjge	ZERO_BSS_END					@r1>=r2 jump to ZERO_BSS_END
+	tstorer	r0, [r1, #0]					@*(unsigned int*)(_start_bss_)=r0=0
+	tadd    r1, #4							@r1 = r1 + 4
+	tj		ZERO_BSS_BEGIN					@jump to ZERO_BSS_BEGIN
+ZERO_BSS_END:
 
 
 #if 0
@@ -491,6 +494,7 @@ SETSPISPEED:
 #endif
 
 ENTER_MAIN:
+    tjl sys_reboot_back_restore_ana
 	tjl	main
 END:	tj	END
 
@@ -514,6 +518,7 @@ DAT0:
 #endif
 	.word	_ramcode_size_align_256_    @40
 	.word   _retention_data_size_align_256_ @44
+	.word   _reboot_data_size_align_256_
 
 DATA_I:	
 	.word   (_rstored_)                 @0

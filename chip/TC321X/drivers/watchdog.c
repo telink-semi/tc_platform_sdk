@@ -69,8 +69,9 @@ _attribute_ram_code_sec_noinline_ unsigned char wd_32k_get_status(void)
  */
 _attribute_ram_code_sec_noinline_ void wd_32k_clear_status(void)
 {
-    analog_write(areg_aon_0x64, FLD_32K_WD_OVERFLOW_STATUS);
+    analog_write(areg_aon_0x65, FLD_RESET_32K_WD_OVERFLOW_STATUS);
 }
+
 /**
  * @brief     This function set the watchdog trigger time.
  * @param[in] period_ms - The watchdog trigger time. Unit is  millisecond, ranges from 1~134,217,720ms.

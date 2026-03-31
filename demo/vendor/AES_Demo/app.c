@@ -71,24 +71,33 @@ void user_init(void)
 	sleep_ms(2000);
 	//1.init the LED pin,for indication
     gpio_set_func(LED1, AS_GPIO); //set as GPIO
+#if(!(MCU_CORE_TC123X))
     gpio_set_func(LED2, AS_GPIO); //set as GPIO
     gpio_set_func(LED3, AS_GPIO); //set as GPIO
     gpio_set_func(LED4, AS_GPIO); //set as GPIO
-
+#endif
     gpio_set_output_en(LED1, 1); //enable output
+#if(!(MCU_CORE_TC123X))
     gpio_set_output_en(LED2, 1); //enable output
     gpio_set_output_en(LED3, 1); //enable output
     gpio_set_output_en(LED4, 1); //enable output
-
+#endif
     gpio_set_input_en(LED1, 0); //disable input
+#if(!(MCU_CORE_TC123X))
     gpio_set_input_en(LED2, 0); //disable input
     gpio_set_input_en(LED3, 0); //disable input
     gpio_set_input_en(LED4, 0); //disable input
-
+#endif
     gpio_write(LED1, 0); //LED OFF
+#if(!(MCU_CORE_TC123X))
     gpio_write(LED2, 0); //LED OFF
     gpio_write(LED3, 0); //LED OFF
     gpio_write(LED4, 0); //LED OFF
+#endif
+
+#if((MCU_CORE_TC123X))
+    aes_init();
+#endif
 }
 
 void main_loop (void)
@@ -115,15 +124,19 @@ void main_loop (void)
 	{
 		if(DecryptResult[i] != sPlainText[i])
 		{
+#if(!(MCU_CORE_TC123X))
 			gpio_toggle(LED2);
+#endif
 			while(1);
 		}
 	}
 	sleep_ms(500);
     gpio_toggle(LED1);
+#if(!(MCU_CORE_TC123X))
     gpio_toggle(LED2);
     gpio_toggle(LED3);
     gpio_toggle(LED4);
+#endif
 
 #elif(AES_MODE == DMA_MODE)
 	//encrypt the plain text
@@ -147,15 +160,19 @@ void main_loop (void)
 	{
 		if(DecryptResult[i] != sPlainText[i])
 		{
+#if(!(MCU_CORE_TC123X))
 			gpio_toggle(LED2);
+#endif
 			while(1);
 		}
 	}
 	sleep_ms(500);
     gpio_toggle(LED1);
+#if(!(MCU_CORE_TC123X))
     gpio_toggle(LED2);
     gpio_toggle(LED3);
     gpio_toggle(LED4);
+#endif
 #elif(AES_MODE == CBC_MODE)
 
 	//encrypt 1
@@ -187,7 +204,9 @@ void main_loop (void)
 	{
 		if(EncryptResult2[i] != EncryptStd2[i])
 		{
+#if(!(MCU_CORE_TC123X))
 			gpio_toggle(LED2);
+#endif
 			while(1);
 		}
 	}
@@ -204,7 +223,9 @@ void main_loop (void)
 	{
 		if(DecryptResult1[i] != sPlainText1[i])
 		{
+#if(!(MCU_CORE_TC123X))
 			gpio_toggle(LED3);
+#endif
 			while(1);
 		}
 	}
@@ -221,16 +242,20 @@ void main_loop (void)
 	{
 		if(DecryptResult2[i] != sPlainText2[i])
 		{
+#if(!(MCU_CORE_TC123X))
 			gpio_toggle(LED4);
+#endif
 			while(1);
 		}
 	}
 
 	sleep_ms(500);
     gpio_toggle(LED1);
+#if(!(MCU_CORE_TC123X))
     gpio_toggle(LED2);
     gpio_toggle(LED3);
     gpio_toggle(LED4);
+#endif
 #endif
 }
 

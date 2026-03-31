@@ -39,9 +39,9 @@
  * @brief     flash mid definition
  */
 typedef enum{
-	MID1360C8   =   0x1360c8,//GD25LD40EGEG
 	MID136085   =   0x136085,//P25D40SU
 	MID146085   =   0x146085,//P25Q80SU
+	MID1471CD   =   0x1471cd,//TH25Q80U
 	MID156085   =   0x156085,//P25Q16SU
 }flash_mid_e;
 
@@ -98,6 +98,8 @@ typedef enum{
 	FLASH_SONOS_PUYA  	= 0x02006085,	// 6085		bit[25]:SONOS:Byte Program Time == Page Programming Time
 	FLASH_SONOS_TH  	= 0x020060EB,	// 60EB
 	FLASH_SST_TH  		= 0x040060CD,	// 60CD		bit[26]:SST:  Byte Program Time != Page Programming Time
+	FLASH_NORD_GT  		= 0x100060C4,	// 60C4		bit[27]=1:NORD: Byte Program Time != Page Programming Time
+	FLASH_NORD_TH  		= 0x100070CD,	// 70CD/71CD/51CD		bit[27]=1:NORD: Byte Program Time != Page Programming Time
 }flash_vendor_e;
 
 /**

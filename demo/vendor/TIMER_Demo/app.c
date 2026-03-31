@@ -25,10 +25,10 @@
 
 volatile unsigned int t0;
 
-#if (!MCU_CORE_TC1211)
-#define WD_OFFSET_MS  0
-#else
-#define WD_OFFSET_MS  2048
+#if (MCU_CORE_TC1211)
+#define LED2 GPIO_PA2
+#define LED3 GPIO_PA2
+#define LED4 GPIO_PA2
 #endif
 
 void user_init(void)
@@ -39,6 +39,7 @@ void user_init(void)
 	gpio_set_output_en(LED1, 1); 		//enable output
 	gpio_set_input_en(LED1 ,0);			//disable input
 	gpio_write(LED1, 0);              	//LED On
+
 #if !(MCU_CORE_TC1211)
 	gpio_set_func(LED2 ,AS_GPIO);
 	gpio_set_output_en(LED2, 1); 		//enable output
@@ -53,7 +54,6 @@ void user_init(void)
 	gpio_set_input_en(LED4 ,0);			//disable input
 	gpio_write(LED4, 0);
 #endif
-
 
 #if (TIMER_MODE==TIMER_SYS_CLOCK_MODE)
 	timer0_set_mode(TIMER_MODE_SYSCLK,0,500 * CLOCK_SYS_CLOCK_1MS);
@@ -84,16 +84,46 @@ void user_init(void)
 	wd_set_interval_ms(1000,CLOCK_SYS_CLOCK_1MS);
 	wd_start();
 #elif(TIMER_MODE == TIMER_32K_WATCHDOG_MODE)
-#if !(MCU_CORE_TC1211)
-	gpio_write(LED2, 1);
+    sleep_ms(500);
+    gpio_write(LED1, 1);
+
+#if !(MCU_CORE_B80 || MCU_CORE_B80B)
+    //Remove the stop 32k watchdog operation in main, otherwise this state cannot be read.
+    if (wd_32k_get_status())
+    {
+    	for(int i=0; i<8; i++)
+    	{
+			gpio_write(LED3, 1);
+			sleep_ms(60);
+			gpio_write(LED3, 0);
+			sleep_ms(60);
+    	}
+    	gpio_write(LED3, 1);
+        wd_32k_clear_status();
+        if (wd_32k_get_status())
+        {
+        	gpio_write(LED4, 1);
+        	while(1){}
+        }
+    }
 #endif
-	blc_pm_select_internal_32k_crystal();
+
+    #if defined(MCU_CORE_TC122X)
+    wd_32k_set_interval_ms(1000);
+    #elif defined(MCU_CORE_TC1211)
 	/**
 	 * For TC1211, period_ms must be set to a multiple of 2048ms
 	 * and the 32k watch dog reboot may take place at any time between “ period_ms ~ (period_ms+2048ms) ".
 	 */
-	wd_32k_set_interval_ms(1000 + WD_OFFSET_MS);
-	wd_32k_start();
+    wd_32k_stop();
+    wd_32k_set_interval_ms(1000 + 2048);
+    wd_32k_start();
+    #else
+    wd_32k_stop();
+    wd_32k_set_interval_ms(1000);
+    wd_32k_start();
+    #endif
+
 #elif(TIMER_MODE==STIMER_MODE)
 	stimer_set_capture_tick(clock_time() + CLOCK_16M_SYS_TIMER_CLK_1S);
 #if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B85)
@@ -146,24 +176,47 @@ void main_loop (void)
 
 #elif(TIMER_MODE == TIMER_32K_WATCHDOG_MODE)
 #if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89 || MCU_CORE_TC321X || MCU_CORE_TC1211 || MCU_CORE_TC122X)
-	sleep_ms(900);
-	//32K watchdog capture time settings: program run time and sleep time to leave some margin.
-	wd_32k_stop();
+    //800ms<1000ms, watchdog does not overflow and the program continues to run.
+    for(int i=0; i<2; i++)
+    {
+    	cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_TIMER, clock_time() + 200 * CLOCK_SYS_TIMER_CLK_1MS);
+        gpio_write(LED2, 1);
+        sleep_ms(200);
+        gpio_write(LED2, 0);
+    }
 
+	#if defined(MCU_CORE_TC122X)
+    wd_32k_feed();
+    #elif defined(MCU_CORE_TC1211)
 	/**
-	 * For TC1211, interval time must be set to a multiple of 2048ms
-	 * and the 32k watch dog reboot may take place at any time between “ interval ~ (interval+2048ms) ".
+	 * For TC1211, period_ms must be set to a multiple of 2048ms
+	 * and the 32k watch dog reboot may take place at any time between “ period_ms ~ (period_ms+2048ms) ".
 	 */
-#if(!MCU_CORE_TC1211)
-	wd_32k_set_interval_ms(1000 + WD_OFFSET_MS);
+    wd_32k_stop();
+    wd_32k_set_interval_ms(2000 + 2048);
+    wd_32k_start();
+    #else
+    wd_32k_stop();
+    wd_32k_set_interval_ms(2000);
+    wd_32k_start();
+    #endif
 
-	wd_32k_start();
-	sleep_ms(200);
-//	sleep_ms(500);
-	cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_PAD|PM_WAKEUP_TIMER, (clock_time() + 500*CLOCK_SYS_TIMER_CLK_1MS));
-	wd_32k_stop();
+    for(int i=0; i<4; i++)
+    {
+    	cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_TIMER, clock_time() + 200 * CLOCK_SYS_TIMER_CLK_1MS);
+        gpio_write(LED2, 1);
+        sleep_ms(200);
+        gpio_write(LED2, 0);
+    }
+#if (MCU_CORE_TC1211)
+    //4400ms>2048ms, watchdog overflows, program restarts.
+    cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_TIMER, clock_time() + 2800 * CLOCK_SYS_TIMER_CLK_1MS);
+#else
+    //2400ms>2000ms, watchdog overflows, program restarts.
+    cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_TIMER, clock_time() + 800 * CLOCK_SYS_TIMER_CLK_1MS);
 #endif
-	gpio_toggle(LED1);
+    gpio_write(LED4, 1);
+    while(1){}
 #endif
 #else
 

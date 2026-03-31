@@ -104,6 +104,8 @@ void user_read_flash_value_calib(void)
 	unsigned char flash_mid[4];
 	unsigned char flash_uid[16];
 	unsigned char flash_mid_sure = 0;
+	unsigned int  cap_value_addr = 0;
+
 	/******check for flash mid********/
 	flash_mid_sure = flash_read_mid_uid_with_check((unsigned int *)flash_mid, flash_uid);
 	if (1 == flash_mid_sure)
@@ -113,30 +115,41 @@ void user_read_flash_value_calib(void)
 			case FLASH_SIZE_64K:
 				user_calib_freq_offset(FLASH_CAP_VALUE_ADDR_64K);
 				user_calib_sd_adc(FLASH_ADC_VREF_CALIB_ADDR_64K);
+				cap_value_addr = FLASH_CAP_VALUE_ADDR_64K;
 				break;
 			case FLASH_SIZE_128K:
 				user_calib_freq_offset(FLASH_CAP_VALUE_ADDR_128K);
 				user_calib_sd_adc(FLASH_ADC_VREF_CALIB_ADDR_128K);
+				cap_value_addr = FLASH_CAP_VALUE_ADDR_128K;
 				break;
 			case FLASH_SIZE_512K:
 				user_calib_freq_offset(FLASH_CAP_VALUE_ADDR_512K);
 				user_calib_sd_adc(FLASH_ADC_VREF_CALIB_ADDR_512K);
+				cap_value_addr = FLASH_CAP_VALUE_ADDR_512K;
 				break;
 			case FLASH_SIZE_1M:
 				user_calib_freq_offset(FLASH_CAP_VALUE_ADDR_1M);
 				user_calib_sd_adc(FLASH_ADC_VREF_CALIB_ADDR_1M);
+				cap_value_addr = FLASH_CAP_VALUE_ADDR_1M;
 				break;
 			case FLASH_SIZE_2M:
 				user_calib_freq_offset(FLASH_CAP_VALUE_ADDR_2M);
 				user_calib_sd_adc(FLASH_ADC_VREF_CALIB_ADDR_2M);
+				cap_value_addr = FLASH_CAP_VALUE_ADDR_2M;
 				break;
 			case FLASH_SIZE_4M:
 				user_calib_freq_offset(FLASH_CAP_VALUE_ADDR_4M);
 				user_calib_sd_adc(FLASH_ADC_VREF_CALIB_ADDR_4M);
+				cap_value_addr = FLASH_CAP_VALUE_ADDR_4M;
 				break;
 			default:
 				break;
 		}
+
+        if(g_chip_version == CHIP_VERSION_B0)
+        {
+            flash_calib_voltage(cap_value_addr);
+        }
 	}
 }
 

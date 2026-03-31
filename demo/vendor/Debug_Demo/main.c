@@ -46,8 +46,14 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
  */
 int main (void)   //must on ramcode
 {
+#if MIN_SYS
+#if(MCU_CORE_TC122X)
+	sys_init_min_sys();
+#endif
+#else
     PLATFORM_INIT;
     CLOCK_INIT;
+#endif
 
 	user_init();
 

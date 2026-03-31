@@ -55,6 +55,8 @@ _attribute_data_retention_  unsigned char system_clk_type;
 /*24m rc calibrate configuration, the default value is set to require calibration*/
 volatile static unsigned char g_24m_rc_calib_flag = 1;
 unsigned char g_sys_clk_freq = 0;
+unsigned char g_24m_rc_is_used = MODULE_CPU;
+
 /**********************************************************************************************************************
  *                                          local function prototype                                               *
  *********************************************************************************************************************/
@@ -98,6 +100,9 @@ static bool clock_24m_rc_cal_busy(void)
  */
 void rc_24m_cal(void)
 {
+    pm_24mrc_power_up();
+	g_24m_rc_is_used |= MODULE_CAL;
+
     analog_write(areg_cal_24m_wait_len, 0x80); //wait 24m rc stable cycles
 
     analog_write(areg_aon_0x4f, analog_read(areg_aon_0x4f) | FLD_RC_24M_CAP_SEL);
@@ -113,6 +118,9 @@ void rc_24m_cal(void)
 
     analog_write(areg_0xc7, FLD_CAL_24M_RC_DISABLE);
     tl_24mrc_cal = analog_read(areg_rc_24m_cap);
+
+	g_24m_rc_is_used &= ~MODULE_CAL;
+    pm_24mrc_power_down_if_unused();
 }
 
 /**
@@ -246,6 +254,9 @@ _attribute_ram_code_sec_noinline_ unsigned int pm_get_32k_tick(void)
  */
 _attribute_ram_code_sec_noinline_ void clock_init(SYS_CLK_TypeDef SYS_CLK)
 {
+    pm_24mrc_power_up();
+	g_24m_rc_is_used |= MODULE_CLK_INIT;
+
     reg_clk_sel = (unsigned char)SYS_CLK;
     system_clk_type = (unsigned char)SYS_CLK;
 
@@ -262,6 +273,15 @@ _attribute_ram_code_sec_noinline_ void clock_init(SYS_CLK_TypeDef SYS_CLK)
     {
         rc_24m_cal();
     }
+
+    if (SYS_CLK == SYS_CLK_24M_RC) {
+        g_24m_rc_is_used |= (MODULE_CPU);
+    } else {
+        g_24m_rc_is_used &= ~(MODULE_CPU);
+    }
+
+	g_24m_rc_is_used &= ~MODULE_CLK_INIT;
+    pm_24mrc_power_down_if_unused();
 }
 
 
@@ -278,3 +298,17 @@ void clock_init_calib_24m_rc_cfg(char calib_flag)
     g_24m_rc_calib_flag = calib_flag;
 }
 
+/**
+ * @brief       This function use to set all clock to default.
+ * @return      none.
+ */
+_attribute_ram_code_sec_noinline_ void clock_set_all_clock_to_default(void)
+{
+    pm_24mrc_power_up();
+
+    g_24m_rc_is_used |= (MODULE_CPU);
+
+    reg_clk_sel = (unsigned char)SYS_CLK_24M_RC;              //change to 24M rc clock
+
+    pm_24mrc_power_down_if_unused();
+}

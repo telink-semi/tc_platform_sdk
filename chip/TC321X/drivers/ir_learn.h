@@ -233,7 +233,13 @@ static inline unsigned char ir_learn_get_irq_status(ir_learn_irq_e status)
  */
 static inline void ir_learn_clr_irq_status(ir_learn_irq_e status)
 {
-    reg_il_mask_1 = status;
+	if(IR_LEARN_TIMEOUT_IRQ == status){
+		ir_learn_dis();
+		reg_il_mask_1 = status;
+		ir_learn_en();
+	}else{
+		reg_il_mask_1 = status;
+	}
 }
 
 /**

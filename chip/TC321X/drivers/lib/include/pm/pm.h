@@ -37,9 +37,8 @@
 #define PM_ANA_REG_WD_CLR_BUF4       0x39 // initial value 0x00.
 
 /**
- * @note  this register else will be lost upon reboot.
  * @brief analog register below can store information when MCU in deep sleep mode or deep sleep with SRAM retention mode.
- *        Reset these analog registers by power cycle, 32k watchdog, RESET Pin, watchdog, software reboot (sys_reboot()).
+ *        Reset these analog registers by power cycle, 32k watchdog, RESET Pin, watchdog.
  */
 #define PM_ANA_REG_POWER_ON_CLR_BUF1 0x3b // initial value 0x00.
 #define PM_ANA_REG_POWER_ON_CLR_BUF2 0x3c // initial value 0xff.
@@ -49,6 +48,11 @@
 #define SYS_DEEP_ANA_REG             PM_ANA_REG_POWER_ON_CLR_BUF1
 #define WAKEUP_STATUS_TIMER_CORE     ( WAKEUP_STATUS_TIMER | WAKEUP_STATUS_CORE)
 #define WAKEUP_STATUS_TIMER_PAD      ( WAKEUP_STATUS_TIMER | WAKEUP_STATUS_PAD)
+
+#define PM_DCDC_1P25_DEFAULT_CONFIG       PM_DCDC_1P25_VOLTAGE_1V251
+#define PM_LDO_1P25_DEFAULT_CONFIG        PM_LDO_1P25_VOLTAGE_1V250
+#define PM_LDO_1P8_DEFAULT_CONFIG         PM_LDO_1P8_VOLTAGE_1V800
+#define PM_VDDDEC_DEFAULT_CONFIG          PM_VDDDEC_VOLTAGE_1V000
 
 /**
  * @brief   gpio wakeup level definition
@@ -88,6 +92,24 @@ typedef enum
     //not available mode
     DEEPSLEEP_RETENTION_FLAG        = 0x03,
 }SleepMode_TypeDef;
+
+/**
+ * @brief   mcu status
+ */
+typedef enum
+{
+    MCU_POWER_ON                 = BIT(0), /**< power on, vbus detect or reset pin */
+    //BIT(1) RSVD
+    MCU_SW_REBOOT_BACK           = BIT(2), /**< Clear the watchdog status flag in time, otherwise, the system reboot may be wrongly judged as the watchdog.*/
+    MCU_DEEPRET_BACK             = BIT(3),
+    MCU_DEEP_BACK                = BIT(4),
+    MCU_HW_REBOOT_TIMER_WATCHDOG = BIT(5), /**< If determine whether is 32k watchdog/timer watchdog,can also use the interface wd_32k_get_status()/wd_get_status() to determine. */
+    MCU_HW_REBOOT_32K_WATCHDOG   = BIT(6), /**< - When the 32k watchdog status is set to 1, if it is not cleared:
+                                              - power cyele/vbus detect/reset pin come back, the status is lost;
+                                              - but software reboot(sys_reboot())/deep/deepretation/32k watchdog come back,the status remains;
+                                              */
+} pm_mcu_status;
+
 
 /**
  * @brief   available wake-up source for customer
@@ -179,9 +201,14 @@ typedef struct
     unsigned char is_deepretn_back;
     unsigned char is_pad_wakeup;
     unsigned char wakeup_src;
-    unsigned char rsvd;
+    unsigned char mcu_status;
 }pm_para_t;
 extern _attribute_aligned_(4) pm_para_t pmParam;
+
+
+
+
+void bls_pm_registerFuncBeforeSuspend (suspend_handler_t func );
 
 /**
  * @brief      This function serves to determine whether mcu is waked up from deep retention.
@@ -354,3 +381,23 @@ _attribute_ram_code_sec_noinline_ void pm_sys_reboot_with_reason(pm_sw_reboot_re
  * @return  variable of 32k tick.
  */
 _attribute_ram_code_sec_noinline_ _attribute_no_inline_ unsigned int cpu_get_32k_tick (void);
+
+/**
+ * @brief     This function serves to do simplified voltage calibration
+ * @param[in] addr - the voltage calibration data address of flash.
+ * @return    1 - voltage calibration update, 0 - voltage calibration is not update.
+ */
+unsigned char flash_calib_voltage(unsigned int addr);
+/**
+ * @brief       This function serves to update wakeup status.
+ * @param[in]   clr_en  - Whether to set the value of the status register to a fixed value.
+ *                        If the interface is called twice, the first time it is not modified, clr_en=0;
+ *                        if the interface is called once, it is modified, clr_en=1.
+ * @return      none.
+ * @note        After calling this interface, it is necessary to clear the flag of the timer watchdog or the 32k watchdog.
+ *              Otherwise, if the flag remains set, it may affect the next judgment.
+ *              After calling this interface, other states are set to fixed values.
+ *              Therefore, this interface cannot be called twice,
+ *              and if it is called twice, the state will be fixed to one state, not the correct state.
+ */
+_attribute_ram_code_sec_noinline_ void pm_update_status_info(unsigned char clr_en);
