@@ -22,8 +22,11 @@
  *
  *******************************************************************************************************/
 #include "app_config.h"
-
+#if !(MCU_CORE_TC123X)
 #define PWM_PIN         GPIO_PC0
+#else
+#define PWM_PIN         GPIO_PC1
+#endif
 #define GPIO_Type       PWM0
 
 #define IRLEARN_RX_PIN  IR_RX_PA1
@@ -95,19 +98,23 @@ void pwm_send_init(void)
 void user_init(void)
 {
     gpio_set_func(LED1, AS_GPIO);
+#if !(MCU_CORE_TC123X)
     gpio_set_func(LED2, AS_GPIO);
     gpio_set_func(LED3, AS_GPIO);
     gpio_set_func(LED4, AS_GPIO);
-
+#endif
     gpio_set_output_en(LED1, 1);
+#if !(MCU_CORE_TC123X)
     gpio_set_output_en(LED2, 1);
     gpio_set_output_en(LED3, 1);
     gpio_set_output_en(LED4, 1);
-
+#endif
     gpio_set_input_en(LED1, 0);
+#if !(MCU_CORE_TC123X)
     gpio_set_input_en(LED2, 0);
     gpio_set_input_en(LED3, 0);
     gpio_set_input_en(LED4, 0);
+#endif
 
 #if (IR_LEARN_MODE == IR_DIGITAL_TX_MODE)
     /* pwm config. */
@@ -115,7 +122,7 @@ void user_init(void)
     gpio_set_func(PWM_PIN, GPIO_Type);
 
     /* interrupt config. */
-    irq_set_mask(FLD_IRQ_SW_PWM_EN);
+    irq_set_mask(FLD_IRQ_PWM_EN);
     pwm_set_interrupt_enable(PWM_IRQ_PWM0_IR_DMA_FIFO_DONE);
     irq_enable();
 
@@ -135,7 +142,7 @@ void user_init(void)
 
     /* interrupt config. */
     irq_set_mask(FLD_IRQ_IR_LEARN_EN);
-    ir_learn_set_irq_mask(IR_LEARN_CYCLE_IRQ|IR_LEARN_TIMEOUT_IRQ);
+    ir_learn_set_irq_mask(IR_LEARN_HIGH_IRQ|IR_LEARN_CYCLE_IRQ|IR_LEARN_TIMEOUT_IRQ);
     irq_enable();
 
 #elif (IR_LEARN_MODE == IR_ANALOG_TX_MODE)
@@ -151,7 +158,7 @@ void user_init(void)
 
     /* interrupt config. */
     pwm_set_interrupt_enable(PWM_IRQ_PWM0_IR_DMA_FIFO_DONE);
-    irq_set_mask(FLD_IRQ_SW_PWM_EN);
+    irq_set_mask(FLD_IRQ_PWM_EN);
 
     /* dma config. */
     pwm_start_dma_ir_sending();
@@ -199,7 +206,9 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
         il_wave_receive_buff[il_index+1] = ir_learn_get_cycle();
         ir_learn_clr_irq_status(IR_LEARN_CYCLE_IRQ);
         ir_learn_clr_irq_status(IR_LEARN_HIGH_IRQ);
+#if !(MCU_CORE_TC123X)
         gpio_toggle(LED3);
+#endif
         il_index += 2;
     }
     if( ir_learn_get_irq_status(IR_LEARN_TIMEOUT_IRQ))
@@ -212,7 +221,9 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
         {
             il_wave_receive_buff[il_index] = ir_learn_get_high();
             ir_learn_clr_irq_status(IR_LEARN_HIGH_IRQ);
+#if !(MCU_CORE_TC123X)
             gpio_toggle(LED4);
+#endif
             il_index += 1;
         }
         ir_learn_clr_irq_status(IR_LEARN_TIMEOUT_IRQ);
@@ -223,7 +234,9 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 {
     if(pwm_get_interrupt_status(PWM_IRQ_PWM0_IR_DMA_FIFO_DONE)){
         pwm_clear_interrupt_status(PWM_IRQ_PWM0_IR_DMA_FIFO_DONE);
+#if !(MCU_CORE_TC123X)
         gpio_toggle(LED2);
+#endif
     }
 }
 #endif

@@ -49,6 +49,18 @@ typedef enum
 //    CLK_32K_XTAL = 1,
 } CLK_32K_TypeDef;
 
+/**
+ * @brief system clock power up status.
+ */
+typedef enum
+{
+    MODULE_CPU        = BIT(0),
+	MODULE_DIG        = BIT(1),
+	MODULE_CAL        = BIT(2),
+	MODULE_CLK_INIT   = BIT(3),
+	MODULE_SET_POWER  = BIT(4),
+} clk_src_24m_rc_use_modules_e;
+
 /**********************************************************************************************************************
  *                                     global variable declaration                                                    *
  *********************************************************************************************************************/
@@ -130,10 +142,7 @@ _attribute_ram_code_sec_noinline_ void cpu_set_32k_tick(unsigned int tick);
  * @brief       This function use to set all clock to default. 
  * @return      none.
  */
-static _always_inline void clock_set_all_clock_to_default(void)
-{
-    reg_clk_sel = (unsigned char)SYS_CLK_24M_RC;              //change to 24M rc clock
-}
+_attribute_ram_code_sec_noinline_ void clock_set_all_clock_to_default(void);
 
 /**
  * @brief       This function use to save all clock configuration for the follow-up restore. 

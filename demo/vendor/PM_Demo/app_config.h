@@ -39,6 +39,8 @@ extern "C" {
  */
 #include "sys_clock.h"
 
+#define PM_AUDO_TEST                    01
+
 /* IDLE MODE */
 #if(MCU_CORE_B80 || MCU_CORE_B80B||MCU_CORE_TC321X)
 #define IDLE_TIMER_WAKEUP				1
@@ -160,14 +162,13 @@ extern "C" {
 #elif(MCU_CORE_TC1211)
 #define SUSPEND_32K_RC_WAKEUP   		SUSPEND_32K_RC
 
-#elif(MCU_CORE_TC122X)
+#elif((MCU_CORE_TC122X) || (MCU_CORE_TC123X))
 #define SUSPEND_PAD_WAKEUP   			SUSPEND_PAD
 #define SUSPEND_32K_RC_WAKEUP   		SUSPEND_32K_RC
 #define DEEP_PAD_WAKEUP		 			DEEP_PAD
 #define DEEP_32K_RC_WAKEUP      		DEEP_32K_RC
 #define DEEP_RET_PAD_WAKEUP		 		DEEP_RET_PAD
 #define DEEP_RET_32K_RC_WAKEUP      	DEEP_RET_32K_RC
-
 #endif
 
 

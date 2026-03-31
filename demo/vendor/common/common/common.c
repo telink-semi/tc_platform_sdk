@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    common.c
  *
- * @brief   This is the header file for Telink MCU
+ * @brief   This is the source file for Telink MCU
  *
  * @author  Driver Group
  * @date    2024
@@ -51,11 +51,13 @@ flash_user_defined_list_t flash_init_list[] = {
     // 512K
     {0x1360C8, FLASH_LOCK_LOW_256K_MID1360C8},
     {0x13325E, FLASH_LOCK_LOW_256K_MID13325E},
+    {0x0113325E, FLASH_LOCK_LOW_256K_MID0113325E},
     {0x134051, FLASH_LOCK_LOW_256K_MID134051},
     {0x136085, FLASH_LOCK_LOW_256K_MID136085},
     {0x1360EB, FLASH_LOCK_LOW_256K_MID1360EB},
     // 1M
     {0x14325E, FLASH_LOCK_LOW_768K_MID14325E},
+    {0x0114325E, FLASH_LOCK_UP_768K_CMP1_MID0114325E},
     {0x1460C8, FLASH_LOCK_LOW_768K_MID1460C8},
     {0x011460C8, FLASH_LOCK_LOW_512K_MID011460C8},
 #elif (MCU_CORE_B87)
@@ -65,10 +67,13 @@ flash_user_defined_list_t flash_init_list[] = {
     // 512K
     {0x1360C8, FLASH_LOCK_LOW_256K_MID1360C8},
     {0x13325E, FLASH_LOCK_LOW_256K_MID13325E},
+    {0x0113325E, FLASH_LOCK_LOW_256K_MID0113325E},
     // 1M
     {0x146085, FLASH_LOCK_LOW_512K_MID146085},
     {0x1460C8, FLASH_LOCK_LOW_768K_MID1460C8},
     {0x14325E, FLASH_LOCK_LOW_768K_MID14325E},
+    {0x0114325E, FLASH_LOCK_LOW_512K_MID0114325E},
+
 
 #elif (MCU_CORE_B89)
     // 512K
@@ -81,10 +86,30 @@ flash_user_defined_list_t flash_init_list[] = {
     {0x1471cd, FLASH_LOCK_LOW_512K_MID1471cd},
     //2M
 	{0x156085, FLASH_LOCK_LOW_1M_MID156085},
+#elif (MCU_CORE_TC1211)
+    // 128K
+    {0x114485, FLASH_LOCK_LOW_32K_MID114485},
+    {0x1151cd, FLASH_LOCK_LOW_32K_MID1151CD},
+    // 512K
+    {0x136085, FLASH_LOCK_LOW_32K_MID136085},
+    //1M
+	{0x146085, FLASH_LOCK_LOW_32K_MID146085},
 #elif (MCU_CORE_TC122X)
+    // 128K
+    {0x114485, FLASH_LOCK_LOW_32K_MID114485},
+    {0x1164c8, FLASH_LOCK_LOW_64K_MID1164C8},
+    {0x1151cd, FLASH_LOCK_LOW_32K_MID1151CD},
+#elif (MCU_CORE_TC123X)
     // 128K
     {0x114485, FLASH_LOCK_LOW_64K_MID114485},
     {0x1164c8, FLASH_LOCK_LOW_64K_MID1164C8},
+    // 512K
+    {0x136085, FLASH_LOCK_LOW_256K_MID136085},
+    //1M
+	{0x146085, FLASH_LOCK_LOW_512K_MID146085},
+    {0x1471cd, FLASH_LOCK_LOW_512K_MID1471cd},
+    //2M
+	{0x156085, FLASH_LOCK_LOW_1M_MID156085},
 #else
     {0, 0}
 #endif
@@ -128,22 +153,21 @@ void platform_init(unsigned char flash_protect_en)
 	Otherwise, the next judgment may be inaccurate because the corresponding value is not configured.
 	===============================================================================
 	*/
-#if defined(MCU_CORE_TC122X)
+#if (defined(MCU_CORE_TC122X))
     pm_update_status_info(1);
 
+#if(FLASH_BIN_ON == 0)
     if(pmParam.mcu_status == MCU_POWER_ON)
     {
-		if((analog_read(PM_ANA_REG_WD_CLR_BUF0) & FLASH_BIN) == 0x00)
+		for(volatile unsigned int i = 0; i < 300000; i++)
 		{
-		    for(volatile unsigned int i = 0; i < 300000; i++)
-		    {
-		        asm("tnop");
-		    }
+			asm("tnop");
 		}
     }
 #endif
+#endif
 
-#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89  || MCU_CORE_TC1211 || MCU_CORE_TC122X)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89  || MCU_CORE_TC1211 || MCU_CORE_TC122X || MCU_CORE_TC123X)
     cpu_wakeup_init(INTERNAL_CAP_XTAL24M);
 #elif (MCU_CORE_B85)
     cpu_wakeup_init();
@@ -151,8 +175,12 @@ void platform_init(unsigned char flash_protect_en)
     cpu_wakeup_init(LDO_MODE, INTERNAL_CAP_XTAL24M);
 #endif
 
-#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89 || MCU_CORE_TC321X || MCU_CORE_TC1211 || MCU_CORE_TC122X)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_B89 || MCU_CORE_TC321X || MCU_CORE_TC1211 || MCU_CORE_TC122X || MCU_CORE_TC123X)
     wd_32k_stop();
+#endif
+
+#if defined(MCU_CORE_TC321X)
+    pm_update_status_info(1);
 #endif
 
 #if (MCU_CORE_B85) || (MCU_CORE_B87 || MCU_CORE_TC321X)
@@ -172,11 +200,11 @@ void platform_init(unsigned char flash_protect_en)
     user_read_flash_value_calib();
 #endif
 
-#elif (MCU_CORE_TC122X)
+#elif (MCU_CORE_TC122X) || (MCU_CORE_TC123X)
     user_read_efuse_value_calib();
 #endif
 
-#if ((!DUT_TEST) && (!MCU_CORE_TC1211) && (!MCU_CORE_TC122X))
+#if ((!DUT_TEST) && (!MCU_CORE_TC1211) && (!MCU_CORE_TC123X))
     int deepRetWakeUp = pm_is_MCU_deepRetentionWakeup();
     gpio_init(!deepRetWakeUp);
 #endif
@@ -205,16 +233,11 @@ void platform_init(unsigned char flash_protect_en)
 #if (defined(DUT_TEST) || defined(MCU_CORE_TC1211))
 
 #elif defined(MCU_CORE_TC122X)
-    unsigned char anareg_35 = analog_read(PM_ANA_REG_WD_CLR_BUF0);
-
-	if((anareg_35 & FLASH_BIN) == FLASH_BIN)
-	{
-		flash_init(flash_protect_en);
-	}
-
+#if(FLASH_BIN_ON == 1)
+    flash_init(flash_protect_en);
+#endif
 #else
     flash_init(flash_protect_en);
-
 #endif
 
 }

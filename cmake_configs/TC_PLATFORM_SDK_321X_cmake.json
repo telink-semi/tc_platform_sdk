@@ -1,0 +1,1621 @@
+{
+  "name": "TC_PLATFORM_SDK_321X",
+  "language": "c",
+  "toolchain_path": "",
+  "toolchainName": "TC32-GCC Toolchain",
+  "targets": [
+    {
+      "name": "AES_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/AES_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   AES_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "ALG_REG_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/ALG_REG_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   ALG_REG_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "AUDIO_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/AUDIO_Demo/AUDIO_V1.1/AUDIO_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   AUDIO_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "BQB_EMI_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/BQB_EMI_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   BQB_EMI_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "Coremark_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/Coremark_demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-DALL_SRAM_CODE=1",
+        "-DSKIP_RF_DRV=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   Coremark_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "Debug_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/Debug_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   Debug_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "Dhrystone_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/Dhrystone_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-DALL_SRAM_CODE=1",
+        "-DSKIP_RF_DRV=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   Dhrystone_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "DUT_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/DUT_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-DSRAM_OTP_FLASH_HANDLE=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        " ${CMAKE_CURRENT_SOURCE_DIR}/vendor/8278_DUT_Test/DUT/libfirmware_encrypt.a",
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   DUT_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "FLASH_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/Flash_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   FLASH_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "GPIO_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/GPIO_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   GPIO_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "I2C_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/I2C_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   I2C_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "IR_LEARN_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/IR_LEARN_Demo/IR_LEARN_V1.1/IR_LEARN_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   IR_LEARN_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "Keyscan_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/Keyscan_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   Keyscan_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "PM_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/PM_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   PM_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "PWM_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/PWM_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   PWM_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "QDEC_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/QDEC_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   QDEC_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "RF_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/RF_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   RF_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "SD_ADC_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/SD_ADC_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   SD_ADC_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "SPI_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/SPI_Demo/SPI_V1.0/SPI_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   SPI_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "Timer_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/TIMER_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   Timer_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "TRNG_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/TRNG_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   TRNG_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "UART_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/UART_Demo/UART_V1.1/UART_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   UART_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    }
+  ],
+  "toolchainVersionName": "TC32-GCC Toolchain"
+}

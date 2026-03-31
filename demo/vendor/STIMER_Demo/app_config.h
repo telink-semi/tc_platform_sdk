@@ -45,6 +45,7 @@ extern "C"
 #define STIMER_SET_32K_TICK_LVL 4
 #define STIMER_TRACK_32K_TICK   5
 #define STIMER_GET_TICK         6
+#define STIMER_TIMEOUT_IRQ      7
 
 
 #define STIMER_MODE             STIMER_DELAY

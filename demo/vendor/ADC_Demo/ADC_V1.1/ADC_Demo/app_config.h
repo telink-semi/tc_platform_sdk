@@ -72,6 +72,15 @@ extern "C" {
     #define ADC_SAMPLE_MODE         ADC_GPIO_SAMPLE
 #endif
 
+/**
+ * @attention:
+ * For TC321X:
+ * -# The maximum sampling voltage range of PB5-6 and PD0-1 is 0 ~ (vbat*60%).
+ *    e.g., if vbat is supplied with 3.3V, then the sampling range is 0 ~ 1.98V).
+ * -# If external voltage division is required, we recommend using PB5-6 and PD0-1,
+ *    which can prevent the influence of internal resistance and provide more accurate sampling voltage.  
+ * -# The maximum sampling voltage range of PB0-4 is 0 ~ 3.3V.
+ */
 #define GPIO_M_CHN_SAMPLE_PIN       ADC_GPIO_PB0
 
 /* Disable C linkage for C++ Compilers: */

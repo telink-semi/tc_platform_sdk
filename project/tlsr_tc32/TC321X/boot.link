@@ -53,12 +53,31 @@ SECTIONS
         *(.retention_data.*)
         PROVIDE(_retention_data_end_ = . );
         }
-	    
+
+	PROVIDE(_retention_data_size_ = . - 0x840000);
+	PROVIDE(_retention_data_size_div_16_ = (.  - 0x840000 + 15 ) / 16);
 	PROVIDE(_retention_data_size_div_256_ = (. - 0x840000 + 255) / 256);
+	PROVIDE(_retention_data_size_div_16_align_256_ = ( (. - 0x840000 + 255) / 256) * 16);
 	PROVIDE(_retention_data_size_align_256_ = ( (. - 0x840000 + 255) / 256) * 256);
-	PROVIDE(_retention_data_size_div_16_align_256_ = _retention_data_size_align_256_ / 16);
 	
-	. = _retention_data_size_align_256_;
+	 . = _retention_data_size_align_256_ +0x840000;
+	 .reboot_data :
+     AT (_retention_data_size_align_256_)
+        {
+        . = (((. + 3) / 4)*4);
+        PROVIDE(_reboot_data_start_ = . );
+        *(.reboot_data)
+        *(.reboot_data.*)
+        PROVIDE(_reboot_data_end_ = . );
+        }
+
+	PROVIDE(_reboot_data_size_ = . - 0x840000);
+	PROVIDE(_reboot_data_size_div_16_ = (.  - 0x840000 + 15 ) / 16);
+	PROVIDE(_reboot_data_size_div_256_ = (. - 0x840000 + 255) / 256);
+	PROVIDE(_reboot_data_size_div_16_align_256_ = ( (. - 0x840000 + 255) / 256) * 16);
+	PROVIDE(_reboot_data_size_align_256_ = ( (. - 0x840000 + 255) / 256) * 256);
+	
+	. = _reboot_data_size_align_256_ ;
 
     .ram_code :
     {

@@ -1,3 +1,202 @@
+## V3.4.0
+
+### Version
+* SDK Version: tc_platform_sdk V3.4.0
+* Chip Version
+  - B80:  TLSR8208/TLSR8373
+  - B80B: TLSR8208 Version B
+  - B85:  TLSR825x/TLSR8359
+  - B87:  TLSR827x/TLSR8355
+  - TC321X(B0/A1/A0)
+* Hardware EVK Version
+  - B80:    C1T261A30_V1_1
+  - B80B:   C1T321A30_V1_0
+  - B85:    C1T139A30_V1_2
+  - B87:    C1T197A30_V1_1
+  - TC321X: C1T357A20_V2_1
+
+* Toolchain Version
+  - B80, B80B, B85, B87, TC321X(B0/A1/A0): TC32 ELF GCC4.3 ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+### Bug Fixes
+* **.S**
+  * (TC321X):Fixed the system crash issue that occurs when retention_data exceeds 8KB in the project. (merge_requests/@858)
+      - Detailed Description: The program crashes if the size of retention_data in the project is larger than 8KB. The root cause is a configuration error in the startup file that leads to the overflow of the hardware BOOT stack — the transfer unit of RAM code from the .S file to the hardware boot is not set as a multiple of 16 bytes. As a result, the expansion of retention data exceeds the 32KB space and overwrites the hardware reboot stack, causing the program to run away.
+      - Update Recommendation: Mandatory update
+  * (TC321X):Fixed the issue where printf fails to output after the chip wakes up from sleep mode. (merge_requests/@888)
+      - Detailed Description: In sleep mode, the .bss segment data is not initialized, which causes printf to fail to output.
+      - Update Recommendation: Mandatory update
+* **trng**
+    - (TC321X):Fixed the issue that the first byte from trng is always 0 or a specific value.(merge_requests/@866)(merge_requests/@939)
+      - Detailed Description:Call the random_generator_int interface to discard the first byte to avoid this issue.
+      - Update Recommendation:Mandatory update.
+
+* **32k watchdog**
+  * (TC321X) Fixed the issue where the 32k watchdog reset flag was abnormally cleared or not cleared properly. (merge_requests/@2244)
+    * Detailed description: The cpu_wakeup_init interface may clear the 32k watchdog reset flag, while the wd_32k_clear_status interface cannot properly clear the 32k watchdog reset flag.
+    * After Fix: In the wd_32k_clear_status interface, the reset flag is cleared, but the cpu_wakeup_init interface cannot do so.
+    * Update Recommendation: In applications that require viewing the 32k watchdog reset flag, an update is necessary.
+* **ir**
+  * (tc321x)Fixed the issue where timeout interrupts could not be properly cleared.(merge_requests/@887)
+    * Detailed description: The IR learning module needs to be turned off before clearing the timeout interrupt flag. After clearing the flag, the module should be turned on again.
+    * After Fix: Calling ir_learn_clr_irq_status can now properly clear the timeout interrupt flag.
+    * Update Recommendation: In applications where clearing the IR learning timeout interrupt is required, an update is mandatory.
+  * (TC321X) Fixed the issue of IR not being able to receive normally due to the incorrect IR function configuration of GPIO_PB0/GPIO_PC2/GPIO_PE0/GPIO_PE1 in the ir_learn_set_dig_rx_pin() interface.(merge_requests/@904)
+    * Detailed description: The incorrect gpio mux function configuration in the ir_learn_set_dig_rx_pin() interface has been fixed.
+    * Fix effect: After the fix, the reception function works normally using all the IOs that support the IR function.
+    * Update suggestion: Mandatory update.
+
+* **pm**
+  * (B85/B87) This has resolved the issue where the sleep time could potentially extend to over 30 hours due to the long execution time of the client's callback function. (merge_requests/@896)
+    * Detailed description: When the callback function's execution time is too long, exceeding the set sleep time, the set wake-up time becomes a time that has just passed, resulting in the wake-up only occurring after the tick value has cycled back around, which takes approximately over 30 hours. The issue is resolved by checking the sleep time after the callback function has completed its execution.
+    * After Fix: When the callback function's execution time is long, the sleep function can return promptly.
+    * Update Recommendation: Must be updated
+  * (TC321X) Fixed data loss issue in ana_3a/3b/3c after reboot.(merge_requests/@941)
+    * Fix outcome: Upper-layer SDK functions normally without user intervention.
+    * Update recommendation: Mandatory update.
+
+* **sys**
+  * (tc321x) Fixed an issue where applications with a software bootloader would run abnormally when the 24Mrc clock was not switched after the bootloader completed execution. (merge_requests/@938)
+    * Detailed description: For applications with a software bootloader, the 24Mrc clock is now enabled and switched at the beginning of the cpu_wakeup_init interface.
+    * After Fix: Applications with a software bootloader can now run normally. Impact: Initialization time increases by 10µs.
+    * Update Recommendation: Update required for applications using a software bootloader.
+  * (tc321x) Fixed an intermittent crash issue caused by large duty cycle deviation of the 48M doubler clock. (merge_requests/@943)
+    * Detailed description: The 48M doubler clock had a significant duty cycle deviation. Adjusting the duty cycle during system initialization resolves the intermittent crash issue at 48M.
+    * After Fix: Reduced duty cycle deviation of the 48M doubler clock; the intermittent crash issue at 48M is resolved.
+    * Update Recommendation: Mandatory update when using the 48M doubler clock.
+* **clock**    
+  * (tc321x) Fixed a low-probability crash issue caused by insufficient 24M RC clock startup time. (merge_requests/@946)
+    * Detailed description: Previously used a nop for-loop delay after enabling the 24M RC clock, but the loop variable was not declared volatile, causing the compiler to optimize it away and fail to meet the required 24M RC startup time.
+    * After Fix: Now uses stimer for a 2us delay, satisfying the proper 24M RC clock startup time.
+    * Update Recommendation: Mandatory update.   
+  * (tc321x) Fixed an intermittent crash issue that occurred when calling interfaces with 24M RC clock on/off operations from interrupt context. (merge_requests/@955)(merge_requests/@956)
+    * Detailed description: Added MODULE_DIG/MODULE_CAL/MODULE_CLK_INIT/MODULE_SET_POWER flags; these flags are manipulated in corresponding interfaces to prevent accidental shutdown of the 24M RC clock.
+    * After Fix: Using the newly added flags in interfaces with 24M RC clock on/off operations resolves the intermittent crash issue caused by mistakenly turning off the 24M RC clock.
+    * Update Recommendation: Mandatory update.
+
+### BREAKING CHANGES
+* N/A
+
+### Features
+* **pm**
+  * (tc321x)Add 24M RC power down optimization solution. (merge_requests/@868)
+  * (B80/B80B/TC321X)A callback function has been added to the sleep function, which some customers may find useful. (merge_requests/@896)
+  * (tc321x)Add voltage calibration interface flash_calib_voltage for calibrating dcdc1p25/ldo1p25/ldo1p8/vdddec voltages. (merge_requests/@943)
+  * (tc321x)Add the pm_update_status_info interface for updating the wakeup status during power-on initialization. (merge_requests/@943)
+* **RF**
+  * (tc321x)Added RF driver for version B0.(merge_requests/@880)(merge_requests/@897)(merge_requests/@899)(merge_requests/@921)(merge_requests/@934)(merge_requests/@937)
+* **FLASH**
+  * (B87)A new ZG25WD40C/ZG25WD80C Flash driver has been added.(merge_requests/@924)(merge_requests/@932)
+  * (B85)A new ZG25WD40C Flash driver has been added .(merge_requests/@933)
+  * (B85)A new ZG25WD80C Flash driver has been added .(merge_requests/@947)
+### Refactoring
+* **RF**
+  * (tc321x)For demos that do not use RF drivers, use macros to disable the call to rf_sw_config and optimize the space occupied by flash (6k bytes). (merge_requests/@922)
+
+### Performance Improvements
+* N/A
+
+### 版本
+* SDK 版本: tc_platform_sdk V3.4.0
+* 芯片版本
+  - B80:  TLSR8208/TLSR8373
+  - B80B: TLSR8208 Version B
+  - B85:  TLSR825x/TLSR8359
+  - B87:  TLSR827x/TLSR8355
+  - TC321X(B0/A1/A0)
+* 硬件评估板版本
+  - B80:    C1T261A30_V1_1
+  - B80B:   C1T321A30_V1_0
+  - B85:    C1T139A30_V1_2
+  - B87:    C1T197A30_V1_1
+  - TC321X: C1T357A20_V2_1
+
+* 工具链版本
+  - B80, B80B, B85, B87, TC321X(B0/A1/A0): TC32 ELF GCC4.3 ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+### Bug Fixes
+* **.S**
+  * (TC321X):修复工程中 retention_data 大于 8K 字节时的死机问题。(merge_requests/@858)
+      - 详细描述:工程中 retention_data 大于 8K 字节时，会导致程序死机。根因是启动文件的配置错误导致硬件 BOOT 堆栈溢出 ——.S 文件传给硬件 boot 搬 ramcode 的单位未按 16 字节倍数设置，导致 retention data 增大后超出 32K 空间覆盖硬件 reboot 堆栈，造成程序跑飞。
+      - 更新建议:​必须更新
+  * (TC321X):修复芯片睡眠唤醒后printf无法打印问题。(merge_requests/@888)
+      - 详细描述:在芯片睡眠唤醒后，.bss段数据未初始化导致printf无法打印。
+      - 更新建议:​必须更新
+* **trng**
+    - (TC321X):修复了trng的第一个byte总是0或特定值的问题(merge_requests/@866)(merge_requests/@939)
+      - 详细描述:调用random_generator_init接口丢弃第一个byte规避该问题
+      - 更新建议:​必须更新
+
+* **32k watchdog** 
+  * (TC321X)修复了32k watchdog复位标志位被异常清除或者没有正常清除的问题。(merge_requests/@2244)
+    * 详细描述：cpu_wakeup_init接口可能会清除32k watchdog复位标志位，而wd_32k_clear_status接口无法正常清除32k watchdog复位标志位。
+    * 修复效果：在wd_32k_clear_status接口中清除复位标志位，cpu_wakeup_init接口不能清除。
+    * 更新建议：在需要查看32k watchdog 复位标志位的应用中必须更新
+* **ir**
+  * (tc321x)修复了timeout中断不能正常清除的问题。(merge_requests/@887)
+    * 详细描述：清除timeout中断标志位之前需要先关掉ir learning模块，清除后再打开。
+    * 修复效果：调用ir_learn_clr_irq_status可以正常清除timeout中断标志位。
+    * 更新建议：在需要清除ir learning timeout中断的应用中必须更新
+  * (TC321X)修复ir_learn_set_dig_rx_pin()接口中GPIO_PB0/GPIO_PC2/GPIO_PE0/GPIO_PE1的ir function配置错误导致ir不能正常接收的问题。(merge_requests/@904)
+    * 详细描述：ir_learn_set_dig_rx_pin()接口中的gpio mux function配置错误，已修复。
+    * 修复效果：修复后使用所有支持ir function的IO，接收功能都正常。
+    * 更新建议：必须更新
+
+* **pm**
+  * (B85/B87)解决了因客户的回调函数执行时间较长导致的睡眠时间可能延长到30多小时的问题。(merge_requests/@896)
+    * 详细描述：当回调函数执行时间过长，超出设置的睡眠时间，导致设置的唤醒时间是一个刚过去的时间，就会在tick值转一圈回来后才能唤醒，转一圈的时间大约是30多小时。修改为回调函数执行结束后再判断睡眠时间，解决这个问题。
+    * 修复效果：回调函数执行时间过长时，睡眠函数可以及时返回。
+    * 更新建议：必须更新
+  * (TC321X)修复了ana_3a/3b/3c reboot后丢失问题。(merge_requests/@941)
+    * 修复效果：sdk上层无感照常使用。
+    * 更新建议：必须更新
+
+* **sys**
+  * (tc321x)解决了带软件bootloader的应用，bootloader执行完，没有切换到24Mrc时钟时，程序运行异常的问题。(merge_requests/@938)
+    * 详细描述：带软件bootloader的应用，在cpu_wakeup_init接口开始的地方打开24Mrc时钟，并切换到24Mrc。
+    * 修复效果：带软件bootloader的应用，程序可以正常运行。影响：初始化时间会增加10us。
+    * 更新建议：使用带软件bootloader的应用，需要更新
+  * (tc321x)解决了由于48M doubler时钟的占空比偏差较大导致的概率性死机问题。(merge_requests/@943)
+    * 详细描述：48M doubler时钟的占空比偏差较大，在系统初始化中调整48M doubler时钟的占空比，可以解决48M下的概率性死机问题。
+    * 修复效果：48M doubler时钟的占空比偏差减小，可以解决48M下的概率性死机问题。
+    * 更新建议：使用48M doubler时钟时必须更新
+* **clock**    
+  * (tc321x)解决了由于不满足24Mrc开启时间从而导致的低概率性死机问题。(merge_requests/@946)
+    * 详细描述：24Mrc打开后使用nop for循环延时，但是由于循环变量没有加volatile导致被编译器优化，不满足24mrc开启时间。
+    * 修复效果：使用stimer延时2us，可以满足24mrc的正常开启时间。
+    * 更新建议：必须更新    
+  * (tc321x)解决了在中断中调用有24mrc开关操作的接口时，发生概率性死机的问题。(merge_requests/@955)(merge_requests/@956)
+    * 详细描述：新增MODULE_DIG/MODULE_CAL/MODULE_CLK_INIT/MODULE_SET_POWER标志位，在对应接口中操作标志位，防止误关闭24mrc。
+    * 修复效果：使用新增的标志位，在有24mrc开关操作的接口中添加标志，解决了由于误关闭24mrc而引发的概率性死机问题。
+    * 更新建议：必须更新    
+
+### BREAKING CHANGES
+* N/A
+
+### Features
+* **pm**
+  * (tc321x)新增了24M RC时钟关闭优化解决方案. (merge_requests/@868)
+  * (B80/B80B/TC321X)睡眠函数中增加了回调函数，有的客户会用到。 (merge_requests/@896)
+  * (tc321x)新增电压校准接口flash_calib_voltage，用于校准dcdc1p25/ldo1p25/ldo1p8/vdddec电压. (merge_requests/@943)
+  * (tc321x)新增pm_update_status_info接口，用于在上电初始化时更新唤醒状态. (merge_requests/@943)
+* **RF**
+  * (tc321x)新增B0版本RF驱动.(merge_requests/@880)(merge_requests/@897)(merge_requests/@899)(merge_requests/@921)(merge_requests/@934)(merge_requests/@937)
+* **FLASH**
+  * (B87)新增ZG25WD40C/ZG25WD480C驱动.(merge_requests/@924)(merge_requests/@932)
+  * (B85)新增ZG25WD40C驱动.(merge_requests/@933)
+  * (B85)新增ZG25WD80C驱动.(merge_requests/@947)
+### Refactoring
+* **RF**
+  * (tc321x)对于不使用RF驱动的demo，使用宏关闭对rf_sw_config的调用，优化flash的占用空间(6k Byte).(merge_requests/@922)
+
+### Performance Improvements
+* N/A
+
+---
 ## V3.3.1
 
 ### Version

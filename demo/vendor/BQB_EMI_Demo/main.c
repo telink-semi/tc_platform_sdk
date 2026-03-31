@@ -63,7 +63,10 @@ _attribute_ram_code_sec_noinline_ __attribute__((optimize("-Os"))) void irq_hand
  */
 int main (void) {
 
+#if (!defined(MCU_CORE_TC122X))
 	blc_pm_select_internal_32k_crystal();
+#endif
+
 #if (MCU_CORE_B85) || (MCU_CORE_B87)
 	int deepRetWakeUp = pm_is_MCU_deepRetentionWakeup();  //MCU deep retention wakeUp
 #endif
@@ -129,14 +132,14 @@ int main (void) {
 	user_read_efuse_value_calib();
 #endif
 
-#if (MCU_CORE_B85 || MCU_CORE_B87)
-	rf_drv_init(RF_MODE_BLE_1M_NO_PN);
-
-	gpio_init(!deepRetWakeUp);
-#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC1211||MCU_CORE_TC122X)
-	rf_mode_init();
-	rf_set_ble_1M_NO_PN_mode();
+#if MCU_CORE_TC1211
+    gpio_digital_pullup_en(GPIO_SWS,1);
+#else
+    // Note: This is to set SWS pull. If SWS is not set up, SWS will be floating, causing abnormal sleep currents of suspend,
+    // there may be the risk of sws miswriting the chip registers or sram causing a crash.
+    gpio_setup_up_down_resistor(GPIO_SWS, PM_PIN_PULLUP_1M);
 #endif
+
 /**
 	===============================================================================
 						##### driver sdk firmware protection #####
@@ -155,6 +158,15 @@ int main (void) {
 #endif
 
     CLOCK_INIT;
+
+#if (MCU_CORE_B85 || MCU_CORE_B87)
+	rf_drv_init(RF_MODE_BLE_1M_NO_PN);
+
+	gpio_init(!deepRetWakeUp);
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC1211||MCU_CORE_TC122X)
+	rf_mode_init();
+	rf_set_ble_1M_NO_PN_mode();
+#endif
 
 	user_init();
 

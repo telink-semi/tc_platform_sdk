@@ -22,8 +22,12 @@
  *
  *******************************************************************************************************/
 #include "app_config.h"
-
-#define WAKEUP_PAD						GPIO_PD0
+#if(PM_MODE!=PM_AUDO_TEST)
+#if((MCU_CORE_TC122X) || (MCU_CORE_TC123X))
+#define WAKEUP_PAD                      GPIO_PA0
+#else
+#define WAKEUP_PAD                      GPIO_PD0
+#endif
 #define CURRENT_TEST	     			0
 #define CRC_OK			     			1
 #define	MDEC_MATCH_VALUE				0x02
@@ -74,7 +78,7 @@ void user_init(void)
 	sleep_ms(1000);
 	gpio_write(LED1, 0);
 
-#if(!MCU_CORE_TC1211)&&(!MCU_CORE_TC122X)
+#if(!MCU_CORE_TC1211)&&(!MCU_CORE_TC122X)&&(!MCU_CORE_TC123X)
 	gpio_set_func(LED2,AS_GPIO);		//enable output
 	gpio_set_output_en(LED2, 1);
 	gpio_set_input_en(LED2,0);			//disable input
@@ -210,6 +214,10 @@ void user_init(void)
 	gpio_setup_up_down_resistor(WAKEUP_PAD, PM_PIN_PULLDOWN_100K);
 #if(MCU_CORE_TC321X)
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW32K , PM_WAKEUP_PAD, 0);
+#elif(MCU_CORE_TC122X)
+    cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW8K , PM_WAKEUP_PAD, 0);
+#elif(MCU_CORE_TC123X)
+    cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW64K , PM_WAKEUP_PAD, 0);
 #else
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K , PM_WAKEUP_PAD, 0);
 #endif
@@ -221,6 +229,9 @@ void user_init(void)
 #elif(MCU_CORE_TC122X)
 	retention_data_test++;
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW8K, PM_WAKEUP_TIMER, (clock_time() + 4000*CLOCK_SYS_TIMER_CLK_1MS));
+#elif(MCU_CORE_TC123X)
+	retention_data_test++;
+	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW64K, PM_WAKEUP_TIMER, (clock_time() + 4000*CLOCK_SYS_TIMER_CLK_1MS));
 #else
 	cpu_sleep_wakeup(DEEPSLEEP_MODE_RET_SRAM_LOW16K, PM_WAKEUP_TIMER, (clock_time() + 4000*CLOCK_SYS_TIMER_CLK_1MS));
 #endif
@@ -392,7 +403,7 @@ void main_loop (void)
 
 #elif(PM_MODE==SUSPEND_32K_RC_WAKEUP||PM_MODE==SUSPEND_32K_XTAL_WAKEUP)
 
-	cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_TIMER, clock_time() + 500*CLOCK_SYS_TIMER_CLK_1MS);
+	cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_TIMER, clock_time() + 1000*CLOCK_SYS_TIMER_CLK_1MS);
 
 #elif(PM_MODE==SUSPEND_LONG_32K_RC_WAKEUP||PM_MODE==SUSPEND_LONG_32K_XTAL_WAKEUP)
 
@@ -411,7 +422,7 @@ void main_loop (void)
 	if(clock_time_exceed (tick_suspend_interval, 300000))
 	{
 		gpio_toggle(LED2);
-		cpu_sleep_wakeup (SUSPEND_MODE, PM_WAKEUP_CORE, 0);
+		cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_CORE, 0);
 		tick_suspend_interval = clock_time()|1;
 	}
 #elif(PM_MODE==SUSPEND_COMPARATOR_WAKEUP)
@@ -434,6 +445,6 @@ void main_loop (void)
 #endif
 	sleep_ms(50);
 }
-
+#endif
 
 

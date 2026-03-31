@@ -497,6 +497,70 @@ void flash_mid13325e_test(void)
 }
 #endif
 
+#if (MCU_CORE_B87 || MCU_CORE_B85)
+void flash_mid0113325e_test(void)
+{
+	int i;
+
+	status1 = flash_read_status_mid0113325e();
+	flash_lock_mid0113325e(FLASH_LOCK_LOW_256K_MID0113325E);
+	status2 = flash_read_status_mid0113325e();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.lock_err = 1;
+			while(1);
+		}
+	}
+	check_status.lock_check = 1;
+
+	flash_unlock_mid0113325e();
+	status3 = flash_read_status_mid0113325e();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != 0xff){
+			err_status.unlock_err = 1;
+			while(1);
+		}
+	}
+	check_status.unlock_check = 1;
+}
+#endif
+
+#if (MCU_CORE_B87 || MCU_CORE_B85)
+void flash_mid0114325e_test(void)
+{
+	int i;
+
+	status1 = flash_read_status_mid0114325e();
+	flash_lock_mid0114325e(FLASH_LOCK_LOW_512K_MID0114325E);
+	status2 = flash_read_status_mid0114325e();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.lock_err = 1;
+			while(1);
+		}
+	}
+	check_status.lock_check = 1;
+
+	flash_unlock_mid0114325e();
+	status3 = flash_read_status_mid0114325e();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != 0xff){
+			err_status.unlock_err = 1;
+			while(1);
+		}
+	}
+	check_status.unlock_check = 1;
+}
+#endif
+
 #if (MCU_CORE_B85) || (MCU_CORE_B87)
 void flash_mid14325e_test(void)
 {
@@ -972,6 +1036,9 @@ void user_init(void)
 	case 0x13325e:
 		flash_mid13325e_test();
 		break;
+	case 0x0113325e:
+		flash_mid0113325e_test();
+		break;
 	case 0x134051:
 		flash_mid134051_test();
 		break;
@@ -986,6 +1053,9 @@ void user_init(void)
 		break;
 	case 0x14325e:
 		flash_mid14325e_test();
+		break;
+	case 0x0114325e:
+		flash_mid0114325e_test();
 		break;
 	case 0x1460c8:
 		flash_mid1460c8_test();
@@ -1015,8 +1085,14 @@ void user_init(void)
 	case 0x13325e:
 		flash_mid13325e_test();
 		break;
+	case 0x0113325e:
+		flash_mid0113325e_test();
+		break;
 	case 0x14325e:
 		flash_mid14325e_test();
+		break;
+	case 0x0114325e:
+		flash_mid0114325e_test();
 		break;
 	case 0x146085:
 		flash_mid146085_test();

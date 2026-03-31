@@ -24,7 +24,7 @@
 #include "../flash_internal_private_func/zb_flash_ctrl.h"
 
 static unsigned char cmd_list[5] = {0x00,0x00,0x00,0x00,0x00};
-static unsigned int zb_cam_modify_support_type[] = {0x11325E, 0x12325E, 0x13325E, 0x14325E};
+static unsigned int zb_cam_modify_support_type[] = {0x11325E, 0x12325E, 0x13325E, 0x0113325E, 0x14325E, 0x0114325E};
 static const unsigned int zb_cam_modify_support_cnt = sizeof(zb_cam_modify_support_type)/sizeof(*zb_cam_modify_support_type);
 
 /**

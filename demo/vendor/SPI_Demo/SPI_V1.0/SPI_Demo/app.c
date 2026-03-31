@@ -40,7 +40,13 @@ spi_pin_config_t spi_pin_config = {
     .spi_mosi_io0_pin  = GPIO_PC3,
     .spi_miso_io1_pin  = GPIO_PC2,
  };
-
+#elif (MCU_CORE_TC123X)
+spi_pin_config_t spi_pin_config = {
+    .spi_csn_pin       = GPIO_PB0,
+    .spi_clk_pin       = GPIO_PB1,
+    .spi_mosi_io0_pin  = GPIO_PC0,
+    .spi_miso_io1_pin  = GPIO_PC1,
+ };
 #endif
 
 #if (SPI_DEVICE==SPI_MASTER_DEVICE)
@@ -60,8 +66,9 @@ spi_pin_config_t spi_pin_config = {
 #define MCU_CORE_B89_SLAVE_ADDR             0x4102c
 #define MCU_CORE_B87_SLAVE_ADDR             0x41938
 #define MCU_CORE_B85_SLAVE_ADDR             0x41020
-#define MCU_CORE_TC321X_SLAVE_ADDR          0x841828
-#define SLAVE_ADDR   MCU_CORE_TC321X_SLAVE_ADDR
+#define MCU_CORE_TC321X_SLAVE_ADDR          0x841918
+#define MCU_CORE_TC123X_SLAVE_ADDR          0x841548
+#define SLAVE_ADDR   MCU_CORE_TC123X_SLAVE_ADDR
 
 #define CMD_BUF_LEN             4
 unsigned char cmd_buf[4];
@@ -89,7 +96,7 @@ void user_init(void)
     spi_master_gpio_set(GPIO_PA4,SPI_CS_PIN,GPIO_PA2,GPIO_PA3);
 #elif (MCU_CORE_B85)
     spi_master_gpio_set(SPI_GPIO_GROUP_A2A3A4D6);
-#elif (MCU_CORE_TC321X)
+#elif (MCU_CORE_TC321X) || (MCU_CORE_TC123X)
     spi_set_pin(&spi_pin_config);
 #endif
 
@@ -108,7 +115,7 @@ void main_loop (void)
     spi_write((unsigned char*)cmd_buf, CMD_BUF_LEN,(unsigned char*)spi_tx_buff, BUFF_DATA_LEN,SPI_CS_PIN);
     cmd_buf[3]= SPI_READ_CMD;
     spi_read((unsigned char*)cmd_buf, CMD_BUF_LEN,(unsigned char*)spi_rx_buff, BUFF_DATA_LEN,SPI_CS_PIN);
-#elif(MCU_CORE_TC321X)
+#elif(MCU_CORE_TC321X) || (MCU_CORE_TC123X)
     cmd_buf[3]= SPI_WRITE_CMD;
     spi_write((unsigned char*)cmd_buf, CMD_BUF_LEN,(unsigned char*)spi_tx_buff, BUFF_DATA_LEN);
     cmd_buf[3]= SPI_READ_CMD;
@@ -127,11 +134,12 @@ void user_init(void)
     gpio_set_output_en(LED1, 1);        //enable output
     gpio_set_input_en(LED1 ,0);         //disable input
     gpio_write(LED1, 0);                //LED On
-
+#if !(MCU_CORE_TC123X)
     gpio_set_func(LED2 ,AS_GPIO);
     gpio_set_output_en(LED2, 1);        //enable output
     gpio_set_input_en(LED2 ,0);         //disable input
     gpio_write(LED2, 0);                //LED On
+#endif
 
     spi_slave_init((unsigned char)(CLOCK_SYS_CLOCK_HZ/(2*500000)-1),SPI_MODE0);
 #if SHARE_MODE
@@ -144,7 +152,7 @@ void user_init(void)
     spi_slave_gpio_set(GPIO_PA4,GPIO_PD6,GPIO_PA2,GPIO_PA3);
 #elif (MCU_CORE_B85)
     spi_slave_gpio_set(SPI_GPIO_GROUP_A2A3A4D6);
-#elif (MCU_CORE_TC321X)
+#elif (MCU_CORE_TC321X) || (MCU_CORE_TC123X)
     spi_set_pin(&spi_pin_config);
 #endif
 

@@ -398,6 +398,39 @@ flash_mid_e flash_read_mid(void)
 {
 	unsigned int flash_mid = 0;
 	flash_mspi_read_ram(FLASH_GET_JEDEC_ID, 0, 0, 0, (unsigned char*)(&flash_mid), 3);
+
+	/*
+	 * The mids of ZB25WD40B/ZB25WD40C are both 0x13325e, the mids of ZB25WD80B/ZB25WD80C are both 0x14325e,
+	 * but the status register of ZB25WD40B/ZB25WD80B are 8 bits, and the status register of ZB25WD40C/ZB25WD80C is 16 bits.
+	 * The functions of the two chips are different.
+	 * The software detection method is to read SFDP Signature of one byte. If it is 53H, it is ZB25WD40C/ZB25WD80C,
+	 * If the SFDP Signature read does not match, it is ZB25WD40B/ZB25WD80B.
+	 */
+	if(flash_mid == 0x13325e)
+	{
+		static const unsigned char SIGNATURE = 0x53;
+		unsigned char sfdp_data = 0;
+
+		flash_mspi_read_ram(FLASH_GET_JEDEC_STATUS_CMD, (unsigned long)0, 1, 1, (unsigned char*)(&sfdp_data), 1);
+		if(sfdp_data != SIGNATURE)
+		{
+			return flash_mid;
+		}
+		
+		flash_mid = 0x0113325e;
+	}
+	else if(flash_mid == 0x14325e)
+	{
+		static const unsigned char SIGNATURE = 0x53;
+		unsigned char sfdp_data = 0;
+		flash_mspi_read_ram(FLASH_GET_JEDEC_STATUS_CMD, (unsigned long)0, 1, 1, (unsigned char*)(&sfdp_data), 1);
+		if(sfdp_data != SIGNATURE)
+		{
+			return flash_mid;
+		}
+		
+		flash_mid = 0x0114325e;
+	}
 	return flash_mid;
 }
 

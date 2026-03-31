@@ -1,0 +1,1514 @@
+{
+  "name": "B80B_Driver_Demo",
+  "language": "c",
+  "toolchain_path": "",
+  "toolchainName": "TC32-GCC Toolchain",
+  "targets": [
+    {
+      "name": "ADC_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/ADC_Demo/ADC_V1.0/ADC_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   ADC_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "AES_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/AES_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   AES_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "BQB_EMI_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/BQB_EMI_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   BQB_EMI_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "Debug_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/Debug_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   Debug_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "Display_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/Display_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   Display_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "DUT_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/DUT_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-DDUT_TEST",
+        "-DALL_SRAM_CODE=1",
+        "-DSRAM_OTP_FLASH_HANDLE=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-DSRAM_OTP_FLASH_HANDLE=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        " ${CMAKE_CURRENT_SOURCE_DIR}/vendor/8278_DUT_Test/DUT/libfirmware_encrypt.a",
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   DUT_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "FLASH_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/Flash_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   FLASH_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "GPIO_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/GPIO_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   GPIO_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "I2C_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/I2C_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   I2C_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "IR_LEARN_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/IR_LEARN_Demo/IR_LEARN_V1.0/IR_LEARN_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   IR_LEARN_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "Keyscan_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/Keyscan_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   Keyscan_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "OTP_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   OTP_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": [
+        {
+          "name": "demo_vendor_OTP_Demo",
+          "path": "demo/vendor/OTP_Demo",
+          "toolchain": "TC32-GCC Toolchain",
+          "toolchainVersionName": "",
+          "directories": [
+            "./"
+          ],
+          "asm_compile_options": [
+            "-DMCU_STARTUP_FLASH",
+            "-DMCU_CORE_B80B=1",
+            "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+            "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+          ],
+          "c_compile_options": [
+            "-O2",
+            "-fpack-struct",
+            "-fshort-enums",
+            "-finline-small-functions",
+            "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+            "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+            "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+            "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+            "-DMCU_CORE_B80B=1",
+            "-std=gnu99",
+            "-fshort-wchar",
+            "-fms-extensions"
+          ],
+          "cpp_compile_options": []
+        }
+      ]
+    },
+    {
+      "name": "PM_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/PM_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   PM_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "PWM_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/PWM_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   PWM_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "QDEC_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/QDEC_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   QDEC_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "RF_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/RF_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   RF_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "s7816_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common",
+        "demo/vendor/s7816_Demo/s7816_V1.1/s7816_Demo"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   s7816_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "SPI_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/SPI_Demo/SPI_V1.1/SPI_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   SPI_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "Timer_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/TIMER_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   Timer_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "UART_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/UART_Demo/UART_V1.1/UART_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   UART_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "USB_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B80/boot",
+        "chip/B80/drivers",
+        "common",
+        "demo/vendor/USB_Demo",
+        "demo/vendor/common/B80/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_B80B=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B80/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B80B=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B80/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_b80b"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B80B/../../../tools/tl_check_fw_tool/tl_check_fw.sh   USB_Demo   B80B_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    }
+  ],
+  "toolchainVersionName": "TC32-GCC Toolchain"
+}

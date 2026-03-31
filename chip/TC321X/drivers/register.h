@@ -1978,7 +1978,6 @@ enum{
 };
 
 /**
- * @note : This register else will be lost upon reboot.
  * Customers cannot use analog register 0x3a because driver and chip functions are occupied, details are as follows:
  * [Bit0]: If this bit is 1, it means that reboot has occurred.
  * REBOOT_MANUAL, it means that manually invoke the reboot interface.
@@ -2049,6 +2048,14 @@ typedef enum {
     //that are not in use may have been set up.
     FLD_WAKEUP_STATUS_INUSE_ALL     = 0x05,
 }pm_wakeup_status_e;
+
+#define areg_aon_0x65           0x65
+enum {
+	//RSVD
+    FLD_RESET_XTAL_QICK_START        = BIT(5),
+    FLD_RESET_32K_TIMER_CNT          = BIT(6),
+	FLD_RESET_32K_WD_OVERFLOW_STATUS = BIT(7),
+};
 
 /**
  * BIT[0] 1:power down baseband.

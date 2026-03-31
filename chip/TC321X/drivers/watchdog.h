@@ -113,6 +113,18 @@ static inline void wd_clear(void)
 }
 
 /**
+ * @brief     get watchdog overflow status.
+ * @return    watchdog overflow status.
+ */
+static inline unsigned char wd_get_status(void)
+{
+    if (g_chip_version != CHIP_VERSION_A0) {
+        return (reg_tmr_sta & FLD_TMR_STA_WD);
+    }
+    return 0;
+}
+
+/**
  * @brief     start 32k watchdog.
  * @return    none
  * @note      For otp products, if all codes cannot be executed in ram code, there will be a risk of crash,

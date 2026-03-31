@@ -27,6 +27,9 @@
 #include "compiler.h"
 #include "analog.h"
 #include "lib/include/pm/pm.h"
+#include "lib/include/stimer.h"
+
+extern unsigned char  g_24m_rc_is_used;
 
 /********************************************************************************************************
  *              This is just for internal debug purpose, users are prohibited from calling.
@@ -111,6 +114,107 @@ typedef enum
     RET_LDO_TRIM_0P95V,
 } pm_ret_ldo_trim_e;
 
+extern volatile unsigned int __attribute__((section(".reboot_data"))) g_reboot_flag;
+extern volatile unsigned char __attribute__((section(".reboot_data"))) g_reboot_ana_3a;
+extern volatile unsigned char __attribute__((section(".reboot_data"))) g_reboot_ana_3b;
+extern volatile unsigned char __attribute__((section(".reboot_data"))) g_reboot_ana_3c;
+
+/**
+ * @brief LDO 1.25V output trim definition
+ * @note The voltage values of the following gears are all theoretical values, and there may be deviations between the actual and theoretical values.
+ * @note Step is 15mV(0-8)/23mV(8-15), 0x08 is the default value (1.25V).
+ */
+typedef enum {
+    PM_LDO_1P25_VOLTAGE_1V127 = 0x00, /**< LDO 1.25V output 1.127V */
+    PM_LDO_1P25_VOLTAGE_1V142 = 0x01, /**< LDO 1.25V output 1.142V */
+    PM_LDO_1P25_VOLTAGE_1V157 = 0x02, /**< LDO 1.25V output 1.157V */
+    PM_LDO_1P25_VOLTAGE_1V172 = 0x03, /**< LDO 1.25V output 1.172V */
+    PM_LDO_1P25_VOLTAGE_1V187 = 0x04, /**< LDO 1.25V output 1.187V */
+    PM_LDO_1P25_VOLTAGE_1V202 = 0x05, /**< LDO 1.25V output 1.202V */
+    PM_LDO_1P25_VOLTAGE_1V217 = 0x06, /**< LDO 1.25V output 1.217V */
+    PM_LDO_1P25_VOLTAGE_1V232 = 0x07, /**< LDO 1.25V output 1.232V */
+    PM_LDO_1P25_VOLTAGE_1V250 = 0x08, /**< LDO 1.25V output 1.250V (default) */
+    PM_LDO_1P25_VOLTAGE_1V273 = 0x09, /**< LDO 1.25V output 1.273V */
+    PM_LDO_1P25_VOLTAGE_1V296 = 0x0A, /**< LDO 1.25V output 1.296V */
+    PM_LDO_1P25_VOLTAGE_1V319 = 0x0B, /**< LDO 1.25V output 1.319V */
+    PM_LDO_1P25_VOLTAGE_1V342 = 0x0C, /**< LDO 1.25V output 1.342V */
+    PM_LDO_1P25_VOLTAGE_1V365 = 0x0D, /**< LDO 1.25V output 1.365V */
+    PM_LDO_1P25_VOLTAGE_1V388 = 0x0E, /**< LDO 1.25V output 1.388V */
+    PM_LDO_1P25_VOLTAGE_1V411 = 0x0F, /**< LDO 1.25V output 1.411V */
+} pm_ldo_1p25_voltage_e;
+
+/**
+ * @brief LDO 1.8V output trim definition
+ * @note The voltage values of the following gears are all theoretical values, and there may be deviations between the actual and theoretical values.
+ * @note Step is 20mV(0-8)/30mV(8-15), 0x08 is the default value (1.8V).
+ */
+typedef enum {
+    PM_LDO_1P8_VOLTAGE_1V640 = 0x00, /**< LDO 1.8V output 1.640V */
+    PM_LDO_1P8_VOLTAGE_1V660 = 0x01, /**< LDO 1.8V output 1.660V */
+    PM_LDO_1P8_VOLTAGE_1V680 = 0x02, /**< LDO 1.8V output 1.680V */
+    PM_LDO_1P8_VOLTAGE_1V700 = 0x03, /**< LDO 1.8V output 1.700V */
+    PM_LDO_1P8_VOLTAGE_1V720 = 0x04, /**< LDO 1.8V output 1.720V */
+    PM_LDO_1P8_VOLTAGE_1V740 = 0x05, /**< LDO 1.8V output 1.740V */
+    PM_LDO_1P8_VOLTAGE_1V760 = 0x06, /**< LDO 1.8V output 1.760V */
+    PM_LDO_1P8_VOLTAGE_1V780 = 0x07, /**< LDO 1.8V output 1.780V */
+    PM_LDO_1P8_VOLTAGE_1V800 = 0x08, /**< LDO 1.8V output 1.800V (default) */
+    PM_LDO_1P8_VOLTAGE_1V830 = 0x09, /**< LDO 1.8V output 1.830V */
+    PM_LDO_1P8_VOLTAGE_1V860 = 0x0A, /**< LDO 1.8V output 1.860V */
+    PM_LDO_1P8_VOLTAGE_1V890 = 0x0B, /**< LDO 1.8V output 1.890V */
+    PM_LDO_1P8_VOLTAGE_1V920 = 0x0C, /**< LDO 1.8V output 1.920V */
+    PM_LDO_1P8_VOLTAGE_1V950 = 0x0D, /**< LDO 1.8V output 1.950V */
+    PM_LDO_1P8_VOLTAGE_1V980 = 0x0E, /**< LDO 1.8V output 1.980V */
+    PM_LDO_1P8_VOLTAGE_2V010 = 0x0F, /**< LDO 1.8V output 2.010V */
+} pm_ldo_1p8_voltage_e;
+
+/**
+ * @brief DCDC 1.25V output trim definition
+ * @note The voltage values of the following gears are all theoretical values, and there may be deviations between the actual and theoretical values.
+ * @note Step is 25mV, 0x08 is the default value (1.251V).
+ */
+typedef enum {
+    PM_DCDC_1P25_VOLTAGE_1V051 = 0x00, /**< DCDC 1.25V output 1.051V */
+    PM_DCDC_1P25_VOLTAGE_1V076 = 0x01, /**< DCDC 1.25V output 1.076V */
+    PM_DCDC_1P25_VOLTAGE_1V101 = 0x02, /**< DCDC 1.25V output 1.101V */
+    PM_DCDC_1P25_VOLTAGE_1V126 = 0x03, /**< DCDC 1.25V output 1.126V */
+    PM_DCDC_1P25_VOLTAGE_1V151 = 0x04, /**< DCDC 1.25V output 1.151V */
+    PM_DCDC_1P25_VOLTAGE_1V176 = 0x05, /**< DCDC 1.25V output 1.176V */
+    PM_DCDC_1P25_VOLTAGE_1V201 = 0x06, /**< DCDC 1.25V output 1.201V */
+    PM_DCDC_1P25_VOLTAGE_1V226 = 0x07, /**< DCDC 1.25V output 1.226V */
+    PM_DCDC_1P25_VOLTAGE_1V251 = 0x08, /**< DCDC 1.25V output 1.251V (default) */
+    PM_DCDC_1P25_VOLTAGE_1V275 = 0x09, /**< DCDC 1.25V output 1.275V */
+    PM_DCDC_1P25_VOLTAGE_1V300 = 0x0A, /**< DCDC 1.25V output 1.300V */
+    PM_DCDC_1P25_VOLTAGE_1V325 = 0x0B, /**< DCDC 1.25V output 1.325V */
+    PM_DCDC_1P25_VOLTAGE_1V350 = 0x0C, /**< DCDC 1.25V output 1.350V */
+    PM_DCDC_1P25_VOLTAGE_1V375 = 0x0D, /**< DCDC 1.25V output 1.375V */
+    PM_DCDC_1P25_VOLTAGE_1V400 = 0x0E, /**< DCDC 1.25V output 1.400V */
+    PM_DCDC_1P25_VOLTAGE_1V425 = 0x0F, /**< DCDC 1.25V output 1.425V */
+} pm_dcdc_1p25_voltage_e;
+
+/**
+ * @brief VDDDEC output trim definition
+ * @note The voltage values of the following gears are all theoretical values, and there may be deviations between the actual and theoretical values.
+ * @note Step is 25mV, 0x06 is the normal working value (1.0V), 0x0A is the default value (1.0V).
+ */
+typedef enum {
+    PM_VDDDEC_VOLTAGE_0V750 = 0x00, /**< VDDDEC output 0.750V */
+    PM_VDDDEC_VOLTAGE_0V775 = 0x01, /**< VDDDEC output 0.775V */
+    PM_VDDDEC_VOLTAGE_0V800 = 0x02, /**< VDDDEC output 0.800V */
+    PM_VDDDEC_VOLTAGE_0V825 = 0x03, /**< VDDDEC output 0.825V */
+    PM_VDDDEC_VOLTAGE_0V850 = 0x04, /**< VDDDEC output 0.850V */
+    PM_VDDDEC_VOLTAGE_0V875 = 0x05, /**< VDDDEC output 0.875V */
+    PM_VDDDEC_VOLTAGE_0V900 = 0x06, /**< VDDDEC output 0.900V */
+    PM_VDDDEC_VOLTAGE_0V925 = 0x07, /**< VDDDEC output 0.925V */
+    PM_VDDDEC_VOLTAGE_0V950 = 0x08, /**< VDDDEC output 0.950V */
+    PM_VDDDEC_VOLTAGE_0V975 = 0x09, /**< VDDDEC output 0.975V */
+    PM_VDDDEC_VOLTAGE_1V000 = 0x0A, /**< VDDDEC output 1.000V (default) */
+    PM_VDDDEC_VOLTAGE_1V025 = 0x0B, /**< VDDDEC output 1.025V */
+    PM_VDDDEC_VOLTAGE_1V050 = 0x0C, /**< VDDDEC output 1.050V */
+    PM_VDDDEC_VOLTAGE_1V075 = 0x0D, /**< VDDDEC output 1.075V */
+    PM_VDDDEC_VOLTAGE_1V100 = 0x0E, /**< VDDDEC output 1.100V */
+    PM_VDDDEC_VOLTAGE_1V125 = 0x0F, /**< VDDDEC output 1.125V */
+} pm_vdddec_voltage_e;
+
 /**
  * @brief       This function serves to reboot system.
  * @return      none
@@ -120,6 +224,11 @@ _always_inline void sys_reset_all(void)
 #if (PM_DEBUG)
     while(1){}
 #endif
+
+	g_reboot_flag = 0x544c4e4b;
+	g_reboot_ana_3a =analog_read(0x3a);
+	g_reboot_ana_3b =analog_read(0x3b);
+	g_reboot_ana_3c =analog_read(0x3c);
     reg_pwdn_en = 0x20;
 }
 
@@ -239,6 +348,41 @@ static _always_inline unsigned int  pm_get_32k_cur_tick(void)
 }
 
 /**
+ * @brief       This function is used to power up 24m rc.
+ *              [DRIV-1966]The power consumption of 24m rc is 400uA in DCDC mode.
+ * @return      none.
+ */
+static _always_inline void pm_24mrc_power_up(void)
+{
+    if (!g_24m_rc_is_used) {
+    	analog_write(areg_aon_0x05, analog_read(areg_aon_0x05) & ~(BIT(2))); //power on 24M RC
+
+        /*
+         * the calibration of 24m RC should wait for 1us if just power it up.
+         * (added by jilong.liu, confirmed by yangya at 20240805)
+        */
+    	sleep_us(2);
+    }
+}
+
+/**
+ * @brief       This function is used to power down 24m rc.
+ *              [DRIV-1966]The power consumption of 24m rc is 400uA in DCDC mode.
+ * @return      none.
+ * @note        In the following case, please make sure the 24m rc can not be power down.
+ *              1. Doing clock switch
+ *              2. XTAL start up
+ *              3. Doing digital module power switch
+ *              4. Enter sleep.
+ */
+static _always_inline void pm_24mrc_power_down_if_unused(void)
+{
+    if (!g_24m_rc_is_used) {
+    	analog_write(areg_aon_0x05, analog_read(areg_aon_0x05) | BIT(2)); //power down 24M RC
+    }
+}
+
+/**
  * @brief       This function is used to determine the stability of the crystal oscillator.
  *              To judge the stability of the crystal oscillator, xo_ready_ana is invalid, and use an alternative solution to judge.
  *              Alternative principle: Because the clock source of the stimer is the crystal oscillator,
@@ -272,3 +416,43 @@ _attribute_ram_code_sec_noinline_ void cache_tag_clr();
  * @return      none.
  */
 _attribute_ram_code_sec_noinline_ void pm_sleep_start(unsigned char sleep_mode);
+
+/**
+ * @brief      This function serves to set DCDC 1.25V.
+ * @param[in]  voltage - dcdc 1.25V setting gear.
+ * @return     none.
+ */
+static _always_inline void pm_set_dcdc_1p25(pm_dcdc_1p25_voltage_e voltage)
+{
+    analog_write(0x0c, (analog_read(0x0c) & 0x0f) | (voltage << 4));
+}
+
+/**
+ * @brief      This function serves to set LDO 1.25V.
+ * @param[in]  voltage - ldo 1.25V setting gear.
+ * @return     none.
+ */
+static _always_inline void pm_set_ldo_1p25(pm_ldo_1p25_voltage_e voltage)
+{
+	analog_write(0x09, (analog_read(0x09) & 0xf0) | voltage);
+}
+
+/**
+ * @brief      This function serves to set LDO 1.8V.
+ * @param[in]  voltage - ldo 1.8V setting gear.
+ * @return     none.
+ */
+static _always_inline void pm_set_ldo_1p8(pm_ldo_1p8_voltage_e voltage)
+{
+	analog_write(0x09, (analog_read(0x09) & 0x0f) | (voltage << 4));
+}
+
+/**
+ * @brief      This function serves to set VDDDEC.
+ * @param[in]  voltage - vdddec setting gear.
+ * @return     none.
+ */
+static _always_inline void pm_set_vdddec(pm_vdddec_voltage_e voltage)
+{
+	analog_write(0x0f, (analog_read(0x0f) & 0x0f) | (voltage << 4));
+}

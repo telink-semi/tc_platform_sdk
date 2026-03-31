@@ -355,12 +355,26 @@ void bqb_serviceloop (void)
 				rf_start_srx(reg_system_tick);
 
 				sleep_us(30);
+#if(!MCU_CORE_TC321X)
 				if(rxpara_flag == 1)
 				{
 					rf_set_rxpara();
 					rxpara_flag = 0;
 				}
-
+#else
+				if(rxpara_flag == 1)
+				{
+					if((CHIP_VERSION_A0 == g_chip_version)||(CHIP_VERSION_A1 == g_chip_version))
+					{
+						rf_set_rxpara(freq);
+						rxpara_flag = 0;
+					}
+					else
+					{
+						rf_set_rxpara(freq);
+					}
+				}
+#endif
 				if(freq == 10 || freq == 21 || freq == 33)
 				{
 					rf_ldot_ldo_rxtxlf_bypass_en();
@@ -538,7 +552,7 @@ void  bqbtest_init(void)
 }
 
 
-#if (MCU_CORE_B85 || MCU_CORE_B87 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X)
+#if (MCU_CORE_B85 || MCU_CORE_B87 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X)
 #define gpio_function_en(pin)			gpio_set_func((pin), AS_GPIO)
 #define gpio_output_en(pin)				gpio_set_output_en((pin), 1)
 #define gpio_output_dis(pin)			gpio_set_output_en((pin), 0)

@@ -41,6 +41,23 @@ void user_init(void)
 	gpio_set_input_en(LED1, 0); //disable input
 	gpio_write(LED1, 0); //LED OFF
 
+#if !((MCU_CORE_TC1211)||(MCU_CORE_TC123X))
+	gpio_set_func(LED2, AS_GPIO);
+	gpio_set_output_en(LED2, 1); //enable output
+	gpio_set_input_en(LED2, 0); //disable input
+	gpio_write(LED2, 0); //LED OFF
+
+	gpio_set_func(LED3, AS_GPIO);
+	gpio_set_output_en(LED3, 1); //enable output
+	gpio_set_input_en(LED3, 0); //disable input
+	gpio_write(LED3, 0); //LED OFF
+
+	gpio_set_func(LED4, AS_GPIO);
+	gpio_set_output_en(LED4, 1); //enable output
+	gpio_set_input_en(LED4, 0); //disable input
+	gpio_write(LED4, 0); //LED OFF
+#endif
+
 #if (STIMER_MODE == STIMER_IRQ)
 	stimer_set_capture_tick(clock_time() + 100*CLOCK_SYS_CLOCK_1MS);
     stimer_set_irq_mask(FLD_SYSTEM_IRQ);
@@ -67,7 +84,11 @@ void user_init(void)
     stimer_set_irq_mask(FLD_SYSTEM_IRQ_32K_CAL_MASK);
     irq_set_mask(FLD_IRQ_SYSTEM_TIMER_LVL_EN);
     irq_enable();
-
+#elif (STIMER_MODE == STIMER_TIMEOUT_IRQ)
+	stimer_set_capture_tick(clock_time() + 1000*CLOCK_SYS_CLOCK_1MS);
+    stimer_set_irq_mask(FLD_SYSTEM_IRQ);
+    irq_set_mask(FLD_IRQ_SYSTEM_TIMER_EDG_EN);
+    irq_enable();
 #endif
 
 }
@@ -77,6 +98,11 @@ void main_loop(void)
 #if (STIMER_MODE == STIMER_DELAY)
     sleep_ms(500);
     gpio_toggle(LED1);
+#if !((MCU_CORE_TC1211)||(MCU_CORE_TC123X))
+    gpio_toggle(LED2);
+    gpio_toggle(LED3);
+    gpio_toggle(LED4);
+#endif
 
 #elif (STIMER_MODE == STIMER_GET_32K_TICK)
     cur_32k_tick[0] = pm_get_32k_tick();
@@ -100,6 +126,9 @@ void main_loop(void)
         while (1)
             ;
     }
+#elif (STIMER_MODE == STIMER_TIMEOUT_IRQ)
+    sleep_ms(600);
+    stimer_set_capture_tick(clock_time() - 10*CLOCK_SYS_CLOCK_1MS);
 #endif
 
 }
@@ -150,7 +179,17 @@ _attribute_ram_code_sec_ void irq_handler(void)
         stimer_cnt++;
     }
 }
-
+#elif (STIMER_MODE == STIMER_TIMEOUT_IRQ)
+_attribute_ram_code_sec_ void irq_handler(void)
+{
+    if(irq_get_src() & FLD_IRQ_SYSTEM_TIMER_EDG_EN)
+    {
+    	stimer_irq_cnt++;
+        gpio_toggle(LED1);
+        irq_clr_sel_src(FLD_IRQ_SYSTEM_TIMER_EDG_EN);
+        stimer_set_capture_tick(clock_time() + 1000*CLOCK_SYS_CLOCK_1MS);
+    }
+}
 #else
 _attribute_ram_code_sec_ void irq_handler(void)
 {

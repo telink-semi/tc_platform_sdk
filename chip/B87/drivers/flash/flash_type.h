@@ -30,7 +30,9 @@
 #include "flash_mid1460c8.h"	// GD25LD80C/GD25LD80E
 #include "flash_mid11325e.h"	// ZB25WD10A
 #include "flash_mid13325e.h"	// ZB25WD40B
+#include "flash_mid0113325e.h"	// ZB25WD40C(untest)
 #include "flash_mid14325e.h"	// ZB25WD80B
+#include "flash_mid0114325e.h"	// ZB25WD80C(untest)
 #include "flash_mid146085.h"    // P25Q80U
 /**
  * @brief		This function reads the status of flash.

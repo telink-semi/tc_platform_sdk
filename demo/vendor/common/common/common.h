@@ -135,10 +135,12 @@
 #elif (MCU_CORE_TC1211)
 #define LED1 GPIO_PA2
 #elif (MCU_CORE_TC122X)
-#define LED1 GPIO_PA2
-#define LED2 GPIO_PA1
-#define LED3 GPIO_PA4
-#define LED4 GPIO_PA5
+
+#define LED1 GPIO_PB0
+#define LED2 GPIO_PA6
+#define LED3 GPIO_PA7
+#define LED4 GPIO_PA2
+
 
 /*
  * Button matrix table:
@@ -150,6 +152,8 @@
 #define KEY2 GPIO_PA7
 #define KEY3 GPIO_PB0
 #define KEY4 GPIO_PB1
+#elif (MCU_CORE_TC123X)
+#define LED1 GPIO_PA2
 #endif
 
 void flash_init(unsigned char flash_protect_en);

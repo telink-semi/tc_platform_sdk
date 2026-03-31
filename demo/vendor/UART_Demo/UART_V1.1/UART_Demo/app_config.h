@@ -39,7 +39,7 @@ extern "C" {
  */
 #include "sys_clock.h"
 
-#if MCU_CORE_TC122X
+#if MCU_CORE_TC122X || MCU_CORE_TC123X
 #define UART_TX_PIN             GPIO_PA0
 #define UART_RX_PIN             GPIO_PA1
 #define UART_CTS_PIN            GPIO_PA4
@@ -74,7 +74,7 @@ extern "C" {
 #define UART_MODULE_SEL         UART0_MODULE
 
 /******************set mode**********************/
-#if MCU_CORE_TC321X /* TC321X only UART0 support DMA. */
+#if MCU_CORE_TC321X || MCU_CORE_TC123X/* TC321X,TC123X only UART0 support DMA. */
 #if (UART_MODULE_SEL == UART0_MODULE)
 #define UART_DMA         1     //uart use dma
 #endif
@@ -84,7 +84,7 @@ extern "C" {
 
 #define UART_NDMA  		 2     //uart not use dma
 #define UART_SOFTWARE_RX 3     //software simulates the UART receiving function,occupy an GPIO interrupt and a hardware timer
-#define UART_MODE	 	UART_DMA
+#define UART_MODE	 	UART_NDMA
 
 
 /***********set uart_dma interrupt type*************/

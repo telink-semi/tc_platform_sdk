@@ -27,20 +27,18 @@
 /**
  * Since the voltage at the input P and N terminals, after voltage divider, must be <= 1.2V,
  * the detection ranges of the different modes are as follows:
-    +--------------+---------+-----------------+
-    | Sample Mode  | Divider | Detection Range |
-    +--------------+---------+-----------------+
-    |   GPIO_MODE  |   off   |    -1.2-1.2V    |
-    |              |   1/2   |    -2.4-2.4V    |
-    |              |   1/4   |    -3.6-3.6V    |
-    |              |   1/8   |    -3.6-3.6V    |
-    +--------------+---------+-----------------+
-    |   VBAT_MODE  |   1/2   |     2.0-2.4V    |
-    |              |   1/4   |     2.0-3.6V    |
-    |              |   1/8   |     2.0-3.6V    |
-    +--------------+---------+-----------------+
-    |   TEMP_MODE  |    \    |  -40-85Celsius  |
-    +--------------+---------+-----------------+
+    +--------------+---------+-----------------------------------------------------------------+
+    | Sample Mode  | Divider |                         Detection Range                         |
+    +--------------+---------+-----------------------------------------------------------------+
+    |   GPIO_MODE  |   off   |                           0 ~ 1.2V                              |
+    |              |   1/2   | PB0-4: 0 ~ 2.4V  PB5-6,PD0-1: 0 ~ (vbat*60%)V (but NOT > 2.4v)  |
+    |              |   1/4   | PB0-4: 0 ~ 3.6V  PB5-6,PD0-1: 0 ~ (vbat*60%)V (but NOT > 3.6v)  |
+    +--------------+---------+-----------------------------------------------------------------+
+    |   VBAT_MODE  |   1/2   |                           2.0 ~ 2.4V                            |
+    |              |   1/4   |                           2.0 ~ 3.6V                            |
+    +--------------+---------+-----------------------------------------------------------------+
+    |   TEMP_MODE  |    \    |                         -40 ~ 85 Celsius                        |
+    +--------------+---------+-----------------------------------------------------------------+
 
     -# Using the SD ADC after sleep wakeup:
        -# Before entering suspend, need to call sd_adc_power_off(SD_ADC_SAMPLE_MODE), after wake up from suspend, then call sd_adc_power_on(SD_ADC_SAMPLE_MODE), and wait for >160us(when the C10 capacitor on the development board is 10nF), then call sd_adc_sample_start() to start sampling.
@@ -98,11 +96,22 @@ typedef enum{
  * | sd_adc channel|    gpio pin  |
  */
 typedef enum{
+    /**
+	 * Note:The maximum sampling voltage range of PB0-4 is 0 ~ 3.3V.
+	 */
     SD_ADC_GPIO_PB0P = GPIO_PB0 | (0x0<<12),
     SD_ADC_GPIO_PB1P = GPIO_PB1 | (0x1<<12),
     SD_ADC_GPIO_PB2P = GPIO_PB2 | (0x2<<12),
     SD_ADC_GPIO_PB3P = GPIO_PB3 | (0x3<<12),
     SD_ADC_GPIO_PB4P = GPIO_PB4 | (0x4<<12),
+
+    /**
+	 * @attention:
+	 * -# The maximum sampling voltage range of PB5-6 and PD0-1 is 0 ~ (vbat*60%).
+	 *    e.g., if vbat is supplied with 3.3V, then the sampling range is 0 ~ 1.98V).
+	 * -# If external voltage division is required, we recommend using PB5-6 and PD0-1,
+	 *    which can prevent the influence of internal resistance and provide more accurate sampling voltage.  
+	 */
     SD_ADC_GPIO_PB5P = GPIO_PB5 | (0x5<<12),
     SD_ADC_GPIO_PB6P = GPIO_PB6 | (0x6<<12),
     SD_ADC_GPIO_PB7P = GPIO_PB7 | (0x7<<12),

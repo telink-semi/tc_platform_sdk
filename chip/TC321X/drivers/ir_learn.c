@@ -31,9 +31,20 @@
  */
 void ir_learn_set_dig_rx_pin(ir_learn_rx_pin_e ir_rx_pin, GPIO_PullTypeDef pull_type)
 {
+    unsigned char ir_rx_pin_func =0;
+
     gpio_set_output_en(ir_rx_pin,0);
     gpio_set_input_en(ir_rx_pin,1);
-    gpio_set_func(ir_rx_pin,DBG0_IO);
+    if (ir_rx_pin == IR_RX_PA1 || ir_rx_pin == IR_RX_PA2) {
+        ir_rx_pin_func = DBG0_IO;
+    }else if (ir_rx_pin == IR_RX_PB0) {
+        ir_rx_pin_func = SPI_CN_IO;
+    }else if (ir_rx_pin == IR_RX_PD4 || ir_rx_pin == IR_RX_PC2) {
+        ir_rx_pin_func = SPI_PB0_CN_IO;
+    }else if (ir_rx_pin == IR_RX_PE0 || ir_rx_pin == IR_RX_PE1) {
+        ir_rx_pin_func = PWM1;
+    }
+    gpio_set_func(ir_rx_pin,ir_rx_pin_func);
     gpio_setup_up_down_resistor((ir_learn_rx_pin_e)ir_rx_pin, pull_type);
 }
 

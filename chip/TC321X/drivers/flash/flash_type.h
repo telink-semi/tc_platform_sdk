@@ -27,7 +27,7 @@
 #include "flash.h"
 #include "flash_mid136085.h"	// P25D40SU/P25Q40TU
 #include "flash_mid146085.h"	// P25Q80SU
-#include "flash_mid1471cd.h"	// TH25Q80U (untest)
+#include "flash_mid1471cd.h"	// TH25Q80U
 #include "flash_mid156085.h"	// P25Q16SU
 
 /**

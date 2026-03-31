@@ -26,7 +26,9 @@
 
 #include "flash.h"
 #include "flash_mid13325e.h"	// ZB25WD40B
+#include "flash_mid0113325e.h"	// ZB25WD40C(untest)
 #include "flash_mid14325e.h"	// ZB25WD80B
+#include "flash_mid0114325e.h"	// ZB25WD80C(untest)
 #include "flash_mid1060c8.h"	// GD25LD05C
 #include "flash_mid1360c8.h"	// GD25LD40C / GD25LD40E
 #include "flash_mid1460c8.h"	// GD25LD80C / GD25LD80E

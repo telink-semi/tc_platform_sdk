@@ -45,6 +45,7 @@ void user_init(void)
 	gpio_set_output_en(LED1, 1); 		//enable output
 	gpio_set_input_en(LED1,0);			//disable input
 	gpio_write(LED1, 0);              	//LED Off
+#if !(MCU_CORE_TC123X)
 	gpio_set_func(LED2,AS_GPIO);
 	gpio_set_output_en(LED2, 1); 		//enable output
 	gpio_set_input_en(LED2,0);			//disable input
@@ -57,6 +58,7 @@ void user_init(void)
 	gpio_set_output_en(LED4, 1); 		//enable output
 	gpio_set_input_en(LED4,0);			//disable input
 	gpio_write(LED4, 0);
+#endif
 #if( UART_WIRE_MODE == UART_1WIRE_MODE)
 	uart_set_rtx_pin(UART_MODULE_SEL,UART_RTX_PIN);// the status of rtx line will be rx by default,if there is a send-action,the status of rtx-line will changed to tx,and changed to rx immediately if send over.
 	uart_rtx_en(UART_MODULE_SEL);
@@ -75,7 +77,7 @@ void user_init(void)
 #if (UART_MODULE_SEL == UART0_MODULE)
 	dma_chn_irq_enable(FLD_DMA_CHN_UART_RX | FLD_DMA_CHN_UART_TX, 0);
 #elif (UART_MODULE_SEL == UART1_MODULE)
-#ifndef MCU_CORE_TC321X /* TC321X only UART0 support DMA. */
+#if !(MCU_CORE_TC321X || MCU_CORE_TC123X) /* TC321X,TC123X only UART0 support DMA. */
 	dma_chn_irq_enable(FLD_DMA_CHN_UART1_RX | FLD_DMA_CHN_UART1_TX, 0);
 #endif
 #endif
