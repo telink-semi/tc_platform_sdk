@@ -1,0 +1,1410 @@
+{
+  "name": "TC_PLATFORM_SDK_123X",
+  "language": "c",
+  "toolchain_path": "",
+  "toolchainName": "TC32-GCC Toolchain",
+  "targets": [
+    {
+      "name": "ADC_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/ADC_Demo/ADC_V1.1/ADC_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   ADC_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "AES_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/AES_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   AES_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "ALG_REG_DEMO",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/ALG_REG_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   ALG_REG_DEMO   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "AUDIO_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/AUDIO_Demo/AUDIO_V1.2/AUDIO_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x",
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   AUDIO_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "BQB_EMI_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/BQB_EMI_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   BQB_EMI_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "Debug_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/Debug_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   Debug_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "FLASH_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/Flash_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   FLASH_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "GPIO_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/GPIO_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   GPIO_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "I2C_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/I2C_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   I2C_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "IR_LEARN_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/IR_LEARN_Demo/IR_LEARN_V1.1/IR_LEARN_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   IR_LEARN_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "PM_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/PM_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   PM_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "PWM_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/PWM_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   PWM_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "QDEC_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/QDEC_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   QDEC_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "RF_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/RF_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   RF_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "SPI_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/SPI_Demo/SPI_V1.0/SPI_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   SPI_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "SRAM_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/SRAM_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   SRAM_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "STIMER_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/STIMER_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   STIMER_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "Timer_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/TIMER_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   Timer_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "TRNG_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/TRNG_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   TRNG_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
+      "name": "UART_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/tc123x/boot",
+        "chip/tc123x/drivers",
+        "common",
+        "demo/vendor/UART_Demo/UART_V1.1/UART_Demo",
+        "demo/vendor/common/common",
+        "demo/vendor/common/tc123x/calibration"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC123X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/tc123x/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC123X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/tc123x/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc123x"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/tc123x/../../../tools/tl_check_fw_tool/tl_check_fw.sh   UART_Demo   TC_PLATFORM_SDK_123X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    }
+  ],
+  "toolchainVersionName": "TC32-GCC Toolchain"
+}

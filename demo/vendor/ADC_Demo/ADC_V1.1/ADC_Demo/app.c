@@ -31,7 +31,7 @@ adc_gpio_cfg_t adc_gpio_cfg_m =
         .pin         = GPIO_M_CHN_SAMPLE_PIN,
 };
 
-
+volatile unsigned short code_average;
 volatile unsigned short adc_m_chn_val;
 volatile unsigned int adc_data = 0;
 unsigned char sd_adc_rx_done_flag = 0;
@@ -45,13 +45,16 @@ unsigned char sd_adc_rx_done_flag = 0;
  */
 unsigned short adc_sample_buffer[(ADC_SAMPLE_GROUP_CNT + 2) * ADC_SAMPLE_CHN_CNT] __attribute__((aligned(4))) = {0};
 #elif (ADC_MODE == ADC_NDMA_MODE)
+#if !defined(MCU_CORE_TC123X)
 unsigned short adc_sample_buffer[ADC_SAMPLE_GROUP_CNT * ADC_SAMPLE_CHN_CNT] __attribute__((aligned(4))) = {0};
 #endif
+#endif
+#if !defined(MCU_CORE_TC123X)
 unsigned short channel_buffers[3][ADC_SAMPLE_GROUP_CNT] __attribute__((aligned(4))) = {{0}, {0}};
 
 unsigned short adc_sort_and_get_average_code(unsigned short *channel_sample_buffer);
 unsigned short adc_get_result(adc_transfer_mode_e transfer_mode, adc_sample_chn_e chn);
-
+#endif
 #if (ADC_MODE == ADC_DMA_MODE)
 
 void adc_code_split_dma(unsigned short *sample_buffer, unsigned int sample_num, unsigned char chn_cnt, unsigned short buffers[chn_cnt][sample_num]);
@@ -59,30 +62,32 @@ void adc_code_split_dma(unsigned short *sample_buffer, unsigned int sample_num, 
 
 void user_init(void)
 {
-	gpio_set_func(LED1,AS_GPIO);
-	gpio_set_output_en(LED1, 1); 		//enable output
-	gpio_set_input_en(LED1,0);			//disable input
-	gpio_write(LED1, 0);
+    gpio_set_func(LED1,AS_GPIO);
+    gpio_set_output_en(LED1, 1);         //enable output
+    gpio_set_input_en(LED1,0);            //disable input
+    gpio_write(LED1, 0);
 
 #if (ADC_MODE == ADC_NDMA_MODE)
     adc_init(NDMA_M_CHN);
-	#if (ADC_SAMPLE_MODE == ADC_GPIO_SAMPLE)
-	adc_gpio_sample_init(ADC_M_CHANNEL, adc_gpio_cfg_m);
-	#elif (ADC_SAMPLE_MODE == ADC_VBAT_SAMPLE)
-	adc_vbat_sample_init(ADC_M_CHANNEL);
-	#endif
+    #if (ADC_SAMPLE_MODE == ADC_GPIO_SAMPLE)
+    adc_gpio_sample_init(ADC_M_CHANNEL, adc_gpio_cfg_m);
+    #elif (ADC_SAMPLE_MODE == ADC_VBAT_SAMPLE)
+    adc_vbat_sample_init(ADC_M_CHANNEL);
+    #elif (ADC_SAMPLE_MODE == ADC_TEMP_SENSOR_SAMPLE) && INTERNAL_TEST_FUNC_EN
+    adc_temp_sample_init(ADC_M_CHANNEL);
+    #endif
 
 #elif (ADC_MODE == ADC_DMA_MODE)
-	adc_rx_buff_init((unsigned int *)adc_sample_buffer,ADC_SAMPLE_GROUP_CNT);
-	adc_set_irq_mask();
+    adc_rx_buff_init((unsigned int *)adc_sample_buffer,ADC_SAMPLE_GROUP_CNT);
+    adc_set_irq_mask();
     irq_enable_type(FLD_IRQ_DMA_EN);
-	irq_enable();
+    irq_enable();
     adc_init(DMA_M_CHN);
-	#if (ADC_M_CHN_SAMPLE_MODE == ADC_GPIO_SAMPLE)
-	adc_gpio_sample_init(ADC_M_CHANNEL, adc_gpio_cfg_m);
-	#elif (ADC_M_CHN_SAMPLE_MODE == ADC_VBAT_SAMPLE)
-	adc_vbat_sample_init(ADC_M_CHANNEL);
-	#endif
+    #if (ADC_M_CHN_SAMPLE_MODE == ADC_GPIO_SAMPLE)
+    adc_gpio_sample_init(ADC_M_CHANNEL, adc_gpio_cfg_m);
+    #elif (ADC_M_CHN_SAMPLE_MODE == ADC_VBAT_SAMPLE)
+    adc_vbat_sample_init(ADC_M_CHANNEL);
+    #endif
 #endif
 
     adc_power_on();
@@ -93,29 +98,23 @@ void user_init(void)
 #endif
 }
 
+volatile unsigned int adc_code_average = 0;
 void main_loop(void)
 {
 #if (ADC_MODE == ADC_NDMA_MODE)
-    adc_m_chn_val = adc_get_result(NDMA, ADC_M_CHANNEL);
+	#if defined(MCU_CORE_TC123X)
+	adc_m_chn_val = adc_sample_and_get_result();
+	#else
+	adc_m_chn_val = adc_get_result(NDMA, ADC_M_CHANNEL);
+	#endif
+    printf("adc_m_chn_val %d mv\r\n", adc_m_chn_val);
     sleep_ms(500);
     gpio_toggle(LED1);
 #elif (ADC_MODE == ADC_DMA_MODE)
     if(sd_adc_rx_done_flag == 1)
     {
-        /******get adc sample data and sort these data ********/
-    	/**
-    	 * Note: During the FPGA stage, the following code should not be used yet, otherwise all data will become 0.
-    	 * It can only be used on a real chip.
-    	 */
-//        for (int i = 1; i < ((ADC_SAMPLE_GROUP_CNT+2) * ADC_SAMPLE_CHN_CNT); i++) {
-//            if (adc_sample_buffer[i] & BIT(9)) {  //10 bit resolution, BIT(9) is sign bit, 1 means negative voltage in differential_mode
-//                adc_sample_buffer[i] = 0;
-//            } else {
-//                adc_sample_buffer[i] = (adc_sample_buffer[i] & 0x1ff); //BIT(8..0) is valid adc code
-//            }
-//        }
-    	adc_code_split_dma((unsigned short *)(adc_sample_buffer+2), ADC_SAMPLE_GROUP_CNT, ADC_SAMPLE_CHN_CNT, channel_buffers);
-    	adc_m_chn_val = adc_get_result(DMA, ADC_M_CHANNEL);
+        adc_code_split_dma((unsigned short *)(adc_sample_buffer+2), ADC_SAMPLE_GROUP_CNT, ADC_SAMPLE_CHN_CNT, channel_buffers);
+        adc_m_chn_val = adc_get_result(DMA, ADC_M_CHANNEL);
         sd_adc_rx_done_flag=0;
         sleep_ms(500);
         gpio_toggle(LED1);
@@ -125,7 +124,7 @@ void main_loop(void)
 #endif
 }
 
-
+#if !defined(MCU_CORE_TC123X)
 /**
  * @brief This function serves to sort adc sample code and get average value.
  * @param[in]   channel_sample_buffer - This parameter is the first address of the received data buffer, which must be 4 bytes aligned, otherwise the program will enter an exception.
@@ -137,7 +136,16 @@ unsigned short adc_sort_and_get_average_code(unsigned short *channel_sample_buff
     int            i, j;
     unsigned short adc_code_average = 0;
     unsigned short temp;
-
+    uint32_t adc_sum = 0;
+#if (FPGA == 0)
+    for (int i = 0; i < ADC_SAMPLE_GROUP_CNT; i++) {
+        if (channel_sample_buffer[i] & BIT(9)) {  //10 bit resolution, BIT(9) is sign bit, 1 means negative voltage in differential_mode
+            channel_sample_buffer[i] = 0;
+        } else {
+            channel_sample_buffer[i] = (channel_sample_buffer[i] & 0x1ff); //BIT(8..0) is valid adc code
+        }
+    }
+#endif
     /**** insert Sort and get average value ******/
     for (i = 1; i < ADC_SAMPLE_GROUP_CNT; i++) {
         if (channel_sample_buffer[i] < channel_sample_buffer[i - 1]) {
@@ -151,8 +159,9 @@ unsigned short adc_sort_and_get_average_code(unsigned short *channel_sample_buff
     }
     //get average value from raw data(abandon 1/4 small and 1/4 big data)
     for (i = ADC_SAMPLE_GROUP_CNT >> 2; i < (ADC_SAMPLE_GROUP_CNT - (ADC_SAMPLE_GROUP_CNT >> 2)); i++) {
-        adc_code_average += channel_sample_buffer[i] / (ADC_SAMPLE_GROUP_CNT >> 1);
+        adc_sum += (uint32_t)channel_sample_buffer[i];
     }
+    adc_code_average = adc_sum / (ADC_SAMPLE_GROUP_CNT >> 1);
     return adc_code_average;
 }
 
@@ -164,7 +173,6 @@ unsigned short adc_sort_and_get_average_code(unsigned short *channel_sample_buff
  */
 unsigned short adc_get_result(adc_transfer_mode_e transfer_mode, adc_sample_chn_e chn)
 {
-    unsigned short code_average;
     unsigned short adc_result;
     unsigned int   cnt = 0;
 
@@ -178,15 +186,6 @@ unsigned short adc_get_result(adc_transfer_mode_e transfer_mode, adc_sample_chn_
                 adc_data =  adc_get_raw_code();
                 channel_buffers[chn][cnt]= adc_data & 0xffff;
                 channel_buffers[chn][cnt+1]= adc_data >> 16;
-            	/**
-            	 * Note: During the FPGA stage, the following code should not be used yet, otherwise all data will become 0.
-            	 * It can only be used on a real chip.
-            	 */
-//                if (channel_buffers[chn][cnt] & BIT(9)) { //10 bit resolution, BIT(9) is sign bit, 1 means negative voltage in differential_mode
-//                    channel_buffers[chn][cnt] = 0;
-//                } else {
-//                    channel_buffers[chn][cnt] &= 0x1FF;    //BIT(8..0) is valid adc code
-//                }
                 cnt +=2;
             }
         }
@@ -194,8 +193,7 @@ unsigned short adc_get_result(adc_transfer_mode_e transfer_mode, adc_sample_chn_
     code_average = adc_sort_and_get_average_code(channel_buffers[chn]);
     return adc_result = adc_calculate_voltage(chn, code_average);
 }
-
-
+#endif
 #if (ADC_MODE == ADC_DMA_MODE)
 /**
  * @brief       This function serves to split the data from all channels in the sample buffer into different channels.

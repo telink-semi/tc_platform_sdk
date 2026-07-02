@@ -761,7 +761,6 @@ typedef enum
 	                                         <p>
 	                                            In Non-dma mode,the received data is read by stimer_get_tracking_32k_value().
 	                                          */
-    FLD_SYSTEM_IRQ                  = BIT(2),
 } stimer_irq_status_e;
 
 #define reg_system_ctrl				REG_ADDR8(0x74a)

@@ -107,12 +107,31 @@ static _always_inline void stimer_clr_irq_mask(stimer_irq_mask_e mask)
 
 /**
  * @brief       This function servers to clear system timer irq status.
+ * @return      none.
+ */
+static _always_inline void stimer_clr_irq_status(void)
+{
+	reg_irq_src = (FLD_IRQ_SYSTEM_TIMER);
+}
+
+/**
+ * @brief       This function servers to get system timer irq status.
+ * @retval      non-zero -  the interrupt occurred.
+ * @retval      zero  -  the interrupt did not occur.
+ */
+static _always_inline unsigned char stimer_get_irq_status(void)
+{
+    return (reg_irq_src & FLD_IRQ_SYSTEM_TIMER) == FLD_IRQ_SYSTEM_TIMER;
+}
+
+/**
+ * @brief       This function servers to clear system timer irq status.
  * @param[in]   status - the irq status.
  * @return      none.
  */
-static _always_inline void stimer_clr_irq_status(stimer_irq_status_e status)
+static _always_inline void stimer_clr_lev_irq_status(stimer_irq_status_e status)
 {
-	reg_irq_src = (FLD_IRQ_SYSTEM_TIMER);
+    reg_system_cal_irq = (status);
 }
 
 /**
@@ -121,9 +140,9 @@ static _always_inline void stimer_clr_irq_status(stimer_irq_status_e status)
  * @retval      non-zero -  the interrupt occurred.
  * @retval      zero  -  the interrupt did not occur.
  */
-static _always_inline unsigned char stimer_get_irq_status(stimer_irq_status_e status)
+static _always_inline unsigned char stimer_get_lev_irq_status(stimer_irq_status_e status)
 {
-    return (reg_irq_src & FLD_IRQ_SYSTEM_TIMER) == FLD_IRQ_SYSTEM_TIMER;
+    return (reg_system_cal_irq & status);
 }
 
 /**
@@ -298,7 +317,7 @@ static _always_inline void stimer_set_32k_tick_write_trig(void)
  */
 static _always_inline void stimer_wait_write_32k_done(void)
 {
-    while(reg_system_status & FLD_SYSTEM_RD_BUSY);
+    while(reg_system_status & FLD_SYSTEM_CMD_SYNC);
 }
 
 /**

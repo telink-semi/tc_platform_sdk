@@ -39,7 +39,7 @@ extern "C" {
  */
 #include "sys_clock.h"
 
-#if (MCU_CORE_B80)
+#if (MCU_CORE_B80) || (MCU_CORE_TC123X)
 #define I2C_GPIO_SDA            GPIO_PB5
 #define I2C_GPIO_SCL            GPIO_PB4
 #elif (MCU_CORE_B80B)

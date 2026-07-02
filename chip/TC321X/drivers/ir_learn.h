@@ -293,6 +293,7 @@ static inline void ir_learn_ana_tx_dis(void)
  */
 static inline void ir_learn_ana_rx_en(void)
 {
+	analog_write(0x14, (analog_read(0x14) & 0x0f) | 0x40);
     analog_write(0x0f, (analog_read(0x0f) | 0x08));
 #if INTERNAL_DEBUG
     analog_write(0x11, (analog_read(0x11) & 0xf0) | 0x0c);//probe rx wave from pc3
@@ -302,6 +303,7 @@ static inline void ir_learn_ana_rx_en(void)
         sleep_us(1);
         analog_write(0x14, (analog_read(0x14) & 0xf7));
     }
+
 }
 
 /**

@@ -44,7 +44,7 @@ volatile unsigned char cnt=0;
 #elif (MCU_CORE_B80 || MCU_CORE_B80B|| MCU_CORE_TC321X)
 #define PWM_PIN		GPIO_PC1
 #define AS_PWMx         PWM0
-#elif (MCU_CORE_TC122X)
+#elif (MCU_CORE_TC122X)||(MCU_CORE_TC123X)
 #define PWM_PIN		GPIO_PA0
 #define AS_PWMx         PWM0
 #endif

@@ -30,7 +30,7 @@
 
 /**
  *  @brief  Define GPIO types.
- * 	@note	the following two point need to noticed when using PB0, PB1, PB3, PD4 and PF0 GPIO ports:
+ * 	@note	the following two point need to noticed when using PF0~PF3 GPIO ports:
  *  		1. These pins are not recommend to use as wake-up source;
  *  		2. Since these pins are output functions by default, even if they are configured with pull-up/pull-down retention,
  *  		when deep/deep Retention is invoked, they can't maintain high/low level and an abnormal level will occur.
@@ -452,7 +452,7 @@ void gpio_set_data_strength(GPIO_PinTypeDef pin, GPIO_Drv_Strength value);
  * @param[in] gpio - the pin needs to set its pull-up/down resistor, GPIOE group is not supported
  * @param[in] up_down - the type of the pull-up/down resistor
  * @return    none
- * @note	* @note	the following two point need to noticed when using PB0, PB1, PB3, PD4 and PF0 GPIO ports:
+ * @note	* @note	the following two point need to noticed when using PF0~PF3 GPIO ports:
  *  		1. These pins are not recommend to use as wake-up source;
  *  		2. Since these pins are output functions by default, even if they are configured with pull-up/pull-down retention,
  *  		when deep/deep Retention is invoked, they can't maintain high/low level and an abnormal level will occur.
@@ -509,7 +509,7 @@ static inline void gpio_set_interrupt_risc0(GPIO_PinTypeDef pin, GPIO_PolTypeDef
 	gpio_set_risc_irq_mask(BIT(RISC0));
 
 	/*clear gpio interrupt source (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
-	reg_irq_src |= FLD_IRQ_GPIO_RISC0_EN;
+	gpio_clr_irq_status(GPIO_IRQ_GPIO2RISC0_STATUS);
 	reg_irq_mask |= FLD_IRQ_GPIO_RISC0_EN;
 }
 
@@ -557,7 +557,7 @@ static inline void gpio_set_interrupt_risc1(GPIO_PinTypeDef pin, GPIO_PolTypeDef
 	gpio_clr_risc_irq_status(BIT(RISC1)); // must clear, or it will cause to unexpected interrupt.
 	gpio_set_risc_irq_mask(BIT(RISC1));
 	/*clear gpio interrupt source (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
-	reg_irq_src |= FLD_IRQ_GPIO_RISC1_EN;
+	gpio_clr_irq_status(GPIO_IRQ_GPIO2RISC1_STATUS);
 	reg_irq_mask |= FLD_IRQ_GPIO_RISC1_EN;
 }
 
@@ -605,7 +605,7 @@ static inline void gpio_set_interrupt_risc2(GPIO_PinTypeDef pin, GPIO_PolTypeDef
 	gpio_clr_risc_irq_status(BIT(RISC2)); // must clear, or it will cause to unexpected interrupt.
 	gpio_set_risc_irq_mask(BIT(RISC2));
 	/*clear gpio interrupt source (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
-	reg_irq_src |= FLD_IRQ_GPIO_RISC2_EN;
+	gpio_clr_irq_status(GPIO_IRQ_GPIO2RISC2_STATUS);
 	reg_irq_mask |= FLD_IRQ_GPIO_RISC2_EN;
 }
 
@@ -653,7 +653,7 @@ static inline void gpio_set_interrupt_risc3(GPIO_PinTypeDef pin, GPIO_PolTypeDef
 	gpio_clr_risc_irq_status(BIT(RISC3)); // must clear, or it will cause to unexpected interrupt.
 	gpio_set_risc_irq_mask(BIT(RISC3));
 	/*clear gpio interrupt source (after setting gpio polarity,before enable interrupt)to avoid unexpected interrupt. confirm by minghai*/
-	reg_irq_src |= FLD_IRQ_GPIO_RISC3_EN;
+	gpio_clr_irq_status(GPIO_IRQ_GPIO2RISC3_STATUS);
 	reg_irq_mask |= FLD_IRQ_GPIO_RISC3_EN;
 }
 

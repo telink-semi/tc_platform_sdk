@@ -335,7 +335,7 @@ void flash_mid11325e_test(void)
 }
 #endif
 
-#if (MCU_CORE_B87 || MCU_CORE_TC321X)
+#if (MCU_CORE_B87 || MCU_CORE_TC321X || MCU_CORE_TC123X)
 void flash_mid146085_test(void)
 {
 	int i;
@@ -400,7 +400,7 @@ void flash_mid146085_test(void)
 }
 #endif
 
-#if (MCU_CORE_TC321X)
+#if (MCU_CORE_TC321X || MCU_CORE_TC123X)
 void flash_mid1471cd_test(void)
 {
 	int i;
@@ -529,7 +529,7 @@ void flash_mid0113325e_test(void)
 }
 #endif
 
-#if (MCU_CORE_B87 || MCU_CORE_B85)
+#if (MCU_CORE_B87 || MCU_CORE_B85 || MCU_CORE_TC123X)
 void flash_mid0114325e_test(void)
 {
 	int i;
@@ -759,7 +759,7 @@ void flash_mid1360eb_test(void)
 }
 #endif
 
-#if (MCU_CORE_B80 || MCU_CORE_B80B)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC123X)
 void flash_mid136085_test(void)
 {
 	int i;
@@ -826,7 +826,7 @@ void flash_mid136085_test(void)
 }
 #endif
 
-#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC122X)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC122X || MCU_CORE_TC123X)
 void flash_mid114485_test(void)
 {
 	int i;
@@ -857,7 +857,7 @@ void flash_mid114485_test(void)
 	check_status.unlock_check = 1;
 }
 #endif
-#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC122X)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC122X || MCU_CORE_TC123X)
 void flash_mid1164c8_test(void)
 {
 	int i;
@@ -889,7 +889,39 @@ void flash_mid1164c8_test(void)
 }
 #endif
 
-#if (MCU_CORE_TC321X)
+#if (MCU_CORE_TC122X)
+void flash_mid1151cd_test(void)
+{
+	int i;
+
+	status1 = flash_read_status_mid1151cd();
+	flash_lock_mid1151cd(FLASH_LOCK_LOW_64K_MID1151CD);
+	status2 = flash_read_status_mid1151cd();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != Flash_Write_Buff[i]){
+			err_status.lock_err = 1;
+			while(1);
+		}
+	}
+	check_status.lock_check = 1;
+
+	flash_unlock_mid1151cd();
+	status3 = flash_read_status_mid1151cd();
+	flash_erase_sector(FLASH_ADDR);
+	flash_read_page(FLASH_ADDR+0x80,FLASH_BUFF_LEN,(unsigned char *)Flash_Read_Buff);
+	for(i=0; i<FLASH_BUFF_LEN; i++){
+		if(Flash_Read_Buff[i] != 0xff){
+			err_status.unlock_err = 1;
+			while(1);
+		}
+	}
+	check_status.unlock_check = 1;
+}
+#endif
+
+#if (MCU_CORE_TC321X || MCU_CORE_TC123X)
 void flash_mid156085_test(void)
 {
     int i;
@@ -1137,6 +1169,36 @@ void user_init(void)
 	case 0x114485:
 		flash_mid114485_test();
 		break;
+	case 0x1151cd:
+		flash_mid1151cd_test();
+		break;
+	default:
+		break;
+	}
+#elif (MCU_CORE_TC123X)
+	switch(g_flash_handler.mid)
+	{
+	case 0x136085:
+		flash_mid136085_test();
+		break;
+	case 0x146085:
+		flash_mid146085_test();
+		break;
+	case 0x1471cd:
+		flash_mid1471cd_test();
+		break;
+	case 0x156085:
+		flash_mid156085_test();
+		break;
+	case 0x114485:
+		flash_mid114485_test();
+		break;
+	case 0x1164c8:
+		flash_mid1164c8_test();
+		break;
+	case 0x0114325e:
+		flash_mid0114325e_test();
+		break;
 	default:
 		break;
 	}
@@ -1277,4 +1339,3 @@ void main_loop (void)
 
 	sleep_ms(2000);
 }
-

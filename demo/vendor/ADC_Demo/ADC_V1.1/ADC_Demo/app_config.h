@@ -43,12 +43,14 @@ extern "C" {
     /**********************************************************************************************************************
  *                                         Users do not need to modify                                                *
  *********************************************************************************************************************/
+#if !defined(MCU_CORE_TC123X)
 #define ADC_DMA_MODE         1
+#endif
 #define ADC_NDMA_MODE        2
 
 #define ADC_GPIO_SAMPLE      1
 #define ADC_VBAT_SAMPLE      2
-
+#define ADC_TEMP_SENSOR_SAMPLE 3 //internal test, user don't need care.
 //In NDMA mode, only M channel can be used.
 #define NDMA_M_1_CHN_EN 1
 #define DMA_M_1_CHN_EN  1
@@ -59,10 +61,16 @@ extern "C" {
  *********************************************************************************************************************/
 /**
  *@attention  -# In NDMA/DMA mode, ADC_SAMPLE_GROUP_CNT must be multiple of 8.
+ *@attention  -# For tc123x, this macro configuration is defined in adc.c and is called ADC_SAMPLE_NUM.
  */
-#define ADC_SAMPLE_GROUP_CNT        16 //Number of adc sample codes per channel.
-
+#if !defined(MCU_CORE_TC123X)
+#define ADC_SAMPLE_GROUP_CNT        8 //Number of adc sample codes per channel.
+#endif
+/**
+ *@attention  -# For TC123X, adc just support NDMA_MODE.
+ */
 #define ADC_MODE                    ADC_NDMA_MODE
+
 
 #if (ADC_MODE == ADC_DMA_MODE)
     #define ADC_SAMPLE_CHN_CNT      DMA_M_1_CHN_EN //Number of channels enabled

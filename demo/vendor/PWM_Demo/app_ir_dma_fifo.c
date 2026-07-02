@@ -51,7 +51,7 @@
 #define DMA_MODE            DMA_NORMAL_MODE
 #endif
 
-#elif (MCU_CORE_TC122X)
+#elif (MCU_CORE_TC122X)||(MCU_CORE_TC123X)
 #define PWM_PIN		GPIO_PA0
 #define AS_PWMx         PWM0
 #endif
