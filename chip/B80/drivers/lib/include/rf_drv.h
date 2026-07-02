@@ -765,8 +765,6 @@ extern void rf_start_stx2rx  (void* addr, unsigned int tick);
 *	@param[in]	addr 	Tx packet address in RAM. Should be 4-byte aligned.
 *	@param[in]	tick   Tick value of system timer. It determines when to
 *								start SrxToTx mode.
-*	@param[in]	timeout_us  Unit is us. It indicates timeout duration in Rx status.
-*								Max value: 0xffffff (16777215)
 *
 *	@return	 	none
 */

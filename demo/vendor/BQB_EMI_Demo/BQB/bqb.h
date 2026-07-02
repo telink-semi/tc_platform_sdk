@@ -29,6 +29,22 @@
 
 #if(TEST_DEMO==BQB_DEMO)
 
+/*
+ * @brief This macro is defined to turn on the fastsettle function
+ * */
+#define RF_FAST_SETTLE                  0
+
+/*
+ * @brief This macro defines the minimum settle time for TX and RX when fast settle is disabled.
+ * */
+#if(MCU_CORE_TC321X)
+#define TX_SETTLE_TIME   				113
+#define RX_SETTLE_TIME   				93
+#elif(MCU_CORE_TC123X)
+#define TX_SETTLE_TIME   				113
+#define RX_SETTLE_TIME   				85
+#endif
+
 /*Set to 1, open the code related to BQB tool configuration (uart port, CAP value, TX Power, PA port, calibration position, etc.).*/
 #define SUPPORT_CONFIGURATION			0
 
@@ -46,6 +62,8 @@
 #elif MCU_CORE_TC321X
 #define BQB_TX_POWER                    RF_POWER_P7p00dBm
 #elif MCU_CORE_TC122X
+#define BQB_TX_POWER                    RF_POWER_P7p00dBm
+#elif MCU_CORE_TC123X
 #define BQB_TX_POWER                    RF_POWER_P7p00dBm
 #endif
 
@@ -100,10 +118,13 @@
 #elif(MCU_CORE_TC122X)
 #define BQB_UART_TX_PORT   				GPIO_PA0
 #define BQB_UART_RX_PORT   				GPIO_PA1
+#elif(MCU_CORE_TC123X)
+#define BQB_UART_TX_PORT   				GPIO_PA2
+#define BQB_UART_RX_PORT   				GPIO_PA0
 #endif
 #define BQB_UART_BAUD	   	115200
 
-#if(MCU_CORE_B80B || MCU_CORE_TC321X)
+#if(MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC123X)
 #define UART0_MODULE            0 /* UART0 */
 #define UART1_MODULE            1 /* UART1 */
 /* uart select */
@@ -192,6 +213,13 @@ typedef enum {
 	END_STATE
 }Test_Status_t;
 
+#if (RF_FAST_SETTLE)&&(defined(MCU_CORE_TC321X)||defined(MCU_CORE_TC123X))
+extern _attribute_data_retention_ rf_fast_settle_t *g_fast_settle_cal_val_ptr;
+extern _attribute_data_retention_ rf_fast_settle_t fs_cv_1m;
+extern _attribute_data_retention_ rf_fast_settle_t fs_cv_2m;
+
+void rf_fast_settle_get_val(rf_tx_fast_settle_time_e tx_settle_us, rf_rx_fast_settle_time_e rx_settle_us, rf_fast_settle_t *fs_cv);
+#endif
 
 /**
  * @brief   This function serves to initialize  BQB

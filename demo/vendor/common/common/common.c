@@ -108,6 +108,7 @@ flash_user_defined_list_t flash_init_list[] = {
     //1M
 	{0x146085, FLASH_LOCK_LOW_512K_MID146085},
     {0x1471cd, FLASH_LOCK_LOW_512K_MID1471cd},
+    {0x0114325E, FLASH_LOCK_LOW_512K_MID0114325E},
     //2M
 	{0x156085, FLASH_LOCK_LOW_1M_MID156085},
 #else
@@ -179,7 +180,7 @@ void platform_init(unsigned char flash_protect_en)
     wd_32k_stop();
 #endif
 
-#if defined(MCU_CORE_TC321X)
+#if (defined(MCU_CORE_TC321X) || defined(MCU_CORE_TC123X))
     pm_update_status_info(1);
 #endif
 
@@ -200,11 +201,14 @@ void platform_init(unsigned char flash_protect_en)
     user_read_flash_value_calib();
 #endif
 
-#elif (MCU_CORE_TC122X) || (MCU_CORE_TC123X)
+#elif (MCU_CORE_TC122X)
     user_read_efuse_value_calib();
+#elif (MCU_CORE_TC123X)
+    user_calibration_func();
 #endif
 
-#if ((!DUT_TEST) && (!MCU_CORE_TC1211) && (!MCU_CORE_TC123X))
+//htol test no need gpio init
+#if ((!DUT_TEST) && (!MCU_CORE_TC1211))
     int deepRetWakeUp = pm_is_MCU_deepRetentionWakeup();
     gpio_init(!deepRetWakeUp);
 #endif
@@ -236,6 +240,7 @@ void platform_init(unsigned char flash_protect_en)
 #if(FLASH_BIN_ON == 1)
     flash_init(flash_protect_en);
 #endif
+
 #else
     flash_init(flash_protect_en);
 #endif

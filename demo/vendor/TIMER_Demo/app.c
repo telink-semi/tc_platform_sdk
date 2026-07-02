@@ -33,7 +33,7 @@ volatile unsigned int t0;
 
 void user_init(void)
 {
-	sleep_ms(2000);  //leave enough time for SWS_reset when power on
+	sleep_ms(500);  //leave enough time for SWS_reset when power on
 	//1.init the LED pin,for indication
 	gpio_set_func(LED1 ,AS_GPIO);
 	gpio_set_output_en(LED1, 1); 		//enable output
@@ -123,6 +123,10 @@ void user_init(void)
     wd_32k_set_interval_ms(1000);
     wd_32k_start();
     #endif
+#elif(TIMER_MODE == TIMER_32K_WD_RESET_MODE)
+    wd_32k_set_interval_ms(1000);
+    wd_32k_feed();
+    gpio_write(LED1, 1);
 
 #elif(TIMER_MODE==STIMER_MODE)
 	stimer_set_capture_tick(clock_time() + CLOCK_16M_SYS_TIMER_CLK_1S);
@@ -201,7 +205,7 @@ void main_loop (void)
     wd_32k_start();
     #endif
 
-    for(int i=0; i<4; i++)
+    for(int i=0; i<2; i++)
     {
     	cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_TIMER, clock_time() + 200 * CLOCK_SYS_TIMER_CLK_1MS);
         gpio_write(LED2, 1);
@@ -212,12 +216,15 @@ void main_loop (void)
     //4400ms>2048ms, watchdog overflows, program restarts.
     cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_TIMER, clock_time() + 2800 * CLOCK_SYS_TIMER_CLK_1MS);
 #else
-    //2400ms>2000ms, watchdog overflows, program restarts.
+    //1600ms>1000ms, watchdog overflows, program restarts.
     cpu_sleep_wakeup(SUSPEND_MODE, PM_WAKEUP_TIMER, clock_time() + 800 * CLOCK_SYS_TIMER_CLK_1MS);
 #endif
     gpio_write(LED4, 1);
     while(1){}
 #endif
+
+#elif(TIMER_MODE == TIMER_32K_WD_RESET_MODE)
+
 #else
 
 	sleep_ms(500);

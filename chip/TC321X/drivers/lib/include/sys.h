@@ -123,7 +123,7 @@ void start_reboot(void);
  *          3. When this function called after power on or deep sleep wakeup, it will cost about 6~7ms for perform 32k RC calibration.
  *              If do not want this logic, you can check the usage and precautions of cpu_wakeup_init_calib_32k_rc_cfg().
  */
-void cpu_wakeup_init(POWER_MODE_TypeDef power_mode, cap_typedef_e cap);
+_attribute_ram_code_sec_noinline_ void cpu_wakeup_init(POWER_MODE_TypeDef power_mode, cap_typedef_e cap);
 
 /**
  * @brief     this function servers to manual set crystal.

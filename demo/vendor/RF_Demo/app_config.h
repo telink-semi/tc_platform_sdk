@@ -62,7 +62,7 @@ extern "C" {
 #define RF_BLE_2M				1
 #define RF_BLE_1M				2
 #define RF_BLE_1M_NO_PN			3
-#if(!(MCU_CORE_TC321X||MCU_CORE_TC1211||MCU_CORE_TC122X))
+#if(!(MCU_CORE_TC321X||MCU_CORE_TC1211||MCU_CORE_TC122X||MCU_CORE_TC123X))
 #define RF_ZIGBEE_250K			4
 #define RF_LR_S2_500K			5
 #define RF_LR_S8_125K			6

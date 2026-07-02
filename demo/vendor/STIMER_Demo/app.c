@@ -60,8 +60,12 @@ void user_init(void)
 
 #if (STIMER_MODE == STIMER_IRQ)
 	stimer_set_capture_tick(clock_time() + 100*CLOCK_SYS_CLOCK_1MS);
-    stimer_set_irq_mask(FLD_SYSTEM_IRQ);
+    stimer_set_irq_mask(FLD_SYSTEM_IRQ_MASK);
+#if(MCU_CORE_TC321X)
+    irq_set_mask(FLD_IRQ_SYSTEM_TIMER);
+#else
     irq_set_mask(FLD_IRQ_SYSTEM_TIMER_EDG_EN);
+#endif
     irq_enable();
 
 #elif (STIMER_MODE == STIMER_GET_32K_TICK)
@@ -82,12 +86,17 @@ void user_init(void)
     stimer_track_32k_value = CLOCK_SYS_CLOCK_1MS / 32 * g_track_32kcnt;
     sleep_ms(1000);
     stimer_set_irq_mask(FLD_SYSTEM_IRQ_32K_CAL_MASK);
+#if !(MCU_CORE_TC321X)
     irq_set_mask(FLD_IRQ_SYSTEM_TIMER_LVL_EN);
+#endif
     irq_enable();
 #elif (STIMER_MODE == STIMER_TIMEOUT_IRQ)
 	stimer_set_capture_tick(clock_time() + 1000*CLOCK_SYS_CLOCK_1MS);
-    stimer_set_irq_mask(FLD_SYSTEM_IRQ);
+    stimer_set_irq_mask(FLD_SYSTEM_IRQ_MASK);
+#if(MCU_CORE_TC321X)
+#else
     irq_set_mask(FLD_IRQ_SYSTEM_TIMER_EDG_EN);
+#endif
     irq_enable();
 #endif
 
@@ -136,11 +145,11 @@ void main_loop(void)
 #if (STIMER_MODE == STIMER_IRQ)
 _attribute_ram_code_sec_ void irq_handler(void)
 {
-    if(irq_get_src() & FLD_IRQ_SYSTEM_TIMER_EDG_EN)
+	if(stimer_get_irq_status())
     {
     	stimer_irq_cnt++;
         gpio_toggle(LED1);
-        irq_clr_sel_src(FLD_IRQ_SYSTEM_TIMER_EDG_EN);
+        stimer_clr_irq_status();
         stimer_set_capture_tick(clock_time() + 100*CLOCK_SYS_CLOCK_1MS);
     }
 }
@@ -164,10 +173,10 @@ _attribute_ram_code_sec_ void irq_handler(void)
 #elif (STIMER_MODE == STIMER_TRACK_32K_TICK)
 _attribute_ram_code_sec_ void irq_handler(void)
 {
-    if (stimer_get_irq_status(FLD_SYSTEM_IRQ_32K_CAL_MASK))
+    if (stimer_get_lev_irq_status(FLD_SYSTEM_32K_CAL_IRQ))
     {
         gpio_toggle(LED1);
-        stimer_clr_irq_status(FLD_SYSTEM_IRQ_32K_CAL_MASK);
+        stimer_clr_lev_irq_status(FLD_SYSTEM_32K_CAL_IRQ);
         if (stimer_cnt < 200) {
             cur_32k_track[stimer_cnt] = stimer_get_tracking_32k_value();
             if ((cur_32k_track[stimer_cnt] < (stimer_track_32k_value - 0x06)) || (cur_32k_track[stimer_cnt] > (stimer_track_32k_value + 0x06))) //500ppm
@@ -182,11 +191,11 @@ _attribute_ram_code_sec_ void irq_handler(void)
 #elif (STIMER_MODE == STIMER_TIMEOUT_IRQ)
 _attribute_ram_code_sec_ void irq_handler(void)
 {
-    if(irq_get_src() & FLD_IRQ_SYSTEM_TIMER_EDG_EN)
+	if(stimer_get_irq_status())
     {
     	stimer_irq_cnt++;
         gpio_toggle(LED1);
-        irq_clr_sel_src(FLD_IRQ_SYSTEM_TIMER_EDG_EN);
+        stimer_clr_irq_status();
         stimer_set_capture_tick(clock_time() + 1000*CLOCK_SYS_CLOCK_1MS);
     }
 }

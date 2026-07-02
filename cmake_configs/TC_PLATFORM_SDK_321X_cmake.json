@@ -1398,6 +1398,79 @@
       "sub_directories": []
     },
     {
+      "name": "STIMER_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/STIMER_Demo",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   STIMER_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": []
+    },
+    {
       "name": "Timer_Demo",
       "path": "./",
       "toolchain": "TC32-GCC Toolchain",

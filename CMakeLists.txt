@@ -60,6 +60,8 @@ elseif(TOOLCHAIN_NAME STREQUAL "RISC-V GCC/Newlib")
     else()
         set(TOOL_PRE "riscv64-unknown-elf-")
     endif()
+elseif (TOOLCHAIN_NAME STREQUAL "xPack GNU RISC-V GCC14.2")
+    set(TOOL_PRE "riscv-none-elf-")
 else()
     set(TOOL_PRE "riscv32-elf-")
 endif()
@@ -89,6 +91,9 @@ endif()
 
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
+if(NOT DEFINED CMAKE_EXPORT_COMPILE_COMMANDS)
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+endif()
 set(CMAKE_SKIP_RPATH True)
 set(CMAKE_LINK_LIBRARY_SUFFIX "")
 set(CMAKE_C_STANDARD_LIBRARIES "")
@@ -96,6 +101,12 @@ set(CMAKE_CXX_STANDARD_LIBRARIES "")
 set(CMAKE_C_FLAGS_DEBUG "")
 set(CMAKE_C_FLAGS_RELEASE "")
 set(CMAKE_DEPFILE_FLAGS_C "-MMD -MP -MT <DEP_TARGET> -MF <DEP_FILE>")
+
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+    set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+endif()
 
 function(json_to_list JSON_ARRAY_STRING OUTPUT_LIST)
     string(JSON ARRAY_TYPE TYPE "${JSON_ARRAY_STRING}")
@@ -182,6 +193,26 @@ endfunction()
 
 function(include_source RESULT_VAR RELATIVE_PATH)
     set(${RESULT_VAR} ${${RESULT_VAR}} ${RELATIVE_PATH} PARENT_SCOPE)
+endfunction()
+
+function(add_missing_bin_relink_guard target_name objcopy_tool)
+    set(_ensure_script "${CMAKE_CURRENT_BINARY_DIR}/check_missing_bin_and_remove_elf.cmake")
+    file(WRITE "${_ensure_script}" [=[
+if(NOT EXISTS "${BIN_FILE}" AND EXISTS "${ELF_FILE}")
+    message(STATUS "[ensure_bin] ${BIN_FILE} missing, removing ${ELF_FILE} to force relink")
+    file(REMOVE "${ELF_FILE}")
+endif()
+]=])
+
+    add_custom_target(${target_name}_ensure_bin
+        COMMAND ${CMAKE_COMMAND}
+            -DBIN_FILE=${CMAKE_CURRENT_BINARY_DIR}/${target_name}.bin
+            -DELF_FILE=${CMAKE_CURRENT_BINARY_DIR}/${target_name}.elf
+            -P "${_ensure_script}"
+        COMMENT "Ensure ${target_name}.bin exists"
+        VERBATIM
+    )
+    add_dependencies(${target_name} ${target_name}_ensure_bin)
 endfunction()
 
 
@@ -331,6 +362,7 @@ foreach(INDEX RANGE 0 ${TARGETS_LAST_INDEX})
     string(JSON OBJ_COPY GET ${TARGET_JSON} obj_copy)
     if(OBJ_COPY)  
         json_to_list(${OBJ_COPY} OBJ_COPY_LIST)
+        add_missing_bin_relink_guard(${TARGET_NAME} ${CMAKE_OBJCOPY} ${OBJ_COPY_LIST})
         add_custom_command(TARGET ${TARGET_NAME} 
             POST_BUILD COMMAND ${CMAKE_OBJCOPY} ${OBJ_COPY_LIST} ${TARGET_NAME}.elf ${TARGET_NAME}.bin
             BYPRODUCTS ${TARGET_NAME}.bin
@@ -364,6 +396,10 @@ foreach(INDEX RANGE 0 ${TARGETS_LAST_INDEX})
             separate_arguments(PRE_BUILD_COMMAND UNIX_COMMAND "${PRE_BUILD_COMMAND}")
             add_custom_command(TARGET ${TARGET_NAME}_prebuild POST_BUILD COMMAND ${PRE_BUILD_COMMAND})
         endforeach()
+        if(OBJ_COPY)
+            # If prebuild scripts delete .bin, ensure_bin should run afterwards.
+            add_dependencies(${TARGET_NAME}_ensure_bin ${TARGET_NAME}_prebuild)
+        endif()
     endif()
 
     string(JSON POST_BUILD GET ${TARGET_JSON} post_build)

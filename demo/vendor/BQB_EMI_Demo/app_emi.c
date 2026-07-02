@@ -208,7 +208,7 @@ void pa_operation(unsigned short v, unsigned char s)
 
 #define   GPIO_SYS 0xffffffff
 const GPIO_PinTypeDef gpio_map[48] = {
-#if	!(MCU_CORE_TC1211||MCU_CORE_TC122X)
+#if	!(MCU_CORE_TC1211||MCU_CORE_TC122X||MCU_CORE_TC123X)
 	GPIO_PD7,//0
 	GPIO_PA0,//1
 	GPIO_PA1,//2
@@ -377,7 +377,7 @@ void emitx0f(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn);
 void emi_con_tx55(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn);
 void emi_con_tx0f(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn);
 
-#if	!(MCU_CORE_TC1211||MCU_CORE_TC122X)
+#if	!(MCU_CORE_TC1211||MCU_CORE_TC122X||MCU_CORE_TC123X)
 void emi_deepio_noren(RF_ModeTypeDef rf_mode,unsigned char pin,signed char rf_chn);
 void emi_deepio_ren(RF_ModeTypeDef rf_mode,unsigned char pin,signed char rf_chn);
 void emi_deeptimer_noren(RF_ModeTypeDef rf_mode,unsigned char Sec,signed char rf_chn);
@@ -397,12 +397,12 @@ struct  test_list_s  ate_list[] = {
 		{0x07,emi_con_tx55},
 		{0x08,emi_con_tx0f},
 #else
-#if	!(MCU_CORE_TC1211||MCU_CORE_TC122X)
+#if	!(MCU_CORE_TC1211||MCU_CORE_TC122X||MCU_CORE_TC123X)
 		{0x07,emi_deepio_noren},//deep with io wakeup without retension
 		{0x08,emi_deeptimer_noren},//deep with timer without retension
 #endif
 #endif
-#if	!(MCU_CORE_TC1211||MCU_CORE_TC122X)
+#if	!(MCU_CORE_TC1211||MCU_CORE_TC122X||MCU_CORE_TC123X)
 		{0x09,emi_suspendio_noren},//suspend with io wakeup without retension
 		{0x0a,emi_suspendtimer_noren},//suspend with timer without retension
 		{0x0b,emi_deepio_ren},//deep with io wakeup with retension
@@ -426,7 +426,7 @@ void emi_init(void)
 	write_reg16(PA_TX_RX_SETTING, pa_setting);
 	write_reg32(RX_PACKET_NUM_ADDR, 0);
 	gpio_shutdown(GPIO_ALL);//for pm
-#if(!MCU_CORE_B89)&&(!MCU_CORE_TC321X)&&(!MCU_CORE_TC122X)
+#if(!MCU_CORE_B89)&&(!MCU_CORE_TC321X)&&(!MCU_CORE_TC122X)&&(!MCU_CORE_TC123X)
 	usb_set_pin(1); //add for chips only support swire function of through-usb
 #endif
 #if	ALL_PIN_WAKEUP
@@ -470,7 +470,7 @@ void emi_serviceloop(void)
 					{
 						ate_list[i].func(RF_MODE_BLE_1M_NO_PN,power_level,chn);
 					}
-#if(!(MCU_CORE_TC321X||MCU_CORE_TC1211||MCU_CORE_TC122X))
+#if(!(MCU_CORE_TC321X||MCU_CORE_TC1211||MCU_CORE_TC122X||MCU_CORE_TC123X))
 					else if(mode==2)//zigbee mode
 					{
 						ate_list[i].func(RF_MODE_ZIGBEE_250K,power_level,chn);
@@ -791,7 +791,7 @@ void emi_con_tx0f(RF_ModeTypeDef rf_mode,unsigned char pwr,signed char rf_chn)
 }
 
 
-#if	!(MCU_CORE_TC1211||MCU_CORE_TC122X)
+#if	!(MCU_CORE_TC1211||MCU_CORE_TC122X||MCU_CORE_TC123X)
 
 void emi_deepio_noren(RF_ModeTypeDef rf_mode,unsigned char pin,signed char rf_chn)
 {
@@ -989,7 +989,7 @@ void update_calibration_flash(unsigned int addr)
  */
 void read_calibration_flash(void)
 {
-#if !(MCU_CORE_TC1211||MCU_CORE_TC122X)
+#if !(MCU_CORE_TC1211||MCU_CORE_TC122X||MCU_CORE_TC123X)
 	unsigned char flash_size = (flash_read_mid() >> 16) & 0xff;
 	switch (flash_size)
 	{
@@ -1015,7 +1015,7 @@ void read_calibration_flash(void)
 #endif
 }
 
-#endif /*!(MCU_CORE_TC1211||MCU_CORE_TC122X)*/
+#endif /*!(MCU_CORE_TC1211||MCU_CORE_TC122X||MCU_CORE_TC123X)*/
 
 void user_init(void)
 {
@@ -1029,7 +1029,7 @@ void user_init(void)
 	read_calibration_flash();
 #endif
 #else
-#if !(MCU_CORE_TC1211||MCU_CORE_TC122X)
+#if !(MCU_CORE_TC1211||MCU_CORE_TC122X||MCU_CORE_TC123X)
     read_flash_para();   //  Power on read flash EMI parameter
 	read_calibration_flash();
 #endif

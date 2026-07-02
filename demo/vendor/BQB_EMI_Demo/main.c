@@ -63,7 +63,7 @@ _attribute_ram_code_sec_noinline_ __attribute__((optimize("-Os"))) void irq_hand
  */
 int main (void) {
 
-#if (!defined(MCU_CORE_TC122X))
+#if (!defined(MCU_CORE_TC122X)&&!defined(MCU_CORE_TC123X))
 	blc_pm_select_internal_32k_crystal();
 #endif
 
@@ -74,7 +74,7 @@ int main (void) {
 #if TEST_DEMO==BQB_DEMO && SUPPORT_CONFIGURATION
 
 	rd_usr_definition(1);
-#if (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211||MCU_CORE_TC122X)
+#if (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211||MCU_CORE_TC122X||MCU_CORE_TC123X)
 	cpu_wakeup_init(INTERNAL_CAP_XTAL24M);
 
 #elif(MCU_CORE_TC321X)
@@ -111,19 +111,21 @@ int main (void) {
 #elif POWER_MODE_SELECT == POWER_MODE_DCDC_LDO
 	cpu_wakeup_init(DCDC_LDO_MODE, INTERNAL_CAP_XTAL24M);
 #endif
-#elif (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211||MCU_CORE_TC122X)
+#elif (MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC1211||MCU_CORE_TC122X||MCU_CORE_TC123X)
 	cpu_wakeup_init(INTERNAL_CAP_XTAL24M);
 #endif
 
 #endif
 
-#if(MCU_CORE_B80 || MCU_CORE_B80B ||MCU_CORE_B89 || MCU_CORE_TC321X || MCU_CORE_TC1211||MCU_CORE_TC122X)
+#if(MCU_CORE_B80 || MCU_CORE_B80B ||MCU_CORE_B89 || MCU_CORE_TC321X || MCU_CORE_TC1211||MCU_CORE_TC122X||MCU_CORE_TC123X)
 	wd_32k_stop();
 #endif
-#if (MCU_CORE_B85) || (MCU_CORE_B87)
+#if (MCU_CORE_B85) || (MCU_CORE_B87) || (MCU_CORE_TC321X)
 	//Note: This function must be called, otherwise an abnormal situation may occur.
 	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
 	user_read_flash_value_calib();
+#elif (MCU_CORE_TC123X)
+	user_calibration_func();
 #elif (MCU_CORE_B89)
 	//Note: This function must be called, otherwise an abnormal situation may occur.
 	//Called immediately after cpu_wakeup_init, set in other positions, some calibration values may not take effect.
@@ -163,7 +165,7 @@ int main (void) {
 	rf_drv_init(RF_MODE_BLE_1M_NO_PN);
 
 	gpio_init(!deepRetWakeUp);
-#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC1211||MCU_CORE_TC122X)
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC1211||MCU_CORE_TC122X||MCU_CORE_TC123X)
 	rf_mode_init();
 	rf_set_ble_1M_NO_PN_mode();
 #endif

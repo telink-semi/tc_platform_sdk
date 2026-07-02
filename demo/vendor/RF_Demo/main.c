@@ -157,8 +157,6 @@ int main (void) {
 	rf_drv_init(RF_MODE_BLE_1M);
 #endif
 #endif
-
-	gpio_init(0);
 #endif
 
 	user_init();

@@ -22,7 +22,9 @@
  *
  *******************************************************************************************************/
 #include "hal_flash.h"
-
+#if defined(MCU_CORE_TC122X)||defined(MCU_CORE_TC1211)
+#include "lib/include/flash_lib.h"
+#endif
 
 extern const flash_hal_handler_t flash_list[];
 extern const unsigned int FLASH_CNT;

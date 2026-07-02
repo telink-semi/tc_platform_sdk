@@ -29,6 +29,59 @@
 #define read_config(addr) (*(volatile unsigned char*)(0x840000 | (addr)))
 #define write_config(addr,v) 	(*(volatile unsigned char*)(0x840000 | (addr)) = (unsigned char)(v))
 
+#if (RF_FAST_SETTLE)&&(defined(MCU_CORE_TC321X)||defined(MCU_CORE_TC123X))
+_attribute_data_retention_ rf_fast_settle_t fs_cv_1m;
+_attribute_data_retention_ rf_fast_settle_t fs_cv_2m;
+/**
+ *  @brief      This function is used to get the calibration value of rf tx/rx fast settle
+ *  @param[in]  tx_settle_us    After adjusting the timing sequence, the time required for tx to settle.
+ *  @param[in]  rx_settle_us    After adjusting the timing sequence, the time required for rx to settle.
+ *  @param[in]  fs_cv           Fast settle related calibration value storage variable address.
+ *  @return     none
+ */
+void rf_fast_settle_get_val(rf_tx_fast_settle_time_e tx_settle_us, rf_rx_fast_settle_time_e rx_settle_us, rf_fast_settle_t *fs_cv)
+{
+    //tx
+    rf_set_tx_rx_off(); //STOP_RF_STATE_MACHINE;
+    rf_clr_irq_status(FLD_RF_IRQ_ALL);
+    rf_set_tx_settle_time(TX_SETTLE_TIME);        //adjust TX settle time
+
+    for (unsigned char f_chn = 0; f_chn <= 80; f_chn++) {
+        rf_set_channel(f_chn,0);
+        rf_fcal_debug();
+        rf_set_txmode();
+        sleep_us(TX_SETTLE_TIME); //Wait for calibration to stabilize
+        rf_tx_fast_settle_get_cal_val(tx_settle_us, f_chn, fs_cv);
+
+        rf_set_tx_rx_off(); //STOP_RF_STATE_MACHINE;
+        rf_clr_irq_status(FLD_RF_IRQ_ALL);
+    }
+
+    //rx
+    rf_set_rx_settle_time(RX_SETTLE_TIME); //adjust RX settle time
+    for (unsigned char f_chn = 0; f_chn <= 80; f_chn++) {
+        rf_set_channel(f_chn,0);
+        rf_fcal_debug();
+        rf_set_rxmode();
+        sleep_us(RX_SETTLE_TIME); //Wait for the rx packetization action to complete
+        rf_rx_fast_settle_get_cal_val(rx_settle_us, f_chn, fs_cv);
+
+        rf_set_tx_rx_off(); //STOP_RF_STATE_MACHINE;
+        rf_clr_irq_status(FLD_RF_IRQ_ALL);
+    }
+}
+
+void fs_get_value(void)
+{
+    rf_set_ble_1M_NO_PN_mode();
+    rf_fast_settle_get_val(TX_SETTLE_TIME_21US, RX_SETTLE_TIME_21US, &fs_cv_1m);
+
+    rf_set_ble_2M_NO_PN_mode();
+    rf_fast_settle_get_val(TX_SETTLE_TIME_21US, RX_SETTLE_TIME_21US, &fs_cv_2m);
+}
+
+#endif
+
 #if SUPPORT_CONFIGURATION
 
 
@@ -51,7 +104,7 @@ void rd_usr_definition(unsigned char _s)
 		usr_config.flash = (flash_read_mid() >> 16) & 0xff;
 	}
 }
-#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X)
+#if (MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X|| MCU_CORE_TC123X)
 void get_uart_port(GPIO_PinTypeDef* bqb_uart_tx_port, GPIO_PinTypeDef* bqb_uart_rx_port)
 #else
 void get_uart_port(UART_TxPinDef* bqb_uart_tx_port, UART_RxPinDef* bqb_uart_rx_port)
@@ -128,7 +181,7 @@ void read_bqb_calibration()
 #else
 	#if(SWITCH_INTERNAL_CAP)
 		#if SWITCH_CALIBRATION_POSITION
-			#if (!MCU_CORE_TC122X)
+			#if (!MCU_CORE_TC122X && !MCU_CORE_TC123X)
 			flash_read_page(CAP_SET_FLASH_ADDR, 1, &chnidx);
 			#endif
 		#else
@@ -156,7 +209,7 @@ void user_init(void)
 	gpio_write(LED1, 0);         //LED On
 #endif
 
-#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X)
+#if(MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X|| MCU_CORE_TC123X)
 	GPIO_PinTypeDef bqb_uart_tx_port = BQB_UART_TX_PORT;
 	GPIO_PinTypeDef bqb_uart_rx_port = BQB_UART_RX_PORT;
 #else
@@ -170,7 +223,7 @@ void user_init(void)
 	}
 	get_uart_port(&bqb_uart_tx_port, &bqb_uart_rx_port);
 #endif
-#if(MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X)
+#if(MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X|| MCU_CORE_TC123X)
 	uart_gpio_set(UART_MODULE_SEL,bqb_uart_tx_port, bqb_uart_rx_port);// uart tx/rx pin set
 	uart_reset(UART_MODULE_SEL);  //will reset uart digital registers from 0x90 ~ 0x9f, so uart setting must set after this reset
 	uart_init_baudrate(UART_MODULE_SEL,BQB_UART_BAUD,CLOCK_SYS_CLOCK_HZ,PARITY_NONE, STOP_BIT_ONE);
@@ -200,6 +253,18 @@ void user_init(void)
 	bqbtest_init();
 	//SET PA PORT
 	bqb_pa_init();
+
+#if (RF_FAST_SETTLE)&&(defined(MCU_CORE_TC321X)||defined(MCU_CORE_TC123X))
+	fs_get_value();
+    rf_fast_settle_set_val(&fs_cv_1m);
+    if(-1 == rf_fast_settle_config()){
+        while(1);
+    }
+    rf_tx_fast_settle_en();
+    rf_rx_fast_settle_en();
+    rf_set_tx_settle_time(21);
+    rf_set_rx_settle_time(21);
+#endif
 }
 
 void main_loop(void)

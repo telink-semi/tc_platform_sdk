@@ -239,8 +239,11 @@ void bqb_serviceloop (void)
 					}
 #if (MCU_CORE_B85 || MCU_CORE_B87)
 					rf_drv_init(RF_MODE_BLE_1M_NO_PN);
-#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X)
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X || MCU_CORE_TC123X)
 					rf_set_ble_1M_NO_PN_mode();
+#endif
+#if (RF_FAST_SETTLE)&&(defined(MCU_CORE_TC321X)||defined(MCU_CORE_TC123X))
+					rf_fast_settle_set_val(&fs_cv_1m);
 #endif
 					rf_set_preamble_len(BQB_PREAMBLE_LEN+0x40); //add by junwei
 				}
@@ -261,8 +264,11 @@ void bqb_serviceloop (void)
 					{
 #if (MCU_CORE_B85 || MCU_CORE_B87)
 						rf_drv_init(RF_MODE_BLE_1M_NO_PN);
-#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X)
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X || MCU_CORE_TC123X)
 						rf_set_ble_1M_NO_PN_mode();
+#endif
+#if (RF_FAST_SETTLE)&&(defined(MCU_CORE_TC321X)||defined(MCU_CORE_TC123X))
+					rf_fast_settle_set_val(&fs_cv_1m);
 #endif
 						rsp = 0;
 					}
@@ -270,10 +276,12 @@ void bqb_serviceloop (void)
 					{
 #if (MCU_CORE_B85 || MCU_CORE_B87)
 						rf_drv_init(RF_MODE_BLE_2M);
-#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X)
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X || MCU_CORE_TC123X)
 						rf_set_ble_2M_mode();
 #endif
-
+#if (RF_FAST_SETTLE)&&(defined(MCU_CORE_TC321X)||defined(MCU_CORE_TC123X))
+					rf_fast_settle_set_val(&fs_cv_2m);
+#endif
 						rsp = 0;
 					}
 					else if(para==3)//s=8
@@ -355,26 +363,19 @@ void bqb_serviceloop (void)
 				rf_start_srx(reg_system_tick);
 
 				sleep_us(30);
-#if(!MCU_CORE_TC321X)
+#if(!MCU_CORE_TC122X)
+	#if(!MCU_CORE_TC321X)
 				if(rxpara_flag == 1)
 				{
 					rf_set_rxpara();
 					rxpara_flag = 0;
 				}
-#else
+	#else
 				if(rxpara_flag == 1)
 				{
-					if((CHIP_VERSION_A0 == g_chip_version)||(CHIP_VERSION_A1 == g_chip_version))
-					{
-						rf_set_rxpara(freq);
-						rxpara_flag = 0;
-					}
-					else
-					{
-						rf_set_rxpara(freq);
-					}
+					rf_set_rxpara(freq);
 				}
-#endif
+	#endif
 				if(freq == 10 || freq == 21 || freq == 33)
 				{
 					rf_ldot_ldo_rxtxlf_bypass_en();
@@ -383,6 +384,7 @@ void bqb_serviceloop (void)
 				{
 					rf_ldot_ldo_rxtxlf_bypass_dis();
 				}
+#endif
 
 				UART_NDMA_SENT_BYTE((rsp>>8)&0xff);
 				UART_NDMA_SENT_BYTE(rsp&0xff);
@@ -454,7 +456,7 @@ void bqb_serviceloop (void)
 				rf_set_tx_rx_off_auto_mode();
 				rf_set_ble_channel(freq);
 #if SUPPORT_CONFIGURATION
-#if(MCU_CORE_B85||MCU_CORE_B87||MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X)
+#if(MCU_CORE_B85||MCU_CORE_B87||MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X || MCU_CORE_TC123X)
 				rf_set_power_level_index((usr_config.power == 0)?BQB_TX_POWER:rf_power_Level_list[usr_config.power-1]);
 #elif(MCU_CORE_B89)
 				rf_set_power_level_index((usr_config.power == 0)?BQB_TX_POWER:(usr_config.power-1));
@@ -541,7 +543,7 @@ void  bqbtest_init(void)
 	FSM_RX_FIRST_TIMEOUT_DISABLE;
 #if (MCU_CORE_B85 || MCU_CORE_B87)
 	rf_drv_init(RF_MODE_BLE_1M_NO_PN);
-#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X)
+#elif(MCU_CORE_B89 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X || MCU_CORE_TC123X)
 	rf_mode_init();
 	rf_set_ble_1M_NO_PN_mode();
 #endif
@@ -552,7 +554,7 @@ void  bqbtest_init(void)
 }
 
 
-#if (MCU_CORE_B85 || MCU_CORE_B87 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X)
+#if (MCU_CORE_B85 || MCU_CORE_B87 || MCU_CORE_B80 || MCU_CORE_B80B || MCU_CORE_TC321X || MCU_CORE_TC122X || MCU_CORE_TC123X)
 #define gpio_function_en(pin)			gpio_set_func((pin), AS_GPIO)
 #define gpio_output_en(pin)				gpio_set_output_en((pin), 1)
 #define gpio_output_dis(pin)			gpio_set_output_en((pin), 0)

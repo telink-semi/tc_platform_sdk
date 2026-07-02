@@ -1,3 +1,109 @@
+## V3.5.0
+
+### Version
+* SDK Version: tc_platform_sdk V3.5.0
+* Chip Version
+  - B80:  TLSR8208/TLSR8373
+  - B80B: TLSR8208 Version B
+  - B85:  TLSR825x/TLSR8359
+  - B87:  TLSR827x/TLSR8355
+  - TC321X(B0/A1/A0)
+  - TC122X(A1/A2)
+  - TC123X(A0)
+* Hardware EVK Version
+  - B80:    C1T261A30_V1_1
+  - B80B:   C1T321A30_V1_0
+  - B85:    C1T139A30_V1_2
+  - B87:    C1T197A30_V1_1
+  - TC321X: C1T357A20_V2_1
+  - TC122x: C1T389A20_V1_0
+  - TC123x: C1T414A20_V1_1
+
+* Toolchain Version
+  - B80, B80B, B85, B87, TC321X(B0/A1/A0), TC122X(A1/A2), TC123X(A0): TC32 ELF GCC4.3 ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+### Bug Fixes
+* **gpio**
+  * (TC321X):Fix the issue in gpio_set_interrupt_risc0/1/2/3 where other interrupts are mistakenly cleared.(merge_requests/@977)
+      - Detailed description:Because |= retains all bits that have been set to 1 and writes them back, under the influence of the W1C (Write 1 to Clear) mechanism, this will cause the interrupt flag bits that are queuing up for processing to be mistakenly cleared.
+      - After Fix:：Fixed the issue of mistakenly clearing other interrupts.
+      - Update Recommendation:: When using RSIC IRQ, an update is necessary.
+
+### BREAKING CHANGES
+* N/A
+
+### Features
+* **rf**
+  * (TC321X) Added interfaces related to the fast settle function. (merge_requests/@925)
+  * (B80/B85/B87/B89/TC1211/TC321X) Update comments for the rf_start_srx2tx function. (merge_requests/@1016)
+  * (B80/B85/B87/B89/TC1211/TC321X) Remove the redundant call to the `gpio_init` function in the RF Demo application. (merge_requests/@1016)
+* **BQB_EMI_Demo**
+  * (TC321X) Adapted the BQB to support the fast settle function. (merge_requests/@925)
+* **STIMER**
+  * (TC321X) Added interfaces stimer_get_lev_irq_status and stimer_clr_lev_irq_status for getting/clearing the stimer track 32k interrupt and the interrupt for completing the reading of the 32k tick value. (merge_requests/@993)
+
+ ### Refactoring
+* N/A
+
+### Performance Improvements
+* **ir**
+  * (TC321X) Optimize the IR learning distance to improve the performance of infrared signal reception and enhance the reliability of remote control learning functionality.(merge_requests/@1013)
+
+### 版本
+* SDK 版本: tc_platform_sdk V3.5.0
+* 芯片版本
+  - B80:  TLSR8208/TLSR8373
+  - B80B: TLSR8208 Version B
+  - B85:  TLSR825x/TLSR8359
+  - B87:  TLSR827x/TLSR8355
+  - TC321X(B0/A1/A0)
+  - TC122X(A1/A2)
+  - TC123X(A0)
+* 硬件评估板版本
+  - B80:    C1T261A30_V1_1
+  - B80B:   C1T321A30_V1_0
+  - B85:    C1T139A30_V1_2
+  - B87:    C1T197A30_V1_1
+  - TC321X: C1T357A20_V2_1
+  - TC122x: C1T389A20_V1_0
+  - TC123x: C1T414A20_V1_1
+  
+* 工具链版本
+  - B80, B80B, B85, B87, TC321X(B0/A1/A0), TC122X(A1/A2), TC123X(A0): TC32 ELF GCC4.3 ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+### Bug Fixes
+* **gpio**
+  * (TC321X):修复gpio_set_interrupt_risc0/1/2/3中，误清除其他中断的问题。(merge_requests/@977)
+      - 详细描述:由于 |= 会保留所有已置 1 的位并写回，受 W1C (Write 1 to Clear) 机制影响，这会导致那些正在排队等待处理的中断标志位被误清除。
+      - 修复效果：修复了误清除其他中断的问题。
+      - 更新建议:使用rsic irq 时 必须更新。
+
+### BREAKING CHANGES
+* N/A
+
+### Features
+* **rf**
+  * (TC321X) 添加fast settle功能相关接口。 (merge_requests/@925)
+  * (B80/B85/B87/B89/TC1211/TC321X) 更新 rf_start_srx2tx 函数的注释。 (merge_requests/@1016)
+  * (B80/B85/B87/B89/TC1211/TC321X) 移除RF Demo应用中的重复调用`gpio_init`函数。 (merge_requests/@1016)
+* **BQB_EMI_Demo**
+  * (TC321X) BQB 适配Fast settle 功能。(merge_requests/@925)
+* **STIMER**
+  * (TC321X) 新增接口stimer_get_lev_irq_status和stimer_clr_lev_irq_status用于获取/清除stimer track 32k中断和读取32k tick值完成中断。 (merge_requests/@993)
+
+### Refactoring
+* N/A
+
+### Performance Improvements
+* **ir**
+  * (TC321X) 优化IR学习距离，提高红外信号接收性能，增强遥控器学习功能的可靠性。(merge_requests/@1013)
+
+---
+
 ## V3.4.0
 
 ### Version
@@ -2544,5 +2650,3 @@
 ### Known issues
 
 * N/A
-
-

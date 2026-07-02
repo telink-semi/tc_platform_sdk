@@ -98,8 +98,10 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
  */
 int main (void)
 {
+#if !((MCU_CORE_TC122X) || (MCU_CORE_TC123X))
 #if(TIMER_MODE == TIMER_32K_WATCHDOG_MODE)
 	blc_pm_select_internal_32k_crystal();
+#endif
 #endif
 
     PLATFORM_INIT;
