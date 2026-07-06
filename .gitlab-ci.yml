@@ -35,6 +35,7 @@ stages:
     - demo/
     - doc/
     - project/
+    - tools/
     - README.md
   when: manual
 
