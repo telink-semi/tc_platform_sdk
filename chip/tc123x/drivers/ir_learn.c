@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    ir_learn.c
  *
- * @brief   This is the source file for TC321X
+ * @brief   This is the source file for TC123X
  *
  * @author  Driver Group
  * @date    2024

@@ -44,7 +44,7 @@
 #define SRAM_48K      (0x84c000)	//48KSRAM
 #define SRAM_64K      (0x850000)	//64KSRAM
 
-#define	SRAM_SIZE     SRAM_32K
+#define	SRAM_SIZE     SRAM_64K
 
 #define  FLL_STK_EN           			0
 #define  ZERO_IC_TAG_EN		  			0
@@ -135,6 +135,10 @@ __start:					@ MUST,  referenced by boot.link
 #endif
 	.org 0x18
 	.word	(_bin_size_)
+#ifdef RF_CERTIFICATION_CGF_EN
+	.org 0x1c
+	.word   (_RF_CERTIFICATION_CFG_ADDR_OFFSET)
+#endif
 	.extern  main
 
 	.org 0x20

@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    adc.c
  *
- * @brief   This is the source file for tc122x
+ * @brief   This is the source file for TC122X
  *
  * @author  Driver Group
  * @date    2025

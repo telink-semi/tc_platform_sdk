@@ -1,0 +1,95 @@
+/********************************************************************************************************
+ * @file    driver.link
+ *
+ * @brief   This is the link file for Telink MCU
+ *
+ * @author  Driver Group
+ * @date    2018
+ *
+ * @par     Copyright (c) 2018, Telink Semiconductor (Shanghai) Co., Ltd. ("TELINK")
+ *
+ *          Licensed under the Apache License, Version 2.0 (the "License");
+ *          you may not use this file except in compliance with the License.
+ *          You may obtain a copy of the License at
+ *
+ *              http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *          Unless required by applicable law or agreed to in writing, software
+ *          distributed under the License is distributed on an "AS IS" BASIS,
+ *          WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *          See the License for the specific language governing permissions and
+ *          limitations under the License.
+ *
+ *******************************************************************************************************/
+/* to tell the linker the program begin from __start label in cstartup.s, thus do not treat it as a unused symbol */
+ENTRY(__start)
+
+SECTIONS
+{
+    . = __DRIVER_ROM_START_ADDR;
+    .vectors :
+    {
+    *(.vectors)
+    *(.vectors.*)	/* MUST as follows, when compile with -ffunction-sections -fdata-sections, session name may changed */
+    }
+    
+    .ram_code : 
+    {
+    *(.ram_code)
+    *(.ram_code.*)
+    }
+    
+	.text :
+	    {
+	    *(.text)
+	    *(.text.*)
+	    }
+	.rodata :
+	    {
+	    *(.rodata)
+	    *(.rodata.*)
+	    }
+			
+	/* . = ADDR (.ram_code)   + SIZEOF(.ram_code);*/
+	    . = __DRIVER_SRAM_START_ADDR;  
+        .retention_data : AT (ALIGN(LOADADDR (.rodata) + SIZEOF (.rodata), 4) )
+	    {
+	    . = (((. + 3) / 4)*4);
+	    PROVIDE(_RETENTION_DATA_VMA_START = . );
+	    *(.retention_data)
+	    *(.retention_data.*)
+	    . = (((. + 3) / 4)*4);
+	    PROVIDE(_RETENTION_DATA_VMA_END = . );     
+	    } 
+        PROVIDE (_RETENTION_DATA_LMA_START = LOADADDR(.retention_data));
+         
+	    .data : AT(ALIGN(LOADADDR (.retention_data) + SIZEOF (.retention_data), 4))
+	     {
+	. = (((. + 3) / 4)*4);  
+	     *(.data);
+	     *(.data.*);
+	. = (((. + 3) / 4)*4); 
+	     } 
+    PROVIDE (_DATA_VMA_END = .);    
+    PROVIDE (_DATA_VMA_START = ADDR(.data));
+    PROVIDE (_DATA_LMA_START = LOADADDR(.data));
+    
+	/* irk_stk is 4 word align */
+	. = (((. + 15) / 16)*16);
+		PROVIDE(_BSS_VMA_START = .);
+	    .bss(NOLOAD) :
+	    {
+	    *(.sbss)
+	    *(.sbss.*)
+	    *(.bss)
+	    *(.bss.*)
+	    }
+		PROVIDE(_BSS_VMA_END = .);
+		
+/* PROVIDE (_SRAM_USAGE_SIZE = . - __DRIVER_SRAM_START_ADDR  + SIZEOF(.ramcode));    */		
+PROVIDE (_SRAM_USAGE_SIZE = . - __DRIVER_SRAM_START_ADDR);
+PROVIDE (BIN_SIZE = LOADADDR(.bss) + SIZEOF(.bss) - __DRIVER_ROM_START_ADDR);
+}				
+	  
+ASSERT((BIN_SIZE)<= __DRIVER_ROM_MAX_SIZE, "BIN FILE OVERFLOW");
+ASSERT((_SRAM_USAGE_SIZE)<= __DRIVER_RAM_MAX_SIZE, "SRAM SPACE OVERFLOW");

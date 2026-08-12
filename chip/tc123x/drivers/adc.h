@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    adc.h
  *
- * @brief   This is the header file for tc123x
+ * @brief   This is the header file for TC123X
  *
  * @author  Driver Group
  * @date    2025
@@ -60,9 +60,9 @@ typedef enum {
     NOINPUTN           = 0,
     ADC_GPIO_PB0N      = 0x01,
     ADC_GPIO_PB1N      = 0x02,
-    ADC_GPIO_PB2N      = 0x03,
-    ADC_GPIO_PA4N      = 0x04,
-    ADC_GPIO_PA5N      = 0x05,
+    ADC_GPIO_PA4N      = 0x03,
+    ADC_GPIO_PA5N      = 0x04,
+    ADC_GPIO_PA6N      = 0x05,
     GND                = 0x07,
 
 } adc_input_nch_e;
@@ -71,9 +71,9 @@ typedef enum {
     NOINPUTP           = 0,
     ADC_GPIO_PB0P      = 0x01,
     ADC_GPIO_PB1P      = 0x02,
-    ADC_GPIO_PB2P      = 0x03,
-    ADC_GPIO_PA4P      = 0x04,
-    ADC_GPIO_PA5P      = 0x05,
+    ADC_GPIO_PA4P      = 0x03,
+    ADC_GPIO_PA5P      = 0x04,
+    ADC_GPIO_PA6P      = 0x05,
     ADC_VBAT           = 0x07,
 }adc_input_pch_e;
 
@@ -87,9 +87,9 @@ typedef enum {
 typedef enum{
     ADC_GPIO_PB0 = GPIO_PB0 | (0x1 << 12),
     ADC_GPIO_PB1 = GPIO_PB1 | (0x2 << 12),
-    ADC_GPIO_PB2 = GPIO_PB2 | (0x3 << 12),
-    ADC_GPIO_PA4 = GPIO_PA4 | (0x4 << 12),
-    ADC_GPIO_PA5 = GPIO_PA5 | (0x5 << 12),
+    ADC_GPIO_PA4 = GPIO_PA4 | (0x3 << 12),
+    ADC_GPIO_PA5 = GPIO_PA5 | (0x4 << 12),
+    ADC_GPIO_PA6 = GPIO_PA6 | (0x5 << 12),
 } adc_input_pin_def_e;
 
 typedef enum
@@ -176,6 +176,8 @@ typedef enum
     ADC_SAMPLE_FREQ_48K  = (1 << 24) | (490 << 8) | (ADC_SAMPLE_CYC_48 << 4) | 10,
     ADC_SAMPLE_FREQ_96K  = (2 << 24) | (240 << 8) | (ADC_SAMPLE_CYC_27 << 4) | 10,
     ADC_SAMPLE_FREQ_192K = (3 << 24) | (115 << 8) | (ADC_SAMPLE_CYC_6 << 4) | 10,
+    /* ATTENTION: Only applicable in the concurrent use mode of audio and ADC, Usage reference: Audio_demo */
+    ADC_SAMPLE_FREQ_96K_FOR_AUDIO_AND_ADC = (3 << 24) | (123 << 8) | (2 << 4) | 2,
 } adc_sample_freq_e;
 
 typedef enum
@@ -283,6 +285,17 @@ static inline void adc_clk_dis(void)
     reg_rst1 &= ~FLD_RST1_SAR;
 }
 
+/**
+ * @brief This function serves to set the reference voltage of the channel.
+ * @param[in]  chn - enum variable of ADC sample channel.
+ * @param[in]  v_ref - enum variable of ADC reference voltage.
+ * @return none
+ * @note       adc_set_ref_voltage does not take effect immediately after configuration, it needs to be delayed 100us after calling adc_dig_clk_en().
+ */
+static inline void adc_set_ref_voltage(adc_sample_chn_e chn,adc_ref_vol_e v_ref)
+{
+    reg_adc_channel_set_state(chn) = (reg_adc_channel_set_state(chn) & (~FLD_SEL_VREF)) | (v_ref << 6);
+}
 
 /**
  * @brief    This function is used to power on sar_adc.
@@ -439,3 +452,21 @@ void adc_config_misc_channel_buf(unsigned short* pbuff,unsigned int size_buff);
  * @return the result of sampling.
  */
 unsigned short adc_sample_and_get_result(void);
+
+/**
+ * @brief      This function is used to configure the DFIFO buffer for ADC data transfer.
+ * @param[in]  pbuff - pointer to the data buffer.
+ * @param[in]  size_buff - size of the buffer.
+ * @return     none
+ */
+void adc_dfifo1_config(unsigned short* pbuff, unsigned int size_buff);
+
+/**
+ * @brief This function is used to initialize the ADC for vbat sampling in audio and adc concurrent mode.
+ * @param[in]  chn - enum variable of ADC sample channel.
+ * @return     none
+ * @note       This function is specifically for the audio+adc concurrent use case,
+ *             using ADC_SAMPLE_FREQ_96K_FOR_AUDIO_AND_ADC as the sample frequency.
+ */
+void adc_vbat_sample_init_for_audio_and_adc_mode(adc_sample_chn_e chn);
+

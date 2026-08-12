@@ -475,7 +475,9 @@ unsigned int flash_get_vendor(unsigned int flash_mid)
 	case 0x000071CD:
 		return FLASH_NORD_TH;
 	case 0x000051CD:
-		return FLASH_NORD_TH;	
+		return FLASH_NORD_TH;
+	case 0x000060B3:
+		return FLASH_SONOS_UCUN;
 	default:
 		return 0;
 	}

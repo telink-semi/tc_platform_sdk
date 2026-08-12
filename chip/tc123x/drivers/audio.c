@@ -169,11 +169,12 @@ void audio_set_codec_stream0_sample_rate(codec_stream0_input_src_e source, audio
  */
 void audio_codec_stream0_input_config(codec_stream0_input_src_e source, audio_sample_rate_e rate)
 {
+    adc_set_ref_voltage(ADC_M_CHANNEL, ADC_VREF_1P2V);
     audio_codec_set_adc_clock();
     adc_set_resolution(ADC_RES10);
     adc_set_adc_sample_mode(SAR_ADC_DIFFERENTIAL);
     reg_adc_config2 |= FLD_M_CHANNEL_EN;
-    reg_adc_config0 |= MASK_VAL(FLD_SCANT_MAX, 2);
+    reg_adc_config0 = (reg_adc_config0 & (~FLD_SCANT_MAX)) | MASK_VAL(FLD_SCANT_MAX, 2);
 
     audio_set_codec_stream0_sample_rate(source, rate);
 
@@ -252,4 +253,41 @@ void audio_dfifo_write_data(const short *buf, unsigned int len)
         reg_usb_mic_dat1 = (unsigned short)buf[i];
         reg_usb_mic_dat0 = (unsigned short)buf[i + 1];
     }
+}
+
+/**
+ * @brief     This function serves to set the sample rate for audio and adc concurrent mode.
+ * @return    none.
+ */
+void audio_set_sample_rate_audio_and_adc_mode(void)
+{
+    adc_set_state_length(ADC_M_CHANNEL, 123, 2);
+    adc_set_tsample_cycle(ADC_M_CHANNEL, 2);
+}
+
+/**
+ * @brief     This function serves to power on both audio and adc sample for concurrent mode.
+ * @return    none.
+ * @note      This function sets scan channel count to 2 (M and L channels)
+ *
+ */
+void audio_and_adc_power_on(void)
+{
+    reg_adc_config0 = ((reg_adc_config0 & (~FLD_SCANT_MAX)) | ((2 * 2) << 4)); //scan_cnt = chn_cnt*2
+    audio_codec_adc_power_on();
+    audio_codec_pga_power_on();
+    //changed by fan.zhang, confirmed by shiyi, 20260722
+    reg_adc_config2 &= ~FLD_CLK_EN;
+    reg_rst1 &= ~FLD_RST1_SAR;
+    reg_rst1 |= FLD_RST1_SAR;
+    reg_adc_config2 |= FLD_CLK_EN;
+}
+/**
+ * @brief     This function serves to power down both audio and adc sample for concurrent mode.
+ * @return    none.
+ */
+void audio_and_adc_power_down(void)
+{
+    audio_codec_adc_power_down();
+    audio_codec_pga_power_down();
 }

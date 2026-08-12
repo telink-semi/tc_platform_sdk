@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    calibration.c
  *
- * @brief   This is the source file for Telink MCU
+ * @brief   This is the source file for B87
  *
  * @author  Driver Group
  * @date    2021

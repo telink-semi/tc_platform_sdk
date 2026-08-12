@@ -36,7 +36,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -70,7 +72,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "AES_Demo",
@@ -104,7 +107,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -138,7 +143,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "Audio_Demo",
@@ -172,7 +178,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -206,7 +214,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "BQB_EMI_Demo",
@@ -240,7 +249,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -274,7 +285,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "Debug_Demo",
@@ -308,7 +320,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -342,7 +356,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "DUT_Demo",
@@ -377,7 +392,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -412,7 +429,82 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
+    },
+    {
+      "name": "EMI_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/B85/boot",
+        "chip/B85/drivers",
+        "common",
+        "demo/vendor/RF_Certification",
+        "demo/vendor/common/B85/calibration",
+        "demo/vendor/common/B85/flash_internal_private_func",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_SRAM",
+        "-DRF_CERTIFICATION_CGF_EN=1"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/B85/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B85/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/B85/flash_internal_private_func",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_B85=1",
+        "-DRF_CERTIFICATION_CGF_EN=1",
+        "-DMCU_STARTUP_SRAM=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B85/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/B85/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/B85/../../../tools/tl_check_fw_tool/tl_check_fw.sh   EMI_Demo   B85_Driver_Demo"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "FLASH_Demo",
@@ -446,7 +538,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -480,7 +574,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "GPIO_Demo",
@@ -514,7 +609,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -548,7 +645,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "I2C_Demo",
@@ -582,7 +680,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -616,7 +716,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "LPC_Demo",
@@ -650,7 +751,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -684,7 +787,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "PM_Demo",
@@ -718,7 +822,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -752,7 +858,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "PWM_Demo",
@@ -786,7 +893,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -820,7 +929,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "QDEC_Demo",
@@ -854,7 +964,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -888,7 +1000,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "RF_AOA_Demo",
@@ -922,7 +1035,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -956,7 +1071,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "RF_Demo",
@@ -990,7 +1106,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -1024,7 +1142,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "s7816_Demo",
@@ -1058,7 +1177,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -1092,7 +1213,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "SPI_Demo",
@@ -1126,7 +1248,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -1160,7 +1284,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "Timer_Demo",
@@ -1194,7 +1319,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -1228,7 +1355,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "UART_Demo",
@@ -1262,7 +1390,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -1296,7 +1426,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "USB_Demo",
@@ -1330,7 +1461,9 @@
         "-DMCU_CORE_B85=1",
         "-std=gnu99",
         "-fshort-wchar",
-        "-fms-extensions"
+        "-fms-extensions",
+        "-ffunction-sections",
+        "-fdata-sections"
       ],
       "linker_script": "",
       "linker_options": [
@@ -1364,7 +1497,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     }
   ],
   "toolchainVersionName": "TC32-GCC Toolchain"

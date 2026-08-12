@@ -126,6 +126,10 @@ __start:					@ MUST,  referenced by boot.link
 	tj		__irq
 	.org 0x18
 	.word	(_bin_size_)
+#ifdef RF_CERTIFICATION_CGF_EN
+	.org 0x1c
+	.word   (_RF_CERTIFICATION_CFG_ADDR_OFFSET)
+#endif
 	.extern  main
 	.extern boot_copy_ramcode
 

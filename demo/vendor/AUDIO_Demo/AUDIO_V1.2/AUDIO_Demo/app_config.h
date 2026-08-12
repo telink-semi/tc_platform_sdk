@@ -39,6 +39,21 @@ extern "C" {
  */
 #include "sys_clock.h"
 
+#define AUDIO_ONLY_MODE 1
+//If both ADC sampling and audio need to be used simultaneously, set the AUDIO_AND_ADC_SAMPLE_MODE to 1.
+#define AUDIO_AND_ADC_SAMPLE_MODE	2
+
+#define AUDIO_DEMO_MODE  AUDIO_ONLY_MODE
+
+
+#if AUDIO_DEMO_MODE == AUDIO_AND_ADC_SAMPLE_MODE
+#define ADC_GPIO_SAMPLE  1
+#define ADC_VBAT_SAMPLE  2
+#define ADC_SAMPLE_MODE ADC_GPIO_SAMPLE
+
+#define GPIO_L_CHN_SAMPLE_PIN ADC_GPIO_PA4
+#endif
+
 /* audio case */
 #define LINE_INPUT_TO_BUF        1  //line_in->buff
 #define AMIC_INPUT_TO_BUF        2  //amic_in->buff

@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    uart_b80b.c
  *
- * @brief   This is the source file for B80B
+ * @brief   This is the source file for B80
  *
  * @author  Driver Group
  * @date    2021

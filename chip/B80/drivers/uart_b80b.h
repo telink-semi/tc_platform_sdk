@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    uart_b80b.h
  *
- * @brief   This is the header file for B80B
+ * @brief   This is the header file for B80
  *
  * @author  Driver Group
  * @date    2021

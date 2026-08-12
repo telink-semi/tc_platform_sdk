@@ -282,8 +282,10 @@ typedef enum {
 #define    RF_TPLL_PACKET_TIMESTAMP_GET(p)          (p[p[0]-4] | (p[p[0]-3]<<8) | (p[p[0]-2]<<16) | (p[p[0]-1]<<24))
 #define    RF_SB_PACKET_TIMESTAMP_GET(p)           (p[p[0]-4] | (p[p[0]-3]<<8) | (p[p[0]-2]<<16) | (p[p[0]-1]<<24))
 
-
-
+/**
+ *  @brief This define serve to calculate the DMA length of packet.
+ */
+#define rf_tx_packet_dma_len(rf_data_len) rf_data_len
 
 /*******************************            General APIs            **************************/
 

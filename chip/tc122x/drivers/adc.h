@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    adc.h
  *
- * @brief   This is the header file for tc122x
+ * @brief   This is the header file for TC122X
  *
  * @author  Driver Group
  * @date    2025

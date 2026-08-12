@@ -30,7 +30,7 @@
 #define SRAM_32K      (0x848000)	//32KSRAM
 #define SRAM_64K      (0x850000)	//64KSRAM
 
-#define	SRAM_SIZE     SRAM_32K
+#define	SRAM_SIZE     SRAM_64K
 
 
 /**
@@ -167,6 +167,10 @@ __start:					@ MUST,  referenced by boot.link
 #endif
 	.org 0x18
 	.word	(_bin_size_)
+#ifdef RF_CERTIFICATION_CGF_EN
+    .org 0x1c
+	.word   (_RF_CERTIFICATION_CFG_ADDR_OFFSET)
+#endif
 	.extern  main
 
 	.org 0x20
@@ -422,6 +426,7 @@ POWER_ON_OR_DEEP_BRANCH:
 
 #ifndef SKIP_RF_DRV   // BQB_EMI_Demo, RF_Demo, Test_Demo, rf_sw_config must be used. 
 	//All applications using RF peripherals must call this function, which will increase FLASH usage by 6389 bytes.
+	//note:RF initialization uses large stack space; invoke it here upfront to avoid stack overflow crashes.
 	tjl rf_sw_config
 #endif
 

@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    driver_func_cfg.h
  *
- * @brief   This is the header file for TL122X
+ * @brief   This is the header file for TC122X
  *
  * @author  Driver Group
  * @date    2025

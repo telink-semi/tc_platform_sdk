@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    adc.c
  *
- * @brief   This is the source file for tc123x
+ * @brief   This is the source file for TC123X
  *
  * @author  Driver Group
  * @date    2025
@@ -25,6 +25,8 @@
 #include "compiler.h"
 #include "lib/include/stimer.h"
 #include "dma.h"
+
+extern unsigned char g_sys_clk_freq;
 #define ADC_CHN_CNT                        3
 
 //The default value is provided by ATE based on a large batch of test data.
@@ -57,7 +59,7 @@ volatile unsigned short adc_code;
  */
 static inline void adc_reset(void)
 {
-	reg_rst1 &= ~FLD_RST1_SAR;
+    reg_rst1 &= ~FLD_RST1_SAR;
     reg_rst1 |= FLD_RST1_SAR;
 }
 
@@ -70,7 +72,11 @@ static inline void adc_reset(void)
  */
 void adc_set_clk(void)
 {
-    reg_adc_config1 = ((reg_adc_config1 & FLD_SAR_ADC_CLK_DIV) | 1); //div=1, adc digital clk = 24MHz/div.(crystal = 24MHz)
+    if (g_sys_clk_freq == 48) {
+        reg_adc_config1 = ((reg_adc_config1 & FLD_SAR_ADC_CLK_DIV) | 2); //div=2, adc digital clk = 24MHz/div.(sys_clk = 48MHz)
+    } else { //default sys_clk = 24Mhz
+        reg_adc_config1 = ((reg_adc_config1 & FLD_SAR_ADC_CLK_DIV) | 1); //div=1, adc digital clk = 24MHz/div.(sys_clk = 24MHz)
+    }
     analog_write(areg_adc_sample_clk_div, 5);                   //div=5, adc analog clk = 24MHz/(1+div) = 4M.
 }
 
@@ -273,19 +279,6 @@ void adc_set_diff_pin(adc_sample_chn_e chn, adc_input_pin_def_e p_pin, adc_input
 }
 
 /**
- * @brief This function serves to set the reference voltage of the channel.
- * @param[in]  chn - enum variable of ADC sample channel.
- * @param[in]  v_ref - enum variable of ADC reference voltage.
- * @return none
- * @note       adc_set_ref_voltage does not take effect immediately after configuration, it needs to be delayed 100us after calling adc_dig_clk_en().
- */
-static void adc_set_ref_voltage(adc_sample_chn_e chn,adc_ref_vol_e v_ref)
-{
-    reg_adc_channel_set_state(chn) = (reg_adc_channel_set_state(chn) & (~FLD_SEL_VREF)) | (v_ref << 6);
-    //For TC122x, it is best to configure areg_ain_scale as 0x15, which is different from that of TL751X.(confirmed by peng.liu,added by xiaobin.huang on 20250714)
-    analog_write(areg_ain_scale, (analog_read(areg_ain_scale) & (0xC0)) | 0x15);
-}
-/**
  * @brief This function serves to set the sample frequency.
  * @param[in]  chn - enum variable of ADC sample channel.
  * @param[in]  sample_freq - enum variable of ADC sample frequency.
@@ -356,6 +349,8 @@ void adc_chn_config(adc_sample_chn_e chn, adc_chn_cfg_t adc_cfg)
     adc_set_diff_input(chn, adc_cfg.input_p, adc_cfg.input_n);
     adc_set_vbat_divider(chn, adc_cfg.divider);
     adc_set_ref_voltage(chn, adc_cfg.v_ref);
+    //tc123x inherits from tc122x. For TC122x, it is best to configure areg_ain_scale as 0x15, which is different from that of TL751X.(confirmed by peng.liu,added by xiaobin.huang on 20250714)
+    analog_write(areg_ain_scale, (analog_read(areg_ain_scale) & (0xC0)) | 0x15);
     adc_set_scale_factor(chn, adc_cfg.pre_scale);
     adc_set_sample_rate(chn, adc_cfg.sample_freq);
     adc_set_chn_en(chn);
@@ -459,6 +454,12 @@ unsigned short adc_calculate_voltage(adc_sample_chn_e chn, unsigned short adc_co
         return adc_voltage;
     }
 }
+/**
+ * @brief This function serves to calculate temperature from adc sample code.
+ * @param[in]   chn - enum variable of ADC sample channel.
+ * @param[in]   adc_code - the adc sample code.
+ * @return      temperature value.
+ */
 unsigned short adc_calculate_temp(adc_sample_chn_e chn, unsigned short adc_code)
 {
     return 564 - ((adc_code * 819) >> 11);
@@ -511,7 +512,6 @@ static inline unsigned char adc_get_m_chn_valid_status(void)
 void adc_enable_dfifo1(void)
 {
     reg_dfifo1_wptr = 0;  //clear dfifo1 write pointer
-    reg_dfifo_manual_mode |= FLD_DFIFO_LPF3_BYPASS;
     reg_dfifo_mode |= FLD_AUD_DFIFO1_IN ;
 }
 
@@ -675,4 +675,45 @@ unsigned short adc_sample_and_get_result(void)
 }
 
 
+/**
+ * @brief This function is used to configure the DFIFO buffer for ADC data transfer.
+ * @param[in]  pbuff - pointer to the data buffer.
+ * @param[in]  size_buff - size of the buffer.
+ * @return     none
+ */
+void adc_dfifo1_config(unsigned short* pbuff, unsigned int size_buff)
+{
+    reg_dfifo1_addr = (unsigned short)((unsigned int)pbuff);
+    reg_dfifo1_size = (size_buff >> 4) - 1;
+    adc_enable_dfifo1();
+}
+
+/**
+ * @brief This function is used to initialize the ADC for vbat sampling in audio and adc concurrent mode.
+ * @param[in]  chn - enum variable of ADC sample channel.
+ * @return     none
+ * @note       This function is specifically for the audio+adc concurrent use case,
+ *             using ADC_SAMPLE_FREQ_96K_FOR_AUDIO_AND_ADC as the sample frequency.
+ */
+void adc_vbat_sample_init_for_audio_and_adc_mode(adc_sample_chn_e chn)
+{
+    adc_chn_cfg_t chn_cfg =
+    {
+        /**
+         * For TC123X, divider=ADC_VBAT_DIV_1F4 / pre_scale=ADC_PRESCALE_1 are the best and do not need to be configured as
+         * divider=ADC_VBAT_DIV_1F4 / pre_scale=ADC_PRESCALE_1F2 as same as TL751X.(confirmed by peng.liu,added by xiaobin.huang on 20250714)
+         */
+        .divider     = ADC_VBAT_DIV_1F4,
+        .v_ref       = ADC_VREF_1P2V,
+        .pre_scale   = ADC_PRESCALE_1,
+        .sample_freq = ADC_SAMPLE_FREQ_96K_FOR_AUDIO_AND_ADC,
+        .input_p     = ADC_VBAT,
+        .input_n     = GND,
+
+    };
+    adc_chn_config(chn, chn_cfg);
+
+    g_adc_vref[chn]        = g_adc_vbat_calib_vref;        //set vbat sample calib vref
+    g_adc_vref_offset[chn] = g_adc_vbat_calib_vref_offset; //set g_adc_vref_offset as g_adc_vbat_calib_vref_offset
+}
 

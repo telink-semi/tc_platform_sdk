@@ -41,12 +41,15 @@
 	P25D09U		   0x4b		 0x114485	  PUYA		    20ms
 	GD25WD10EGIG  0x4b		 0x1164c8	   GD		    500ms/600ms(85 Celsius/125 Celsius)
 	TH25D10UB     0x4b		 0x1151cd	   TH		    125ms
+	UC25WD10      0x4b       0x1160b3     UCUN          20ms
  */
 const flash_hal_handler_t flash_list[] = {
 	//128K
 	{0x114485,flash_get_lock_block_mid114485, flash_unlock_mid114485, flash_lock_mid114485,FLASH_LOCK_LOW_32K_MID114485},
 	{0x1164c8,flash_get_lock_block_mid1164c8, flash_unlock_mid1164c8, flash_lock_mid1164c8,FLASH_LOCK_LOW_64K_MID1164C8},
 	{0x1151cd,flash_get_lock_block_mid1151cd, flash_unlock_mid1151cd, flash_lock_mid1151cd,FLASH_LOCK_LOW_32K_MID1151CD},
+	//128K
+	{0x1160b3,flash_get_lock_block_mid1160b3, flash_unlock_mid1160b3, flash_lock_mid1160b3,FLASH_LOCK_LOW_64K_MID1160B3},
 };
 
 const unsigned int FLASH_CNT = sizeof(flash_list)/sizeof(flash_hal_handler_t);

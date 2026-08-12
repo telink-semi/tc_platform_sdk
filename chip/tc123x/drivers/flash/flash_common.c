@@ -45,12 +45,17 @@
     TH25Q80U      0x4b       0x1471cd     TSINGTENG     2ms
 	P25Q16SU      0x4b       0x156085     PUYA          30ms
 	ZB25WD80C	  0x4b		 0x0114325E   ZB			500ms
+	UC25WD20      0x4b       0x1260b3     UCUN          20ms
+	UC25WD40IB    0x4b       0x1360b3     UCUN          20ms
  */
 const flash_hal_handler_t flash_list[] = {
 	//128K
 	{0x114485,flash_get_lock_block_mid114485, flash_unlock_mid114485, flash_lock_mid114485,FLASH_LOCK_LOW_64K_MID114485},
 	{0x1164c8,flash_get_lock_block_mid1164c8, flash_unlock_mid1164c8, flash_lock_mid1164c8,FLASH_LOCK_LOW_64K_MID1164C8},
+	//256K
+	{0x1260b3,flash_get_lock_block_mid1260b3, flash_unlock_mid1260b3, flash_lock_mid1260b3,FLASH_LOCK_LOW_128K_MID1260B3},
 	//512K
+	{0x1360b3,flash_get_lock_block_mid1360b3, flash_unlock_mid1360b3, flash_lock_mid1360b3,FLASH_LOCK_LOW_256K_MID1360B3},
 	{0x136085,flash_get_lock_block_mid136085, flash_unlock_mid136085, flash_lock_mid136085,FLASH_LOCK_LOW_256K_MID136085},
 	//1M
 	{0x146085,flash_get_lock_block_mid146085, flash_unlock_mid146085, flash_lock_mid146085,FLASH_LOCK_LOW_512K_MID146085},

@@ -409,4 +409,24 @@ void audio_codec_stream0_input_init(audio_codec_stream0_input_t *audio_codec);
  */
 void audio_dfifo_write_data(const short *buf, unsigned int len);
 
+/**
+ * @brief     This function serves to set the sample rate for audio and adc concurrent mode.
+ * @return    none.
+ */
+void audio_set_sample_rate_audio_and_adc_mode(void);
+
+/**
+ * @brief     This function serves to power on both audio and adc sample for concurrent mode.
+ * @return    none.
+ * @note      This function sets scan channel count to 2 (M and L channels)
+ *
+ */
+void audio_and_adc_power_on(void);
+/**
+ * @brief     This function serves to power down both audio and adc sample for concurrent mode.
+ * @return    none.
+ * @note      This function restores scan channel count to 1 before powering down the ADC and PGA.
+ */
+void audio_and_adc_power_down(void);
+
 #endif
