@@ -166,7 +166,7 @@ enum{
 
 #define reg_clk_sel				REG_ADDR8(0x64)
 enum{
-	FLD_SCLK_DIV = 				BIT_RNG(0,3),//sclk_div==0x1, bypass this divider,can’t set to 0x0
+	FLD_SCLK_DIV = 				BIT_RNG(0,3),//sclk_div==0x1, bypass this divider,can't set to 0x0
 	FLD_SCLK_SEL =				BIT_RNG(4,5),//2'b00: 24M_rc; 2'b01: 24M_xtl; 2'b10: 32M; 2'b11: 48M
 };
 

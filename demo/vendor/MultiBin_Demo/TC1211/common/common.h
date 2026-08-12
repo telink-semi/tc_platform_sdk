@@ -24,7 +24,7 @@
 /*
  * common.h
  *
- *  Created on: 2024年9月5日
+ *  Created on: Sep 5, 2024
  *      Author: Admin
  */
 
@@ -43,7 +43,7 @@ typedef void(* func_ptr_args_cap_typedef_e)(cap_typedef_e);
 typedef void(* func_ptr_args_SYS_CLK_TypeDef)(SYS_CLK_TypeDef);
 typedef int(* func_ptr_args_SleepMode_TypeDef_SleepWakeupSrc_TypeDef_pm_wakeup_tick_type_e_int)(SleepMode_TypeDef,SleepWakeupSrc_TypeDef,pm_wakeup_tick_type_e,unsigned int);
 
-//只要上层不会调用的，就不需要列举出来，接口内部调用没有关系
+// No need to list interfaces that are never called by upper layers; internal calls within the interface are fine
 typedef struct app_spi_s {
 //init
 	func_ptr_args_cap_typedef_e cpu_wakeup_init;

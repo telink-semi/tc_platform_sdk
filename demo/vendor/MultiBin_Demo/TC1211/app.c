@@ -24,7 +24,7 @@
 /*
  * app.c
  *
- *  Created on: 2024年9月5日
+ *  Created on: Sep 5, 2024
  *      Author: Admin
  */
 #ifndef DRIVER_BIN_ENABLE
