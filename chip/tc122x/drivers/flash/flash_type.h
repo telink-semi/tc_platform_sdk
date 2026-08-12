@@ -28,6 +28,7 @@
 #include "flash_mid1164c8.h"	// GD25WD10EGIG(untest)
 #include "flash_mid114485.h"	// P25D09U
 #include "flash_mid1151cd.h"	// TH25D10UB
+#include "flash_mid1160b3.h"	// UC25WD10(untest)
 
 /**
  * @brief		This function reads the status of flash.

@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    flash_lib.h
  *
- * @brief   This is the source file for TC122X
+ * @brief   This is the header file for TC122X
  *
  * @author  Driver Group
  * @date    2025

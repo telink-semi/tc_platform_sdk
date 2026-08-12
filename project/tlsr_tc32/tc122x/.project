@@ -132,11 +132,6 @@
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/GPIO_Demo</locationURI>
 		</link>
 		<link>
-			<name>vendor/MultiBin_Demo</name>
-			<type>2</type>
-			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/MultiBin_Demo/tc122x</locationURI>
-		</link>
-		<link>
 			<name>vendor/PM_Demo</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/PM_Demo</locationURI>
@@ -150,6 +145,11 @@
 			<name>vendor/QDEC_Demo</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/QDEC_Demo</locationURI>
+		</link>
+		<link>
+			<name>vendor/RF_Certification</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/RF_Certification</locationURI>
 		</link>
 		<link>
 			<name>vendor/RF_Demo</name>

@@ -531,6 +531,10 @@ typedef enum {
 
 #define    rf_aoa_aod_iq_data_offset(p)					(p[5]+10)
 
+/**
+ *  @brief This define serve to calculate the DMA length of packet.
+ */
+#define rf_tx_packet_dma_len(rf_data_len) rf_data_len
 
 /*******************************            General APIs            **************************/
 

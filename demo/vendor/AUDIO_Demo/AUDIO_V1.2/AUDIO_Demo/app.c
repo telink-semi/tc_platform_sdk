@@ -22,7 +22,7 @@
  *
  *******************************************************************************************************/
 #include "app_config.h"
-#if (AUDIO_MODE <=  AMIC_INPUT_TO_BUF)
+#if (AUDIO_MODE <= AMIC_INPUT_TO_BUF) && (AUDIO_DEMO_MODE == AUDIO_ONLY_MODE)
 
 #define AUDIO_BUFF_SIZE 512*4
 signed short AUDIO_BUFF[AUDIO_BUFF_SIZE >> 1] __attribute__((aligned(4)));
@@ -62,6 +62,7 @@ void user_init(void)
 
 void main_loop(void)
 {
+
 }
 
 #endif

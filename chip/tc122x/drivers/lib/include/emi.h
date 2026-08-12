@@ -176,4 +176,13 @@ void rf_set_channel_singletone (signed char chn);
  * @return  the new random number.
  */
 unsigned int pnGen(unsigned int state);
+
+/**
+ * @brief   This function serves to generate random packets that need to be sent in burst mode
+ * @param   *p - the address of random packets.
+ * @param   n - the number of random packets.
+ * @return  none.
+ */
+void rf_phy_test_prbs9 (unsigned char *p, int n);
+
 #endif /* EMI_H_ */

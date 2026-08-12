@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    boot.link
  *
- * @brief   This is the link file for TC122X
+ * @brief   This is the link file for Telink MCU
  *
  * @author  Driver Group
  * @date    2025
@@ -75,10 +75,6 @@ SECTIONS
 	    } 
         PROVIDE(_dstored_ = _rstored_ + _retention_data_end_ - _retention_data_start_); 
     
-        .my_code(NOLOAD) :
-        {
-        *(.spi_slave_buff)
-        }    
 	    .data :
 	      AT ( _dstored_ )
 	     {
@@ -90,6 +86,31 @@ SECTIONS
 	     PROVIDE(_end_data_ = . );
 	     } 
 
+      .rf_certification_cfg :
+	  AT ( _dstored_ + _end_data_ - _start_data_ )
+	  {
+    . = (((. + 3) / 4)*4);
+        PROVIDE(_start_rf_certification_cfg_ = . );
+        KEEP(*(.rf_certification_cfg));
+        KEEP(*(.rf_certification_cfg.*));
+    . = (((. + 3) / 4)*4);
+        PROVIDE(_end_rf_certification_cfg_ = . );
+	  }
+        PROVIDE(_RF_CERTIFICATION_CFG_ADDR_OFFSET = _dstored_ + _end_data_ - _start_data_);
+
+      .sdk_version :
+	  AT ( _dstored_ + _end_data_ - _start_data_ + _end_rf_certification_cfg_ - _start_rf_certification_cfg_ )
+	  {
+	. = (((. + 3) / 4)*4);
+	    KEEP(*(.sdk_version));
+        KEEP(*(.sdk_version.*));
+      }
+	
+        .my_code(NOLOAD) :
+        {
+        *(.spi_slave_buff)
+        }  
+        
 	/* irk_stk is 4 word align */
 	. = (((. + 15) / 16)*16);
 		PROVIDE(_start_bss_ = .);
@@ -102,16 +123,8 @@ SECTIONS
 	    *(.bss.*)
 	    }
 		PROVIDE(_end_bss_ = .);
-				
-	    .sdk_version :
-	    AT ( _dstored_ +  _end_data_ - _start_data_ )
-		{
-	. = (((. + 3) / 4)*4);
-		KEEP(*(.sdk_version));
-	    KEEP(*(.sdk_version.*));
-		}
-		
-		PROVIDE(_bin_size_ = _code_size_ + _end_data_ - _start_data_ + _retention_data_end_ - _retention_data_start_  + SIZEOF(.sdk_version) );
+
+		PROVIDE(_bin_size_ = _code_size_ + _end_data_ - _start_data_ + _retention_data_end_ - _retention_data_start_ + _end_rf_certification_cfg_ - _start_rf_certification_cfg_ + SIZEOF(.sdk_version) );
 		PROVIDE(_bin_size_div_16 = ( _bin_size_ + 15 ) / 16 );
 		PROVIDE(_ictag_start_ = 0x840000 + _ramcode_size_align_256_ );
 		PROVIDE(_ictag_end_ = 0x840000 + _ramcode_size_align_256_ + 0x100);

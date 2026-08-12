@@ -75,7 +75,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "ALG_REG_Demo",
@@ -148,7 +149,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "AUDIO_Demo",
@@ -221,7 +223,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "BQB_EMI_Demo",
@@ -294,7 +297,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "Coremark_Demo",
@@ -369,7 +373,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "Debug_Demo",
@@ -442,7 +447,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "Dhrystone_Demo",
@@ -517,7 +523,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "DUT_Demo",
@@ -592,7 +599,85 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
+    },
+    {
+      "name": "EMI_Demo",
+      "path": "./",
+      "toolchain": "TC32-GCC Toolchain",
+      "toolchainVersionName": "TC32-GCC Toolchain",
+      "directories": [
+        "chip/TC321X/boot",
+        "chip/TC321X/drivers",
+        "common",
+        "demo/vendor/RF_Certification",
+        "demo/vendor/common/TC321X/calibration",
+        "demo/vendor/common/common"
+      ],
+      "global_options": [],
+      "asm_compile_options": [
+        "-DMCU_STARTUP_FLASH",
+        "-DMCU_CORE_TC321X=1",
+        "-DRF_CERTIFICATION_CGF_EN=1",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common"
+      ],
+      "cpp_compile_options": [],
+      "c_compile_options": [
+        "-O2",
+        "-fpack-struct",
+        "-fshort-enums",
+        "-finline-small-functions",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/TC321X/calibration",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/demo/vendor/common/common",
+        "-I${CMAKE_CURRENT_SOURCE_DIR}/common",
+        "-DMCU_CORE_TC321X=1",
+        "-DRF_CERTIFICATION_CGF_EN=1",
+        "-DMCU_STARTUP_FLASH=1",
+        "-std=gnu99",
+        "-fshort-wchar",
+        "-fms-extensions"
+      ],
+      "linker_script": "",
+      "linker_options": [
+        "--gc-sections",
+        "-T${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/boot.link"
+      ],
+      "linker_directories": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/proj_lib",
+        "${CMAKE_CURRENT_SOURCE_DIR}/chip/TC321X/drivers/lib"
+      ],
+      "linker_libraries": [
+        "driver_tc321x",
+        "soft-fp"
+      ],
+      "cpp_linker_script": "",
+      "cpp_linker_options": [],
+      "cpp_linker_directories": [],
+      "cpp_linker_libraries": [],
+      "pre_build": [],
+      "post_build": [
+        "${CMAKE_CURRENT_SOURCE_DIR}/project/tlsr_tc32/TC321X/../../../tools/tl_check_fw_tool/tl_check_fw.sh   EMI_Demo   TC_PLATFORM_SDK_321X"
+      ],
+      "print_size": [
+        "-t"
+      ],
+      "obj_copy": [
+        "-O",
+        "binary"
+      ],
+      "obj_dump": [
+        "-x",
+        "-D",
+        "-l",
+        "-S"
+      ],
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "FLASH_Demo",
@@ -665,7 +750,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "GPIO_Demo",
@@ -738,7 +824,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "I2C_Demo",
@@ -811,7 +898,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "IR_LEARN_Demo",
@@ -884,7 +972,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "Keyscan_Demo",
@@ -957,7 +1046,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "PM_Demo",
@@ -1030,7 +1120,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "PWM_Demo",
@@ -1103,7 +1194,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "QDEC_Demo",
@@ -1176,7 +1268,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "RF_Demo",
@@ -1249,7 +1342,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "SD_ADC_Demo",
@@ -1322,7 +1416,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "SPI_Demo",
@@ -1395,7 +1490,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "STIMER_Demo",
@@ -1468,7 +1564,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "Timer_Demo",
@@ -1541,7 +1638,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "TRNG_Demo",
@@ -1614,7 +1712,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     },
     {
       "name": "UART_Demo",
@@ -1687,7 +1786,8 @@
         "-l",
         "-S"
       ],
-      "sub_directories": []
+      "sub_directories": [],
+      "compiler": "gcc"
     }
   ],
   "toolchainVersionName": "TC32-GCC Toolchain"

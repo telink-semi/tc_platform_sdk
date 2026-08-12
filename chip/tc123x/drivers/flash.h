@@ -46,6 +46,8 @@ typedef enum{
 	MID146085   =   0x146085,//P25Q80SU
 	MID1471CD   =   0x1471cd,//TH25Q80U
 	MID156085   =   0x156085,//P25Q16SU
+	MID1260B3   =   0x1260b3,//UC25WD20
+	MID1360B3   =   0x1360b3,//UC25WD40IB
 }flash_mid_e;
 
 /**
@@ -102,6 +104,7 @@ typedef enum{
 	FLASH_SONOS_PUYA  	= 0x02006085,	// 6085		bit[25]:SONOS:Byte Program Time == Page Programming Time
 	FLASH_SONOS_TH  	= 0x020060EB,	// 60EB
 	FLASH_SST_TH  		= 0x040060CD,	// 60CD		bit[26]:SST:  Byte Program Time != Page Programming Time
+	FLASH_SONOS_UCUN  	= 0x020060B3,	// 60B3		bit[25]:SONOS:Byte Program Time == Page Programming Time
 }flash_vendor_e;
 
 /**

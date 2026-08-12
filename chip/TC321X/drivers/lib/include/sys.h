@@ -141,15 +141,3 @@ _attribute_ram_code_sec_noinline_ void crystal_manual_settle(void);
  * @note      This function will not take effect until it is called before cpu_wakeup_init().
  */
 void cpu_wakeup_init_calib_32k_rc_cfg(char calib_flag);
-
-/**
- * @brief       This function serves to set system power mode.
- * @param[in]   power_mode  - power mode(LDO/LDO_DCDC).
- * @return      none.
- * @note        pd_dcdc_ldo_sw<1:0>, dcdc & bypass ldo status bits:
-                    dcdc_1p25   dcdc_1p8     ldo_1p25    ldo_1p8
-                00:     N           N           Y           Y
-                01:     Y           N           N           Y
- */
-_attribute_ram_code_sec_noinline_ void pm_set_power_mode(POWER_MODE_TypeDef power_mode);
-

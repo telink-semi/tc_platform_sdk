@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    ir_learn.h
  *
- * @brief   This is the header file for TC321X
+ * @brief   This is the header file for TC123X
  *
  * @author  Driver Group
  * @date    2024

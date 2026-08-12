@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    calibration.c
  *
- * @brief   This is the source file for TC1211
+ * @brief   This is the source file for tc122x
  *
  * @author  Driver Group
  * @date    2024

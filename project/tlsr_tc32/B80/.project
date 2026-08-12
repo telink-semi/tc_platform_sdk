@@ -177,6 +177,11 @@
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/QDEC_Demo</locationURI>
 		</link>
 		<link>
+			<name>vendor/RF_Certification</name>
+			<type>2</type>
+			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/RF_Certification</locationURI>
+		</link>
+		<link>
 			<name>vendor/RF_Demo</name>
 			<type>2</type>
 			<locationURI>PARENT-3-PROJECT_LOC/demo/vendor/RF_Demo</locationURI>

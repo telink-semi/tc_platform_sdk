@@ -1,7 +1,7 @@
 /********************************************************************************************************
  * @file    calibration.h
  *
- * @brief   This is the header file for Telink MCU
+ * @brief   This is the header file for B80
  *
  * @author  Driver Group
  * @date    2022

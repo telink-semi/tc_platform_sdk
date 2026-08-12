@@ -1,3 +1,108 @@
+## V3.5.1
+
+### Version
+* SDK Version: tc_platform_sdk V3.5.1
+* Chip Version
+  - B80:  TLSR8208/TLSR8373
+  - B80B: TLSR8208 Version B
+  - B85:  TLSR825x/TLSR8359
+  - B87:  TLSR827x/TLSR8355
+  - TC321X(B0/A1/A0)
+  - TC122X(A1/A2/A3)
+  - TC123X(A0)
+* Hardware EVK Version
+  - B80:    C1T261A30_V1_1
+  - B80B:   C1T321A30_V1_0
+  - B85:    C1T139A30_V1_2
+  - B87:    C1T197A30_V1_1
+  - TC321X: C1T357A20_V2_1
+  - TC122x: C1T389A20_V1_0
+  - TC123x: C1T414A20_V1_1
+
+* Toolchain Version
+  - B80, B80B, B85, B87, TC321X(B0/A1/A0), TC122X(A1/A2), TC123X(A0): TC32 ELF GCC4.3 ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+### Bug Fixes
+* **watchdog**
+    * (TC122X/TC123X):Fixed an issue where the 32k watchdog reset time could be shorter than the configured interval due to hardware inaccuracies. (merge_requests/@1045)
+    * Detailed description:To ensure that the watchdog reset time never falls below the set interval, software compensation has been introduced by adding a maximum allowable timing error as an offset during interval configuration.  
+    * Fixing effect:The 32k watchdog reset time will never be less than the configured interval. 
+    * Update suggestion: Using the watchdog must be updated.
+
+### BREAKING CHANGES
+* N/A
+
+### Features
+* **rf**
+  * (B80/B80B/B85/B87/TC321X/TC122X) Added EMI_Demo support. (merge_requests/@1041)(merge_requests/@1056)(merge_requests/@1064)
+* **audio/adc**
+  * (TC123X) Add demo for concurrent usage of audio and ADC. (merge_requests/@1046)
+
+### Refactoring
+* **pm**
+   * (TC321X) The `pm_set_power_mode` interface is not publicly available; removed the interface declaration. (merge_requests/@1010)
+* **rf**
+  * (TC321X) Optimize RF‑related configurations to improve communication stability. (merge_requests/@1014)
+* **.cproject**
+  * (B80/B80B/B85/B87/TC321X/TC122x/TC123x) Update the configuration location of compilation options in the project. (merge_requests/@1058)
+
+### Performance Improvements
+* N/A
+
+### 版本
+* SDK 版本: tc_platform_sdk V3.5.1
+* 芯片版本
+  - B80:  TLSR8208/TLSR8373
+  - B80B: TLSR8208 Version B
+  - B85:  TLSR825x/TLSR8359
+  - B87:  TLSR827x/TLSR8355
+  - TC321X(B0/A1/A0)
+  - TC122X(A1/A2/A3)
+  - TC123X(A0)
+* 硬件评估板版本
+  - B80:    C1T261A30_V1_1
+  - B80B:   C1T321A30_V1_0
+  - B85:    C1T139A30_V1_2
+  - B87:    C1T197A30_V1_1
+  - TC321X: C1T357A20_V2_1
+  - TC122x: C1T389A20_V1_0
+  - TC123x: C1T414A20_V1_1
+  
+* 工具链版本
+  - B80, B80B, B85, B87, TC321X(B0/A1/A0), TC122X(A1/A2), TC123X(A0): TC32 ELF GCC4.3 ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+### Bug Fixes
+* **watchdog**
+    * (TC122X/TC123X): 修复了32k watchdog因硬件误差导致复位时间可能小于设置时间的问题(merge_requests/@1045)
+    * 详细描述: 为了保证在设置interval时，watchdog的复位时间不会小于设置时间，在设置interval时，软件上增加了最大的时间误差，作为补偿值。
+    * 修复效果: 32k watchdog复位时间永远不会小于设置时间。
+    * 更新建议：使用watchdog必须更新。
+
+### BREAKING CHANGES
+* N/A
+
+### Features
+* **rf**
+  * (B80/B80B/B85/B87/TC321X/TC122X) 添加EMI_Demo支持。 (merge_requests/@1041)(merge_requests/@1056)(merge_requests/@1064)
+* **audio/adc**
+  * (TC123X) 增加 audio 和 adc 同时使用的示例demo。(merge_requests/@1046)
+
+### Refactoring
+* **pm**
+  * (TC321X) pm_set_power_mode接口不对外开放，删掉接口声明. (merge_requests/@1010)
+* **rf**
+  * (TC321X) 优化RF相关配置，提高通信稳定性. (merge_requests/@1014)
+* **.cproject**
+  * (B80/B80B/B85/B87/TC321X/TC122x/TC123x) 更新工程中编译选项的配置位置。 (merge_requests/@1058)
+
+### Performance Improvements
+* N/A
+---
+
 ## V3.5.0
 
 ### Version
@@ -101,7 +206,6 @@
 ### Performance Improvements
 * **ir**
   * (TC321X) 优化IR学习距离，提高红外信号接收性能，增强遥控器学习功能的可靠性。(merge_requests/@1013)
-
 ---
 
 ## V3.4.0

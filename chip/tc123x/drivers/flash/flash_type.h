@@ -32,6 +32,8 @@
 #include "flash_mid114485.h"    // P25D09U  (untest)
 #include "flash_mid1164c8.h"    // GD25WD10EGIG (untest)
 #include "flash_mid0114325e.h"	// ZB25WD80C
+#include "flash_mid1260b3.h"	// UC25WD20 (untest)
+#include "flash_mid1360b3.h"	// UC25WD40IB (untest)
 /**
  * @brief		This function reads the status of flash.
  * @param[in] 	cmd	- the cmd of read status.

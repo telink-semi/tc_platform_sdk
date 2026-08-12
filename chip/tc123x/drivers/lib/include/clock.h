@@ -29,14 +29,14 @@
 
 typedef enum
 {
-    SYS_CLK_12M_Crystal = 0x12,
-    SYS_CLK_16M_Crystal = 0x22,
-    SYS_CLK_24M_Crystal = 0x11,
-    SYS_CLK_32M_Crystal = 0x21,
-    SYS_CLK_48M_Crystal = 0x31,
+    SYS_CLK_12M_Crystal = 0x12 | (12<<8),
+    SYS_CLK_16M_Crystal = 0x22 | (16<<8),
+    SYS_CLK_24M_Crystal = 0x11 | (24<<8),
+    SYS_CLK_32M_Crystal = 0x21 | (32<<8),
+    SYS_CLK_48M_Crystal = 0x31 | (48<<8),
 
-    SYS_CLK_12M_RC      = 0x02,
-    SYS_CLK_24M_RC      = 0x01,
+    SYS_CLK_12M_RC      = 0x02 | (12<<8),
+    SYS_CLK_24M_RC      = 0x01 | (24<<8),
 }SYS_CLK_TypeDef;
 
 /**

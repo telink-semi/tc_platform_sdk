@@ -82,31 +82,36 @@ flash_user_defined_list_t flash_init_list[] = {
     // 512K
     {0x136085, FLASH_LOCK_LOW_256K_MID136085},
     //1M
-	{0x146085, FLASH_LOCK_LOW_512K_MID146085},
+    {0x146085, FLASH_LOCK_LOW_512K_MID146085},
     {0x1471cd, FLASH_LOCK_LOW_512K_MID1471cd},
     //2M
-	{0x156085, FLASH_LOCK_LOW_1M_MID156085},
+    {0x156085, FLASH_LOCK_LOW_1M_MID156085},
 #elif (MCU_CORE_TC1211)
     // 128K
     {0x114485, FLASH_LOCK_LOW_32K_MID114485},
     {0x1151cd, FLASH_LOCK_LOW_32K_MID1151CD},
+    {0x1160b3, FLASH_LOCK_LOW_64K_MID1160B3},
     // 512K
     {0x136085, FLASH_LOCK_LOW_32K_MID136085},
     //1M
-	{0x146085, FLASH_LOCK_LOW_32K_MID146085},
+    {0x146085, FLASH_LOCK_LOW_32K_MID146085},
 #elif (MCU_CORE_TC122X)
     // 128K
     {0x114485, FLASH_LOCK_LOW_32K_MID114485},
     {0x1164c8, FLASH_LOCK_LOW_64K_MID1164C8},
     {0x1151cd, FLASH_LOCK_LOW_32K_MID1151CD},
+    {0x1160b3, FLASH_LOCK_LOW_64K_MID1160B3},
 #elif (MCU_CORE_TC123X)
     // 128K
     {0x114485, FLASH_LOCK_LOW_64K_MID114485},
     {0x1164c8, FLASH_LOCK_LOW_64K_MID1164C8},
-    // 512K
+    //256K
+    {0x1260b3, FLASH_LOCK_LOW_128K_MID1260B3},
+    //512K
+    {0x1360b3, FLASH_LOCK_LOW_256K_MID1360B3},
     {0x136085, FLASH_LOCK_LOW_256K_MID136085},
     //1M
-	{0x146085, FLASH_LOCK_LOW_512K_MID146085},
+    {0x146085, FLASH_LOCK_LOW_512K_MID146085},
     {0x1471cd, FLASH_LOCK_LOW_512K_MID1471cd},
     {0x0114325E, FLASH_LOCK_LOW_512K_MID0114325E},
     //2M
@@ -147,23 +152,23 @@ void flash_init(unsigned char flash_protect_en)
 void platform_init(unsigned char flash_protect_en)
 {
     /**
-	===============================================================================
-						 ##### update system status #####
-	===============================================================================
-	You need to update the system status and set it to a fixed value.
-	Otherwise, the next judgment may be inaccurate because the corresponding value is not configured.
-	===============================================================================
-	*/
+    ===============================================================================
+                         ##### update system status #####
+    ===============================================================================
+    You need to update the system status and set it to a fixed value.
+    Otherwise, the next judgment may be inaccurate because the corresponding value is not configured.
+    ===============================================================================
+    */
 #if (defined(MCU_CORE_TC122X))
     pm_update_status_info(1);
 
 #if(FLASH_BIN_ON == 0)
     if(pmParam.mcu_status == MCU_POWER_ON)
     {
-		for(volatile unsigned int i = 0; i < 300000; i++)
-		{
-			asm("tnop");
-		}
+        for(volatile unsigned int i = 0; i < 300000; i++)
+        {
+            asm("tnop");
+        }
     }
 #endif
 #endif
@@ -242,7 +247,12 @@ void platform_init(unsigned char flash_protect_en)
 #endif
 
 #else
-    flash_init(flash_protect_en);
+#if((defined(MCU_CORE_B80)||defined(MCU_CORE_B80B))&&(!SRAM_OTP_FLASH_HANDLE))
+    extern unsigned char    otp_program_flag;
+    if(!otp_program_flag)
 #endif
-
+    {
+      flash_init(flash_protect_en);
+    }
+#endif
 }
