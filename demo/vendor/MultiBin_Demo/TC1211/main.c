@@ -37,7 +37,7 @@ _attribute_ram_code_sec_noinline_ void irq_handler(void)
 /*
  * 1. Background: Only dp/dm encapsulation is available, requiring conversion to USB-to-SWS functionality for access. USB-to-SWS necessitates switching time, which is difficult to operate on the ATE side. Therefore, a test mode must be added to the ROM SDK.
  * 2. Test Module Implementation:
- * Before power-on to software DP configuration pull-up, check if DP/DM are simultaneously high three times. If true, enter test mode（To prevent accidental entry during normal operation, change the while loop to a 3-second timeout.）.
+ * Before power-on to software DP configuration pull-up, check if DP/DM are simultaneously high three times. If true, enter test mode(To prevent accidental entry during normal operation, change the while loop to a 3-second timeout.).
  * 3. Implementation Details:
  * - Power is only supplied when the dongle is inserted, with DM initially low. DM level transition time on Lark is approximately 300+ ms.
  * - In bare die state, DM/DP are floating, hence the triple check.

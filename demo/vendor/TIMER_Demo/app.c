@@ -113,7 +113,7 @@ void user_init(void)
     #elif defined(MCU_CORE_TC1211)
 	/**
 	 * For TC1211, period_ms must be set to a multiple of 2048ms
-	 * and the 32k watch dog reboot may take place at any time between “ period_ms ~ (period_ms+2048ms) ".
+	 * and the 32k watch dog reboot may take place at any time between " period_ms ~ (period_ms+2048ms) ".
 	 */
     wd_32k_stop();
     wd_32k_set_interval_ms(1000 + 2048);
@@ -194,7 +194,7 @@ void main_loop (void)
     #elif defined(MCU_CORE_TC1211)
 	/**
 	 * For TC1211, period_ms must be set to a multiple of 2048ms
-	 * and the 32k watch dog reboot may take place at any time between “ period_ms ~ (period_ms+2048ms) ".
+	 * and the 32k watch dog reboot may take place at any time between " period_ms ~ (period_ms+2048ms) ".
 	 */
     wd_32k_stop();
     wd_32k_set_interval_ms(2000 + 2048);
