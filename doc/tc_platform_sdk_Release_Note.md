@@ -20,7 +20,11 @@
   - TC123x: C1T414A20_V1_1
 
 * Toolchain Version
-  - B80, B80B, B85, B87, TC321X(B0/A1/A0), TC122X(A1/A2), TC123X(A0): TC32 ELF GCC4.3 ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - B80, B80B, B85, B87, TC321X(B0/A1/A0), TC122X(A1/A2), TC123X(A0): TC32 ELF GCC4.3
+
+* IDE
+  - [Telink IoT Studio](https://www.telink-semi.com/development-tools)
+  - [Telink VS Code Extension](https://marketplace.visualstudio.com/items?itemName=Telink.tlk)
 
 <hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
 
@@ -71,7 +75,11 @@
   - TC123x: C1T414A20_V1_1
   
 * 工具链版本
-  - B80, B80B, B85, B87, TC321X(B0/A1/A0), TC122X(A1/A2), TC123X(A0): TC32 ELF GCC4.3 ( IDE:[Telink IoT Studio](https://www.telink-semi.com/development-tools) )
+  - B80, B80B, B85, B87, TC321X(B0/A1/A0), TC122X(A1/A2), TC123X(A0): TC32 ELF GCC4.3 
+
+* IDE
+  - [Telink IoT Studio](https://www.telink-semi.com/development-tools)
+  - [Telink VS Code Extension](https://marketplace.visualstudio.com/items?itemName=Telink.tlk)
 
 <hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
 
