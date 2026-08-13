@@ -24,7 +24,6 @@
 #pragma once
 
 #include "gpio.h"
-#include "lib/include/pm/pm_internal.h"
 
 
 /**

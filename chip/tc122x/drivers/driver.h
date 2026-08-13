@@ -24,7 +24,6 @@
 #pragma once
 #include "lib/include/emi.h"
 #include "lib/include/pm/pm.h"
-#include "lib/include/pm/pm_internal.h"
 #include "lib/include/rf_drv.h"
 #include "lib/include/sys.h"
 #include "lib/include/clock.h"

@@ -177,33 +177,6 @@ unsigned short uart_bqbtest_get(unsigned short* cmd)
 	return 0;
 }
 
-/**
- * @brief   This function serves to generate random packets that need to be sent in burst mode
- * @param   *p - the address of random packets.
- * @param   n - the number of random packets.
- * @return  none.
- */
-static void rf_phy_test_prbs9 (unsigned char *p, int n)
-{
-	//PRBS9: (x >> 1) | (((x<<4) ^ (x<<8)) & 0x100)
-	unsigned short x = 0x1ff;
-	int i;
-	int j;
-	for ( i=0; i<n; i++)
-	{
-		unsigned char d = 0;
-		for (j=0; j<8; j++)
-		{
-			if (x & 1)
-			{
-				d |= BIT(j);
-			}
-			x = (x >> 1) | (((x<<4) ^ (x<<8)) & 0x100);
-		}
-		*p++ = d;
-	}
-}
-
 extern void read_bqb_calibration();
 /**
  * @brief   This function serves to read the uartdata and execute BQB program

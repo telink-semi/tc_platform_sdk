@@ -28,7 +28,6 @@
 #include "gpio.h"
 #include "driver_func_cfg.h"
 #include "lib/include/sys.h"
-#include "lib/include/pm/pm_internal.h"
 
 /**
  * @brief      This function servers to set the GPIO's function.
