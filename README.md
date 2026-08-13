@@ -4,7 +4,7 @@
 
 ## SDK Introduction
 
-tl_platform_sdk is a software development kit for Telink IoT and audio chips, providing unified abstract interfaces and underlying software support for chips. It serves as the core software layer connecting hardware platforms with upper-layer application SDKs.
+tc_platform_sdk is a software development kit for Telink IoT and audio chips, providing unified abstract interfaces and underlying software support for chips. It serves as the core software layer connecting hardware platforms with upper-layer application SDKs.
 
 The SDK mainly includes the following software components:
 
