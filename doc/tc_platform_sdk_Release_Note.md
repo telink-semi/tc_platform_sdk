@@ -1,3 +1,87 @@
+## V3.5.2
+
+### Version
+* SDK Version: tc_platform_sdk V3.5.2
+* Chip Version
+  - B80:  TLSR8208/TLSR8373
+  - B80B: TLSR8208 Version B
+  - B85:  TLSR825x/TLSR8359
+  - B87:  TLSR827x/TLSR8355
+  - TC321X(B0/A1/A0)
+  - TC122X(A1/A2/A3)
+  - TC123X(A0)
+* Hardware EVK Version
+  - B80:    C1T261A30_V1_1
+  - B80B:   C1T321A30_V1_0
+  - B85:    C1T139A30_V1_2
+  - B87:    C1T197A30_V1_1
+  - TC321X: C1T357A20_V2_1
+  - TC122x: C1T389A20_V1_0
+  - TC123x: C1T414A20_V1_1
+
+* Toolchain Version
+  - B80, B80B, B85, B87, TC321X(B0/A1/A0), TC122X(A1/A2), TC123X(A0): TC32 ELF GCC4.3
+
+* IDE
+  - [Telink IoT Studio](https://www.telink-semi.com/development-tools)
+  - [Telink VS Code Extension](https://marketplace.visualstudio.com/items?itemName=Telink.tlk)
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+### Bug Fixes
+* N/A
+### BREAKING CHANGES
+* N/A
+### Features
+* **calibration**
+  * (TC123X) Add logic to read calibration values and IEEE address from the 256KB Flash.(merge_requests/@1071)
+
+### Refactoring
+* N/A
+
+### Performance Improvements
+* N/A
+### 版本
+* SDK 版本: tc_platform_sdk V3.5.2
+* 芯片版本
+  - B80:  TLSR8208/TLSR8373
+  - B80B: TLSR8208 Version B
+  - B85:  TLSR825x/TLSR8359
+  - B87:  TLSR827x/TLSR8355
+  - TC321X(B0/A1/A0)
+  - TC122X(A1/A2/A3)
+  - TC123X(A0)
+* 硬件评估板版本
+  - B80:    C1T261A30_V1_1
+  - B80B:   C1T321A30_V1_0
+  - B85:    C1T139A30_V1_2
+  - B87:    C1T197A30_V1_1
+  - TC321X: C1T357A20_V2_1
+  - TC122x: C1T389A20_V1_0
+  - TC123x: C1T414A20_V1_1
+  
+* 工具链版本
+  - B80, B80B, B85, B87, TC321X(B0/A1/A0), TC122X(A1/A2), TC123X(A0): TC32 ELF GCC4.3 
+
+* IDE
+  - [Telink IoT Studio](https://www.telink-semi.com/development-tools)
+  - [Telink VS Code Extension](https://marketplace.visualstudio.com/items?itemName=Telink.tlk)
+
+<hr style="border-bottom:2.5px solid rgb(146, 240, 161)">
+
+### Bug Fixes
+* N/A
+### BREAKING CHANGES
+* N/A
+### Features
+* N/A
+### Refactoring
+* **calibration**
+  * (TC123X) 增加从 256K 容量的 flash 中读取校准值和 ieee 地址值的逻辑.(merge_requests/@1071)
+### Performance Improvements
+* N/A
+---
+
 ## V3.5.1
 
 ### Version

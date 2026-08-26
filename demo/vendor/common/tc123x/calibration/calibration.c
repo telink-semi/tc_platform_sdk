@@ -48,6 +48,9 @@ void flash_get_ieee_addr(unsigned char *buf)
             case FLASH_SIZE_128K:
                 ieee_value_addr = FLASH_IEEE_VALUE_ADDR_128K;
                 break;
+            case FLASH_SIZE_256K:
+                ieee_value_addr = FLASH_IEEE_VALUE_ADDR_256K;
+                break;
             case FLASH_SIZE_512K:
                 ieee_value_addr = FLASH_IEEE_VALUE_ADDR_512K;
                 break;
@@ -155,6 +158,10 @@ void user_calibration_func(void)
             case FLASH_SIZE_128K:
                 user_calib_freq_offset(FLASH_CAP_VALUE_ADDR_128K);
                 adc_value_addr = FLASH_ADC_CALI_VALUE_ADDR_128K;
+                break;
+            case FLASH_SIZE_256K:
+                user_calib_freq_offset(FLASH_CAP_VALUE_ADDR_256K);
+                adc_value_addr = FLASH_ADC_CALI_VALUE_ADDR_256K;
                 break;
             case FLASH_SIZE_512K:
                 user_calib_freq_offset(FLASH_CAP_VALUE_ADDR_512K);
